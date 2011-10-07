@@ -1,5 +1,0 @@
-// Static deduction of text in a simple production.
-
-module StaticText;
-
-public String Top = "foo" / "bar" ;

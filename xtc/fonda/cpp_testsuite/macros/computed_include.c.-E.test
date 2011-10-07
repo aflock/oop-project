@@ -1,3 +1,0 @@
-#if (defined A)
-#elif !(defined A)
-#endif

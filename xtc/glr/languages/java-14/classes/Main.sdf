@@ -1,8 +1,0 @@
-%%%
- %% Section 8: Classes
- %%
- %% @author  Martin Bravenboer <martin@cs.uu.nl>
- %%%
-module languages/java-14/classes/Main
-imports
-  languages/java-14/classes/ClassDeclarations

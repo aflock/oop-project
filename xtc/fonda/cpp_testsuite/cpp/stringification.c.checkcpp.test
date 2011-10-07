@@ -1,5 +1,0 @@
-# 1 "<stdin>"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "<stdin>"
-do { if (x == 0) fprintf(stderr, "Warning: " "x == 0" "\n"); } while (0);

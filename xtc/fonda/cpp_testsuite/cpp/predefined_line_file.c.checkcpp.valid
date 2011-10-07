@@ -1,8 +1,0 @@
-# 1 "fonda/cpp_testsuite/cpp/predefined_line_file.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "fonda/cpp_testsuite/cpp/predefined_line_file.c"
-fprintf (stderr, "Internal error: "
-          "negative string length "
-           "%d at %s, line %d.",
-  length, "fonda/cpp_testsuite/cpp/predefined_line_file.c", 4);

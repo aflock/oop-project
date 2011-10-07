@@ -1,6 +1,0 @@
-// A literal (or any other similar element) in a predicate needs to be
-// wrapped in a sequence.
-
-module LiteralInPredicate;
-
-public void Top = &"foo" ;

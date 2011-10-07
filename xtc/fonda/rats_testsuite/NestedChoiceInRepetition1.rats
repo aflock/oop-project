@@ -1,5 +1,0 @@
-// A nested choice in a repetition needs to be lifted.
-
-module NestedChoiceInRepetition1;
-
-public memoized void Top = ("foo" ("bar" / "car") "bar")+ ;

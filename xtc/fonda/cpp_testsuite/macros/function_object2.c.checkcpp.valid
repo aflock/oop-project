@@ -1,6 +1,0 @@
-# 1 "fonda/cpp_testsuite/macros/function_object2.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "fonda/cpp_testsuite/macros/function_object2.c"
-# 15 "fonda/cpp_testsuite/macros/function_object2.c"
-int x = cpu(2);

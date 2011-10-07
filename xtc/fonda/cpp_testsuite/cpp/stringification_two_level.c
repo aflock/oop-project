@@ -1,4 +1,0 @@
-#define xstr(s) str(s)
-#define str(s) #s
-#define foo 4
-str (foo)

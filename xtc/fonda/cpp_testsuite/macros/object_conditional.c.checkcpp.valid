@@ -1,9 +1,0 @@
-# 1 "fonda/cpp_testsuite/macros/object_conditional.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "fonda/cpp_testsuite/macros/object_conditional.c"
-
-
-
-
-foo = (char *) malloc (1024);

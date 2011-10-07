@@ -1,5 +1,0 @@
-// Choices inside predicates must be lifted into their own productions.
-
-module ChoiceInPredicate;
-
-public Object Top = &( "foo" / "bar" ) "whatever" ;

@@ -1,6 +1,0 @@
-//testing undefinition
-
-#if (defined A)
-#endif
-#if 0
-#endif

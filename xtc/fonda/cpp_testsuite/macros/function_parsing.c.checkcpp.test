@@ -1,7 +1,0 @@
-# 1 "<stdin>"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "<stdin>"
-x , y + a , b
-(a,b) + (c,d)
-a + b

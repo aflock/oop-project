@@ -1,2 +1,0 @@
-#define GUARD
-GUARD TOKEN

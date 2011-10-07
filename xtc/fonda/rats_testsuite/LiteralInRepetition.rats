@@ -1,6 +1,0 @@
-// A literal (or any other similar element) in a repetition needs to
-// be wrapped in a sequence.
-
-module LiteralInRepetition;
-
-public void Top = "foo"* ;

@@ -1,4 +1,0 @@
-#ifdef A
-monkey
-#endif
-

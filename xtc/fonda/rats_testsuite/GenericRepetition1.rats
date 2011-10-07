@@ -1,6 +1,0 @@
-// A single top-level repetition in a memoized generic production must
-// be lifted before desugaring.
-
-module GenericRepetition1;
-
-public generic Top = "foo"* ;

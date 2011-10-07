@@ -1,7 +1,0 @@
-# 1 "fonda/cpp_testsuite/macros/function_prescan.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "fonda/cpp_testsuite/macros/function_prescan.c"
-
-
-(invoke1 (invoke2) * 2) * 2

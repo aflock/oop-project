@@ -1,8 +1,0 @@
-# 1 "fonda/cpp_testsuite/cpp/function_variadic_paste.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "fonda/cpp_testsuite/cpp/function_variadic_paste.c"
-
-fprintf (stderr, "%s:%d: ", input_file, lineno)
-fprintf (stderr, "%s:%d: ")
-fprintf (stderr, "%s:%d: ",)
