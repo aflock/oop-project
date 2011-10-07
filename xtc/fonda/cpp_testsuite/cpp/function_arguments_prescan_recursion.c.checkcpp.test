@@ -1,0 +1,12 @@
+# 1 "<stdin>"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "<stdin>"
+R 1 | R 1
+
+R 1 | R 1 | R 1
+
+a y y y |a y y y y
+
+
+R 1

@@ -1,0 +1,12 @@
+# 1 "fonda/cpp_testsuite/macros/selfref1.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/selfref1.c"
+# 13 "fonda/cpp_testsuite/macros/selfref1.c"
+typedef __builtin_va_list __gnuc_va_list;
+
+
+
+
+
+int x;

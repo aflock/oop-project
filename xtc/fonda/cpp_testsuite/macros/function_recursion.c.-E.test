@@ -1,0 +1,107 @@
+#if (defined A)
+#endif
+
+#if !(defined A)
+bob(SINGLE)
+#elif (defined A)
+something(SINGLE)
+#endif
+
+#if !(defined A)
+bob(SINGLE)
+#elif (defined A)
+something(SINGLE)
+#endif
+
+
+
+#if !(defined A)
+bob(
+#if !(defined A)
+bob(NESTED)
+#endif
+#if (defined A)
+#endif
+
+#if !(defined A)
+bob(NESTED)
+#endif
+#if (defined A)
+#endif
+)
+#elif (defined A)
+something(
+#if !(defined A)
+#endif
+#if (defined A)
+something(NESTED)
+#endif
+
+#if !(defined A)
+#endif
+#if (defined A)
+something(NESTED)
+#endif
+)
+#endif
+#if !(defined A)
+#endif
+#if (defined A)
+#endif
+#if !(defined A)
+#endif
+#if (defined A)
+#endif
+
+#if !(defined A)
+#elif (defined A)
+#endif
+#if !(defined A)
+#elif (defined A)
+#endif
+
+#if !(defined A)
+bob(
+#if !(defined A)
+bob(NESTED)
+#endif
+#if (defined A)
+#endif
+
+#if !(defined A)
+bob(NESTED)
+#endif
+#if (defined A)
+#endif
+)
+#elif (defined A)
+something(
+#if !(defined A)
+#endif
+#if (defined A)
+something(NESTED)
+#endif
+
+#if !(defined A)
+#endif
+#if (defined A)
+something(NESTED)
+#endif
+)
+#endif
+#if !(defined A)
+#endif
+#if (defined A)
+#endif
+#if !(defined A)
+#endif
+#if (defined A)
+#endif
+
+#if !(defined A)
+#elif (defined A)
+#endif
+#if !(defined A)
+#elif (defined A)
+#endif
+)

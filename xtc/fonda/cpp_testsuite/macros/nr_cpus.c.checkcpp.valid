@@ -1,0 +1,6 @@
+# 1 "fonda/cpp_testsuite/macros/nr_cpus.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/nr_cpus.c"
+# 11 "fonda/cpp_testsuite/macros/nr_cpus.c"
+int nr_cpus = 1;

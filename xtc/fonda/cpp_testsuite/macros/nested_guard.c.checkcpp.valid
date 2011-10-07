@@ -1,0 +1,14 @@
+# 1 "fonda/cpp_testsuite/macros/nested_guard.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/nested_guard.c"
+
+# 1 "fonda/cpp_testsuite/macros/h1.h" 1
+
+
+
+# 1 "fonda/cpp_testsuite/macros/guard.h" 1
+# 5 "fonda/cpp_testsuite/macros/h1.h" 2
+# 3 "fonda/cpp_testsuite/macros/nested_guard.c" 2
+# 1 "fonda/cpp_testsuite/macros/h2.h" 1
+# 4 "fonda/cpp_testsuite/macros/nested_guard.c" 2

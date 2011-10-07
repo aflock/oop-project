@@ -1,0 +1,9 @@
+# 1 "fonda/cpp_testsuite/macros/function_parsing.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/function_parsing.c"
+
+
+x , y + a , b
+(a,b) + (c,d)
+a + b

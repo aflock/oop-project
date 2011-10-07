@@ -1,0 +1,12 @@
+# 1 "fonda/cpp_testsuite/macros/invalid_function.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/invalid_function.c"
+
+
+
+
+do_raw_read_lock)
+
+
+rwlock_release()

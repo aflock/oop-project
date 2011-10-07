@@ -1,0 +1,27 @@
+//simplified example of
+//http://lxr.linux.no/#linux+v2.6.38/include/asm-generic/memory_model.h#L72
+//#define page_to_pfn __page_to_pfn
+//used in
+//http://lxr.linux.no/#linux+v2.6.38/include/linux/mm.h#L712
+
+
+#if (defined A)
+#elif !(defined A) && B
+#endif
+int x = 
+#if !(defined A) && !B
+cpu
+#elif (defined A)
+1 * 2
+#elif !(defined A) && B
+#if !(defined A) && B
+2 + 1
+#endif
+#endif
+#if !(defined A)
+#if !(defined A) && !B
+(2)
+#endif
+
+#endif
+;

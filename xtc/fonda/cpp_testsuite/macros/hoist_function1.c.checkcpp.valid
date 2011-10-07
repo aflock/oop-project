@@ -1,0 +1,6 @@
+# 1 "fonda/cpp_testsuite/macros/hoist_function1.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/hoist_function1.c"
+# 32 "fonda/cpp_testsuite/macros/hoist_function1.c"
+if (BITS_PER_LONG)

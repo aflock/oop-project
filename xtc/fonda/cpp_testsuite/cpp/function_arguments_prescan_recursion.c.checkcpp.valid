@@ -1,0 +1,18 @@
+# 1 "fonda/cpp_testsuite/cpp/function_arguments_prescan_recursion.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/cpp/function_arguments_prescan_recursion.c"
+
+
+R 1 | R 1
+
+R 1 | R 1 | R 1
+
+
+
+
+a y y y | a y y y y
+
+
+
+R 1

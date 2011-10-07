@@ -1,0 +1,8 @@
+# 1 "fonda/cpp_testsuite/macros/fork_block.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/fork_block.c"
+# 11 "fonda/cpp_testsuite/macros/fork_block.c"
+foo = (char *) malloc (1024);
+
+27 * (arg2 1024)

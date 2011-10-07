@@ -1,0 +1,51 @@
+# 1 "<stdin>"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "<stdin>"
+
+
+
+
+bob(SINGLE)
+
+
+
+
+
+bob(SINGLE)
+
+
+
+
+
+
+
+bob(
+
+bob(NESTED)
+
+
+
+
+
+bob(NESTED)
+
+
+
+)
+# 64 "<stdin>"
+bob(
+
+bob(NESTED)
+
+
+
+
+
+bob(NESTED)
+
+
+
+)
+# 107 "<stdin>"
+)

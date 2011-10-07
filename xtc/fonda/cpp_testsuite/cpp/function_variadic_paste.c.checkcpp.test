@@ -1,0 +1,7 @@
+# 1 "<stdin>"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "<stdin>"
+fprintf (stderr, "%s:%d: ", input_file, lineno)
+fprintf (stderr, "%s:%d: ")
+fprintf (stderr, "%s:%d: ",)

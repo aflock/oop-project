@@ -1,0 +1,15 @@
+# 1 "fonda/cpp_testsuite/macros/pragma_once2.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/pragma_once2.c"
+PRAGMA_ONCE_C {
+
+
+
+
+# 1 "fonda/cpp_testsuite/macros/pragma_once.h" 1
+       
+
+PRAGMA_ONCE_H
+# 7 "fonda/cpp_testsuite/macros/pragma_once2.c" 2
+}

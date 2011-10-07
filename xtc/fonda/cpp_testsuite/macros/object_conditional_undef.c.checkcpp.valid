@@ -1,0 +1,9 @@
+# 1 "fonda/cpp_testsuite/macros/object_conditional_undef.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/object_conditional_undef.c"
+
+
+
+
+int x = 256;

@@ -1,0 +1,5 @@
+# 1 "<stdin>"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "<stdin>"
+int x = 1; int y = 2; printf("hello %d %d\n", x, y);;

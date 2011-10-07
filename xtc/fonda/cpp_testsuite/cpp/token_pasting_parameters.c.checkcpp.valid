@@ -1,0 +1,9 @@
+# 1 "fonda/cpp_testsuite/cpp/token_pasting_parameters.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/cpp/token_pasting_parameters.c"
+
+100497
+1 2 37 8 9
+macro token_PARM2
+PARM1_macro token

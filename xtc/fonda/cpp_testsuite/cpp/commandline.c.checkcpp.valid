@@ -1,0 +1,6 @@
+# 1 "fonda/cpp_testsuite/cpp/commandline.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/cpp/commandline.c"
+COMMANDLINE
+FUNCTION(x = 2, 3)

@@ -1,0 +1,8 @@
+# 1 "fonda/cpp_testsuite/macros/function_object1.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/function_object1.c"
+
+
+
+int x = 1 * 2;

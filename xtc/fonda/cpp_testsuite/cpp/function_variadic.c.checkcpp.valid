@@ -1,0 +1,10 @@
+# 1 "fonda/cpp_testsuite/cpp/function_variadic.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/cpp/function_variadic.c"
+
+fprintf (stderr, "%s:%d: ", input_file, lineno)
+
+
+
+fprintf (stderr, "%s:%d: ", input_file, lineno)

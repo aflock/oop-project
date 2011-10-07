@@ -1,0 +1,14 @@
+# 1 "fonda/cpp_testsuite/cpp/function_variadic_stringification.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/cpp/function_variadic_stringification.c"
+
+
+
+
+
+int main() {
+  "X86_FEATURE_POPCNT"
+  "(4*32+23)"
+  "(4*32+23)"
+}

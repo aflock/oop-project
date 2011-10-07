@@ -1,0 +1,9 @@
+# 1 "fonda/cpp_testsuite/cpp/token_pasting_multiple.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/cpp/token_pasting_multiple.c"
+
+123
+
+PREFIX_1 2 3_SUFFIX
+PREFIX_1 2 x_SUFFIX

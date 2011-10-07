@@ -1,0 +1,10 @@
+# 1 "fonda/cpp_testsuite/macros/computed_include2.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "fonda/cpp_testsuite/macros/computed_include2.c"
+# 13 "fonda/cpp_testsuite/macros/computed_include2.c"
+# 1 "fonda/cpp_testsuite/macros/headerB.h" 1
+
+
+int insideB;
+# 14 "fonda/cpp_testsuite/macros/computed_include2.c" 2

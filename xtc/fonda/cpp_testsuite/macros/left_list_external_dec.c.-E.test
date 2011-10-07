@@ -1,0 +1,15 @@
+#if (defined X)
+#elif !(defined X)
+void foo(int x) {
+}
+#endif
+int main() {
+  
+#if !(defined X)
+foo(x)
+#elif (defined X)
+do {} while (0)
+#endif
+;
+  x;
+}

@@ -1,0 +1,6 @@
+
+#if !(defined CONFIG_GENERIC_LOCKBREAK) || (defined CONFIG_GENERIC_LOCKBREAK) && (defined CONFIG_DEBUG_LOCK_ALLOC)
+do_raw_read_lock)
+#endif
+rwlock_release()
+

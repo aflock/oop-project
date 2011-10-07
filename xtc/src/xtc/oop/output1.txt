@@ -1,0 +1,22 @@
+Java to C++ Translator, v. 2.1.1, My Group
+Processing input.java ...
+Enter scope at input.java:10:19
+Enter scope at input.java:13:5
+Exiting scope from input.java:13:5
+Enter scope at input.java:18:5
+Enter scope at input.java:21:8
+Enter scope at input.java:22:12
+Exiting scope from input.java:22:12
+Exiting scope from input.java:21:8
+Enter scope at input.java:30:8
+Enter scope at input.java:32:12
+Exiting scope from input.java:32:12
+Exiting scope from input.java:30:8
+Enter scope at input.java:39:8
+Exiting scope from input.java:39:8
+Enter scope at input.java:54:8
+Exiting scope from input.java:54:8
+Enter scope at input.java:69:8
+Exiting scope from input.java:69:8
+Exiting scope from input.java:18:5
+Exiting scope from input.java:10:19
