@@ -107,33 +107,16 @@ public class Scoper extends xtc.util.Tool
 	        }
             */
 
-            String[] fields;
 
-            public int toIndex(String s) {
-                if(s.equals("public"))
-                    return 0;
-                else if(s.equals("private"))
-                    return 1;
-                else if(s.equals("protected"))
-                    return 2;
-                else
-                    return -1;
-
-            }
 
             public void visitClassBody(GNode n){
-                fields = {"foo","bar"};
                 runtime.console().pln("{");
                 for(Object o : n){
                     //Some shit
-                    //iterate and when we see a field declaration add the correct
-                    //string to the current field['correct string'] the array
-                    //at end of all children, flush that.
                 }
                 visit(n);
                 runtime.console().pln("};");
             }
-
 
             public void visitClassDeclaration(GNode n){
                 //print class
