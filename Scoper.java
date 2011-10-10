@@ -122,7 +122,7 @@ public class Scoper extends xtc.util.Tool
             }
 
             public void visitClassBody(GNode n){
-                fields = {"foo","bar"};
+                //fields = {"foo","bar"};
                 runtime.console().pln("{");
                 for(Object o : n){
                     //Some shit
@@ -184,19 +184,100 @@ public class Scoper extends xtc.util.Tool
                 runtime.console().pln(";").flush();
             }
 
-	        public void visitForStatement(GNode n)
-	        {
+	    public void visitForStatement(GNode n)
+	    {
+		//Calvin's Modifications 10-10-11
+	     /*
+		for(Object o : n)
+		{
+              		runtime.console().pln("child: " + o.toString());
+            	}
+	    */
 
-                /*
-	        	Location loc = n.getLocation();
-		        runtime.console().p("Enter scope at ").p(loc.file).p(":")
-		          .p(loc.line).p(":").p(loc.column).pln().flush();
-	        	visit(n);
-	        	count++;
-                */
+		visit(n);
+		runtime.console().pln("}").flush();
+	     }
 
-                //runtime.console().format(n).pln().flush();
-	        }
+		public void visitBasicForControl(GNode n)
+		{
+		/* NOTES:
+		-Always has 3 children (int i=0; i < 9; i++)
+		*/
+			runtime.console().p("for(").flush();
+			visit(n);
+			runtime.console().pln(") {").flush();
+		}
+
+		public void visitType(GNode n)
+		{
+			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
+			{
+				printStringDescendants(n);
+				runtime.console().p(" ").flush();
+			}
+		}
+
+		public void visitDeclarators(GNode n)
+		{
+			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
+			{
+				visit(n);
+				runtime.console().p("; ").flush();
+			}
+		}
+		public void visitDeclarator(GNode n)
+		{
+			for(Object o : n)
+			{
+				//if (o != null)
+					//runtime.console().pln("Declarator child: " + o.toString()).flush();
+
+				if(o instanceof String)
+					runtime.console().p(o.toString());
+				else if (o == null)
+					runtime.console().p("=");
+				else
+					printStringDescendants((GNode)o);	
+
+			}
+		}
+
+
+		public void visitExpressionList(GNode n)
+		{
+			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
+			{
+				printStringDescendants(n);
+				runtime.console().p("; ").flush();
+			}
+		}
+
+		public void visitRelationalExpression(GNode n)
+		{
+			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
+			{	
+				printStringDescendants(n);
+				runtime.console().p("; ").flush();
+			}
+		}
+
+		//Recursively goes through GNode n's descendants and prints the strings
+		public void printStringDescendants(GNode n)
+		{
+			//runtime.console().pln("PARENT NODE: " + ((Node)(n.getProperty("parent"))).getName()).flush();
+			//runtime.console().pln("NODE: " + n.getName()).flush();
+			for(Object o : n)
+			{
+				if(o != null)
+				{
+				//runtime.console().pln("CHILD: " + o.toString()).flush();
+					if(o instanceof String)
+						runtime.console().p(o.toString()).flush();
+					else 
+						printStringDescendants((GNode)o);
+				}			
+			}
+		}	
 
             /*
 	        public void visitWhileStatement(GNode n)
@@ -245,22 +326,22 @@ public class Scoper extends xtc.util.Tool
 
             */
 
-	        public void visit(Node n)
-	        {
+	      public void visit(Node n)
+	      {
 
-              if (n.isEmpty()){
-                //runtime.console().pln(n.toString()).flush();
-                //System.out.println(n.properties());
-              }
+		      if (n.isEmpty()){
+		        //runtime.console().pln(n.toString()).flush();
+		        //System.out.println(n.properties());
+		      }
 
 
-	          for (Object o : n){
-	        	  if (o instanceof Node){
-                      ((Node)o).setProperty("parent_name", n.getName() );
-                      ((Node)o).setProperty("parent", n );
-	        		  dispatch((Node)o);
-                  }
-              }
+		      for (Object o : n){
+				if (o instanceof Node){
+				      ((Node)o).setProperty("parent_name", n.getName() );
+				      ((Node)o).setProperty("parent", n );
+						  dispatch((Node)o);
+                                }
+                      }
 	        }
 
 
