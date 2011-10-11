@@ -61,6 +61,8 @@ class Newbie{
     public Newbie(){
         count++;
         age = count + 1;
+	if (age > 0)
+	    count--;
     }
 
     public String info(){
@@ -68,16 +70,6 @@ class Newbie{
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+abstract class Pro {
+    int i;
+}

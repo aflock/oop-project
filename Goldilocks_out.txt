@@ -1,5 +1,5 @@
-Java to C++ Translator, v. 2.1.1, My Group
-Processing ../../../../oop-project/Goldilocks.java ...
+Java Scope Analyzer, v. 2.1.1, My Group
+Processing ../oop-project/Goldilocks.java ...
 CompilationUnit(
   null,
   ImportDeclaration(
@@ -700,6 +700,26 @@ CompilationUnit(
                 )
               )
             )
+          ),
+          ConditionalStatement(
+            RelationalExpression(
+              PrimaryIdentifier(
+                "age"
+              ),
+              ">",
+              IntegerLiteral(
+                "0"
+              )
+            ),
+            ExpressionStatement(
+              PostfixExpression(
+                PrimaryIdentifier(
+                  "count"
+                ),
+                "--"
+              )
+            ),
+            null
           )
         )
       ),
@@ -734,6 +754,35 @@ CompilationUnit(
                 "age"
               )
             )
+          )
+        )
+      )
+    )
+  ),
+  ClassDeclaration(
+    Modifiers(
+      Modifier(
+        "abstract"
+      )
+    ),
+    "Pro",
+    null,
+    null,
+    null,
+    ClassBody(
+      FieldDeclaration(
+        Modifiers(),
+        Type(
+          PrimitiveType(
+            "int"
+          ),
+          null
+        ),
+        Declarators(
+          Declarator(
+            "i",
+            null,
+            null
           )
         )
       )

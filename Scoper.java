@@ -118,22 +118,122 @@ public class Scoper extends xtc.util.Tool
                     return 2;
                 else
                     return -1;
+            }
+
+		  String[] classMembers;
+
+
+            public void visitFieldDeclaration(GNode n){
+                /*
+                if(n.hasProperty("parent") &&
+                   ((Node)(n.getProperty("parent"))).getName().equals("ClassBody")){
+                        //runtime.console().p(printStringDescendants(n)).flush();
+                   }
+                */
+                visit(n);
+            }
+
+
+            public void visitModifiers(GNode n){
+                Node temp = (Node)(n.getProperty("parent"));
+                if (n.isEmpty() && temp.getName().equals("FieldDeclaration")){
+                   temp.setProperty("visibility", new Integer(3));
+                }
+                visit(n);
 
             }
 
+            public void visitModifier(GNode n){
+                String name = "";
+                int index;
+
+                Node temp = (Node)(n.getProperty("parent"));
+                Node grandParent = (Node)(temp.getProperty("parent"));
+                if (grandParent.getName().equals("FieldDeclaration")){
+                    if (!n.isEmpty()){
+                        name =  n.getString(0);
+                        index = toIndex(name);
+                        if(index != -1)
+                            grandParent.setProperty("visibility", new Integer(index));
+                        else//not a visibility marker
+                            classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += name + " ";
+
+                    }
+
+
+                }
+                visit(n);
+
+            }
+
+	    public void visitDeclarators(GNode n) {
+		if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
+		    {
+			visit(n);
+			runtime.console().p("; ").flush();
+		    }
+		visit(n);
+	    }
+
+	    public void visitDeclarator(GNode n) {
+		Node temp = (Node)(n.getProperty("parent"));
+		Node grandParent = (Node)(temp.getProperty("parent"));
+		for(Object o : n) {
+		    if (grandParent.getName().equals("FieldDeclaration")){
+			//Hacks V
+			if (!n.isEmpty() && o instanceof String){
+			    String name =  n.getString(0);
+			    classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += name + " " + (n.getNode(2) != null ? "= " : "");
+			    
+			}
+		    }
+		
+		    else if(o instanceof String)
+			runtime.console().p(o.toString());
+		    else if (o == null)
+			runtime.console().p("=");
+		    else
+			printStringDescendants((GNode)o);
+
+		}
+		visit(n);
+		//Appending semi-colon
+		if (grandParent.getName().equals("FieldDeclaration")){
+		    classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += ";\n    ";
+		}
+	    }
+
+	    public void visitIntegerLiteral(GNode n) {
+		Node temp = (Node)(n.getProperty("parent"));
+		Node grandParent = (Node)(temp.getProperty("parent"));
+		Node greatGrandParent = (Node)(grandParent.getProperty("parent"));
+		if(greatGrandParent instanceof GNode  && greatGrandParent.getName().equals("FieldDeclaration"))  {
+		    classMembers[((Integer) (greatGrandParent.getProperty("visibility"))).intValue()] += n.getString(0);
+		}
+		visit(n);
+	    }
+
             public void visitClassBody(GNode n){
+		String [] mems = {"public:\n    ", "private:\n    ", "protected:\n    ", ""};
+		classMembers = mems;
+
                 //fields = {"foo","bar"};
                 runtime.console().pln("{");
                 for(Object o : n){
+                    if((o instanceof GNode) && (((Node)o).getName().equals("FieldDeclaration" ) )){
+                    }
                     //Some shit
                     //iterate and when we see a field declaration add the correct
                     //string to the current field['correct string'] the array
                     //at end of all children, flush that.
                 }
                 visit(n);
-                runtime.console().pln("};");
+                for (int i = 0; i<classMembers.length; i++){
+                    if(!(classMembers[i].equals("public:\n    ") || classMembers[i].equals("private:\n    ") || classMembers[i].equals("protected:\n    ")))
+			runtime.console().pln(classMembers[i]);
+                }
+                runtime.console().pln("};").flush();
             }
-
 
             public void visitClassDeclaration(GNode n){
                 //print class
@@ -208,39 +308,31 @@ public class Scoper extends xtc.util.Tool
 			runtime.console().pln(") {").flush();
 		}
 
+		  public void visitPrimitiveType(GNode n) {
+		      Node parent = ((Node)(n.getProperty("parent")));
+		      Node grandParent = ((Node)(parent.getProperty("parent")));
+                      if(grandParent.getName().equals("FieldDeclaration")) {
+			      if (!n.isEmpty()){
+				  String name =  n.getString(0);
+
+				  classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += name + " ";
+			      }
+                          }
+		      visit(n);
+		  }
+
 		public void visitType(GNode n)
-		{
+		  {
 			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
 			{
 				printStringDescendants(n);
 				runtime.console().p(" ").flush();
-			}
+			} 
+			visit(n);
 		}
 
-		public void visitDeclarators(GNode n)
-		{
-			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
-			{
-				visit(n);
-				runtime.console().p("; ").flush();
-			}
-		}
-		public void visitDeclarator(GNode n)
-		{
-			for(Object o : n)
-			{
-				//if (o != null)
-					//runtime.console().pln("Declarator child: " + o.toString()).flush();
 
-				if(o instanceof String)
-					runtime.console().p(o.toString());
-				else if (o == null)
-					runtime.console().p("=");
-				else
-					printStringDescendants((GNode)o);	
 
-			}
-		}
 
 
 		public void visitExpressionList(GNode n)
@@ -255,15 +347,16 @@ public class Scoper extends xtc.util.Tool
 		public void visitRelationalExpression(GNode n)
 		{
 			if (((Node)(n.getProperty("parent"))).getName().equals("BasicForControl"))
-			{	
+			{
 				printStringDescendants(n);
 				runtime.console().p("; ").flush();
 			}
 		}
 
 		//Recursively goes through GNode n's descendants and prints the strings
-		public void printStringDescendants(GNode n)
+		public String printStringDescendants(GNode n)
 		{
+            String toReturn = "";
 			//runtime.console().pln("PARENT NODE: " + ((Node)(n.getProperty("parent"))).getName()).flush();
 			//runtime.console().pln("NODE: " + n.getName()).flush();
 			for(Object o : n)
@@ -271,13 +364,16 @@ public class Scoper extends xtc.util.Tool
 				if(o != null)
 				{
 				//runtime.console().pln("CHILD: " + o.toString()).flush();
-					if(o instanceof String)
-						runtime.console().p(o.toString()).flush();
-					else 
-						printStringDescendants((GNode)o);
-				}			
+					if(o instanceof String){
+                        System.out.println(o.toString());
+						toReturn += " " + o.toString();
+                    }
+					else
+						toReturn += " " +  printStringDescendants((GNode)o);
+				}
 			}
-		}	
+            return toReturn;
+		}
 
             /*
 	        public void visitWhileStatement(GNode n)
