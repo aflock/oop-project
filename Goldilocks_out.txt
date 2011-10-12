@@ -1,5 +1,5 @@
 Java Scope Analyzer, v. 2.1.1, My Group
-Processing ../oop-project/Goldilocks.java ...
+Processing Goldilocks.java ...
 CompilationUnit(
   null,
   ImportDeclaration(
@@ -737,7 +737,36 @@ CompilationUnit(
           null
         ),
         "info",
-        FormalParameters(),
+        FormalParameters(
+          FormalParameter(
+            Modifiers(),
+            Type(
+              PrimitiveType(
+                "int"
+              ),
+              null
+            ),
+            null,
+            "a",
+            null
+          ),
+          FormalParameter(
+            Modifiers(
+              Modifier(
+                "final"
+              )
+            ),
+            Type(
+              PrimitiveType(
+                "char"
+              ),
+              null
+            ),
+            null,
+            "b",
+            null
+          )
+        ),
         null,
         null,
         Block(

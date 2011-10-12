@@ -68,6 +68,7 @@ public class Scoper extends xtc.util.Tool
 
 	    if (runtime.test("enterScopes"))
 	    {
+	      //for .h filez
 	      new Visitor()
 	      {
 	        private int count = 0;
@@ -130,17 +131,58 @@ public class Scoper extends xtc.util.Tool
                         //runtime.console().p(printStringDescendants(n)).flush();
                    }
                 */
-                visit(n);
+		    visit(n);
             }
 
+	    //Doesn't work right now because we use printStringDescendents
+	    public void visitDimensions(GNode n) {
+		if(!n.isEmpty()) {
+		    for (int i = 0; i < n.size(); i++) {
+			if(n.get(i) instanceof String) {
+			    n.set(i,n.getString(i)+"]");
+			}
+		    }
+		}
+		visit(n);
+	    }
 
             public void visitModifiers(GNode n){
                 Node temp = (Node)(n.getProperty("parent"));
-                if (n.isEmpty() && temp.getName().equals("FieldDeclaration")){
+                if (n.isEmpty() && (temp.getName().equals("FieldDeclaration") || temp.getName().equals("MethodDeclaration"))){
                    temp.setProperty("visibility", new Integer(3));
                 }
                 visit(n);
 
+            }
+
+            String tempString = "";
+            public void visitMethodDeclaration(GNode n){
+                tempString = "";
+                //get visibility
+                int index = -1;
+                Node firstChild = n.getNode(0);
+                if (!firstChild.isEmpty()){
+                    Node secondChild = firstChild.getNode(0);
+                    String visibility = secondChild.getString(0);
+                    index = toIndex(visibility);
+                    if(index != -1){
+                        n.setProperty("visibility", new Integer(index));
+                    }
+                    else{
+                        n.setProperty("visibility", new Integer(3));
+                    }
+                }
+                else{
+                    n.setProperty("visibility", new Integer(3));
+                }
+
+                //we assume visibility exists as a property
+                //get Method name
+                String name = n.getString(3);
+
+                index = (Integer)(n.getProperty("visibility"));
+                tempString += name + "(";
+                visit(n);
             }
 
             public void visitModifier(GNode n){
@@ -159,9 +201,13 @@ public class Scoper extends xtc.util.Tool
                             classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += name + " ";
 
                     }
+                }
 
+                else if (grandParent.getName().equals("MethodDeclaration")){
 
                 }
+
+
                 visit(n);
 
             }
@@ -181,13 +227,13 @@ public class Scoper extends xtc.util.Tool
 		for(Object o : n) {
 		    if (grandParent.getName().equals("FieldDeclaration")){
 			//Hacks V
-			if (!n.isEmpty() && o instanceof String){
-			    String name =  n.getString(0);
-			    classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += name + " " + (n.getNode(2) != null ? "= " : "");
-			    
-			}
+                if (!n.isEmpty() && o instanceof String){
+                    String name =  n.getString(0);
+                    classMembers[((Integer) (grandParent.getProperty("visibility"))).intValue()] += name + " " + (n.getNode(2) != null ? "= " : "");
+
+                }
 		    }
-		
+
 		    else if(o instanceof String)
 			runtime.console().p(o.toString());
 		    else if (o == null)
@@ -259,15 +305,54 @@ public class Scoper extends xtc.util.Tool
 
             }
 
+            public void visitFormalParameters(GNode n){
+                Node temp = (Node)(n.getProperty("parent"));
+
+                visit(n);
+
+                if(temp.getName().equals("MethodDeclaration")){
+                    Integer index = (Integer)(temp.getProperty("visibility"));
+                    classMembers[index] +=  ");\n";
+                }
+            }  
+		  
+	     public void visitFormalParameter(GNode n) {
+		Node temp = (Node)(n.getProperty("parent"));
+		Node grandParent = (Node)(temp.getProperty("parent"));
+		
+		if (grandParent.getName().equals("MethodDeclaration")) {
+		    String t = printStringDescendants(n);
+		    //System.out.println(t);
+		    //tempString += printStringDescendants(n) + ", ";
+		    int index = (Integer)(grandParent.getProperty("visibility"));
+		    
+		    tempString += t + (temp.indexOf(n) != temp.size()-1 ? ", " : "");
+		    classMembers[index] += tempString;
+		    tempString = "";
+		}
+		
+		visit(n);
+	    }
+
             public void visitQualifiedIdentifier(GNode n){
-                if(n.hasProperty("parent") &&
-                   ((Node)(n.getProperty("parent"))).getName().equals("ImportDeclaration")){
+                Node temp = (Node)(n.getProperty("parent"));
+                Node grandParent = (Node)(temp.getProperty("parent"));
+                if(n.hasProperty("parent") && (temp.getName().equals("ImportDeclaration"))){
                     for(Object o : n){
                         if(o instanceof String){
                           runtime.console().p(o.toString() + ".");
                         }
                     }
                 }
+
+                if(grandParent.getName().equals("MethodDeclaration")){
+                    Integer index = (Integer)(grandParent.getProperty("visibility"));
+                    String name = n.getString(0).toLowerCase();
+		    //System.out.println(tempString);
+                    classMembers[index] += name + " " + tempString;
+                }
+                //clear just in case
+                tempString = "";
             }
 
             public void visitImportDeclaration(GNode n){
@@ -327,7 +412,7 @@ public class Scoper extends xtc.util.Tool
 			{
 				printStringDescendants(n);
 				runtime.console().p(" ").flush();
-			} 
+			}
 			visit(n);
 		}
 
@@ -356,23 +441,23 @@ public class Scoper extends xtc.util.Tool
 		//Recursively goes through GNode n's descendants and prints the strings
 		public String printStringDescendants(GNode n)
 		{
-            String toReturn = "";
-			//runtime.console().pln("PARENT NODE: " + ((Node)(n.getProperty("parent"))).getName()).flush();
-			//runtime.console().pln("NODE: " + n.getName()).flush();
-			for(Object o : n)
+		    String toReturn = "";
+		    //runtime.console().pln("PARENT NODE: " + ((Node)(n.getProperty("parent"))).getName()).flush();
+		    //runtime.console().pln("NODE: " + n.getName()).flush();
+		    for(Object o : n)
+		    {
+			if(o != null)
 			{
-				if(o != null)
-				{
-				//runtime.console().pln("CHILD: " + o.toString()).flush();
-					if(o instanceof String){
-                        System.out.println(o.toString());
-						toReturn += " " + o.toString();
-                    }
-					else
-						toReturn += " " +  printStringDescendants((GNode)o);
-				}
+			    //runtime.console().pln("CHILD: " + o.toString()).flush();
+			    if(o instanceof String){
+				//System.out.println(o.toString());
+				toReturn +=  o.toString() + " ";
+			    }
+			    else
+				toReturn +=  printStringDescendants((GNode)o);
 			}
-            return toReturn;
+		    }
+		    return toReturn;
 		}
 
             /*

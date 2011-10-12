@@ -57,6 +57,7 @@ public class Goldilocks{
 class Newbie{
     private static int count = 0;
     public int age;
+    String [][] array = new String [5][1];
 
     public Newbie(){
         count++;
@@ -65,7 +66,7 @@ class Newbie{
 	    count--;
     }
 
-    public String info(){
+    public String info(int a, final char b){
         return ("This Newb's age is" + this.age );
     }
 }
