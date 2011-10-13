@@ -2,3 +2,5 @@ To Do:
 -Deal with for(o:N) type loops in C++
 -Final methods == const?
 -change printStringDescendants to visitor methods
+-Ask Grimm if we can rely on the same ordering of nodes in AST (ie. is methodsDeclaration)
+-Manually do work of printStringDescendants with visitMethods()

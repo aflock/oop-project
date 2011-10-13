@@ -73,40 +73,6 @@ public class Scoper extends xtc.util.Tool
 	      {
 	        private int count = 0;
 
-            /*
-	        public void visitCompilationUnit(GNode n)
-	        {
-	          visit(n);
-	          runtime.console().p("Number of scopes: ").p(count).pln().flush();
-	        }
-
-	        public void visitClassBody(GNode n)
-	        {
-	          Location loc = n.getLocation();
-	          runtime.console().p("Enter scope at ").p(loc.file).p(":")
-	          .p(loc.line).p(":").p(loc.column).pln().flush();
-	          visit(n);
-	          count++;
-	        }
-
-	        public void visitMethodDeclaration(GNode n)
-	        {
-        	  Location loc = n.getLocation();
-	          runtime.console().p("Enter scope at ").p(loc.file).p(":")
-	          .p(loc.line).p(":").p(loc.column).pln().flush();
-	          visit(n);
-	          count++;
-	        }
-
-	        public void visitForStatement(GNode n)
-	        {
-	        	Location loc = n.getLocation();
-		        runtime.console().p("Enter scope at ").p(loc.file).p(":")
-		          .p(loc.line).p(":").p(loc.column).pln().flush();
-	        	visit(n);
-	        	count++;
-	        }
-            */
 
             String[] fields;
 
