@@ -46,7 +46,7 @@ PACKAGE     = xtc
 PACKAGE_LOC = xtc
 
 SOURCE = \
-	Scoper.java
+	Decl.java
 
 
 JNI_SOURCE =
