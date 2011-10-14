@@ -1,5 +1,5 @@
 Java Scope Analyzer, v. 2.1.1, My Group
-Processing Goldilocks.java ...
+Processing ../oop-project/Goldilocks.java ...
 CompilationUnit(
   null,
   ImportDeclaration(
@@ -662,6 +662,39 @@ CompilationUnit(
             "age",
             null,
             null
+          )
+        )
+      ),
+      FieldDeclaration(
+        Modifiers(),
+        Type(
+          QualifiedIdentifier(
+            "String"
+          ),
+          Dimensions(
+            "[",
+            "["
+          )
+        ),
+        Declarators(
+          Declarator(
+            "array",
+            null,
+            NewArrayExpression(
+              QualifiedIdentifier(
+                "String"
+              ),
+              ConcreteDimensions(
+                IntegerLiteral(
+                  "5"
+                ),
+                IntegerLiteral(
+                  "1"
+                )
+              ),
+              null,
+              null
+            )
           )
         )
       ),
