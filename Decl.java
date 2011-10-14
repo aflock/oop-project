@@ -98,11 +98,31 @@ public class Decl extends xtc.util.Tool
                 }
 
                 public void visitMethodDeclaration(GNode n){
+                    methods.add("");
                     visit(n);
+                    String name = n.getString(3);
+                    methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+                }
+
+                public void visitVoidType(GNode n){
+                    visit(n);
+                    Node parent1 = (Node)n.getProperty("parent1");
+                    Node parent2 = (Node)n.getProperty("parent2");
+                    if ((parent1.getName().equals("MethodDeclaration")) &&
+                            (parent2.getName().equals("ClassBody"))){
+                        methods.set(methods.size()-1,methods.get(methods.size()-1)+" void");
+                    }
                 }
 
                 public void visitModifier(GNode n){
                     visit(n);
+                    Node parent1 = (Node)n.getProperty("parent1");
+                    Node parent2 = (Node)n.getProperty("parent2");
+                    if ((parent1.getName().equals("MethodDeclaration")) &&
+                            (parent2.getName().equals("ClassBody"))){
+                        String name = n.getString(0);
+                        methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+                    }
                 }
 
                 public void visitDeclarators(GNode n) {
@@ -152,11 +172,32 @@ public class Decl extends xtc.util.Tool
                 }
 
                 public void visitFormalParameters(GNode n){
+
                     visit(n);
+                    Node parent1 = (Node)n.getProperty("parent1");
+                    Node parent2 = (Node)n.getProperty("parent2");
+
+                    if ((parent1.getName().equals("MethodDeclaration")) &&
+                            (parent2.getName().equals("ClassBody"))){
+                        methods.set(methods.size()-1,methods.get(methods.size()-1)+"(");
+                    }
+
+                    //TODO this ending parens is out of order- is it necessary? need to discuss what format we need/want these in
+                    if ((parent1.getName().equals("MethodDeclaration")) &&
+                            (parent2.getName().equals("ClassBody"))){
+                        methods.set(methods.size()-1,methods.get(methods.size()-1)+")");
+                    }
                 }
 
                 public void visitFormalParameter(GNode n) {
                     visit(n);
+                    Node parent1 = (Node)n.getProperty("parent1");
+                    Node parent2 = (Node)n.getProperty("parent2");
+                    if ((parent1.getName().equals("MethodDeclaration")) &&
+                            (parent2.getName().equals("ClassBody"))){
+                        String name = n.getString(3);
+                        methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+                    }
                 }
 
                 public void visitQualifiedIdentifier(GNode n){
@@ -171,6 +212,11 @@ public class Decl extends xtc.util.Tool
                             (parent2.getName().equals("ClassBody"))){
                         String name = n.getString(0);
                         dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
+                    }
+                    if ((parent1.getName().equals("MethodDeclaration")) &&
+                            (parent2.getName().equals("ClassBody"))){
+                        String name = n.getString(0);
+                        methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                     }
                     //visit(n);
                 }

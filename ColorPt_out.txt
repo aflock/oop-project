@@ -89,6 +89,48 @@ CompilationUnit(
             )
           )
         )
+      ),
+      MethodDeclaration(
+        Modifiers(
+          Modifier(
+            "public"
+          )
+        ),
+        null,
+        VoidType(),
+        "setColor",
+        FormalParameters(
+          FormalParameter(
+            Modifiers(),
+            Type(
+              QualifiedIdentifier(
+                "String"
+              ),
+              null
+            ),
+            null,
+            "color",
+            null
+          )
+        ),
+        null,
+        null,
+        Block(
+          ExpressionStatement(
+            Expression(
+              SelectionExpression(
+                ThisExpression(
+                  null
+                ),
+                "color"
+              ),
+              "=",
+              PrimaryIdentifier(
+                "color"
+              )
+            )
+          )
+        )
       )
     )
   )
