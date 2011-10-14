@@ -4,3 +4,11 @@ To Do:
 -change printStringDescendants to visitor methods
 -Ask Grimm if we can rely on the same ordering of nodes in AST (ie. is methodsDeclaration)
 -Manually do work of printStringDescendants with visitMethods()
+
+-Ask Grimm: When we declare a __Array in our .h, do we need to specify size?
+
+-Deal with matrices (arrays of arrays? OF ARRAYS??)
+-be observant of use of string/class/object
+
+-remember all classes need a pointer to a vtable
+    - all methods for the class need to be declared in the vtable

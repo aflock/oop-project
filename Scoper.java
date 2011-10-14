@@ -320,6 +320,9 @@ public class Scoper extends xtc.util.Tool
                         //System.out.println(tempString);
                         classMembers[index] += name + " " + tempString;
                     }
+
+                    //if(grandParent.getName().equals("FieldDeclaration")){
+                    //}
                     //clear just in case
                     tempString = "";
                 }
