@@ -5,10 +5,34 @@ To Do:
 -Ask Grimm if we can rely on the same ordering of nodes in AST (ie. is methodsDeclaration)
 -Manually do work of printStringDescendants with visitMethods()
 
--Ask Grimm: When we declare a __Array in our .h, do we need to specify size?
+-Ask Grimm: When we declare a __Array in our .h, do we need to specify size? NO
 
 -Deal with matrices (arrays of arrays? OF ARRAYS??)
 -be observant of use of string/class/object
 
 -remember all classes need a pointer to a vtable
-    - all methods for the class need to be declared in the vtable
+-all methods for the class need to be declared in the vtable
+-entry to main method hs input class, but what if methods in other classes
+-need a data structure to store dependancies
+-what structure will we use for the vtable
+-have to figure out how to solve dependancies
+-all classes 
+-c++ needs to deal with ugly castes
+-size cannot be known statically
+
+-DONT WORRY ABOUT VISIBILITY
+
+1. Build Inheritance Tree
+ -Creat list of mentioned classes and where it is located.
+ -Create nodes of each 
+ -Create list of "places to look" for possible files
+ 
+ 1. Go through input file, create nodes for each class declaration
+  -these nodes contain
+        -methods
+        -data fields
+        -children
+        -parents
+            -if parents exsist in list of classes seen, point to it
+            -else, create a new class node and later fill it in
+ 
