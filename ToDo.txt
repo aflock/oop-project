@@ -16,18 +16,23 @@ To Do:
 -need a data structure to store dependancies
 -what structure will we use for the vtable
 -have to figure out how to solve dependancies
--all classes 
+-all classes
 -c++ needs to deal with ugly castes
 -size cannot be known statically
 
 -DONT WORRY ABOUT VISIBILITY
 
+i.get import statements
+ii.generate AST for all .java files
+
 1. Build Inheritance Tree
  -Creat list of mentioned classes and where it is located.
- -Create nodes of each 
+ -Create nodes of each
  -Create list of "places to look" for possible files
- 
- 1. Go through input file, create nodes for each class declaration
+    Q_ Should all classes in imports be made into class structs,
+    or only those instantiated in a method _Q
+
+2. Go through input file, create nodes for each class declaration
   -these nodes contain
         -methods
         -data fields
@@ -35,4 +40,14 @@ To Do:
         -parents
             -if parents exsist in list of classes seen, point to it
             -else, create a new class node and later fill it in
- 
+
+3. Construct Vtables using the inheritance tree we just made ^^
+    -start at 'Object' and dfs:
+        -pass down vtable
+        -over-write methods as needed
+
+    --By here, we have Vtables for all classes--
+
+4. Create structs for each class
+    -associate data fields
+
