@@ -1,4 +1,4 @@
-class ColorPt{
+class ColorPt extends String{
     /*
     public static void main(String[] args){
         ColorPt c = new ColorPt("HAHAHAHA");

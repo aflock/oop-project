@@ -166,9 +166,27 @@ public class Decl extends xtc.util.Tool
                     visit(n);
                 }
 
+                ArrayList<String> methods = new ArrayList<String>;
+                ArrayList<String> dataFields = new ArrayList<String>;
+                ArrayList<String> children = new ArrayList<String>;
+                String name;
+                Bubble parent;
+                //String parent;
+
+
                 public void visitClassDeclaration(GNode n){
                     className = n.getString(1);
+                    //if classname in BubbleList
+                    //set the data fields
+                    //if not VV do this VV
                     visit(n);
+                    //get parent
+                    //if none: parent = object
+                    //else: search BubbleList for parent
+                    //if found: assign it
+                    //else: make that node (
+                    Bubble <name> = new Bubble(all the things);
+                    BubbleList.add(<name>);
                 }
 
                 public void visitFormalParameters(GNode n){
@@ -294,9 +312,15 @@ public class Decl extends xtc.util.Tool
      *
      * @param args The command line arguments.
      */
+    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>;
     public static void main(String[] args)
     {
+        //Calvin and ALott
+        String[] dependencies = <><><><><>;
         new Decl().run(args);
+            Decl().run(finddependencies)
+            for depend in dependencies:
+                Decl().run(constructBubbles, depend)
 
     }
 }
