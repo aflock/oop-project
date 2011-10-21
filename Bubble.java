@@ -1,13 +1,9 @@
-package oop_project;
-import java.util.ArrayList;
-
 public class Bubble{
     String name;
     String[] methods;
     String[] dataFields;
     Bubble parent;
     String[] children;
-    ArrayList<String> tempChildren;
     public Bubble(String name, String[] methods,
             String[] dataFields, Bubble parent, String[] children){
 
@@ -32,22 +28,23 @@ public class Bubble{
 	this.dataFields = dataFields;
     }
 
-    /*
+    public String getName() {
+	return name;
+    }
+    
     public void setParent(Bubble parent) {
 	this.parent = parent;
     }
-    */
-
 
     public void setChildren(String[] children) {
 	this.children = children;
     }
 
     public void addChild(String child) {
-	int len = children == null ? 0 : children.length + 1;
+	int len = children == null ? 1 : children.length + 1;
 	String[] temp = new String[len];
 	if (children == null) {
-	    temp[0] = children[0];
+	    temp[0] = child;
 	}
 	else {
 	    for (int i = 0; i < children.length; i++) {
@@ -63,13 +60,13 @@ public class Bubble{
 	    return null;
 	}
 	else { 
-	    String s = "[";
+	    StringBuilder s = new StringBuilder("[");
 	    for (int i = 0; i < children.length; i++) {
-		s += children[i];
+		s.append(children[i]);
 		if (i != children.length - 1)
-		    s += ", ";
+		    s.append(", ");
 	    }
-	    return s + "]";
+	    return s.append("]").toString();
 	}	
     }
 }
