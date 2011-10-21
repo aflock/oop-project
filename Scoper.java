@@ -511,7 +511,8 @@ public class Scoper extends xtc.util.Tool
      */
     public static void main(String[] args)
     {
-        new Scoper().run(args);
+        //new Scoper().run(args);
+        System.out.println(args);
 
     }
 }

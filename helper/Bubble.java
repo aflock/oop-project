@@ -1,4 +1,5 @@
 package xtc.oop.helper;
+import java.util.ArrayList;
 
 public class Bubble{
     String name;
@@ -7,7 +8,7 @@ public class Bubble{
     Bubble parent;
     String[] children;
     Bubble[] bChildren;
-    String[] vtable;
+    ArrayList<String> vtable;
 
     public Bubble(String name, String[] methods,
 		  String[] dataFields, Bubble parent, String[] children){
@@ -17,6 +18,7 @@ public class Bubble{
         this.dataFields = dataFields;
         this.parent = parent;
         this.children = children;
+        this.vtable = new ArrayList<String>();
     }
 
     public Bubble(String name, String child) {
@@ -25,6 +27,8 @@ public class Bubble{
             String temp[] = { child };
             this.children = temp;
         }
+        this.vtable = new ArrayList<String>();
+        this.methods = null;
     }
 
     public void setMethods(String[] methods) {
@@ -33,12 +37,34 @@ public class Bubble{
 	}
 	this.methods = methods;
     }
+    
+    public String[] getMethods(){
+        return this.methods;
+    }
 
-    public void setVtable(String[] vtable) {
+    //changed to make it arraylist
+    public void setVtable(ArrayList<String> vtable) {
 	if (vtable == null) {
 	    return;
 	}
 	this.vtable = vtable;
+    }
+    
+    public void add2Vtable(String add){
+        this.vtable.add(add);
+    }
+    
+    public ArrayList<String> getVtable(){
+        return this.vtable;
+    }
+    
+    public void printVtable(){
+        System.out.println("================================");
+        System.out.println(this.name + "'s vtable:"); 
+        for(String s : this.vtable)
+            System.out.println(s);
+            
+        System.out.println("================================");
     }
 
     public void setDataFields(String[] dataFields) {
@@ -71,6 +97,11 @@ public class Bubble{
 	    return;
 	}
 	this.children = children;
+    }
+    
+    public String[] getChildren()
+    {
+        return this.children;
     }
 
     public void addChild(String child) {

@@ -160,7 +160,13 @@ public class Decl extends xtc.util.Tool
             public void visitCompilationUnit(GNode n) {
 
                 Bubble object = new Bubble("Object", null);
-                bubbleList.add(object);
+                //Creating Object's Vtable
+                object.add2Vtable("Class __isa;");
+                object.add2Vtable("int32_t (*hashCode)(Object);");
+                object.add2Vtable("bool (*equals)(Object, Object);");
+                object.add2Vtable("Class (*getClass)(Object);");
+                object.add2Vtable("String (*toString)(Object);"); 
+                bubbleList.add(object); 
                 visit(n);
                 //link Object bubble to children and vice versa
                 for(Bubble b: bubbleList){
@@ -193,6 +199,29 @@ public class Decl extends xtc.util.Tool
                     System.out.println(b.childrenToString());
                     System.out.println(b.parentToString());
                     System.out.println("--------XXX-------");
+                }
+                
+                populateVTables(object);
+                
+                for(Bubble b: bubbleList){
+                    b.printVtable();
+                }
+            }
+            
+            //recursive call to populate all vtables in bubbleList
+            public void populateVTables(Bubble root){
+                for(Bubble b : bubbleList){
+                    if (b.getParent() == root){
+                        //creating child's vTable
+                        for(String s : root.getVtable()) //getting parent's vtable
+                            b.add2Vtable(s);
+                        for(String s : b.getMethods()) //adding new methods to vtable
+                            b.add2Vtable(s);
+                            
+                        //recursively setting child's vtables
+                        populateVTables(b);
+                    }
+               
                 }
             }
 
@@ -451,6 +480,9 @@ public class Decl extends xtc.util.Tool
                 d.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
+        
+        //for(int i=0; i<bubbleList.size(); i++)
+            //System.out.println
     }
 }
 
