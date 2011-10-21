@@ -1,5 +1,4 @@
-package oop_project;
-import java.util.ArrayList;
+package xtc.oop.helper;
 
 public class Bubble{
     String name;
@@ -7,7 +6,6 @@ public class Bubble{
     String[] dataFields;
     Bubble parent;
     String[] children;
-    ArrayList<String> tempChildren;
     public Bubble(String name, String[] methods,
             String[] dataFields, Bubble parent, String[] children){
 
@@ -19,9 +17,11 @@ public class Bubble{
     }
 
     public Bubble(String name, String child) {
-	this.name = name;
-	String temp[] = { child };
-	this.children = temp;
+        this.name = name;
+        if (child != null) {
+            String temp[] = { child };
+            this.children = temp;
+        }
     }
 
     public void setMethods(String[] methods) {
@@ -32,11 +32,9 @@ public class Bubble{
 	this.dataFields = dataFields;
     }
 
-    /*
     public void setParent(Bubble parent) {
 	this.parent = parent;
     }
-    */
 
 
     public void setChildren(String[] children) {
@@ -44,25 +42,27 @@ public class Bubble{
     }
 
     public void addChild(String child) {
-	int len = children == null ? 0 : children.length + 1;
-	String[] temp = new String[len];
-	if (children == null) {
-	    temp[0] = children[0];
-	}
-	else {
-	    for (int i = 0; i < children.length; i++) {
-		temp[i] = children[i];
-	    }
-	}
-	temp[len - 1] = child;
-	children = temp;
+        int len = children == null ? 1 : children.length + 1;
+        String[] temp = new String[len];
+        if (children == null) {
+            temp[0] = child;
+            children = temp;
+        }
+        else {
+            for (int i = 0; i < children.length; i++) {
+                temp[i] = children[i];
+            }
+
+            temp[len - 1] = child;
+            children = temp;
+        }
     }
 
     public String childrenToString() {
 	if (children == null) {
 	    return null;
 	}
-	else { 
+	else {
 	    String s = "[";
 	    for (int i = 0; i < children.length; i++) {
 		s += children[i];
@@ -70,6 +70,16 @@ public class Bubble{
 		    s += ", ";
 	    }
 	    return s + "]";
-	}	
+	}
+    }
+    public String getName(){
+        return this.name;
+    }
+
+    public String parentToString(){
+        if(this.parent != null)
+            return this.parent.getName();
+        else
+            return null;
     }
 }
