@@ -1,4 +1,4 @@
-package xtc.oop;
+package oop-project;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
 //our imports
-import Bubble
+import Bubble;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -168,36 +168,64 @@ public class Decl extends xtc.util.Tool
                     visit(n);
                 }
 
-                ArrayList<String> methods = new ArrayList<String>;
-                ArrayList<String> dataFields = new ArrayList<String>;
-                ArrayList<String> children = new ArrayList<String>;
+                ArrayList<String> methods = new ArrayList<String>();
+                ArrayList<String> dataFields = new ArrayList<String>();
+                ArrayList<String> children = new ArrayList<String>();
                 String name;
                 Bubble parent;
                 //String parent;
 
 
                 public void visitClassDeclaration(GNode n){
-                    className = n.getString(1);
-                    //get inheritance
-
-
-
-
-                    //if classname in bubbleList
-                    //set the data fields
-                    //if not VV do this VV
                     visit(n);
                     //get parent
                     //if none: parent = object
-                    //else: search bubbleList for parent
-                    //if found: assign it
-                    //else: make that node (
-                    Bubble className = new Bubble(all the things);
-                    bubbleList.add(<name>);
+                    className = n.getString(1);
+                    String parentName = "";
+                    //get inheritance
+                    if (!n.hasProperty("parent_class")){
+                        n.setProperty("parent_class", "Object");
+                    }
+                    parentName = n.getProperty("parent_class");
+
+                    Boolean parentFound = false;
+                    Bubble parent;
+                    for(Bubble b : bubbleList){
+                        //if the bubble has already been added by a child
+                        if(b.name.equals(parentName)){
+                            //want to set the child field of this bubble with my name
+                            parent = b;
+                            parentFound = true;
+                            b.addChild(className);
+                        }
+                    }
+                    if(!parentFound){
+                        parent = new Bubble(parentName, className);
+                        bubbleList.add(parent);
+                    }
+
+                    //if classname in bubbleList
+                    //set the data fields
+                    Boolean bubbleExists = false;
+                    for(Bubble b : bubbleList){
+                        if(b.name.equals(className)) {
+                            b.setMethods(methods.toArray(new String[methods.size()]));
+                            b.setDataFields(DataFields.toArray(new String[DataFields.size()]));
+                            if(parent != null) //it won't ever be null, but just to make compiler happy :P
+                                b.setParent(parent);
+                            bubbleExists = true;
+                        }
+                    }
+                    //else: make that node
+                    if(!bubbleExists){
+                        Bubble temp = new Bubble(className, methods, dataFields,
+                            n.getProperty("parent_class"), new ArrayList<String>());
+                        bubbleList.add(temp);
+                    }
                 }
 
                 public void visitExtension(Gnode n){
-                    visit(n)
+                    visit(n);
                 }
 
                 public void visitFormalParameters(GNode n){
@@ -328,15 +356,18 @@ public class Decl extends xtc.util.Tool
      *
      * @param args The command line arguments.
      */
-    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>;
+    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     public static void main(String[] args)
     {
         //Calvin and ALott
+        /*
         String[] dependencies = <><><><><>;
         new Decl().run(args);
             Decl().run(finddependencies)
             for depend in dependencies:
                 Decl().run(constructBubbles, depend)
+        */
+        new Decl().run(args);
 
     }
 }
