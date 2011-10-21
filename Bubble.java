@@ -20,7 +20,7 @@ public class Bubble{
     public Bubble(String name, String child) {
 	this.name = name;
 	tempChildren = new ArrayList<String>();
-	tempChildren.add(child);
+	tempChildren.add(child);	
     }
 
     public void setMethods(String[] methods) {
@@ -31,9 +31,12 @@ public class Bubble{
 	this.dataFields = dataFields;
     }
 
+    /*
     public void setParent(Bubble parent) {
 	this.parent = parent;
     }
+    */
+
 
     public void setChildren(String[] children) {
 	this.children = children;
@@ -44,5 +47,6 @@ public class Bubble{
 	    tempChildren = new ArrayList<String>();
 	}
 	tempChildren.add(child);
+	children = (String[])tempChildren.toArray();
     }
 }
