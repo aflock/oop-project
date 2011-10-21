@@ -218,7 +218,8 @@ public class Decl extends xtc.util.Tool
                     }
                     //else: make that node
                     if(!bubbleExists){
-                        Bubble temp = new Bubble(className, methods, dataFields, n.getProperty("parent_class"), children?);
+                        Bubble temp = new Bubble(className, methods, dataFields,
+                            n.getProperty("parent_class"), new ArrayList<String>());
                         bubbleList.add(temp);
                     }
                 }
