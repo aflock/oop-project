@@ -1,9 +1,11 @@
+package xtc.oop;
 public class Bubble{
-    String name;
-    String[] methods;
-    String[] dataFields;
-    Bubble parent;
-    String[] children;
+    public String name;
+    public String[] methods;
+    public String[] dataFields;
+    public Bubble parent;
+    public String[] children;
+
     public Bubble(String name, String[] methods,
             String[] dataFields, Bubble parent, String[] children){
 

@@ -6,7 +6,14 @@ CompilationUnit(
     Modifiers(),
     "ColorPt",
     null,
-    null,
+    Extension(
+      Type(
+        QualifiedIdentifier(
+          "String"
+        ),
+        null
+      )
+    ),
     null,
     ClassBody(
       FieldDeclaration(
