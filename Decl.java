@@ -1,4 +1,4 @@
-package oop-project;
+package xtc.oop;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,8 @@ import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
 //our imports
-import Bubble;
+import xtc.oop.helper.Bubble;
+
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -133,8 +134,22 @@ public class Decl extends xtc.util.Tool
 
                 public void visitCompilationUnit(GNode n) {
 
+                    Bubble object = new Bubble("Object", null);
+                    bubbleList.add(object);
                     visit(n);
+                    //link Object bubble to children and vice versa
+                    for(Bubble b: bubbleList){
+                        if(b.getName() == null){
+                            System.out.println("NULL RETURNED FROM GETNAME");
+                        }
+                        System.out.println(b.getName());
+                        if(!(b == object) && b.parentToString() == null){
+                            b.setParent(object);
+                            object.addChild(b.getName());
+                        }
+                    }
 
+                    /*
                     runtime.console().pln("CLASS NAME:");
                     runtime.console().pln(className);
                     runtime.console().pln("DATA FIELDS:");
@@ -146,6 +161,14 @@ public class Decl extends xtc.util.Tool
                         runtime.console().pln(a);
                     }
                     runtime.console().p("\n").flush();
+                    */
+                    for(Bubble b: bubbleList){
+                        System.out.println(b);
+                        System.out.println(b.getName());
+                        System.out.println(b.childrenToString());
+                         System.out.println(b.parentToString());
+                        System.out.println("--------XXX-------");
+                    }
                 }
 
                 public void visitDeclarator(GNode n) {
@@ -168,8 +191,8 @@ public class Decl extends xtc.util.Tool
                     visit(n);
                 }
 
-                ArrayList<String> methods = new ArrayList<String>();
-                ArrayList<String> dataFields = new ArrayList<String>();
+                //ArrayList<String> methods = new ArrayList<String>();
+                //ArrayList<String> dataFields = new ArrayList<String>();
                 ArrayList<String> children = new ArrayList<String>();
                 String name;
                 Bubble parent;
@@ -186,19 +209,20 @@ public class Decl extends xtc.util.Tool
                     if (!n.hasProperty("parent_class")){
                         n.setProperty("parent_class", "Object");
                     }
-                    parentName = n.getProperty("parent_class");
+                    parentName = (String)n.getProperty("parent_class");
 
                     Boolean parentFound = false;
-                    Bubble parent;
+                    Bubble parent = null;
                     for(Bubble b : bubbleList){
                         //if the bubble has already been added by a child
-                        if(b.name.equals(parentName)){
+                        if(b.getName().equals(parentName)){
                             //want to set the child field of this bubble with my name
                             parent = b;
                             parentFound = true;
                             b.addChild(className);
                         }
                     }
+
                     if(!parentFound){
                         parent = new Bubble(parentName, className);
                         bubbleList.add(parent);
@@ -208,9 +232,9 @@ public class Decl extends xtc.util.Tool
                     //set the data fields
                     Boolean bubbleExists = false;
                     for(Bubble b : bubbleList){
-                        if(b.name.equals(className)) {
+                        if(b.getName().equals(className)) {
                             b.setMethods(methods.toArray(new String[methods.size()]));
-                            b.setDataFields(DataFields.toArray(new String[DataFields.size()]));
+                            b.setDataFields(dataFields.toArray(new String[dataFields.size()]));
                             if(parent != null) //it won't ever be null, but just to make compiler happy :P
                                 b.setParent(parent);
                             bubbleExists = true;
@@ -218,13 +242,15 @@ public class Decl extends xtc.util.Tool
                     }
                     //else: make that node
                     if(!bubbleExists){
-                        Bubble temp = new Bubble(className, methods, dataFields,
-                            n.getProperty("parent_class"), new ArrayList<String>());
+                        Bubble temp = new Bubble(className,
+                                methods.toArray(new String[methods.size()]),
+                                dataFields.toArray(new String[dataFields.size()]),
+                                parent, null);
                         bubbleList.add(temp);
                     }
                 }
 
-                public void visitExtension(Gnode n){
+                public void visitExtension(GNode n){
                     visit(n);
                 }
 
