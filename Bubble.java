@@ -1,3 +1,4 @@
+package oop_project;
 import java.util.ArrayList;
 
 public class Bubble{
@@ -20,7 +21,7 @@ public class Bubble{
     public Bubble(String name, String child) {
 	this.name = name;
 	tempChildren = new ArrayList<String>();
-	tempChildren.add(child);	
+	tempChildren.add(child);
     }
 
     public void setMethods(String[] methods) {

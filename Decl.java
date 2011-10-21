@@ -1,4 +1,4 @@
-package xtc.oop;
+package oop-project;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
 //our imports
-import Bubble
+import Bubble;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -168,9 +168,9 @@ public class Decl extends xtc.util.Tool
                     visit(n);
                 }
 
-                ArrayList<String> methods = new ArrayList<String>;
-                ArrayList<String> dataFields = new ArrayList<String>;
-                ArrayList<String> children = new ArrayList<String>;
+                ArrayList<String> methods = new ArrayList<String>();
+                ArrayList<String> dataFields = new ArrayList<String>();
+                ArrayList<String> children = new ArrayList<String>();
                 String name;
                 Bubble parent;
                 //String parent;
@@ -208,7 +208,7 @@ public class Decl extends xtc.util.Tool
                     //set the data fields
                     Boolean bubbleExists = false;
                     for(Bubble b : bubbleList){
-                        if(b.name.equals(className) {
+                        if(b.name.equals(className)) {
                             b.setMethods(methods.toArray(new String[methods.size()]));
                             b.setDataFields(DataFields.toArray(new String[DataFields.size()]));
                             if(parent != null) //it won't ever be null, but just to make compiler happy :P
@@ -225,7 +225,7 @@ public class Decl extends xtc.util.Tool
                 }
 
                 public void visitExtension(Gnode n){
-                    visit(n)
+                    visit(n);
                 }
 
                 public void visitFormalParameters(GNode n){
@@ -356,15 +356,18 @@ public class Decl extends xtc.util.Tool
      *
      * @param args The command line arguments.
      */
-    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>;
+    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     public static void main(String[] args)
     {
         //Calvin and ALott
+        /*
         String[] dependencies = <><><><><>;
         new Decl().run(args);
             Decl().run(finddependencies)
             for depend in dependencies:
                 Decl().run(constructBubbles, depend)
+        */
+        new Decl().run(args);
 
     }
 }
