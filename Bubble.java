@@ -19,8 +19,10 @@ public class Bubble{
 
     public Bubble(String name, String child) {
 	this.name = name;
-	tempChildren = new ArrayList<String>();
-	tempChildren.add(child);	
+	String temp[] = { child };
+	this.children = temp;
+	//tempChildren = new ArrayList<String>();
+	//tempChildren.add(child);	
     }
 
     public void setMethods(String[] methods) {
@@ -43,10 +45,32 @@ public class Bubble{
     }
 
     public void addChild(String child) {
-	if (tempChildren == null) {
-	    tempChildren = new ArrayList<String>();
+	int len = children == null ? 0 : children.length + 1;
+	String[] temp = new String[len];
+	if (children == null) {
+	    temp[0] = children[0];
 	}
-	tempChildren.add(child);
-	children = (String[])tempChildren.toArray();
+	else {
+	    for (int i = 0; i < children.length; i++) {
+		temp[i] = children[i];
+	    }
+	}
+	temp[len - 1] = child;
+	children = temp;
+    }
+
+    public String childrenToString() {
+	if (children == null) {
+	    return null;
+	}
+	else { 
+	    String s = "[";
+	    for (int i = 0; i < children.length; i++) {
+		s += children[i];
+		if (i != children.length - 1)
+		    s += ", ";
+	    }
+	    return s + "]";
+	}	
     }
 }
