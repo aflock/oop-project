@@ -52,3 +52,6 @@ XX2. Go through input files, create Bubbles for each class declaration
 4. Create structs for each class
     -associate data fields
 
+
+V_V_V_V_V___AFTERTHOUGHTS___V_V_V_V_V
+-Do we need to deal with Excpetions in our Inheritance Tree
