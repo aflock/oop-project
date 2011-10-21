@@ -29,11 +29,13 @@ ii.generate AST for all .java files
  -Creat list of mentioned classes and where it is located.
  -Create nodes of each
  -Create list of "places to look" for possible files
-    Q_ Should all classes in imports be made into class structs,
-    or only those instantiated in a method _Q
+    Q_ SHOULD ALL CLASSES IN IMPORTS BE MADE INTO CLASS STRUCTS,
+    OR ONLY THOSE INSTANTIATED IN A METHOD _Q
+    make ALL the STRUCTS!
 
-2. Go through input file, create nodes for each class declaration
-  -these nodes contain
+2. Go through input file, create Bubbles for each class declaration
+  -these Bubbles contain
+        -name
         -methods
         -data fields
         -children

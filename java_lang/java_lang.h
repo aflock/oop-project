@@ -76,6 +76,7 @@ namespace java {
       __Object();
 
       // The methods implemented by java.lang.Object.
+      // explicit methods
       static int32_t hashCode(Object);
       static bool equals(Object, Object);
       static Class getClass(Object);
@@ -110,7 +111,9 @@ namespace java {
 
     // The data layout for java.lang.String.
     struct __String {
+        //Vtble
       __String_VT* __vptr;
+      //data fields
       std::string data;
 
       // The constructor;
@@ -140,7 +143,7 @@ namespace java {
       String (*toString)(String);
       int32_t (*length)(String);
       char (*charAt)(String, int32_t);
-      
+
       __String_VT()
       : __isa(__String::__class()),
         hashCode(&__String::hashCode),
@@ -256,7 +259,7 @@ namespace java {
 
     class ArrayIndexOutOfBoundsException : public IndexOutOfBoundsException {
     };
-    
+
   }
 }
 
@@ -301,7 +304,7 @@ namespace __rt {
     bool (*equals)(Reference, java::lang::Object);
     java::lang::Class (*getClass)(Reference);
     java::lang::String (*toString)(Reference);
-    
+
     Array_VT()
     : __isa(Array<T>::__class()),
       hashCode((int32_t(*)(Reference))
