@@ -18,6 +18,8 @@ import xtc.tree.Location;
 import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
+//our imports
+import Bubble
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -176,17 +178,26 @@ public class Decl extends xtc.util.Tool
 
                 public void visitClassDeclaration(GNode n){
                     className = n.getString(1);
-                    //if classname in BubbleList
+                    //get inheritance
+
+
+
+
+                    //if classname in bubbleList
                     //set the data fields
                     //if not VV do this VV
                     visit(n);
                     //get parent
                     //if none: parent = object
-                    //else: search BubbleList for parent
+                    //else: search bubbleList for parent
                     //if found: assign it
                     //else: make that node (
-                    Bubble <name> = new Bubble(all the things);
-                    BubbleList.add(<name>);
+                    Bubble className = new Bubble(all the things);
+                    bubbleList.add(<name>);
+                }
+
+                public void visitExtension(Gnode n){
+                    visit(n)
                 }
 
                 public void visitFormalParameters(GNode n){
@@ -235,6 +246,11 @@ public class Decl extends xtc.util.Tool
                             (parent2.getName().equals("ClassBody"))){
                         String name = n.getString(0);
                         methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+                    }
+                    if ((parent1.getName().equals("Extension")) &&
+                            (parent2.getName().equals("ClassDeclaration"))){
+                        String name = n.getString(0);
+                        parent2.setProperty("parent_class", name);
                     }
                     //visit(n);
                 }

@@ -36,10 +36,11 @@ public class Bubble{
 	this.parent = parent;
     }
     */
-    
+
+
     public void setChildren(String[] children) {
 	this.children = children;
-    }		       
+    }
 
     public void addChild(String child) {
 	if (tempChildren == null) {
