@@ -26,14 +26,13 @@ i.get import statements
 ii.generate AST for all .java files
 
 1. Build Inheritance Tree
- -Creat list of mentioned classes and where it is located.
- -Create nodes of each
+ -Create list of mentioned classes and where it is located.(input for inheritance tree);
  -Create list of "places to look" for possible files
     Q_ SHOULD ALL CLASSES IN IMPORTS BE MADE INTO CLASS STRUCTS,
     OR ONLY THOSE INSTANTIATED IN A METHOD _Q
-    make ALL the STRUCTS!
+    A_make ALL the structs!
 
-2. Go through input file, create Bubbles for each class declaration
+XX2. Go through input files, create Bubbles for each class declaration
   -these Bubbles contain
         -name
         -methods
