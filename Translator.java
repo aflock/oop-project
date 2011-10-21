@@ -85,7 +85,7 @@ public class Translator extends xtc.util.Tool {
           visit(n);
           count++;
         }
-
+        
         public void visit(Node n) {
           /*
           for (Iterator<Object> iter = n.iterator(); iter.hasNext(); ) {
