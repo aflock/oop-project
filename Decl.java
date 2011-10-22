@@ -129,6 +129,8 @@ public class Decl extends xtc.util.Tool
                 methods.add("");
                 visit(n);
                 String name = n.getString(3);
+                if (name == "static")
+                    name = name + " " + n.getString(4);
                 methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
             }
 
