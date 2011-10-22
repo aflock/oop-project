@@ -29,6 +29,7 @@ public class Bubble{
         }
         this.vtable = new ArrayList<String>();
         this.methods = null;
+        this.parent = null;
     }
 
     public void setMethods(String[] methods) {
@@ -65,6 +66,12 @@ public class Bubble{
             System.out.println(s);
             
         System.out.println("================================");
+    }
+    
+    //sets the vtable at index i to string s
+    public void setVtableIndex(int i, String s)
+    {
+        this.vtable.set(i, s);
     }
 
     public void setDataFields(String[] dataFields) {
