@@ -447,6 +447,7 @@ public class Decl extends xtc.util.Tool
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     public static void main(String[] args)
     {
+        //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
         //Creating Object's Vtable
         object.add2Vtable("Class __isa;");
@@ -455,6 +456,20 @@ public class Decl extends xtc.util.Tool
         object.add2Vtable("Class (*getClass)(Object);");
         object.add2Vtable("String (*toString)(Object);");
         bubbleList.add(object);
+
+
+        //pre-load String Bubble
+        Bubble string = new Bubble("String", null);
+        //Creating Object's Vtable
+        string.add2Vtable("Class __isa;");
+        string.add2Vtable("int32_t (*hashCode)(String);");
+        string.add2Vtable("bool (*equals)(String, Object);");
+        string.add2Vtable("Class (*getClass)(String);");
+        string.add2Vtable("String (*toString)(String);");
+        string.add2Vtable("int32_t (*length)(String);");
+        string.add2Vtable("char (*charAt)(String, int_32_t);");
+        bubbleList.add(string);
+
         d = new Decl();
         d.init();
         d.prepare();
