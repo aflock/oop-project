@@ -10,7 +10,6 @@ public class Bubble{
     String[] children;
     Bubble[] bChildren;
     ArrayList<String> vtable;
-    ArrayList<String> addys; // the address of the method of vtable[i] is in addys[i]
     String[] constructors;
 
     public Bubble(String name, String[] methods,
@@ -90,10 +89,10 @@ public class Bubble{
 			index = i;
 		    }
 	    }
-	    //if it should be overwriting
+
 	    if(index != -1) {
-		System.out.println("==========OVERWRITING " + sig + " in " + this.name);
-		this.vtable.set(index,add+"\t");
+		System.out.println("==========OVERWRITING " + sig + "in " + this.name);
+		this.vtable.set(index,add);
 	    }
 	    else {
 		this.vtable.add(add);
@@ -214,26 +213,33 @@ public class Bubble{
         return s.toString();
     }
     
-    public String format(String method, Bubble b) {
+    public String format(String method, Bubble b) {	
+	//System.out.println(method);
 	if (method.startsWith(" ")) {
+	    int square = 0;
+	    for (int i = 0; i < method.length(); i++) {
+		if (method.charAt(i) == '[') square++;
+	    }
 	    String[] temp2 = method.split(" ");
 	    int count = 0;
 	    for (int j = 0; j < temp2.length; j++) {
 		if (temp2[j].length() != 0) count++;
 	    }
 	    
-	    String[] temp = new String[count];
+	    String[] temp = new String[count-square];
 	    int index = 0;
 	    for (int j = 0; j < temp2.length; j++) {
 		if (temp2[j].length() != 0) {
-		    temp[index++] = temp2[j];
+		    if (temp2[j].charAt(0) == '[') {
+			temp[index-1] += "[]";
+		    }
+		    else {
+			temp[index++] = temp2[j];
+		    }		    
 		}
 	    }
-	    
-	    String s = "";
-	    String p = "";
-	    boolean returnType = true;
-	    boolean para = true;
+
+	    int num = 0;
 	    for (int j = 0; j < temp.length; j++) {
 		if (temp[j].equals("public") ||
 		    temp[j].equals("private") ||
@@ -241,47 +247,28 @@ public class Bubble{
 		    temp[j].equals("static")) {
 		    //do nothing
 		}
-		else if (returnType) {
-		    int num = temp.length - j;
-		    if (num % 2 == 0) {
-			s += temp[j] + " ";
-		    }
-		    else {
-			s += "void ";
-			j--;
-		    }
-		    returnType = false;
-		}
 		else {
-		    if (j != temp.length - 1) {
-			if (para) {
-			    if (p.length() != 0) {
-				p += ", " + temp[j];
-			    }
-			    else {
-				p += temp[j];
-			    }
-			    para = false;
-			}
-			else {
-			    para = true;
-			}
-		    }
-		    else {
-			s += "(*" + temp[j] + ")(" + b.getName();
-		    }
+		    num++;
 		}
 	    }
-	    if (p.length() != 0) {
-		s += ", " + p + ");";
-	    }		
-	    else {
-		s += ")";
+	    String s = "";
+	    if (num % 2 == 0) { // there is a return type
+		s += temp[temp.length-num] + " ";
+		index = temp.length-num+1;
 	    }
+	    else { // void
+		s += "void ";
+		index = temp.length-num;
+	    }
+
+	    s += "(*" + temp[temp.length-1] + ")(" + b.getName();
+
+	    for (int j = index; j < temp.length - 1; j+=2) {
+		s += ", " + temp[j];
+	    }
+	    s += ")";
 	    return s;
 	}
 	return method;
     }
-    
-
 }
