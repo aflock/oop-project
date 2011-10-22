@@ -10,6 +10,7 @@ public class Bubble{
     String[] children;
     Bubble[] bChildren;
     ArrayList<String> vtable;
+    ArrayList<String> addys; // the address of the method of vtable[i] is in addys[i]
     String[] constructors;
 
     public Bubble(String name, String[] methods,
