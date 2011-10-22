@@ -189,11 +189,6 @@ public class Decl extends xtc.util.Tool
                    }
                    runtime.console().p("\n").flush();
                    */
-                for(Bubble b: bubbleList){
-                    System.out.println("--------XXX-------");
-                    System.out.println(b);
-                    System.out.println("--------XXX-------");
-                }
 
             }
 
@@ -342,7 +337,11 @@ public class Decl extends xtc.util.Tool
                     //System.out.println(b);
                 }
 
-                if(!inList && !n.getString(n.size()-1).equals("String")){
+                //process the class AST's, but not if they are certain ones that mess us up
+                if(!inList &&
+                    !n.getString(n.size()-1).equals("String") &&
+                    !n.getString(n.size()-1).toLowerCase().contains("exception")){
+
                     System.out.println("about to call findFile:" + n.getString(n.size()-1));
                     String path = d.findFile(n.getString(n.size()-1));
                     if(!path.equals("")){
@@ -465,7 +464,10 @@ public class Decl extends xtc.util.Tool
 
         populateVTables(object);
 
+        /*Checking results of inheritance/vtable construction*/
         for(Bubble b: bubbleList){
+            System.out.println("------------------------Bubble---------------------");
+            System.out.println(b);
             b.printVtable();
         }
 
