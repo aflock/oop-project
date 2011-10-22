@@ -52,7 +52,7 @@ public class PNode{
     }
 
     public String[] getStructChildren(){
-        return this.structChildren
+        return this.structChildren;
     }
 
     public String getName(){
