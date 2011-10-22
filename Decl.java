@@ -480,8 +480,16 @@ public class Decl extends xtc.util.Tool
                 //recursively setting child's vtables
                 populateVTables(b);
             }
-
         }
+        
+        int i = 0;
+        for(String s : root.getVtable())
+        {
+          s = s.replace("(Object", "(" + root.getName());
+          root.setVtableIndex(i, s);
+          i++;
+        }
+            
     }
     /**
      * Run the thing with the specified command line arguments.
