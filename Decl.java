@@ -199,11 +199,6 @@ public class Decl extends xtc.util.Tool
                    }
                    runtime.console().p("\n").flush();
                    */
-                for(Bubble b: bubbleList){
-                    System.out.println("--------XXX-------");
-                    System.out.println(b);
-                    System.out.println("--------XXX-------");
-                }
 
             }
 
@@ -270,6 +265,7 @@ public class Decl extends xtc.util.Tool
                     if(b.getName().equals(className)) {
                         b.setMethods(methods.toArray(new String[methods.size()]));
                         b.setDataFields(dataFields.toArray(new String[dataFields.size()]));
+                        b.setPackageName(packageName);
                         if(parent != null) //it won't ever be null, but just to make compiler happy :P
                             b.setParent(parent);
                         bubbleExists = true;
@@ -531,6 +527,8 @@ public class Decl extends xtc.util.Tool
         populateVTables(object);
 
         for(Bubble b: bubbleList){
+            System.out.println("--------------------" + b.getName() + "--------------------");
+            System.out.println(b);
             b.printVtable();
         }
 
