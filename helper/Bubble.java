@@ -61,6 +61,8 @@ public class Bubble{
     public String[] getMethods(){
         return this.methods;
     }
+    
+    
 
     //changed to make it arraylist
     public void setVtable(ArrayList<String> vtable) {
