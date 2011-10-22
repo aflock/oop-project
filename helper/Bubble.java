@@ -10,9 +10,10 @@ public class Bubble{
     String[] children;
     Bubble[] bChildren;
     ArrayList<String> vtable;
+    String[] constructors;
 
     public Bubble(String name, String[] methods,
-		  String[] dataFields, Bubble parent, String[] children, String packageName){
+		  String[] dataFields, Bubble parent, String[] children, String packageName, String[] constructors){
 
         this.name = name;
         this.packageName = packageName;
@@ -21,6 +22,7 @@ public class Bubble{
         this.parent = parent;
         this.children = children;
         this.vtable = new ArrayList<String>();
+        this.constructors = constructors;
     }
 
     public Bubble(String name, String child) {
@@ -31,7 +33,14 @@ public class Bubble{
         }
         this.vtable = new ArrayList<String>();
         this.methods = null;
-        this.parent = null;
+    }
+
+    public void setConstructors(String[] constructors){
+        this.constructors = constructors;
+    }
+
+    public String[] getConstructors(){
+        return this.constructors;
     }
 
     public void setPackageName(String name){
@@ -76,12 +85,6 @@ public class Bubble{
             System.out.println(s);
 
         System.out.println("================================");
-    }
-    
-    //sets the vtable at index i to string s
-    public void setVtableIndex(int i, String s)
-    {
-        this.vtable.set(i, s);
     }
 
     public void setDataFields(String[] dataFields) {
