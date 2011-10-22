@@ -13,7 +13,7 @@ public class PNode{
         if(child == null){
             return;
         }
-        int len = children == null ? 1 : packageChildren.length + 1;
+        int len = packageChildren == null ? 1 : packageChildren.length + 1;
         PNode[] temp = new PNode[len];
         if(packageChildren == null){
             temp[0] = child;
@@ -32,7 +32,7 @@ public class PNode{
         if(child == null){
             return;
         }
-        int len = children == null ? 1 : structChildren.length + 1;
+        int len = structChildren == null ? 1 : structChildren.length + 1;
         String[] temp = new String[len];
         if(structChildren == null){
             temp[0] = child;
@@ -52,7 +52,7 @@ public class PNode{
     }
 
     public String[] getStructChildren(){
-        return this.structChildren
+        return this.structChildren;
     }
 
     public String getName(){
