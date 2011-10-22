@@ -382,7 +382,7 @@ public class Decl extends xtc.util.Tool
                     String name;
                     for(int i=0; i<n.size(); i++){
                         name = n.getString(i);
-                        packageName += name;
+                        packageName += " " + name;
                     }
                 }
 
