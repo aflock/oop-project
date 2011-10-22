@@ -160,6 +160,13 @@ public class Decl extends xtc.util.Tool
             public void visitCompilationUnit(GNode n) {
 
                 visit(n);
+                //identify the Object bubble so we can link it
+                Bubble object = new Bubble(null, null);
+                for(Bubble b : bubbleList){
+                    if(b.getName().equals("Object")){
+                        object = b;
+                    }
+                }
                 //link Object bubble to children and vice versa
                 for(Bubble b: bubbleList){
                     //System.out.println(b.getName());
@@ -190,22 +197,6 @@ public class Decl extends xtc.util.Tool
 
             }
 
-            //recursive call to populate all vtables in bubbleList
-            public void populateVTables(Bubble root){
-                for(Bubble b : bubbleList){
-                    if (b.getParent() == root){
-                        //creating child's vTable
-                        for(String s : root.getVtable()) //getting parent's vtable
-                            b.add2Vtable(s);
-                        for(String s : b.getMethods()) //adding new methods to vtable
-                            b.add2Vtable(s);
-
-                        //recursively setting child's vtables
-                        populateVTables(b);
-                    }
-
-                }
-            }
 
             public void visitDeclarator(GNode n) {
                 visit(n);
@@ -430,13 +421,29 @@ public class Decl extends xtc.util.Tool
         }.dispatch(node);
     }
 
+    //recursive call to populate all vtables in bubbleList
+    public static void populateVTables(Bubble root){
+        for(Bubble b : bubbleList){
+            if (b.getParent() == root){
+                //creating child's vTable
+                for(String s : root.getVtable()) //getting parent's vtable
+                    b.add2Vtable(s);
+                for(String s : b.getMethods()) //adding new methods to vtable
+                    b.add2Vtable(s);
+
+                //recursively setting child's vtables
+                populateVTables(b);
+            }
+
+        }
+    }
     /**
      * Run the thing with the specified command line arguments.
      *
      * @param args The command line arguments.
      */
     static Decl d;
-    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
+    static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     public static void main(String[] args)
     {
         Bubble object = new Bubble("Object", null);
