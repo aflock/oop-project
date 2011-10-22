@@ -329,7 +329,7 @@ public class Decl extends xtc.util.Tool
 
                 if (!(parent1.getName().equals("FieldDeclaration")) && (parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
-                         
+
                     String name = getStringDescendants(n);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                 }
@@ -340,7 +340,7 @@ public class Decl extends xtc.util.Tool
                 }
 
             }
-            
+
             public void visitConstructorDeclaration(GNode n)
             {
                 constructors.add("");
@@ -384,7 +384,7 @@ public class Decl extends xtc.util.Tool
                     String name = n.getString(0);
                     dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
                         }
-                      
+
                 if ((parent1.getName().equals("MethodDeclaration")) &&
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(0);
@@ -505,7 +505,7 @@ public class Decl extends xtc.util.Tool
                 populateVTables(b);
             }
         }
-        
+
         //cleaning vtables
         int i = 0;
         for(String s : root.getVtable())
@@ -514,7 +514,7 @@ public class Decl extends xtc.util.Tool
           root.setVtableIndex(i, s);
           i++;
         }
-            
+
     }
     /**
      * Run the thing with the specified command line arguments.
@@ -559,14 +559,101 @@ public class Decl extends xtc.util.Tool
 
         populateVTables(object);
 
+        /*
+         * Pretty Printing ^_^
+         */
+
         for(Bubble b: bubbleList){
             System.out.println("--------------------" + b.getName() + "--------------------");
+            /*
             System.out.println(b);
-            b.printVtable();
+            */
+            //keep track of where we are indent-wise
+            int indent = 0;
+
+
+            //ignore string and object, they are lame
+            if(b.getName() != "String" && b.getName() != "Object"){
+                //print the .h SON
+
+                //TODO change this VVVV to put the struct in the correct namespace array
+
+                //get/print namespace
+                /*
+                String namespace = b.getPackageName();
+                System.out.println("namespace is: " + namespace );
+                String[] namespaceSplit = namespace.split("\\s");
+
+                if (namespace != ""){
+                    System.out.println("namespace " + namespaceSplit[namespaceSplit.length-1] + "{");
+                    indent++;
+                }
+                */
+
+                //TODO change this ^^^^ to put the struct in the correct namespace array
+
+                System.out.println(indentLevel(indent) + "struct _" + b.getName() + " {");
+                indent++;
+
+                //print data fields (Assumes correct format for them)
+                System.out.println("//Data fields");
+                System.out.println(indentLevel(indent)+ "_" + b.getName() + "_VT* __vptr;");
+                String[] dataFields = b.getDataFields();
+                for(int i= 0; i< dataFields.length; i++){
+                    System.out.println(indentLevel(indent) + dataFields[i]);
+                }
+
+                System.out.println();
+
+                //print constructors (assumes correct format)
+                String[] constructors = b.getConstructors();
+                System.out.println("//Constructors");
+                for(int i= 0; i< constructors.length; i++){
+                    System.out.println(indentLevel(indent) + constructors[i]);
+                }
+
+                System.out.println();
+                System.out.println("//Forward declaration of methods");
+                //print forward declarations of methods
+                for( String s : b.getVtable() ) {
+                    if(!s.equals("Class __isa;")){
+                        String toModify = s;
+                        String[] tms = toModify.split("\\(");
+                        tms[1] = tms[1].substring(1, tms[1].length() -1);
+                        tms[2] = "(" + tms[2];
+
+                        System.out.println(indentLevel(indent) + "static " +
+                                tms[0] + " " + tms[1] +" " + tms[2] );
+                    }
+                }
+                System.out.println();
+
+                //extra shit
+                System.out.println(indentLevel(indent) + "static Class __class();\n" );
+                System.out.println(indentLevel(indent) + "static _" + b.getName() + "_VT __vtable;");
+
+                for(int i = indent; i>0; i--){
+                    System.out.print("}");
+                    if(indent == 1)
+                        System.out.print(";");
+                    System.out.println();
+                }
+            }
+
+            //b.printVtable();
         }
 
         //for(int i=0; i<bubbleList.size(); i++)
             //System.out.println
+    }
+
+
+    public static String indentLevel(int indent){
+        String toReturn = "";
+        for( int i=0; i<indent; i++){
+            toReturn += "  ";
+        }
+        return toReturn;
     }
 }
 

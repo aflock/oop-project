@@ -61,8 +61,8 @@ public class Bubble{
     public String[] getMethods(){
         return this.methods;
     }
-    
-    
+
+
 
     //changed to make it arraylist
     public void setVtable(ArrayList<String> vtable) {
@@ -83,7 +83,7 @@ public class Bubble{
 	    for(int i = 0; i < this.vtable.size(); i++) {
 		//System.out.println("-----"+this.vtable.get(i));
 		if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
-		    this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1].equals(sig)) 
+		    this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1].equals(sig))
 		    {
 			//System.out.println("WOWOOWOWOWOWOWOWOWOWO");
 			index = i;
@@ -92,12 +92,13 @@ public class Bubble{
 
 	    if(index != -1) {
 		System.out.println("==========OVERWRITING " + sig + "in " + this.name);
-		this.vtable.set(index,add);
+
+		this.vtable.set(index,add + "\t");
 	    }
 	    else {
 		this.vtable.add(add);
 	    }
-	    
+
 	}
 	//if it's not a method
 	else {
@@ -123,6 +124,10 @@ public class Bubble{
 	    return;
 	}
 	this.dataFields = dataFields;
+    }
+
+    public String[] getDataFields(){
+        return this.dataFields;
     }
 
     public String getName() {
@@ -154,7 +159,7 @@ public class Bubble{
     {
         return this.children;
     }
-    
+
     //sets the vtable at index i to string s
     public void setVtableIndex(int i, String s)
     {
@@ -212,8 +217,8 @@ public class Bubble{
         s.append("Parent: " + parentToString());
         return s.toString();
     }
-    
-    public String format(String method, Bubble b) {	
+
+    public String format(String method, Bubble b) {
 	//System.out.println(method);
 	if (method.startsWith(" ")) {
 	    int square = 0;
@@ -225,7 +230,7 @@ public class Bubble{
 	    for (int j = 0; j < temp2.length; j++) {
 		if (temp2[j].length() != 0) count++;
 	    }
-	    
+
 	    String[] temp = new String[count-square];
 	    int index = 0;
 	    for (int j = 0; j < temp2.length; j++) {
@@ -235,7 +240,7 @@ public class Bubble{
 		    }
 		    else {
 			temp[index++] = temp2[j];
-		    }		    
+		    }
 		}
 	    }
 
@@ -266,7 +271,7 @@ public class Bubble{
 	    for (int j = index; j < temp.length - 1; j+=2) {
 		s += ", " + temp[j];
 	    }
-	    s += ")";
+	    s += ");";
 	    return s;
 	}
 	return method;
