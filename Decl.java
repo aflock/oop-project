@@ -466,7 +466,7 @@ public class Decl extends xtc.util.Tool
 
         /*Checking results of inheritance/vtable construction*/
         for(Bubble b: bubbleList){
-            System.out.println("------------------------Bubble---------------------");
+            System.out.println("------------------------" + b.getName()+ "---------------------");
             System.out.println(b);
             b.printVtable();
         }
