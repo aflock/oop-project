@@ -47,7 +47,7 @@ public class Decl extends xtc.util.Tool
 
     //can return File if necessary
     public static String findFile(String cp, String query) {
-
+        String sep = System.getProperty("file.separator");
 	File f = new File(cp);
 	File [] files = f.listFiles();
 	for(int i = 0; i < files.length; i++) {
@@ -57,7 +57,7 @@ public class Decl extends xtc.util.Tool
 		if(!a.equals(""))
 		    return a;
 	    }
-	    else if(files[i].getAbsolutePath().endsWith(query))
+	    else if(files[i].getAbsolutePath().endsWith(sep+query))
 		return files[i].getAbsolutePath();
 	}
 	return "";
