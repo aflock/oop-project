@@ -1,7 +1,12 @@
-import Nothing;
-import oop_package.helper.Bubble;
+import xtc.oop.helper.Bubble;
 
-class ColorPt extends String{
+class Pt{
+
+    public Pt(){
+    }
+}
+
+class ColorPt extends Pt{
     /*
     public static void main(String[] args){
         ColorPt c = new ColorPt("HAHAHAHA");

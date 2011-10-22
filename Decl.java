@@ -129,6 +129,8 @@ public class Decl extends xtc.util.Tool
                 methods.add("");
                 visit(n);
                 String name = n.getString(3);
+                if (name == "static")
+                    name = name + " " + n.getString(4);
                 methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
             }
 
@@ -159,21 +161,17 @@ public class Decl extends xtc.util.Tool
 
             public void visitCompilationUnit(GNode n) {
 
-                Bubble object = new Bubble("Object", null);
-                //Creating Object's Vtable
-                object.add2Vtable("Class __isa;");
-                object.add2Vtable("int32_t (*hashCode)(Object);");
-                object.add2Vtable("bool (*equals)(Object, Object);");
-                object.add2Vtable("Class (*getClass)(Object);");
-                object.add2Vtable("String (*toString)(Object);"); 
-                bubbleList.add(object); 
                 visit(n);
+                //identify the Object bubble so we can link it
+                Bubble object = new Bubble(null, null);
+                for(Bubble b : bubbleList){
+                    if(b.getName().equals("Object")){
+                        object = b;
+                    }
+                }
                 //link Object bubble to children and vice versa
                 for(Bubble b: bubbleList){
-                    if(b.getName() == null){
-                        System.out.println("NULL RETURNED FROM GETNAME");
-                    }
-                    System.out.println(b.getName());
+                    //System.out.println(b.getName());
                     if(!(b == object) && b.parentToString() == null){
                         b.setParent(object);
                         object.addChild(b.getName());
@@ -193,37 +191,9 @@ public class Decl extends xtc.util.Tool
                    }
                    runtime.console().p("\n").flush();
                    */
-                for(Bubble b: bubbleList){
-                    System.out.println(b);
-                    System.out.println(b.getName());
-                    System.out.println(b.childrenToString());
-                    System.out.println(b.parentToString());
-                    System.out.println("--------XXX-------");
-                }
-                
-                populateVTables(object);
-                
-                for(Bubble b: bubbleList){
-                    b.printVtable();
-                }
+
             }
-            
-            //recursive call to populate all vtables in bubbleList
-            public void populateVTables(Bubble root){
-                for(Bubble b : bubbleList){
-                    if (b.getParent() == root){
-                        //creating child's vTable
-                        for(String s : root.getVtable()) //getting parent's vtable
-                            b.add2Vtable(s);
-                        for(String s : b.getMethods()) //adding new methods to vtable
-                            b.add2Vtable(s);
-                            
-                        //recursively setting child's vtables
-                        populateVTables(b);
-                    }
-               
-                }
-            }
+
 
             public void visitDeclarator(GNode n) {
                 visit(n);
@@ -369,7 +339,11 @@ public class Decl extends xtc.util.Tool
                     //System.out.println(b);
                 }
 
-                if(!inList && !n.getString(n.size()-1).equals("String")){
+                //process the class AST's, but not if they are certain ones that mess us up
+                if(!inList &&
+                    !n.getString(n.size()-1).equals("String") &&
+                    !n.getString(n.size()-1).toLowerCase().contains("exception")){
+
                     System.out.println("about to call findFile:" + n.getString(n.size()-1));
                     String path = d.findFile(n.getString(n.size()-1));
                     if(!path.equals("")){
@@ -448,39 +422,57 @@ public class Decl extends xtc.util.Tool
         }.dispatch(node);
     }
 
+    //recursive call to populate all vtables in bubbleList
+    public static void populateVTables(Bubble root){
+        for(Bubble b : bubbleList){
+            if (b.getParent() == root){
+                //creating child's vTable
+                for(String s : root.getVtable()) //getting parent's vtable
+                    b.add2Vtable(s);
+                for(String s : b.getMethods()) //adding new methods to vtable
+                    b.add2Vtable(s);
+
+                //recursively setting child's vtables
+                populateVTables(b);
+            }
+
+        }
+    }
     /**
      * Run the thing with the specified command line arguments.
      *
      * @param args The command line arguments.
      */
     static Decl d;
-    ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
+    static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     public static void main(String[] args)
     {
-        //System.out.println(System.getProperty("java.class.path"));
-        //Calvin and ALott
-        /*
-        String[] dependencies = <><><><><>;
-        new Decl().run(args);
-            Decl().run(finddependencies)
-            for depend in dependencies:
-                Decl().run(constructBubbles, depend)
-        */
-
-        /*
-        new Decl().run(args);
-        */
+        Bubble object = new Bubble("Object", null);
+        //Creating Object's Vtable
+        object.add2Vtable("Class __isa;");
+        object.add2Vtable("int32_t (*hashCode)(Object);");
+        object.add2Vtable("bool (*equals)(Object, Object);");
+        object.add2Vtable("Class (*getClass)(Object);");
+        object.add2Vtable("String (*toString)(Object);");
+        bubbleList.add(object);
         d = new Decl();
         d.init();
         d.prepare();
         for(int i = 0; i< args.length; i++){
-            ////String [] names = args[i].split("\\.");
-            //String theName = names[names.length-1] + ".java";
             try{
                 d.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
-        
+
+        populateVTables(object);
+
+        /*Checking results of inheritance/vtable construction*/
+        for(Bubble b: bubbleList){
+            System.out.println("------------------------" + b.getName()+ "---------------------");
+            System.out.println(b);
+            b.printVtable();
+        }
+
         //for(int i=0; i<bubbleList.size(); i++)
             //System.out.println
     }
