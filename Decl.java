@@ -317,7 +317,6 @@ public class Decl extends xtc.util.Tool
                 visit(n);
                 Node parent2 = (Node)n.getProperty("parent2");
                 Node parent3 = (Node)n.getProperty("parent3");
-                
                 if ((parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
                     
@@ -463,13 +462,17 @@ public class Decl extends xtc.util.Tool
                 for(String s : root.getVtable()) //getting parent's vtable
                     b.add2Vtable(s);
                 for(String s : b.getMethods()) //adding new methods to vtable
-                    b.add2Vtable(s);
-
+                {
+                    //if its a main method, don't add it to vtable
+                    if((s.indexOf("public static String [  args") == -1) && (s.indexOf("main") == -1))
+                        b.add2Vtable(s);
+                }
                 //recursively setting child's vtables
                 populateVTables(b);
             }
         }
         
+        //cleaning vtables
         int i = 0;
         for(String s : root.getVtable())
         {
