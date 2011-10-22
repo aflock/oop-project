@@ -266,6 +266,7 @@ public class Bubble{
 	    for (int j = index; j < temp.length - 1; j+=2) {
 		s += ", " + temp[j];
 	    }
+
 	    s += ");";
 	    return s;
 	}
