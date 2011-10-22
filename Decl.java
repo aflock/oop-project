@@ -121,6 +121,10 @@ public class Decl extends xtc.util.Tool
                 visit(n);
             }
 
+
+
+
+
             public void visitModifiers(GNode n){
                 visit(n);
             }
@@ -275,7 +279,7 @@ public class Decl extends xtc.util.Tool
                     Bubble temp = new Bubble(className,
                             methods.toArray(new String[methods.size()]),
                             dataFields.toArray(new String[dataFields.size()]),
-                            parent, null);
+                            parent, null, packageName);
                     bubbleList.add(temp);
                 }
             }
@@ -312,23 +316,23 @@ public class Decl extends xtc.util.Tool
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                         }
             }
-            
+
             public void visitType(GNode n) {
                 visit(n);
                 Node parent2 = (Node)n.getProperty("parent2");
                 Node parent3 = (Node)n.getProperty("parent3");
-                
+
                 if ((parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
-                    
-                    
+
+
                     String name = getStringDescendants(n);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                 }
-                
+
             }
-            
-            
+
+
             public String getStringDescendants(GNode n)
             {
                 String toReturn = "";
@@ -372,6 +376,16 @@ public class Decl extends xtc.util.Tool
                     String name = n.getString(0);
                     parent2.setProperty("parent_class", name);
                         }
+
+                if ((parent0.getName().equals("PackageDeclaration")){
+                    //add all children to packageName
+                    String name;
+                    for(int i=0; i<n.size(); i++){
+                        name = n.getString(i);
+                        packageName += name;
+                    }
+                }
+
                 boolean inList = false;
                 for(Bubble b : bubbleList){
                     if(b.getName().equals(n.getString(n.size()-1))){
