@@ -159,21 +159,10 @@ public class Decl extends xtc.util.Tool
 
             public void visitCompilationUnit(GNode n) {
 
-                Bubble object = new Bubble("Object", null);
-                //Creating Object's Vtable
-                object.add2Vtable("Class __isa;");
-                object.add2Vtable("int32_t (*hashCode)(Object);");
-                object.add2Vtable("bool (*equals)(Object, Object);");
-                object.add2Vtable("Class (*getClass)(Object);");
-                object.add2Vtable("String (*toString)(Object);"); 
-                bubbleList.add(object); 
                 visit(n);
                 //link Object bubble to children and vice versa
                 for(Bubble b: bubbleList){
-                    if(b.getName() == null){
-                        System.out.println("NULL RETURNED FROM GETNAME");
-                    }
-                    System.out.println(b.getName());
+                    //System.out.println(b.getName());
                     if(!(b == object) && b.parentToString() == null){
                         b.setParent(object);
                         object.addChild(b.getName());
@@ -194,20 +183,13 @@ public class Decl extends xtc.util.Tool
                    runtime.console().p("\n").flush();
                    */
                 for(Bubble b: bubbleList){
+                    System.out.println("--------XXX-------");
                     System.out.println(b);
-                    System.out.println(b.getName());
-                    System.out.println(b.childrenToString());
-                    System.out.println(b.parentToString());
                     System.out.println("--------XXX-------");
                 }
-                
-                populateVTables(object);
-                
-                for(Bubble b: bubbleList){
-                    b.printVtable();
-                }
+
             }
-            
+
             //recursive call to populate all vtables in bubbleList
             public void populateVTables(Bubble root){
                 for(Bubble b : bubbleList){
@@ -217,11 +199,11 @@ public class Decl extends xtc.util.Tool
                             b.add2Vtable(s);
                         for(String s : b.getMethods()) //adding new methods to vtable
                             b.add2Vtable(s);
-                            
+
                         //recursively setting child's vtables
                         populateVTables(b);
                     }
-               
+
                 }
             }
 
@@ -457,30 +439,29 @@ public class Decl extends xtc.util.Tool
     ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     public static void main(String[] args)
     {
-        //System.out.println(System.getProperty("java.class.path"));
-        //Calvin and ALott
-        /*
-        String[] dependencies = <><><><><>;
-        new Decl().run(args);
-            Decl().run(finddependencies)
-            for depend in dependencies:
-                Decl().run(constructBubbles, depend)
-        */
-
-        /*
-        new Decl().run(args);
-        */
+        Bubble object = new Bubble("Object", null);
+        //Creating Object's Vtable
+        object.add2Vtable("Class __isa;");
+        object.add2Vtable("int32_t (*hashCode)(Object);");
+        object.add2Vtable("bool (*equals)(Object, Object);");
+        object.add2Vtable("Class (*getClass)(Object);");
+        object.add2Vtable("String (*toString)(Object);");
+        bubbleList.add(object);
         d = new Decl();
         d.init();
         d.prepare();
         for(int i = 0; i< args.length; i++){
-            ////String [] names = args[i].split("\\.");
-            //String theName = names[names.length-1] + ".java";
             try{
                 d.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
-        
+
+        populateVTables(object);
+
+        for(Bubble b: bubbleList){
+            b.printVtable();
+        }
+
         //for(int i=0; i<bubbleList.size(); i++)
             //System.out.println
     }
