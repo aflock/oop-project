@@ -157,7 +157,7 @@ public class Bubble{
 
 	    //don't add nulls to temp
 	    if(!dataFields[i].equals("")){
-		System.out.println("_______________________"+dataFields[i]);
+		//System.out.println("_______________________"+dataFields[i]);
 		temp[temp_i++] = dataFields[i]+";";
 	    }
 	}
