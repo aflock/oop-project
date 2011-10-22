@@ -516,6 +516,55 @@ public class Decl extends xtc.util.Tool
         }
             
     }
+    
+    public static void formatConstructors()
+    {
+        String tmp = "";
+        String cls = ""; //class name of constructor
+        String[] sploded;
+        ArrayList<String> newCons = new ArrayList<String>();
+        for(Bubble b : bubbleList)
+        {
+            if(b.getConstructors() != null)
+            {
+                for(String s: b.getConstructors()) //for each constructor
+                {
+                    sploded = s.split(" ");
+                    cls = sploded[sploded.length-1];
+                    tmp = tmp + sploded[sploded.length-1] + "(";
+                    //Get parameters
+                    for(String part : sploded)
+                    {
+                        part = part.replace(" ", ""); //takes away spaces
+                        if (part == cls)
+                            break;
+                        if (part.length() > 0)
+                        {
+                            if (part.indexOf("[") != -1)
+                                tmp = tmp + part + "]";
+                            else
+                                tmp = tmp + " " + part;
+                        }
+                    }
+                    tmp = tmp + ");";
+                    newCons.add(tmp);
+                    cls = "";
+                    tmp = "";
+                }
+                
+                //setting new constructors
+                b.setConstructors(newCons.toArray(new String[newCons.size()]));
+                newCons.clear();
+            }
+           
+        }
+    }
+    
+    public static void start(Bubble object)
+    {
+        populateVTables(object);
+        formatConstructors();
+    }
     /**
      * Run the thing with the specified command line arguments.
      *
@@ -557,12 +606,15 @@ public class Decl extends xtc.util.Tool
             } catch (Exception e) {System.out.println(e);}
         }
 
-        populateVTables(object);
+        start(object);
 
         for(Bubble b: bubbleList){
             System.out.println("--------------------" + b.getName() + "--------------------");
             System.out.println(b);
             b.printVtable();
+            if (b.getConstructors() != null)
+                for (String s : b.getConstructors())
+                    System.out.println("  Constuctor: " + s);
         }
 
         //for(int i=0; i<bubbleList.size(); i++)
