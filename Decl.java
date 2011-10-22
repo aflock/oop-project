@@ -20,6 +20,7 @@ import xtc.tree.Printer;
 import xtc.lang.JavaFiveParser;
 //our imports
 import xtc.oop.helper.Bubble;
+import xtc.oop.helper.PNode;
 
 
 /** A Java file Scope analyzer
@@ -572,6 +573,7 @@ public class Decl extends xtc.util.Tool
      */
     static Decl d;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
+    static ArrayList<PNode> packageTree = new ArrayList<PNode>();
     public static void main(String[] args)
     {
         //pre-load Object Bubble
@@ -616,15 +618,31 @@ public class Decl extends xtc.util.Tool
             System.out.println("--------------------" + b.getName() + "--------------------");
             /*
             System.out.println(b);
-<<<<<<< HEAD
             */
             //keep track of where we are indent-wise
             int indent = 0;
 
-
             //ignore string and object, they are lame
             if(b.getName() != "String" && b.getName() != "Object"){
+                String struct = "";
                 //print the .h SON
+
+                //find which pnode we need to add this too.
+                String namespace = b.getPackageName();
+                System.out.println("namespace is: " + namespace );
+                String[] namespaceSplit = namespace.split("\\s");
+                String pname = namespaceSplit[namespaceSplit.length-1];
+                PNode p = new PNode("NONE");
+                boolean pnodeFound = false;
+                for(PNode n : packageTree){
+                    if(n.getName() == pname){
+                        pnodeFound = true;
+                        p = n;
+                    }
+                }
+                if(!pnodeFound){
+                    p = new PNode(pname);
+                }
 
                 //TODO change this VVVV to put the struct in the correct namespace array
 
@@ -635,35 +653,35 @@ public class Decl extends xtc.util.Tool
                 String[] namespaceSplit = namespace.split("\\s");
 
                 if (namespace != ""){
-                    System.out.println("namespace " + namespaceSplit[namespaceSplit.length-1] + "{");
+                    struct +=("namespace " + namespaceSplit[namespaceSplit.length-1] + "{");
                     indent++;
                 }
                 */
 
                 //TODO change this ^^^^ to put the struct in the correct namespace array
-
-                System.out.println(indentLevel(indent) + "struct _" + b.getName() + " {");
+                //p = PNode
+                struct +=(indentLevel(indent) + "struct _" + b.getName() + " {"+ "\n");
                 indent++;
 
                 //print data fields (Assumes correct format for them)
-                System.out.println("//Data fields");
-                System.out.println(indentLevel(indent)+ "_" + b.getName() + "_VT* __vptr;");
+                struct +=("//Data fields"+ "\n");
+                struct +=(indentLevel(indent)+ "_" + b.getName() + "_VT* __vptr;"+ "\n");
                 String[] dataFields = b.getDataFields();
                 for(int i= 0; i< dataFields.length; i++){
-                    System.out.println(indentLevel(indent) + dataFields[i]);
+                    struct +=(indentLevel(indent) + dataFields[i]+ "\n");
                 }
 
-                System.out.println();
+                struct +="\n";
 
                 //print constructors (assumes correct format)
-                System.out.println("//Constructors");
+                struct +=("//Constructors"+ "\n");
                 String[] constructors = b.getConstructors();
                 for(int i= 0; i< constructors.length; i++){
-                    System.out.println(indentLevel(indent) + constructors[i]);
+                    struct +=(indentLevel(indent) + constructors[i]+ "\n");
                 }
 
-                System.out.println();
-                System.out.println("//Forward declaration of methods");
+                struct +="\n";
+                struct +=("//Forward declaration of methods"+ "\n");
                 //print forward declarations of methods
                 for( String s : b.getVtable() ) {
                     if(!s.equals("Class __isa;")){
@@ -672,22 +690,25 @@ public class Decl extends xtc.util.Tool
                         tms[1] = tms[1].substring(1, tms[1].length() -1);
                         tms[2] = "(" + tms[2];
 
-                        System.out.println(indentLevel(indent) + "static " +
-                                tms[0] + " " + tms[1] +" " + tms[2] );
+                        struct +=(indentLevel(indent) + "static " +
+                                tms[0] + " " + tms[1] +" " + tms[2] + "\n");
                     }
                 }
-                System.out.println();
+                struct +="\n";
 
                 //extra shit
-                System.out.println(indentLevel(indent) + "static Class __class();\n" );
-                System.out.println(indentLevel(indent) + "static _" + b.getName() + "_VT __vtable;");
+                struct +=(indentLevel(indent) + "static Class __class();\n" );
+                struct +=(indentLevel(indent) + "static _" + b.getName() + "_VT __vtable;"+ "\n");
 
                 for(int i = indent; i>0; i--){
-                    System.out.print("}");
+                    struct+=("}");
                     if(indent == 1)
-                        System.out.print(";");
-                    System.out.println();
+                        struct+=(";");
+                    struct +="\n";
                 }
+                System.out.println(struct);
+                //Add struct to correct PNode
+                p.addStructChild(struct);
             }
 
             //b.printVtable();
