@@ -314,11 +314,11 @@ public class Decl extends xtc.util.Tool
                     String name = n.getString(3);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                         }
-                /*else if ((parent1.getName().equals("ConstructorDeclaration")) &&
+                else if ((parent1.getName().equals("ConstructorDeclaration")) &&
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(3);
-                    constructors.set(constructors.size()-1,constructors.get(methods.size()-1)+" "+name);
-                        }*/
+                    constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
+                        }
             }
 
             public void visitType(GNode n) {
@@ -328,10 +328,13 @@ public class Decl extends xtc.util.Tool
 
                 if ((parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
-
-
                     String name = getStringDescendants(n);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+                }
+                else if ((parent2.getName().equals("ConstructorDeclaration")) &&
+                        (parent3.getName().equals("ClassBody"))){
+                    String name = getStringDescendants(n);
+                    constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
                 }
 
             }
@@ -557,9 +560,6 @@ public class Decl extends xtc.util.Tool
             System.out.println("--------------------" + b.getName() + "--------------------");
             System.out.println(b);
             b.printVtable();
-            if (b.getConstructors() != null)
-                for(String s : b.getConstructors())
-                    System.out.println("Constructor: " + s);
         }
 
         //for(int i=0; i<bubbleList.size(); i++)
