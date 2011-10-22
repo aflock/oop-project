@@ -191,6 +191,11 @@ public class Decl extends xtc.util.Tool
                    }
                    runtime.console().p("\n").flush();
                    */
+                for(Bubble b: bubbleList){
+                    System.out.println("--------XXX-------");
+                    System.out.println(b);
+                    System.out.println("--------XXX-------");
+                }
 
             }
 
@@ -307,7 +312,43 @@ public class Decl extends xtc.util.Tool
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                         }
             }
-
+            
+            public void visitType(GNode n) {
+                visit(n);
+                Node parent2 = (Node)n.getProperty("parent2");
+                Node parent3 = (Node)n.getProperty("parent3");
+                
+                if ((parent2.getName().equals("MethodDeclaration")) &&
+                        (parent3.getName().equals("ClassBody"))){
+                    
+                    
+                    String name = getStringDescendants(n);
+                    methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+                }
+                
+            }
+            
+            
+            public String getStringDescendants(GNode n)
+            {
+                String toReturn = "";
+                //runtime.console().pln("PARENT NODE: " + ((Node)(n.getProperty("parent"))).getName()).flush();
+                //runtime.console().pln("NODE: " + n.getName()).flush();
+                for(Object o : n)
+                {
+                    if(o != null)
+                    {
+                        //runtime.console().pln("CHILD: " + o.toString()).flush();
+                        if(o instanceof String){
+                            //System.out.println(o.toString());
+                            toReturn +=  o.toString() + " ";
+                        }
+                        else
+                            toReturn +=  getStringDescendants((GNode)o);
+                    }
+                }
+                return toReturn;
+            }
             public void visitQualifiedIdentifier(GNode n){
                 visit(n);
                 //for(String s : n.properties())
@@ -339,11 +380,7 @@ public class Decl extends xtc.util.Tool
                     //System.out.println(b);
                 }
 
-                //process the class AST's, but not if they are certain ones that mess us up
-                if(!inList &&
-                    !n.getString(n.size()-1).equals("String") &&
-                    !n.getString(n.size()-1).toLowerCase().contains("exception")){
-
+                if(!inList && !n.getString(n.size()-1).equals("String")){
                     System.out.println("about to call findFile:" + n.getString(n.size()-1));
                     String path = d.findFile(n.getString(n.size()-1));
                     if(!path.equals("")){
@@ -373,10 +410,6 @@ public class Decl extends xtc.util.Tool
                 visit(n);
             }
 
-            public void visitType(GNode n)
-            {
-                visit(n);
-            }
 
             public void visitExpressionList(GNode n)
             {
@@ -466,10 +499,7 @@ public class Decl extends xtc.util.Tool
 
         populateVTables(object);
 
-        /*Checking results of inheritance/vtable construction*/
         for(Bubble b: bubbleList){
-            System.out.println("------------------------" + b.getName()+ "---------------------");
-            System.out.println(b);
             b.printVtable();
         }
 
