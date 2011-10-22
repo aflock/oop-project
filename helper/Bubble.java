@@ -123,7 +123,31 @@ public class Bubble{
 	if (dataFields == null) {
 	    return;
 	}
-	this.dataFields = dataFields;
+
+	//find number of non-null strings
+	int r_length = 0;
+	for(int i = 0; i < dataFields.length; i++) {
+	    if(!dataFields[i].equals(""))
+		r_length++;
+	}
+	//make temp array of correct size
+	String [] temp = new String [r_length];
+	int temp_i = 0;
+
+	for(int i = 0; i < dataFields.length; i++) {
+	    //types
+	    dataFields[i] = dataFields[i].replaceAll("(?<!\\w)int(?!\\w)","int32_t");
+	    dataFields[i] = dataFields[i].replaceAll("(?<!\\w)boolean(?!\\w)","bool");
+	    dataFields[i] = dataFields[i].replaceAll("(?<!\\w)final(?!\\w)","const");
+
+	    //don't add nulls to temp
+	    if(!dataFields[i].equals("")){
+		System.out.println("_______________________"+dataFields[i]);
+		temp[temp_i++] = dataFields[i]+";";
+	    }
+	}
+
+	this.dataFields = temp;
     }
 
     public String[] getDataFields(){
