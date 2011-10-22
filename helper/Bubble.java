@@ -90,10 +90,10 @@ public class Bubble{
 			index = i;
 		    }
 	    }
-
+	    //if it should be overwriting
 	    if(index != -1) {
-		System.out.println("==========OVERWRITING " + sig + "in " + this.name);
-		this.vtable.set(index,add);
+		System.out.println("==========OVERWRITING " + sig + " in " + this.name);
+		this.vtable.set(index,add+"\t");
 	    }
 	    else {
 		this.vtable.add(add);
