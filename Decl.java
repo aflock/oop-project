@@ -107,8 +107,12 @@ public class Decl extends xtc.util.Tool
             //assemble the forces
             ArrayList<String> dataFields = new ArrayList<String>();
             ArrayList<String> methods = new ArrayList<String>();
+            ArrayList<String> children = new ArrayList<String>();
+            String name;
+            Bubble parent;
             String className = "";
             String tempString = "";
+            String packageName = "";
             int counter = 0;
 
             public void visitFieldDeclaration(GNode n){
@@ -120,6 +124,10 @@ public class Decl extends xtc.util.Tool
             public void visitDimensions(GNode n) {
                 visit(n);
             }
+
+
+
+
 
             public void visitModifiers(GNode n){
                 visit(n);
@@ -191,11 +199,6 @@ public class Decl extends xtc.util.Tool
                    }
                    runtime.console().p("\n").flush();
                    */
-                for(Bubble b: bubbleList){
-                    System.out.println("--------XXX-------");
-                    System.out.println(b);
-                    System.out.println("--------XXX-------");
-                }
 
             }
 
@@ -222,9 +225,6 @@ public class Decl extends xtc.util.Tool
 
             //ArrayList<String> methods = new ArrayList<String>();
             //ArrayList<String> dataFields = new ArrayList<String>();
-            ArrayList<String> children = new ArrayList<String>();
-            String name;
-            Bubble parent;
             //String parent;
 
 
@@ -265,6 +265,7 @@ public class Decl extends xtc.util.Tool
                     if(b.getName().equals(className)) {
                         b.setMethods(methods.toArray(new String[methods.size()]));
                         b.setDataFields(dataFields.toArray(new String[dataFields.size()]));
+                        b.setPackageName(packageName);
                         if(parent != null) //it won't ever be null, but just to make compiler happy :P
                             b.setParent(parent);
                         bubbleExists = true;
@@ -275,7 +276,7 @@ public class Decl extends xtc.util.Tool
                     Bubble temp = new Bubble(className,
                             methods.toArray(new String[methods.size()]),
                             dataFields.toArray(new String[dataFields.size()]),
-                            parent, null);
+                            parent, null, packageName);
                     bubbleList.add(temp);
                 }
             }
@@ -312,22 +313,23 @@ public class Decl extends xtc.util.Tool
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                         }
             }
-            
+
             public void visitType(GNode n) {
                 visit(n);
                 Node parent2 = (Node)n.getProperty("parent2");
                 Node parent3 = (Node)n.getProperty("parent3");
+
                 if ((parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
-                    
-                    
+
+
                     String name = getStringDescendants(n);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                 }
-                
+
             }
-            
-            
+
+
             public String getStringDescendants(GNode n)
             {
                 String toReturn = "";
@@ -352,6 +354,7 @@ public class Decl extends xtc.util.Tool
                 visit(n);
                 //for(String s : n.properties())
                 //    System.out.println(s);
+                Node parent0 = (Node)n.getProperty("parent0");
                 Node parent1 = (Node)n.getProperty("parent1");
                 Node parent2 = (Node)n.getProperty("parent2");
                 //System.out.println(parent1);
@@ -371,6 +374,16 @@ public class Decl extends xtc.util.Tool
                     String name = n.getString(0);
                     parent2.setProperty("parent_class", name);
                         }
+
+                if (parent0.getName().equals("PackageDeclaration")){
+                    //add all children to packageName
+                    String name;
+                    for(int i=0; i<n.size(); i++){
+                        name = n.getString(i);
+                        packageName += " " + name;
+                    }
+                }
+
                 boolean inList = false;
                 for(Bubble b : bubbleList){
                     if(b.getName().equals(n.getString(n.size()-1))){
@@ -526,6 +539,8 @@ public class Decl extends xtc.util.Tool
         populateVTables(object);
 
         for(Bubble b: bubbleList){
+            System.out.println("--------------------" + b.getName() + "--------------------");
+            System.out.println(b);
             b.printVtable();
         }
 

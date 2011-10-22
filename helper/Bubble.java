@@ -5,15 +5,17 @@ public class Bubble{
     String name;
     String[] methods;
     String[] dataFields;
+    String packageName;
     Bubble parent;
     String[] children;
     Bubble[] bChildren;
     ArrayList<String> vtable;
 
     public Bubble(String name, String[] methods,
-		  String[] dataFields, Bubble parent, String[] children){
+		  String[] dataFields, Bubble parent, String[] children, String packageName){
 
         this.name = name;
+        this.packageName = packageName;
         this.methods = methods;
         this.dataFields = dataFields;
         this.parent = parent;
@@ -32,13 +34,21 @@ public class Bubble{
         this.parent = null;
     }
 
+    public void setPackageName(String name){
+        this.packageName = name;
+    }
+
+    public String getPackageName(){
+        return this.packageName;
+    }
+
     public void setMethods(String[] methods) {
 	if (methods == null) {
 	    return;
 	}
 	this.methods = methods;
     }
-    
+
     public String[] getMethods(){
         return this.methods;
     }
@@ -50,21 +60,21 @@ public class Bubble{
 	}
 	this.vtable = vtable;
     }
-    
+
     public void add2Vtable(String add){
         this.vtable.add(add);
     }
-    
+
     public ArrayList<String> getVtable(){
         return this.vtable;
     }
-    
+
     public void printVtable(){
         System.out.println("================================");
-        System.out.println(this.name + "'s vtable:"); 
+        System.out.println(this.name + "'s vtable:");
         for(String s : this.vtable)
             System.out.println(s);
-            
+
         System.out.println("================================");
     }
     
@@ -91,7 +101,7 @@ public class Bubble{
     public Bubble getParent() {
 	return parent;
     }
-    
+
     public void setParent(Bubble parent) {
 	if (parent == null) {
 	    return;
@@ -105,7 +115,7 @@ public class Bubble{
 	}
 	this.children = children;
     }
-    
+
     public String[] getChildren()
     {
         return this.children;
@@ -135,7 +145,7 @@ public class Bubble{
 	if (children == null) {
 	    return "No Children";
 	}
-	else { 
+	else {
 	    StringBuilder s = new StringBuilder("[");
 	    for (int i = 0; i < children.length; i++) {
 		s.append(children[i]);
@@ -143,7 +153,7 @@ public class Bubble{
 		    s.append(", ");
 	    }
 	    return s.append("]").toString();
-	}	
+	}
     }
 
     public String parentToString(){
@@ -156,9 +166,10 @@ public class Bubble{
     }
 
     public String toString() {
-	StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
-	s.append("Children: " + childrenToString() + "\n");
-	s.append("Parent: " + parentToString());
-	return s.toString();
+        StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
+        s.append("Package: " + getPackageName() + "\n");
+        s.append("Children: " + childrenToString() + "\n");
+        s.append("Parent: " + parentToString());
+        return s.toString();
     }
 }
