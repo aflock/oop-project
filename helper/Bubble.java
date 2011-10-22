@@ -159,9 +159,10 @@ public class Bubble{
     }
 
     public String toString() {
-	StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
-	s.append("Children: " + childrenToString() + "\n");
-	s.append("Parent: " + parentToString());
-	return s.toString();
+        StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
+        s.append("Package: " + getPackageName() + "\n");
+        s.append("Children: " + childrenToString() + "\n");
+        s.append("Parent: " + parentToString());
+        return s.toString();
     }
 }

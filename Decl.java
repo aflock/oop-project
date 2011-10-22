@@ -107,8 +107,12 @@ public class Decl extends xtc.util.Tool
             //assemble the forces
             ArrayList<String> dataFields = new ArrayList<String>();
             ArrayList<String> methods = new ArrayList<String>();
+            ArrayList<String> children = new ArrayList<String>();
+            String name;
+            Bubble parent;
             String className = "";
             String tempString = "";
+            String packageName = "";
             int counter = 0;
 
             public void visitFieldDeclaration(GNode n){
@@ -226,9 +230,6 @@ public class Decl extends xtc.util.Tool
 
             //ArrayList<String> methods = new ArrayList<String>();
             //ArrayList<String> dataFields = new ArrayList<String>();
-            ArrayList<String> children = new ArrayList<String>();
-            String name;
-            Bubble parent;
             //String parent;
 
 
@@ -357,6 +358,7 @@ public class Decl extends xtc.util.Tool
                 visit(n);
                 //for(String s : n.properties())
                 //    System.out.println(s);
+                Node parent0 = (Node)n.getProperty("parent0");
                 Node parent1 = (Node)n.getProperty("parent1");
                 Node parent2 = (Node)n.getProperty("parent2");
                 //System.out.println(parent1);
@@ -377,7 +379,7 @@ public class Decl extends xtc.util.Tool
                     parent2.setProperty("parent_class", name);
                         }
 
-                if ((parent0.getName().equals("PackageDeclaration")){
+                if (parent0.getName().equals("PackageDeclaration")){
                     //add all children to packageName
                     String name;
                     for(int i=0; i<n.size(); i++){
