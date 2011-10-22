@@ -55,3 +55,15 @@ XX2. Go through input files, create Bubbles for each class declaration
 
 V_V_V_V_V___AFTERTHOUGHTS___V_V_V_V_V
 -Do we need to deal with Excpetions in our Inheritance Tree
+
+
+TO DO FOR SATURDAY:
+For .H:
+-keep track of which methods are overwritten (insert tab character at end of each overwritten method in vtable)
+-In Struct class{
+    -data fields
+    -constructors
+    Methods:
+    -static
+    -vtable
+    -vtable constructor

@@ -323,11 +323,13 @@ public class Decl extends xtc.util.Tool
 
             public void visitType(GNode n) {
                 visit(n);
+                Node parent1 = (Node)n.getProperty("parent0");
                 Node parent2 = (Node)n.getProperty("parent2");
                 Node parent3 = (Node)n.getProperty("parent3");
 
-                if ((parent2.getName().equals("MethodDeclaration")) &&
+                if (!(parent1.getName().equals("FieldDeclaration")) && (parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
+                         
                     String name = getStringDescendants(n);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                 }
@@ -382,6 +384,7 @@ public class Decl extends xtc.util.Tool
                     String name = n.getString(0);
                     dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
                         }
+                      
                 if ((parent1.getName().equals("MethodDeclaration")) &&
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(0);
