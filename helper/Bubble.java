@@ -22,7 +22,22 @@ public class Bubble{
         this.parent = parent;
         this.children = children;
         this.vtable = new ArrayList<String>();
-        this.constructors = constructors;
+	
+        //this.constructors = constructors;
+	int index = 0;
+	String[] temp = new String[constructors.length];
+	
+	for (int i = 0; i < constructors.length; i++) {
+	    if (constructors[i].startsWith(this.name + "(")) {
+		temp[index++] = constructors[i];
+	    }
+	}
+
+	String[] result = new String[index];
+	for (int i = 0; i < index; i++) {
+	    result[i] = temp[i];
+	}
+	this.constructors = result;
     }
 
     public Bubble(String name, String child) {
