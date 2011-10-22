@@ -51,7 +51,36 @@ public class Bubble{
     }
     
     public void add2Vtable(String add){
-        this.vtable.add(add);
+	//format the string
+	add = format(add, this);
+	//if it's a method [in the format: rt_type (*name)(params) ]
+	if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
+	    String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
+	    //	    System.out.println("SIG: \t\t"+sig);
+	    int index = -1;
+	    for(int i = 0; i < this.vtable.size(); i++) {
+		//System.out.println("-----"+this.vtable.get(i));
+		if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
+		    this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1].equals(sig)) 
+		    {
+			//System.out.println("WOWOOWOWOWOWOWOWOWOWO");
+			index = i;
+		    }
+	    }
+
+	    if(index != -1) {
+		System.out.println("==========OVERWRITING " + sig + "in " + this.name);
+		this.vtable.set(index,add);
+	    }
+	    else {
+		this.vtable.add(add);
+	    }
+	    
+	}
+	//if it's not a method
+	else {
+	    this.vtable.add(add);
+	}
     }
     
     public ArrayList<String> getVtable(){
@@ -154,4 +183,75 @@ public class Bubble{
 	s.append("Parent: " + parentToString());
 	return s.toString();
     }
+    
+    public String format(String method, Bubble b) {
+	if (method.startsWith(" ")) {
+	    String[] temp2 = method.split(" ");
+	    int count = 0;
+	    for (int j = 0; j < temp2.length; j++) {
+		if (temp2[j].length() != 0) count++;
+	    }
+	    
+	    String[] temp = new String[count];
+	    int index = 0;
+	    for (int j = 0; j < temp2.length; j++) {
+		if (temp2[j].length() != 0) {
+		    temp[index++] = temp2[j];
+		}
+	    }
+	    
+	    String s = "";
+	    String p = "";
+	    boolean returnType = true;
+	    boolean para = true;
+	    for (int j = 0; j < temp.length; j++) {
+		if (temp[j].equals("public") ||
+		    temp[j].equals("private") ||
+		    temp[j].equals("protected") ||
+		    temp[j].equals("static")) {
+		    //do nothing
+		}
+		else if (returnType) {
+		    int num = temp.length - j;
+		    if (num % 2 == 0) {
+			s += temp[j] + " ";
+		    }
+		    else {
+			s += "void ";
+			j--;
+		    }
+		    returnType = false;
+		}
+		else {
+		    if (j != temp.length - 1) {
+			if (para) {
+			    if (p.length() != 0) {
+				p += ", " + temp[j];
+			    }
+			    else {
+				p += temp[j];
+			    }
+			    para = false;
+			}
+			else {
+			    para = true;
+			}
+		    }
+		    else {
+			s += "(*" + temp[j] + ")(" + b.getName();
+		    }
+		}
+	    }
+	    if (p.length() != 0) {
+		s += ", " + p + ");";
+	    }		
+	    else {
+		s += ")";
+	    }
+	    return s;
+	}
+	return method;
+    }
+    
+
 }
