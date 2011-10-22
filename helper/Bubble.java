@@ -123,6 +123,12 @@ public class Bubble{
     {
         return this.children;
     }
+    
+    //sets the vtable at index i to string s
+    public void setVtableIndex(int i, String s)
+    {
+        this.vtable.set(i, s);
+    }
 
     public void addChild(String child) {
 	if (child == null) {

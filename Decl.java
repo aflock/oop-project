@@ -107,6 +107,7 @@ public class Decl extends xtc.util.Tool
             //assemble the forces
             ArrayList<String> dataFields = new ArrayList<String>();
             ArrayList<String> methods = new ArrayList<String>();
+            ArrayList<String> constructors = new ArrayList<String>();
             ArrayList<String> children = new ArrayList<String>();
             String name;
             Bubble parent;
@@ -265,6 +266,7 @@ public class Decl extends xtc.util.Tool
                     if(b.getName().equals(className)) {
                         b.setMethods(methods.toArray(new String[methods.size()]));
                         b.setDataFields(dataFields.toArray(new String[dataFields.size()]));
+                        b.setConstructors(constructors.toArray(new String[constructors.size()]));
                         b.setPackageName(packageName);
                         if(parent != null) //it won't ever be null, but just to make compiler happy :P
                             b.setParent(parent);
@@ -276,7 +278,7 @@ public class Decl extends xtc.util.Tool
                     Bubble temp = new Bubble(className,
                             methods.toArray(new String[methods.size()]),
                             dataFields.toArray(new String[dataFields.size()]),
-                            parent, null, packageName);
+                            parent, null, packageName, constructors.toArray(new String[constructors.size()]));
                     bubbleList.add(temp);
                 }
             }
@@ -327,6 +329,14 @@ public class Decl extends xtc.util.Tool
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
                 }
 
+            }
+            
+            public void visitConstructorDeclaration(GNode n)
+            {
+                constructors.add("");
+                visit(n);
+                String name = n.getString(3);
+                constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
             }
 
 
