@@ -861,9 +861,6 @@ public class Decl extends xtc.util.Tool
             if (methods != null)
             {
                 for(String entry : methods) {
-                    //CHecks if method is overwritten <===========DONT THINK WE NEED THIS BECAUSE EVERY METHOD IN
-                    //METHOD IS ALREADY NEW OR OVERWRITTEN
-                    //if(entry.charAt(entry.length()-1) == '\t'){
                     mubbleList.add(new Mubble(b.getName(), entry));
                     
                 }

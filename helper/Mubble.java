@@ -9,8 +9,9 @@ public class Mubble{
      public Mubble(String iName, String iHeader)
      {
         this.name = iName;
-        this.header = iHeader;
+        this.header = formatMethodHeader(iHeader);
         System.out.println("========HEADER: " + iHeader);
+        System.out.println("========HEADER: " + header);
         this.code = "";
      }
      
@@ -21,17 +22,56 @@ public class Mubble{
      //-Go from METHOD FORMAT NOT VTABLE FORMAT
      
         //converts method header from .h format to .cc format
-        //From: String (*getName)(Class);
-        //To: String __Class::getName(Class __this) {
-        
+        //From: public String toString
+        //To: String __String::toString(String __this) {
+        String returnType = "";
+        String methodName = "";
+        String params = this.name + " __this";
         String[] sploded = in.split(" ");
-        String returnType = sploded[0];
-        String methodName = getStringBetween(in, "(*", ")");
-        String params = getStringBetween(in, ")(", ");");
-        for (String s : sploded)
-            System.out.println("   Sploded: " + params);
+        int index = 1;
+        //Skips public static private, protected...
+        if (isModifier(sploded[index]))
+        {
+            index++;
+        }
+        
+        if ((sploded.length - (index) % 2) == 0) //if even, there is a return type present
+        {
+            returnType = sploded[index];
+            index++;
+        }
+        else //void return type
+            returnType = "void";
+        
+        boolean type = true;
+        for(int i = index; i < sploded.length-1; i++)
+        {
+            if (type) //it is the param type
+            {
+                params = params + " " + sploded[i];
+                type = false;
+            }
+            else //it is the variable name
+            {
+                params = params + ", " + sploded[i];
+                type = true;
+            }
+        }
+             
+        methodName = sploded[sploded.length - 1];
             
-        return "";
+        return returnType + "__" + this.name + "::" + methodName + "(" + params + ")";
+     }
+     
+     public boolean isModifier(String s)
+     {
+
+        s = s.trim();
+
+        if(s.equals("static") || s.equals("public") || s.equals("private") || s.equals("protected"))
+            return true;
+        else
+            return false;
      }
      
     public static String getStringBetween(String src, String start, String end)  
