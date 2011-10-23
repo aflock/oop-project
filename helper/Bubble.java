@@ -22,22 +22,7 @@ public class Bubble{
         this.parent = parent;
         this.children = children;
         this.vtable = new ArrayList<String>();
-	
-        //this.constructors = constructors;
-	int index = 0;
-	String[] temp = new String[constructors.length];
-	
-	for (int i = 0; i < constructors.length; i++) {
-	    if (constructors[i].startsWith(this.name + "(")) {
-		temp[index++] = constructors[i];
-	    }
-	}
-
-	String[] result = new String[index];
-	for (int i = 0; i < index; i++) {
-	    result[i] = temp[i];
-	}
-	this.constructors = result;
+	this.constructors = trim(constructors);
     }
 
     public Bubble(String name, String child) {
@@ -51,7 +36,28 @@ public class Bubble{
     }
 
     public void setConstructors(String[] constructors){
-        this.constructors = constructors;
+        this.constructors = trim(constructors);
+    }
+
+    public String[] trim(String[] constructors) {
+	int index = 0;
+	String[] temp = new String[constructors.length];
+	
+	for (int i = 0; i < constructors.length; i++) {
+	    String[] a = constructors[i].split(" ");
+	    for (int j = 0; j < a.length; j++) {
+		if (a[j].startsWith(this.name)) {
+		    temp[index++] = constructors[i];
+		    break;
+		}
+	    }
+	}
+
+	String[] result = new String[index];
+	for (int i = 0; i < index; i++) {
+	    result[i] = temp[i];
+	}
+	return result;
     }
 
     public String[] getConstructors(){
