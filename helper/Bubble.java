@@ -79,6 +79,11 @@ public class Bubble{
 	}
 	this.methods = methods;
     }
+    
+    public void setMethodAtIndex(int index, String meth)
+    {
+       this.methods[index] = meth;
+    }
 
     public String[] getMethods(){
         return this.methods;
