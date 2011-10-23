@@ -73,22 +73,24 @@ public class Decl extends xtc.util.Tool
 
     public String getName()
     {
-        return "Java Scope Analyzer";
+        return "Java to C++ translator";
     }
 
     public String getCopy()
     {
 
-        return "My Group";
+        return "Ninja assassins: dk, calvin, Andrew*2";
     }
 
     public void init()
     {
         super.init();
 
+        /*
         runtime.
             bool("printClassH", "printClassH", false, "print the .h that is interpreted from given AST").
             bool("printClassCC", "printClassCC", false, "Print Java AST.");
+        */
     }
 
     public Node parse(Reader in, File file) throws IOException, ParseException
@@ -163,7 +165,7 @@ public class Decl extends xtc.util.Tool
                     String name = n.getString(0);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
 		}
-		else if((parent1.getName().equals("FieldDeclaration")) && 
+		else if((parent1.getName().equals("FieldDeclaration")) &&
 			(parent2.getName().equals("ClassBody"))) {
 		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
 		}
@@ -334,11 +336,11 @@ public class Decl extends xtc.util.Tool
 	     */
             public void visitType(GNode n) {
                 visit(n);
-                Node parent1 = (Node)n.getProperty("parent0");
+                Node parent0 = (Node)n.getProperty("parent0");
                 Node parent2 = (Node)n.getProperty("parent2");
                 Node parent3 = (Node)n.getProperty("parent3");
 
-                if (!(parent1.getName().equals("FieldDeclaration")) && (parent2.getName().equals("MethodDeclaration")) &&
+                if (!(parent0.getName().equals("FieldDeclaration")) && (parent2.getName().equals("MethodDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
 
                     String name = getStringDescendants(n);
@@ -509,7 +511,7 @@ public class Decl extends xtc.util.Tool
     }
 
     //recursive call to populate all vtables in bubbleList
-    public static void populateVTables(Bubble root){
+    public static void populateVTables(Bubble root){//{{{
         for(Bubble b : bubbleList){
             if (b.getParent() == root){
                 //creating child's vTable
@@ -519,7 +521,7 @@ public class Decl extends xtc.util.Tool
                 {
                     //if its a main method, don't add it to vtable
                     if((s.indexOf("public static String [  args") == -1) && (s.indexOf("main") == -1))
-                        b.add2Vtable(s);
+                        b.add2Vtable(s +"\t");
                 }
                 //recursively setting child's vtables
                 populateVTables(b);
@@ -535,9 +537,9 @@ public class Decl extends xtc.util.Tool
           i++;
         }
 
-    }
+    }//}}}
 
-    public static void formatConstructors()
+    public static void formatConstructors()//{{{
     {
         String tmp = "";
         String cls = ""; //class name of constructor
@@ -578,7 +580,7 @@ public class Decl extends xtc.util.Tool
             }
 
         }
-    }
+    }//}}}
 
     public static void start(Bubble object)
     {
@@ -594,7 +596,7 @@ public class Decl extends xtc.util.Tool
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
     public static void main(String[] args)
-    {
+    {//{{{
         packageTree.add(new PNode("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
@@ -728,7 +730,7 @@ public class Decl extends xtc.util.Tool
 
 
 
-    }
+    }//}}}
 
     public static PNode constructPackageTree(String packageName){//{{{
 
@@ -801,4 +803,9 @@ public class Decl extends xtc.util.Tool
     }
 }
 
+class Impl{
+
+
+
+}
 

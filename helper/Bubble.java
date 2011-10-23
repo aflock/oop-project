@@ -94,7 +94,7 @@ public class Bubble{
     }
 
     public void add2Vtable(String add){
-    add = add.trim();
+    //add = add.trim();
 	//format the string
 	add = format(add, this);
 	//if it's a method [in the format: rt_type (*name)(params) ]
