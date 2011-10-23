@@ -307,7 +307,6 @@ public class Decl extends xtc.util.Tool
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+"(");
                         }
 
-                //TODO this ending parens is out of order- is it necessary? need to discuss what format we need/want these in
                 if ((parent1.getName().equals("MethodDeclaration")) &&
                         (parent2.getName().equals("ClassBody"))){
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+")");
@@ -728,12 +727,13 @@ public class Decl extends xtc.util.Tool
             System.out.println(p);
         }
 
+	for (Bubble b : bubbleList)
+	    b.printToFile(1);
 
 
     }//}}}
-	for (Bubble b : bubbleList)
-	    b.printToFile(1);
-    }
+
+
 
     public static PNode constructPackageTree(String packageName){//{{{
 
@@ -810,6 +810,144 @@ class Impl{
 
     public Impl(){}
 
+    public void init()
+    {
+        super.init();
+    }
 
+    public Node parse(Reader in, File file) throws IOException, ParseException
+    {
+        JavaFiveParser parser = new JavaFiveParser(in, file.toString(), (int)file.length());
+        Result result = parser.pCompilationUnit(0);
+
+        return (Node)parser.value(result);
+    }
+
+    public void process(Node node)
+    {
+
+        new Visitor()
+        {
+            private int count = 0;
+
+
+            String[] fields;
+
+            public int toIndex(String s) {
+                if(s.equals("public"))
+                    return 0;
+                else if(s.equals("private"))
+                    return 1;
+                else if(s.equals("protected"))
+                    return 2;
+                else
+                    return -1;
+            }
+
+            String[] classMembers;
+
+
+            public void visitFieldDeclaration(GNode n){
+                visit(n);
+            }
+
+            public void visitDimensions(GNode n) {
+                visit(n);
+            }
+
+            public void visitModifiers(GNode n){
+                visit(n);
+
+            }
+
+            String tempString = "";
+            public void visitMethodDeclaration(GNode n){
+
+                visit(n);
+            }
+
+            public void visitModifier(GNode n){
+                visit(n);
+
+            }
+
+            public void visitDeclarators(GNode n) {
+                visit(n);
+            }
+
+            public void visitDeclarator(GNode n) {
+                visit(n);
+            }
+
+            public void visitIntegerLiteral(GNode n) {
+                visit(n);
+            }
+
+            public void visitClassBody(GNode n){
+                visit(n);
+            }
+
+            public void visitClassDeclaration(GNode n){
+                visit(n);
+            }
+
+            public void visitFormalParameters(GNode n){
+                visit(n);
+            }
+
+            public void visitFormalParameter(GNode n) {
+
+                visit(n);
+            }
+
+            public void visitQualifiedIdentifier(GNode n){
+                visit(n);
+            }
+
+            public void visitImportDeclaration(GNode n){
+                visit(n);
+            }
+
+            public void visitForStatement(GNode n)
+            {
+                visit(n);
+            }
+
+            public void visitBasicForControl(GNode n)
+            {
+                visit(n);
+            }
+
+            public void visitPrimitiveType(GNode n) {
+                visit(n);
+            }
+
+            public void visitType(GNode n)
+            {
+                visit(n);
+            }
+
+            public void visitExpressionList(GNode n)
+            {
+                visit(n);
+            }
+
+            public void visitRelationalExpression(GNode n)
+            {
+                visit(n);
+            }
+
+            public void visit(Node n)
+            {
+                for (Object o : n){
+                    if (o instanceof Node){
+                        ((Node)o).setProperty("parent_name", n.getName() );
+                        ((Node)o).setProperty("parent", n );
+                        dispatch((Node)o);
+                    }
+                }
+            }
+        }.dispatch(node);
+    }
 }
 
