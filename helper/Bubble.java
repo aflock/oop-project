@@ -294,8 +294,8 @@ public class Bubble{
 		if (temp[j].equals("public") ||
 		    temp[j].equals("private") ||
 		    temp[j].equals("protected") ||
-		    temp[j].equals("static")) ||
-		    temp[j].equals("final") {		    
+		    temp[j].equals("static") ||
+		    temp[j].equals("final")) {		    
 		}
 		else {
 		    num++;
