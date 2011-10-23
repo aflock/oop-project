@@ -532,7 +532,7 @@ public class Decl extends xtc.util.Tool
                 //creating child's vTable
                 for(String s : root.getVtable()) //getting parent's vtable
                     b.add2Vtable(s);
-                    
+
                 int i = 0;
                 for(String s : b.getMethods()) //adding new methods to vtable
                 {
@@ -545,14 +545,14 @@ public class Decl extends xtc.util.Tool
                            s = s + "\t";
                            b.setMethodAtIndex(i, s);
                            String[] tmp = b.getMethods();
-                          
+
                            if(tmp[i].charAt(tmp.length() -1) == "\t")
                                 System.out.println("SUCCESSS!!!!");
-                                
+
                            overwritten = false;
                        }
                     }
-                    
+
                     i++;
                 }
                 //recursively setting child's vtables
@@ -644,6 +644,7 @@ public class Decl extends xtc.util.Tool
     static Decl d;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
+    static ArrayList<Mubble>  = new ArrayList<Mubble>();
     public static void main(String[] args)
     {//{{{
         packageTree.add(new PNode("DefaultPackage", null));
