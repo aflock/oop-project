@@ -546,7 +546,7 @@ public class Decl extends xtc.util.Tool
                            b.setMethodAtIndex(i, s);
                            String[] tmp = b.getMethods();
                           
-                           if(tmp[i].charAt(tmp.length() -1) == "\t")
+                           if(tmp[i].charAt(tmp[i].length() -1) == '\t')
                                 System.out.println("SUCCESSS!!!!");
                                 
                            overwritten = false;
