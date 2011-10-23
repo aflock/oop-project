@@ -18,11 +18,14 @@ import xtc.tree.Location;
 import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
+
 //our imports
 import xtc.oop.helper.Bubble;
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.PNode;
 import java.util.regex.*;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -850,6 +853,19 @@ public class Decl extends xtc.util.Tool
         ////////////////////////// Should be done with .h by here///////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
 
+        //Write .h to file
+        FileWriter hstream = new FileWrite("test.h");
+        BufferedWriter hwrite = new BufferedWriter(hstream);
+
+        /*
+         *Iterate through packageTree: in order (dfs)
+         */
+        //find Default package
+        for(PNode p : packageTree){
+            if()
+        }
+
+
         Mubble test = new Mubble("classy", "String (*getName)(Class);");
 	    test.formatMethodHeader(test.getHeader());
 
@@ -862,7 +878,7 @@ public class Decl extends xtc.util.Tool
             {
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry));
-                    
+
                 }
             }
         }
