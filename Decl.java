@@ -731,6 +731,9 @@ public class Decl extends xtc.util.Tool
 
 
     }//}}}
+	for (Bubble b : bubbleList)
+	    b.printToFile(1);
+    }
 
     public static PNode constructPackageTree(String packageName){//{{{
 
