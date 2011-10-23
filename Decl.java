@@ -811,11 +811,18 @@ public class Decl extends xtc.util.Tool
             System.out.println(p);
         }
 
+        /* print later
 	for (Bubble b : bubbleList)
 	    b.printToFile(1);
-	    
-	Mubble test = new Mubble("classy", "String (*getName)(Class);");
-	test.formatMethodHeader(test.getHeader());
+
+        */
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////// Should be done with .h by here///////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        Mubble test = new Mubble("classy", "String (*getName)(Class);");
+	    test.formatMethodHeader(test.getHeader());
 
 
     }//}}}
