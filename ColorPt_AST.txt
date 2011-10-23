@@ -1,5 +1,5 @@
-xtc Java Tool, v. 2.1.1, (C) 2004-2007, 2011 IBM, Robert Grimm, and NYU
-Processing ColorPt.java ...
+Java Scope Analyzer, v. 2.1.1, My Group
+Processing ../oop_project/ColorPt.java ...
 CompilationUnit(
   null,
   ImportDeclaration(
@@ -169,6 +169,148 @@ CompilationUnit(
               "=",
               PrimaryIdentifier(
                 "color"
+              )
+            )
+          )
+        )
+      ),
+      MethodDeclaration(
+        Modifiers(
+          Modifier(
+            "public"
+          )
+        ),
+        null,
+        Type(
+          PrimitiveType(
+            "int"
+          ),
+          null
+        ),
+        "addition",
+        FormalParameters(
+          FormalParameter(
+            Modifiers(),
+            Type(
+              PrimitiveType(
+                "int"
+              ),
+              null
+            ),
+            null,
+            "a",
+            null
+          ),
+          FormalParameter(
+            Modifiers(),
+            Type(
+              PrimitiveType(
+                "int"
+              ),
+              null
+            ),
+            null,
+            "b",
+            null
+          )
+        ),
+        null,
+        null,
+        Block(
+          FieldDeclaration(
+            Modifiers(),
+            Type(
+              PrimitiveType(
+                "int"
+              ),
+              null
+            ),
+            Declarators(
+              Declarator(
+                "c",
+                null,
+                AdditiveExpression(
+                  PrimaryIdentifier(
+                    "a"
+                  ),
+                  "+",
+                  PrimaryIdentifier(
+                    "b"
+                  )
+                )
+              )
+            )
+          ),
+          ReturnStatement(
+            PrimaryIdentifier(
+              "c"
+            )
+          ),
+          FieldDeclaration(
+            Modifiers(),
+            Type(
+              QualifiedIdentifier(
+                "Integer"
+              ),
+              null
+            ),
+            Declarators(
+              Declarator(
+                "theInt",
+                null,
+                NewClassExpression(
+                  null,
+                  null,
+                  QualifiedIdentifier(
+                    "Integer"
+                  ),
+                  Arguments(
+                    PrimaryIdentifier(
+                      "c"
+                    )
+                  ),
+                  null
+                )
+              )
+            )
+          ),
+          FieldDeclaration(
+            Modifiers(),
+            Type(
+              PrimitiveType(
+                "int"
+              ),
+              null
+            ),
+            Declarators(
+              Declarator(
+                "g",
+                null,
+                CallExpression(
+                  PrimaryIdentifier(
+                    "theInt"
+                  ),
+                  null,
+                  "hashCode",
+                  Arguments()
+                )
+              )
+            )
+          ),
+          ExpressionStatement(
+            CallExpression(
+              SelectionExpression(
+                PrimaryIdentifier(
+                  "System"
+                ),
+                "out"
+              ),
+              null,
+              "println",
+              Arguments(
+                PrimaryIdentifier(
+                  "g"
+                )
               )
             )
           )

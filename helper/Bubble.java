@@ -42,10 +42,11 @@ public class Bubble{
     public String[] trim(String[] constructors) {
 	int index = 0;
 	String[] temp = new String[constructors.length];
-	
+
 	for (int i = 0; i < constructors.length; i++) {
 	    String[] a = constructors[i].split(" ");
 	    for (int j = 0; j < a.length; j++) {
+		//System.out.println(a[j] + " " + this.name);
 		if (a[j].startsWith(this.name)) {
 		    temp[index++] = constructors[i];
 		    break;
@@ -83,7 +84,35 @@ public class Bubble{
         return this.methods;
     }
 
-
+    public String[] getFormatedMethods() {
+	String[] mm = new String[vtable.size()-1];
+	String[] temp = new String[mm.length];
+	for (int i = 0; i < mm.length; i++) {
+	    temp[i] = vtable.get(i+1);
+	    String[] s = temp[i].split("[\\s\\(\\)\\*\\,\\;]");
+	    String real = "";
+	    int num = 0;
+	    for (int j = 0; j < s.length; j++) {
+		if (!s[j].equals("")) {
+		    if (num == 0) {
+			real += s[j] + " ";
+		    }
+		    else if (num == 1) {
+			real += s[j] + "(";
+		    }
+		    else if (num == 2) {
+			real += s[j];
+		    }
+		    else {
+			real += ", " + s[j];
+		    }
+		    num++;
+		}
+	    }
+	    mm[i] = real + ");";
+	}
+	return mm;
+    }
 
     //changed to make it arraylist
     public void setVtable(ArrayList<String> vtable) {
@@ -94,6 +123,7 @@ public class Bubble{
     }
 
     public void add2Vtable(String add){
+    //add = add.trim();
 	//format the string
 	add = format(add, this);
 	//if it's a method [in the format: rt_type (*name)(params) ]
@@ -132,12 +162,12 @@ public class Bubble{
     }
 
     public void printVtable(){
-        System.out.println("================================");
-        System.out.println(this.name + "'s vtable:");
+        System.out.println("//==============================================");
+        System.out.println("//" + this.name + "'s vtable:");
         for(String s : this.vtable)
             System.out.println(s);
 
-        System.out.println("================================");
+        //System.out.println("================================");
     }
 
     public void setDataFields(String[] dataFields) {
@@ -291,11 +321,12 @@ public class Bubble{
 
 	    int num = 0;
 	    for (int j = 0; j < temp.length; j++) {
+            //TODO DK can you check out the "final" keyword is it supposed to be there?
 		if (temp[j].equals("public") ||
 		    temp[j].equals("private") ||
 		    temp[j].equals("protected") ||
 		    temp[j].equals("static") ||
-		    temp[j].equals("final")) {		    
+		    temp[j].equals("final")) {
 		}
 		else {
 		    num++;
@@ -322,5 +353,54 @@ public class Bubble{
 	    return s;
 	}
 	return method;
+    }
+
+    public void printToFile(int indent) {
+	if (getName().equals("Object") ||
+	    getName().equals("String") ||
+	    getName().equals("Class")) return;
+
+	System.out.println("#pragma once");
+	System.out.println();
+	System.out.println("#include \"java_lang.h\"");
+	System.out.println();
+	System.out.println("struct _" + getName() + ";");
+	System.out.println("struct _" + getName() + "_VT;");
+	System.out.println();
+	System.out.println("typdef _" + getName() + "* " + getName() + ";");
+	System.out.println();
+	System.out.println("struct _" + getName() + " {");
+	System.out.println(indentLevel(indent) + "_" + getName() +
+			   "_VT* __vprt;");
+	System.out.println(indentLevel(indent) + "_" + getName() + "();");
+	System.out.println();
+	String[] m = getFormatedMethods();
+	for (int i = 0; i < m.length; i++) {
+	    System.out.println(indentLevel(indent) + "static " + m[i]);
+	}
+
+	System.out.println();
+	System.out.println(indentLevel(indent) + "static Class __class();");
+	System.out.println();
+	System.out.println(indentLevel(indent) + "static _" + getName() +
+			   "_VT __vtable;");
+	System.out.println("};");
+	System.out.println();
+
+	System.out.println("struct _" + getName() + "_VT {");
+	ArrayList<String> vt = getVtable();
+	for (int i = 0; i < vt.size(); i++) {
+	    System.out.println(indentLevel(indent) + vt.get(i));
+	}
+	System.out.println();
+	System.out.println("};");
+    }
+
+    public String indentLevel(int indent){
+        String toReturn = "";
+        for( int i=0; i<indent; i++){
+            toReturn += "  ";
+        }
+        return toReturn;
     }
 }
