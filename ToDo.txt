@@ -52,18 +52,47 @@ XX2. Go through input files, create Bubbles for each class declaration
 4. Create structs for each class
     -associate data fields
 
+____________________.h is practically finished ______________________
+
+##How we are doing the .cc:##
+
+-Create new class Mubble. It will be a container for all method details
+Mubble:
+    -class you belong to
+    -header of method (in correct format for .cc output)
+    -Code
+
+-Create global MubbleList:
+For each Bubble:
+    For each Method:
+        create a mubble for it and add to the list
+
+-now Impl will visit the AST just as decl did and do the following:
+    -when you hit a MethodDecl:
+        -find which Mubble it corresponds to in MubbleList (check parents etc)
+        -set that Mubble as "currentMubble"
+
+    -Hitting Blocks/FieldDecl/etc etc (the code)
+        -Add the code in proper format to CurrentMubble.code
+        (it may make it easier to keep tempStrings to hold lines of code as they are constructed, then add tempString to MC.code..)
+
+-Once AST is done being processes:
+    -Add each Mubble to its respective PNode. (for correct printing with namespace)
+
+
+
+
+####TODO FOR SUNDAY####
+-implement above ^^
+-review DK's printer of PNode (namespace correct, includes vtable constructor)
+-re-route standard out to write to a file (___.h instead of terminal)
+-write a sample .cc to test our generated .h
+
+
+
 
 V_V_V_V_V___AFTERTHOUGHTS___V_V_V_V_V
--Do we need to deal with Excpetions in our Inheritance Tree
+-Do we need to deal with Exceptions in our Inheritance Tree
+-nested shit... wtf
 
 
-TO DO FOR SATURDAY:
-For .H:
--keep track of which methods are overwritten (insert tab character at end of each overwritten method in vtable)
--In Struct class{
-    -data fields
-    -constructors
-    Methods:
-    -static
-    -vtable
-    -vtable constructor
