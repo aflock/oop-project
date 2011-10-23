@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Mubble{
      String header; //header for method
+     String methName; //name of the method
      String name; //class method is in
      String code; //actual code of class, in Block() type node of AST
      
@@ -10,11 +11,16 @@ public class Mubble{
      {
         this.name = iName;
         this.header = formatMethodHeader(iHeader);
-        System.out.println("========HEADER: " + iHeader);
-        System.out.println("========HEADER: " + header);
+        this.methName = extractMethodName(iHeader);
         this.code = "";
      }
      
+     
+     public String extractMethodName(String in)
+     {
+        String[] sploded = in.split(" ");
+        return sploded[sploded.length - 1];
+     }
      public String formatMethodHeader(String in)
      {
      //====TODO===//
