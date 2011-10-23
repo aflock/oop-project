@@ -823,7 +823,7 @@ public class Decl extends xtc.util.Tool
     }
 }
 
-class Impl extends xtc.util.tool{
+class Impl extends xtc.util.Tool{
 
     public Impl(){}
 
