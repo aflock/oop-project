@@ -42,7 +42,7 @@ public class Bubble{
     public String[] trim(String[] constructors) {
 	int index = 0;
 	String[] temp = new String[constructors.length];
-	
+
 	for (int i = 0; i < constructors.length; i++) {
 	    String[] a = constructors[i].split(" ");
 	    for (int j = 0; j < a.length; j++) {
@@ -94,6 +94,7 @@ public class Bubble{
     }
 
     public void add2Vtable(String add){
+    add = add.trim();
 	//format the string
 	add = format(add, this);
 	//if it's a method [in the format: rt_type (*name)(params) ]
@@ -295,7 +296,7 @@ public class Bubble{
 		    temp[j].equals("private") ||
 		    temp[j].equals("protected") ||
 		    temp[j].equals("static") ||
-		    temp[j].equals("final")) {		    
+		    temp[j].equals("final")) {
 		}
 		else {
 		    num++;
