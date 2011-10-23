@@ -20,6 +20,7 @@ import xtc.tree.Printer;
 import xtc.lang.JavaFiveParser;
 //our imports
 import xtc.oop.helper.Bubble;
+import xtc.oop.helper.Mubble;
 import xtc.oop.helper.PNode;
 import java.util.regex.*;
 
@@ -824,10 +825,30 @@ public class Decl extends xtc.util.Tool
             System.out.println(p);
         }
 
+        /* print later
 	for (Bubble b : bubbleList)
 	    b.printToFile(1);
 
+        */
 
+        ////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////// Should be done with .h by here///////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        Mubble test = new Mubble("classy", "String (*getName)(Class);");
+	    test.formatMethodHeader(test.getHeader());
+
+
+
+        //Add all Mubbles to the list
+        for(Bubble b: bubbleList){
+            ArrayList<String> vtable = b.getVtable();
+            for(String entry: vtable) {
+                if(entry.charAt(entry.length()-1) == '\t'){
+                    mubbleList.add(new Mubble(b.getName, entry));
+                }
+            }
+        }
     }//}}}
 
 
