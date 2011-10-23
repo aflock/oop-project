@@ -726,8 +726,8 @@ public class Decl extends xtc.util.Tool
             System.out.println(p);
         }
 
-
-
+	for (Bubble b : bubbleList)
+	    b.printToFile(1);
     }
 
     public static PNode constructPackageTree(String packageName){//{{{
@@ -788,7 +788,7 @@ public class Decl extends xtc.util.Tool
         PNode toReturn = new PNode(packageName, parent);
 
         packageTree.add(toReturn);
-
+ 
         return toReturn;
     }//}}}
 
