@@ -808,6 +808,7 @@ public class Decl extends xtc.util.Tool
 
 class Impl{
 
+    public Impl(){}
 
 
 }
