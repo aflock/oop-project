@@ -451,7 +451,7 @@ public class Decl extends xtc.util.Tool
                     System.out.println("about to call findFile on: " + path.substring(1));
 
                     path = d.findFile(path);
-                    
+
 		    if(!path.equals("")){
                         System.out.println(path);
                         try{
@@ -845,7 +845,7 @@ public class Decl extends xtc.util.Tool
             ArrayList<String> vtable = b.getVtable();
             for(String entry: vtable) {
                 if(entry.charAt(entry.length()-1) == '\t'){
-                    mubbleList.add(new Mubble(b.getName, entry));
+                    mubbleList.add(new Mubble(b.getName(), entry));
                 }
             }
         }
