@@ -25,4 +25,12 @@ class ColorPt extends Pt{
     public void setColor(String color){
         this.color = color;
     }
+
+    public int addition(int a, int b){
+        int c = a + b;
+        return c;
+        Integer theInt = new Integer(c);
+        int g = theInt.hashCode();
+        System.out.println(g);
+    }
 }
