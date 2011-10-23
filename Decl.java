@@ -681,7 +681,8 @@ public class Decl extends xtc.util.Tool
         /*
          * Attach structs to packageTree
          */
-        String uniStruct = "";
+        String uniStruct = "//Forward Decls of All Structs in package \n";
+        String typedefs = "\n";
         //ADDED --Forward Decls of stucts and vtables
            for(Bubble b : bubbleList)
            {
@@ -689,8 +690,11 @@ public class Decl extends xtc.util.Tool
                  {
                     uniStruct += "struct _" + b.getName() + ";\n";
                     uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
+                    typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
+                    
                  }
            }
+           uniStruct += typedefs;
         
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");

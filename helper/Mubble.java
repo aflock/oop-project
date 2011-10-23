@@ -10,8 +10,6 @@ public class Mubble{
      {
         this.name = iName;
         this.header = formatMethodHeader(iHeader);
-        System.out.println("========HEADER: " + iHeader);
-        System.out.println("========HEADER: " + header);
         this.code = "";
      }
      
