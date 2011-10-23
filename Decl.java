@@ -681,9 +681,22 @@ public class Decl extends xtc.util.Tool
         /*
          * Attach structs to packageTree
          */
-
+        String uniStruct = "";
+        //ADDED --Forward Decls of stucts and vtables
+           for(Bubble b : bubbleList)
+           {
+                 if(b.getName() != "String" && b.getName() != "Object")
+                 {
+                    uniStruct += "struct _" + b.getName() + ";\n";
+                    uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
+                 }
+           }
+        
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
+           
+           
+
             /*
             System.out.println(b);
             */
@@ -693,12 +706,14 @@ public class Decl extends xtc.util.Tool
             //ignore string and object, they are lame
             if(b.getName() != "String" && b.getName() != "Object"){
 
-		String struct = "";
+		        String struct = "";
                 //print the .h SON
 
                 //find which package node to add this struct to
                 String packName = b.getPackageName();
                 PNode p = constructPackageTree(packName);
+                if(!p.hasStruct(uniStruct))
+                    p.addStructChild(uniStruct);
 
                 //assemble the struct as a large string
 //{{{
@@ -719,7 +734,7 @@ public class Decl extends xtc.util.Tool
                 struct +=("//Constructors"+ "\n");
                 String[] constructors = b.getConstructors();
                 for(int i= 0; i< constructors.length; i++){
-                    struct +=(indentLevel(indent) + constructors[i]+ "\n");
+                    struct +=(indentLevel(indent) + "_" + constructors[i]+ "\n");
                 }
 
                 struct +="\n";

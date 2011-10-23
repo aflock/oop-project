@@ -370,6 +370,7 @@ public class Bubble{
     public void printToFile(int indent) {
 	// namespace needs to be added
 	// String or java.lang::String ?
+	System.out.println("*******************>>>>FILE START<<<<<**********************");
 	if (getName().equals("Object") ||
 	    getName().equals("String") ||
 	    getName().equals("Class")) return;
@@ -413,6 +414,8 @@ public class Bubble{
 	}
 	System.out.println();
 	System.out.println("};");
+	
+    System.out.println("*******************>>>>FILE END<<<<<**********************");
     }
 
     public String indentLevel(int indent){
