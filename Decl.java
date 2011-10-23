@@ -745,7 +745,6 @@ public class Decl extends xtc.util.Tool
 		for(Object m : b.getVtable().toArray()) {
 		    String mm = (String)m;
 
-		    //String
 		    //if it's in the right format
 		    if(mm.matches("\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;\\s*")){
 			String methodName = "";
