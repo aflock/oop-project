@@ -579,10 +579,26 @@ public class Decl extends xtc.util.Tool
 
         }
     }
+    
+    public static void markNewMethods()
+    {
+        int index;
+        for (Bubble b : bubbleList)
+        {
+            Bubble parent = b.getParent();
+            if (parent == null)
+                continue;
+            
+            for (index = parent.getVtable().size(); index < b.getVtable().size(); index ++)
+                b.getVtable().set(index, b.getVtable().get(index) + "\t");
+            
+        }
+    }
 
     public static void start(Bubble object)
     {
         populateVTables(object);
+        markNewMethods();
         formatConstructors();
     }
     /**
