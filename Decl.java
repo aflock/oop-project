@@ -520,7 +520,7 @@ public class Decl extends xtc.util.Tool
                 {
                     //if its a main method, don't add it to vtable
                     if((s.indexOf("public static String [  args") == -1) && (s.indexOf("main") == -1))
-                        b.add2Vtable(s +"\t");
+                        b.add2Vtable(s);
                 }
                 //recursively setting child's vtables
                 populateVTables(b);
