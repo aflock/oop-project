@@ -820,6 +820,16 @@ public class Decl extends xtc.util.Tool
         ////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+        //Add all Mubbles to the list
+        for(Bubble b: bubbleList){
+            ArrayList<String> vtable = b.getVtable();
+            for(String entry: vtable) {
+                if(entry.charAt(entry.length()-1) == '\t'){
+                    mubbleList.add(new Mubble(b.getName, entry));
+                }
+            }
+        }
     }//}}}
 
 
