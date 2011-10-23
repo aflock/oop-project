@@ -4,9 +4,15 @@ public class PNode{
     String name;
     PNode[] packageChildren;
     String[] structChildren;
+    PNode parent;
+
 
     public PNode(String name){
         this.name = name;
+    }
+    public PNode(String name, PNode parent){
+        this.name = name;
+        this.parent = parent;
     }
 
     public void addPNodeChild(PNode child){
@@ -47,6 +53,10 @@ public class PNode{
         }
     }
 
+    public void setParent(PNode p){
+        this.parent = p;
+    }
+
     public PNode[] getPackageChildren(){
         return this.packageChildren;
     }
@@ -57,6 +67,34 @@ public class PNode{
 
     public String getName(){
         return this.name;
+    }
+
+    public PNode getParent(){
+        return this.parent;
+    }
+
+    public String toString(){
+        String toReturn = "";
+        toReturn += this.name +"\n";
+
+        if(this.name != "DefaultPackage")
+            toReturn += "Parent: " + this.parent.getName() +"\n";
+
+        if(packageChildren != null){
+            toReturn += "pChildren: " +"\n";
+            for (int i = 0; i < packageChildren.length ; i++ ){
+                toReturn += packageChildren[i].getName() + "\n";
+            }
+        }
+
+        if(structChildren != null){
+            toReturn += "struct Children: " +"\n";
+            for (int i = 0; i < structChildren.length ; i++ ){
+                toReturn += structChildren[i] + "\n";
+            }
+        }
+
+        return toReturn;
     }
 
 }

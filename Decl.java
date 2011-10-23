@@ -576,6 +576,7 @@ public class Decl extends xtc.util.Tool
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
     public static void main(String[] args)
     {
+        packageTree.add(new PNode("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
         //Creating Object's Vtable
@@ -611,10 +612,10 @@ public class Decl extends xtc.util.Tool
         start(object);
 
         /*
-         * Pretty Printing ^_^
+         * Attach structs to packageTree
          */
 
-        for(Bubble b: bubbleList){
+        for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
             /*
             System.out.println(b);
@@ -624,42 +625,16 @@ public class Decl extends xtc.util.Tool
 
             //ignore string and object, they are lame
             if(b.getName() != "String" && b.getName() != "Object"){
+
                 String struct = "";
                 //print the .h SON
 
-                //find which pnode we need to add this too.
-                String namespace = b.getPackageName();
-                System.out.println("namespace is: " + namespace );
-                String[] namespaceSplit = namespace.split("\\s");
-                String pname = namespaceSplit[namespaceSplit.length-1];
-                PNode p = new PNode("NONE");
-                boolean pnodeFound = false;
-                for(PNode n : packageTree){
-                    if(n.getName() == pname){
-                        pnodeFound = true;
-                        p = n;
-                    }
-                }
-                if(!pnodeFound){
-                    p = new PNode(pname);
-                }
+                //find which package node to add this struct to
+                String packName = b.getPackageName();
+                PNode p = constructPackageTree(packName);
 
-                //TODO change this VVVV to put the struct in the correct namespace array
-
-                //get/print namespace
-                /*
-                String namespace = b.getPackageName();
-                System.out.println("namespace is: " + namespace );
-                String[] namespaceSplit = namespace.split("\\s");
-
-                if (namespace != ""){
-                    struct +=("namespace " + namespaceSplit[namespaceSplit.length-1] + "{");
-                    indent++;
-                }
-                */
-
-                //TODO change this ^^^^ to put the struct in the correct namespace array
-                //p = PNode
+                //assemble the struct as a large string
+//{{{
                 struct +=(indentLevel(indent) + "struct _" + b.getName() + " {"+ "\n");
                 indent++;
 
@@ -705,19 +680,98 @@ public class Decl extends xtc.util.Tool
                     if(indent == 1)
                         struct+=(";");
                     struct +="\n";
-                }
-                System.out.println(struct);
+                }//}}}
+               // System.out.println(struct);
+                System.out.println("think my package node is: " + p.getName());
+
                 //Add struct to correct PNode
                 p.addStructChild(struct);
             }
 
-            //b.printVtable();
+        }//}}}
+
+        //assign Children to PNodes
+        for(PNode p : packageTree){
+            if(!p.getName().equals("DefaultPackage")) {
+                for(PNode r : packageTree){
+                    if (r.getName().equals(p.getParent().getName())){
+                        r.addPNodeChild(p);
+                    }
+                }
+            }
+        }
+        System.out.println("NOW PRINTING PNODE TREE");
+        //Print out each PNode
+        for(PNode p : packageTree){
+            System.out.println("------------------"+ p.getName() + "----------------");
+            System.out.println(p);
         }
 
-        //for(int i=0; i<bubbleList.size(); i++)
-            //System.out.println
+
+
     }
 
+    public static PNode constructPackageTree(String packageName){//{{{
+
+        //making sure tree branch exists for this full package name
+        // returns node at the leaf of the branch
+        //  -create node
+        //  -search for parent:
+        //      if exists: assign parent
+        //      else: create parent recursively thru this method
+        //
+        //  Note: this will not assign children. make a second pass for that
+        //  TODO add "DefaultPackage" to the packagetree
+
+
+        if(packageName.equals("")){
+
+            for(PNode n : packageTree){
+                if(n.getName().equals("DefaultPackage")){
+                    return n;
+                }
+            }
+        }
+
+        for(PNode n : packageTree){
+            if(n.getName().equals(packageName)){
+                return n;
+            }
+        }
+
+
+        String[] packageNameSplit = packageName.split("\\s");
+
+        //see if parent has been created already
+        String parentName = "";
+        for(int i=0; i<packageNameSplit.length -1; i ++)
+            if(!(i == packageNameSplit.length -2))
+                parentName += packageNameSplit[i] + " ";
+            else
+                parentName += packageNameSplit[i];
+        System.out.println("Parent Name is: "+ parentName);
+
+        if(parentName == "")
+            parentName = "DefaultPackage";
+
+        boolean parentFound = false;
+        PNode parent= new PNode("INVALID");
+        for(PNode n : packageTree){
+            if(n.getName().equals(parentName)){
+                parent = n;
+                parentFound = true;
+            }
+        }
+        if(!parentFound){
+            parent = constructPackageTree(parentName);
+        }
+
+        PNode toReturn = new PNode(packageName, parent);
+
+        packageTree.add(toReturn);
+
+        return toReturn;
+    }//}}}
 
     public static String indentLevel(int indent){
         String toReturn = "";
