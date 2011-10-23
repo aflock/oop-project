@@ -79,7 +79,7 @@ public class Bubble{
 	}
 	this.methods = methods;
     }
-    
+
     public void setMethodAtIndex(int index, String meth)
     {
        this.methods[index] = meth;
@@ -164,6 +164,7 @@ public class Bubble{
 	else {
 	    this.vtable.add(add);
 	}
+        return false;
     }
 
     public ArrayList<String> getVtable(){
