@@ -38,12 +38,14 @@ public class Decl extends xtc.util.Tool
 
 
     public static String findFile(String query) {
+
         String sep = System.getProperty("file.separator");
         String cp = System.getProperty("java.class.path");
+	//Hardcoded as the working directory, otherwise real classpath
         cp = ".";
 
         query = query.replace(".",sep).concat(".java");
-
+	//System.out.println("+++++"+query);
         return findFile(cp, query);
     }
 
@@ -53,13 +55,17 @@ public class Decl extends xtc.util.Tool
 	File f = new File(cp);
 	File [] files = f.listFiles();
 	for(int i = 0; i < files.length; i++) {
-	    //System.out.println(files[i]);
+	    //System.out.println(sep+(cp.equals(".") ? "\\\\" : "")+cp+sep);
+	    //////////////////////////////////////
+	    //Hardcoding that sep is / and cp is .
+	    //////////////////////////////////////
+	    //System.out.println(query);
 	    if(files[i].isDirectory()) {
 		String a = findFile(files[i].getAbsolutePath(), query);
 		if(!a.equals(""))
 		    return a;
 	    }
-	    else if(files[i].getAbsolutePath().endsWith(sep+query))
+	    else if(files[i].getAbsolutePath().replaceAll("/\\./",sep).endsWith(query))
 		return files[i].getAbsolutePath();
 	}
 	return "";
@@ -436,9 +442,17 @@ public class Decl extends xtc.util.Tool
                 }
 
                 if(!inList && !n.getString(n.size()-1).equals("String")){
-                    System.out.println("about to call findFile:" + n.getString(n.size()-1));
-                    String path = d.findFile(n.getString(n.size()-1));
-                    if(!path.equals("")){
+
+		    String path = "";
+		    for(int i = 0; i < n.size(); i++) {
+			path+="."+n.getString(i);
+		    }
+
+                    System.out.println("about to call findFile on: " + path.substring(1));
+
+                    path = d.findFile(path);
+                    
+		    if(!path.equals("")){
                         System.out.println(path);
                         try{
                             d.process(path);
@@ -752,14 +766,14 @@ public class Decl extends xtc.util.Tool
 		//Vtable comment
 		struct = indentLevel(indent) + "// The vtable layout for "+fullName+".\n";
 		//First struct line
-		struct += indentLevel(indent) + "struct __"+b.getName()+"_VT {\n";
+		struct += indentLevel(indent) + "struct _"+b.getName()+"_VT {\n";
 		indent++;
 		//Add vtable method decls
 		for(Object m : b.getVtable().toArray()) {
 		    struct += indentLevel(indent)+((String)m)+"\n";
 		}
 		//Add the constructor decl and :
-		struct+= "\n"+indentLevel(indent)+"__"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
+		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
 
 		for(Object m : b.getVtable().toArray()) {
 		    String mm = (String)m;
@@ -790,18 +804,18 @@ public class Decl extends xtc.util.Tool
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&__"+b.getParent().getName()+"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
 			else {
 			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(&__"+b.getName()+"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(&_"+b.getName()+"::"+methodName+"),\n";
 			}
 		    }
 		    //if it's just __isa
 		    else if(mm.contains("__isa")) {
-			struct+= " __isa(__"+b.getName()+"::__class()),\n";
+			struct+= " __isa(_"+b.getName()+"::__class()),\n";
 		    }
 		}
 		struct = struct.substring(0,struct.length()-2)+" {\n"+indentLevel(indent--)+"}\n"+indentLevel(indent)+"};";
@@ -843,6 +857,16 @@ public class Decl extends xtc.util.Tool
 	    test.formatMethodHeader(test.getHeader());
 
 
+
+        //Add all Mubbles to the list
+        for(Bubble b: bubbleList){
+            ArrayList<String> vtable = b.getVtable();
+            for(String entry: vtable) {
+                if(entry.charAt(entry.length()-1) == '\t'){
+                    mubbleList.add(new Mubble(b.getName, entry));
+                }
+            }
+        }
     }//}}}
 
 
@@ -917,7 +941,7 @@ public class Decl extends xtc.util.Tool
         return toReturn;
     }
 }
-/*
+
 class Impl extends xtc.util.Tool{
 
     public Impl(){}
@@ -925,6 +949,17 @@ class Impl extends xtc.util.Tool{
     public void init()
     {
         super.init();
+    }
+
+
+    public String getName()
+    {
+        return "Java to C++ translator";
+    }
+
+    public String getCopy()
+    {
+        return "Ninja assassins: dk, calvin, Andrew*2";
     }
 
     public Node parse(Reader in, File file) throws IOException, ParseException
@@ -956,6 +991,7 @@ class Impl extends xtc.util.Tool{
 
             String tempString = "";
             public void visitMethodDeclaration(GNode n){
+                //assign current mubble
 
                 visit(n);
             }
@@ -1065,5 +1101,4 @@ class Impl extends xtc.util.Tool{
         }.dispatch(node);
     }
 }
-*/
 

@@ -127,7 +127,9 @@ public class Bubble{
 	this.vtable = vtable;
     }
 
-    public void add2Vtable(String add){
+    public boolean add2Vtable(String add){
+    /* returns true if the method is an overwritten method, false if not*/
+
     //add = add.trim();
 	//format the string
 	add = format(add, this);
@@ -150,9 +152,11 @@ public class Bubble{
 		System.out.println("==========OVERWRITING " + sig + "in " + this.name);
 
 		this.vtable.set(index,add + "\t");
+        return true;
 	    }
 	    else {
 		this.vtable.add(add);
+        return false;
 	    }
 
 	}
