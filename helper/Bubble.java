@@ -321,6 +321,7 @@ public class Bubble{
 
 	    int num = 0;
 	    for (int j = 0; j < temp.length; j++) {
+            //TODO DK can you check out the "final" keyword is it supposed to be there?
 		if (temp[j].equals("public") ||
 		    temp[j].equals("private") ||
 		    temp[j].equals("protected") ||
