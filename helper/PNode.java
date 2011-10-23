@@ -1,10 +1,12 @@
 package xtc.oop.helper;
+import java.util.ArrayList;
 
 public class PNode{
     String name;
     PNode[] packageChildren;
     String[] structChildren;
     PNode parent;
+    ArrayList<String> structs = new ArrayList<String>();
 
 
     public PNode(String name){
@@ -15,6 +17,11 @@ public class PNode{
         this.parent = parent;
     }
 
+    public boolean hasStruct(String s)
+    {
+        return structs.contains(s);
+    }
+    
     public void addPNodeChild(PNode child){
         if(child == null){
             return;
@@ -35,6 +42,7 @@ public class PNode{
     }
 
     public void addStructChild(String child){
+        structs.add(child);
         if(child == null){
             return;
         }
