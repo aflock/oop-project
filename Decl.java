@@ -162,7 +162,11 @@ public class Decl extends xtc.util.Tool
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(0);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
-                        }
+		}
+		else if((parent1.getName().equals("FieldDeclaration")) && 
+			(parent2.getName().equals("ClassBody"))) {
+		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
+		}
             }
 
             public void visitDeclarators(GNode n) {
@@ -203,6 +207,8 @@ public class Decl extends xtc.util.Tool
                    */
 
             }
+
+
 
 
             public void visitDeclarator(GNode n) {
@@ -321,7 +327,11 @@ public class Decl extends xtc.util.Tool
                     constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
                         }
             }
-
+	    /*
+	     *
+	      WTF IS THIS SHIT WITH THE PARENT1 != GETPROPERTY("PARENT0")
+	      *
+	     */
             public void visitType(GNode n) {
                 visit(n);
                 Node parent1 = (Node)n.getProperty("parent0");
@@ -341,6 +351,15 @@ public class Decl extends xtc.util.Tool
                 }
 
             }
+
+	    public void visitTypeInstantiation(GNode n) {
+		visit(n);
+		Node parent2 = (Node)n.getProperty("parent2");
+		Node parent3 = (Node)n.getProperty("parent3");
+		if(parent2.getName().equals("FieldDeclaration") && parent3.getName().equals("ClassBody")) {
+		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
+		}
+	    }
 
             public void visitConstructorDeclaration(GNode n)
             {
