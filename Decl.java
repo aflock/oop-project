@@ -544,10 +544,6 @@ public class Decl extends xtc.util.Tool
                        {
                            s = s + "\t";
                            b.setMethodAtIndex(i, s);
-                           String[] tmp = b.getMethods();
-
-                           if(tmp[i].charAt(tmp[i].length() -1) == '\t')
-                                System.out.println("SUCCESSS!!!!");
 
                            overwritten = false;
                        }
@@ -644,7 +640,7 @@ public class Decl extends xtc.util.Tool
     static Decl d;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
-    static ArrayList<Mubble>  = new ArrayList<Mubble>();
+    static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
     {//{{{
         packageTree.add(new PNode("DefaultPackage", null));
