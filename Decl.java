@@ -755,7 +755,7 @@ public class Decl extends xtc.util.Tool
 			match_m.find();
 			methodName = match_m.group(0);
 
-			//if it's overwritten or new
+			//if it's inherited
 			if(mm.charAt(mm.length()-1)!='\t') {
 
 			    //get return type
@@ -771,9 +771,10 @@ public class Decl extends xtc.util.Tool
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&__"+b.getName()+"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&__"+b.getParent().getName()+"::"+methodName+"),\n";
 			}
-			//^need to use arguments instead of getname
+			//inherited methods get parent after &
+			//if it's overwritten or new
 			else {
 			    //Add that shit to struct
 			    struct += indentLevel(indent)+"  "+methodName+"(&__"+b.getName()+"::"+methodName+"),\n";
