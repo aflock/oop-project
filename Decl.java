@@ -858,7 +858,9 @@ public class Decl extends xtc.util.Tool
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
             ArrayList<String> vtable = b.getVtable();
-            for(String entry: vtable) {
+            String[] methods = b.getMethods();
+            for(int i = 0; i< methods.length; i++) {
+                String entry = methods[i];
                 if(entry.charAt(entry.length()-1) == '\t'){
                     mubbleList.add(new Mubble(b.getName(), entry));
                 }
@@ -988,7 +990,7 @@ class Impl extends xtc.util.Tool{
 
             String tempString = "";
             public void visitMethodDeclaration(GNode n){
-                //assign current mubble
+                //assign current mubble TODO
 
                 visit(n);
             }
