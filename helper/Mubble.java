@@ -34,13 +34,19 @@ public class Mubble{
 	 if (in.matches(".*[\\(\\)].*")) {
 	     return in;
 	 }
+	 
+	 String tab = "";
+
+	 for (int i = 0; i < in.length(); i++) {
+	     if (in.charAt(i) == '\t') tab = "\t";
+	 }		 
 
 	 int square = 0;
 	 for (int i = 0; i < in.length(); i++) {
 	     if (in.charAt(i) == '[') square++;
 	 }
 
-	 String[] temp2 = in.split(" ");	 
+	 String[] temp2 = in.split("[ \t]");	 
 
 	 int count = 0;
 	 for (int j = 0; j < temp2.length; j++) {
@@ -91,7 +97,7 @@ public class Mubble{
 	 }
 	 
 	 s += ")";
-	 return s;
+	 return s + tab;
      }
 
     public String convertPrimitiveType(String s) {
