@@ -512,16 +512,34 @@ public class Decl extends xtc.util.Tool
 
     //recursive call to populate all vtables in bubbleList
     public static void populateVTables(Bubble root){//{{{
+        boolean overwritten = false;
         for(Bubble b : bubbleList){
             if (b.getParent() == root){
                 //creating child's vTable
                 for(String s : root.getVtable()) //getting parent's vtable
                     b.add2Vtable(s);
+                    
+                int i = 0;
                 for(String s : b.getMethods()) //adding new methods to vtable
                 {
                     //if its a main method, don't add it to vtable
                     if((s.indexOf("public static String [  args") == -1) && (s.indexOf("main") == -1))
-                        b.add2Vtable(s);
+                    {
+                       overwritten = b.add2Vtable(s);
+                       if(overwritten)
+                       {
+                           s = s + "\t";
+                           b.setMethodAtIndex(i, s);
+                           String[] tmp = b.getMethods();
+                          
+                           if(tmp[i].charAt(tmp.length() -1) == "\t")
+                                System.out.println("SUCCESSS!!!!");
+                                
+                           overwritten = false;
+                       }
+                    }
+                    
+                    i++;
                 }
                 //recursively setting child's vtables
                 populateVTables(b);
