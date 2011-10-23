@@ -581,7 +581,7 @@ public class Decl extends xtc.util.Tool
         }
 
     }
-    
+
     public static void markNewMethods()
     {
         int index;
@@ -590,10 +590,10 @@ public class Decl extends xtc.util.Tool
             Bubble parent = b.getParent();
             if (parent == null)
                 continue;
-            
+
             for (index = parent.getVtable().size(); index < b.getVtable().size(); index ++)
                 b.getVtable().set(index, b.getVtable().get(index) + "\t");
-            
+
         }
     }
 
@@ -823,7 +823,7 @@ public class Decl extends xtc.util.Tool
     }
 }
 
-class Impl{
+class Impl extends xtc.util.tool{
 
     public Impl(){}
 
@@ -845,24 +845,6 @@ class Impl{
 
         new Visitor()
         {
-            private int count = 0;
-
-
-            String[] fields;
-
-            public int toIndex(String s) {
-                if(s.equals("public"))
-                    return 0;
-                else if(s.equals("private"))
-                    return 1;
-                else if(s.equals("protected"))
-                    return 2;
-                else
-                    return -1;
-            }
-
-            String[] classMembers;
-
 
             public void visitFieldDeclaration(GNode n){
                 visit(n);
