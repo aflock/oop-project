@@ -121,40 +121,54 @@ public class Bubble{
 	}
 	this.vtable = vtable;
     }
-
-    public void add2Vtable(String add){
-	//format the string
-	add = format(add, this);
-	//if it's a method [in the format: rt_type (*name)(params) ]
-	if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
-	    String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
-	    //	    System.out.println("SIG: \t\t"+sig);
-	    int index = -1;
-	    for(int i = 0; i < this.vtable.size(); i++) {
-		//System.out.println("-----"+this.vtable.get(i));
-		if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
-		    this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1].equals(sig))
-		    {
-			//System.out.println("WOWOOWOWOWOWOWOWOWOWO");
-			index = i;
-		    }
-	    }
-
-	    if(index != -1) {
-		System.out.println("==========OVERWRITING " + sig + "in " + this.name);
-
-		this.vtable.set(index,add + "\t");
-	    }
-	    else {
-		this.vtable.add(add);
-	    }
-
-	}
-	//if it's not a method
-	else {
-	    this.vtable.add(add);
-	}
+    
+    public void setMethodAtIndex(int index, String meth)
+    {
+       this.methods[index] = meth;
     }
+
+    public boolean add2Vtable(String add){
+        /* returns true if the method is an overwritten method, false if not*/
+
+        //add = add.trim();
+    //format the string
+    add = format(add, this);
+    //if it's a method [in the format: rt_type (*name)(params) ]
+    if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
+        String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
+        // System.out.println("SIG: \t\t"+sig);
+        int index = -1;
+        for(int i = 0; i < this.vtable.size(); i++) {
+            //System.out.println("-----"+this.vtable.get(i));
+            if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
+            this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1].equals(sig))
+            {
+                //System.out.println("WOWOOWOWOWOWOWOWOWOWO");
+                index = i;
+            }
+        }
+
+        if(index != -1) {
+        System.out.println("==========OVERWRITING " + sig + "in " + this.name);
+
+        this.vtable.set(index,add + "\t");
+                return true;
+        }
+        else 
+        {
+            this.vtable.add(add);
+                    return false;
+        }
+
+        }
+        //if it's not a method
+    else {
+        this.vtable.add(add);
+    }
+    return false;
+}
+
+
 
     public ArrayList<String> getVtable(){
         return this.vtable;
