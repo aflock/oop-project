@@ -909,7 +909,7 @@ public class Decl extends xtc.util.Tool
         return toReturn;
     }
 }
-/*
+
 class Impl extends xtc.util.Tool{
 
     public Impl(){}
@@ -917,6 +917,17 @@ class Impl extends xtc.util.Tool{
     public void init()
     {
         super.init();
+    }
+
+
+    public String getName()
+    {
+        return "Java to C++ translator";
+    }
+
+    public String getCopy()
+    {
+        return "Ninja assassins: dk, calvin, Andrew*2";
     }
 
     public Node parse(Reader in, File file) throws IOException, ParseException
@@ -948,6 +959,7 @@ class Impl extends xtc.util.Tool{
 
             String tempString = "";
             public void visitMethodDeclaration(GNode n){
+                //assign current mubble
 
                 visit(n);
             }
@@ -1057,5 +1069,4 @@ class Impl extends xtc.util.Tool{
         }.dispatch(node);
     }
 }
-*/
 
