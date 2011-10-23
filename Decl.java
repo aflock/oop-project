@@ -741,11 +741,11 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"__"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-		
+
 		for(Object m : b.getVtable().toArray()) {
 		    String mm = (String)m;
 
-		    //String 
+		    //String
 		    //if it's in the right format
 		    if(mm.matches("\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;\\s*")){
 			String methodName = "";
@@ -758,7 +758,7 @@ public class Decl extends xtc.util.Tool
 
 			//if it's overwritten or new
 			if(mm.charAt(mm.length()-1)!='\t') {
-			    
+
 			    //get return type
 			    Matcher match_rt = Pattern.compile("\\w+(?=(\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;))").matcher(mm);
 			    match_rt.find();
@@ -768,7 +768,7 @@ public class Decl extends xtc.util.Tool
 			    Matcher match_p = Pattern.compile("(?<=(\\())[^\\*].+(?=\\))").matcher(mm);
 			    //Matcher match_p = Pattern.compile("(?<=(\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\()).*(?=(\\)))").matcher(mm);
 			    match_p.find();
-			    
+
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
@@ -787,10 +787,10 @@ public class Decl extends xtc.util.Tool
 		}
 		struct = struct.substring(0,struct.length()-2)+" {\n"+indentLevel(indent--)+"}\n"+indentLevel(indent)+"};";
 		p.addStructChild(struct);
-		
+
 	    }
-	    
-	    
+
+
         }//}}}
 
         //assign Children to PNodes
@@ -888,7 +888,7 @@ public class Decl extends xtc.util.Tool
         return toReturn;
     }
 }
-
+/*
 class Impl extends xtc.util.Tool{
 
     public Impl(){}
@@ -1036,4 +1036,5 @@ class Impl extends xtc.util.Tool{
         }.dispatch(node);
     }
 }
+*/
 
