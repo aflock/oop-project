@@ -21,7 +21,7 @@ import xtc.lang.JavaFiveParser;
 //our imports
 import xtc.oop.helper.Bubble;
 import xtc.oop.helper.PNode;
-
+import java.util.regex.*;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -663,7 +663,7 @@ public class Decl extends xtc.util.Tool
             //ignore string and object, they are lame
             if(b.getName() != "String" && b.getName() != "Object"){
 
-                String struct = "";
+		String struct = "";
                 //print the .h SON
 
                 //find which package node to add this struct to
@@ -723,8 +723,74 @@ public class Decl extends xtc.util.Tool
 
                 //Add struct to correct PNode
                 p.addStructChild(struct);
-            }
 
+		//////////////////////
+		//Making vtable struct
+		//////////////////////
+
+		indent = 0;
+		String fullName = b.getPackageName().trim().replaceAll("\\s",".")+(b.getPackageName().equals("") ? "" : ".")+b.getName();
+		//Vtable comment
+		struct = indentLevel(indent) + "// The vtable layout for "+fullName+".\n";
+		//First struct line
+		struct += indentLevel(indent) + "struct __"+b.getName()+"_VT {\n";
+		indent++;
+		//Add vtable method decls
+		for(Object m : b.getVtable().toArray()) {
+		    struct += indentLevel(indent)+((String)m)+"\n";
+		}
+		//Add the constructor decl and :
+		struct+= "\n"+indentLevel(indent)+"__"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
+		
+		for(Object m : b.getVtable().toArray()) {
+		    String mm = (String)m;
+
+		    //String 
+		    //if it's in the right format
+		    if(mm.matches("\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;\\s*")){
+			String methodName = "";
+			String retType = "";
+			String params = "";
+			//get method name
+			Matcher match_m = Pattern.compile("(?<=(\\(\\*))\\w+(?=(\\)))").matcher(mm);
+			match_m.find();
+			methodName = match_m.group(0);
+
+			//if it's overwritten or new
+			if(mm.charAt(mm.length()-1)!='\t') {
+			    
+			    //get return type
+			    Matcher match_rt = Pattern.compile("\\w+(?=(\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;))").matcher(mm);
+			    match_rt.find();
+			    retType = match_rt.group(0);
+
+			    //get params
+			    Matcher match_p = Pattern.compile("(?<=(\\())[^\\*].+(?=\\))").matcher(mm);
+			    //Matcher match_p = Pattern.compile("(?<=(\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\()).*(?=(\\)))").matcher(mm);
+			    match_p.find();
+			    
+			    params = match_p.group(0);
+
+			    //Add that shit to struct
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&__"+b.getName()+"::"+methodName+"),\n";
+			}
+			//^need to use arguments instead of getname
+			else {
+			    //Add that shit to struct
+			    struct += indentLevel(indent)+"  "+methodName+"(&__"+b.getName()+"::"+methodName+"),\n";
+			}
+		    }
+		    //if it's just __isa
+		    else if(mm.contains("__isa")) {
+			struct+= " __isa(__"+b.getName()+"::__class()),\n";
+		    }
+		}
+		struct = struct.substring(0,struct.length()-2)+" {\n"+indentLevel(indent--)+"}\n"+indentLevel(indent)+"};";
+		p.addStructChild(struct);
+		
+	    }
+	    
+	    
         }//}}}
 
         //assign Children to PNodes
