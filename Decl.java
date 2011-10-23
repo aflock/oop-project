@@ -938,10 +938,31 @@ class Impl extends xtc.util.tool{
 
             public void visit(Node n)
             {
+
+                int counter = 1;
+                if(n.hasProperty("parent0")) {
+                    Node temp = (Node)n.getProperty("parent0");
+
+                    while(temp != null) {
+                        //System.out.println(temp);
+                        //temp = (Node)temp.getProperty("parent0");
+
+
+                        n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                        temp = (Node)temp.getProperty("parent0");
+                        //if(n.getProperty("parent2") == null)
+                        //System.out.println(temp);
+                    }
+                }
+                //don't need this, but not deleting.
+                for (String s : n.properties()) {
+                    //System.out.println(n.getProperty(s));
+                }
+
                 for (Object o : n){
                     if (o instanceof Node){
                         ((Node)o).setProperty("parent_name", n.getName() );
-                        ((Node)o).setProperty("parent", n );
+                        ((Node)o).setProperty("parent0", n );
                         dispatch((Node)o);
                     }
                 }
