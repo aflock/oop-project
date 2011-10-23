@@ -10,6 +10,7 @@ public class Mubble{
      {
         this.name = iName;
         this.header = iHeader;
+        System.out.println("========HEADER: " + iHeader);
         this.code = "";
      }
      

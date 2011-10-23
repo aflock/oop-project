@@ -857,12 +857,15 @@ public class Decl extends xtc.util.Tool
 
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
-            ArrayList<String> vtable = b.getVtable();
             String[] methods = b.getMethods();
-            for(int i = 0; i< methods.length; i++) {
-                String entry = methods[i];
-                if(entry.charAt(entry.length()-1) == '\t'){
+            if (methods != null)
+            {
+                for(String entry : methods) {
+                    //CHecks if method is overwritten <===========DONT THINK WE NEED THIS BECAUSE EVERY METHOD IN
+                    //METHOD IS ALREADY NEW OR OVERWRITTEN
+                    //if(entry.charAt(entry.length()-1) == '\t'){
                     mubbleList.add(new Mubble(b.getName(), entry));
+                    
                 }
             }
         }
