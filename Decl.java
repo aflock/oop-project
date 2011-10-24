@@ -18,11 +18,14 @@ import xtc.tree.Location;
 import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
+
 //our imports
 import xtc.oop.helper.Bubble;
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.PNode;
 import java.util.regex.*;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -640,7 +643,7 @@ public class Decl extends xtc.util.Tool
     static Decl d;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
-    static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
+    public static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
     {//{{{
         packageTree.add(new PNode("DefaultPackage", null));
@@ -683,23 +686,13 @@ public class Decl extends xtc.util.Tool
          */
         String uniStruct = "//Forward Decls of All Structs in package \n";
         String typedefs = "\n";
+        String methName = "";
         //ADDED --Forward Decls of stucts and vtables
-           for(Bubble b : bubbleList)
-           {
-                 if(b.getName() != "String" && b.getName() != "Object")
-                 {
-                    uniStruct += "struct _" + b.getName() + ";\n";
-                    uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
-                    typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
-                    
-                 }
-           }
-           uniStruct += typedefs;
-        
+
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
-           
-           
+
+
 
             /*
             System.out.println(b);
@@ -716,8 +709,7 @@ public class Decl extends xtc.util.Tool
                 //find which package node to add this struct to
                 String packName = b.getPackageName();
                 PNode p = constructPackageTree(packName);
-                if(!p.hasStruct(uniStruct))
-                    p.addStructChild(uniStruct);
+
 
                 //assemble the struct as a large string
 //{{{
@@ -839,7 +831,6 @@ public class Decl extends xtc.util.Tool
 
 	    }
 
-
         }//}}}
 
         //assign Children to PNodes
@@ -851,13 +842,41 @@ public class Decl extends xtc.util.Tool
                     }
                 }
             }
+
         }
+
+        for(PNode p : packageTree)
+        {
+            uniStruct = "";
+            typedefs = "";
+            if(p.getStructChildren() == null)
+                continue;
+            for(String c : p.getStructChildren())
+            {
+                if(c == null)
+                    continue;
+                else if (c.indexOf("struct") == -1)
+                    continue;
+
+                String className = Mubble.getStringBetween(c, "struct ", " {");
+                uniStruct += "struct " + className + ";\n";
+                String bareClassName = className.replace("_", "");
+                bareClassName = bareClassName.replace("VT", "");
+                if(className.indexOf("VT") == -1)
+                    typedefs += "typedef " + className + "* " + bareClassName + ";\n";
+            }
+            uniStruct += typedefs;
+            p.addFirstStruct(uniStruct);
+
+        }
+        /*
         System.out.println("NOW PRINTING PNODE TREE");
         //Print out each PNode
         for(PNode p : packageTree){
             System.out.println("------------------"+ p.getName() + "----------------");
             System.out.println(p);
         }
+        */
 
         /* print later
 	for (Bubble b : bubbleList)
@@ -868,6 +887,43 @@ public class Decl extends xtc.util.Tool
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////// Should be done with .h by here///////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
+
+
+        int defcount = 0;
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                defcount++;
+            }
+        }
+        System.out.println("How many default packages: " + defcount);
+        //Write .h to file
+        try{
+        File out = new File("test.h");
+        FileWriter hstream = new FileWriter(out);
+        BufferedWriter hwrite = new BufferedWriter(hstream);
+
+
+        String forwardh ="";
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                forwardh += p.getForwardDecl();
+            }
+        }
+        /*
+         *Iterate through packageTree: in order (dfs)
+         */
+        String doth = "";
+        //find Default package
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                doth += p.getOutput();
+            }
+        }
+
+        hwrite.write(forwardh);
+        hwrite.write(doth);
+        hwrite.close();
+        } catch (Exception e){System.out.println("Error writing: "+ e);}
 
         Mubble test = new Mubble("classy", "String (*getName)(Class);");
 	    test.formatMethodHeader(test.getHeader());
@@ -881,13 +937,13 @@ public class Decl extends xtc.util.Tool
             {
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry));
-                    
+
                 }
             }
         }
-        
+
         //IMPL SHIT
-        Impl Q = new Impl();
+        Impl Q = new Impl(bubbleList, packageTree, mubbleList);
         Q.init();
         Q.prepare();
         for(int i = 0; i< args.length; i++){
@@ -972,10 +1028,19 @@ public class Decl extends xtc.util.Tool
 
 class Impl extends xtc.util.Tool{
 
-    public Impl(){}
+    public static ArrayList<Bubble> bubbleList;
+    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Mubble> mubbleList;
 
-    public void init()
+    public Impl(ArrayList<Bubble> bubbleList,
+            ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
     {
+        this.bubbleList = bubbleList;
+        this.packageTree = packageTree;
+        this.mubbleList = mubbleList;
+    }
+
+    public void init(){
         super.init();
     }
 
@@ -1000,9 +1065,9 @@ class Impl extends xtc.util.Tool{
 
     public void process(Node node)
     {
-        Mubble curMub;
         new Visitor()
         {
+
 
             public void visitFieldDeclaration(GNode n){
                 visit(n);
@@ -1020,6 +1085,7 @@ class Impl extends xtc.util.Tool{
             String tempString = "";
             String tmpCode = "";
             boolean onMeth = false;
+            Mubble curMub = null;
             public void visitMethodDeclaration(GNode n)
             {
                 visit(n);
@@ -1027,27 +1093,40 @@ class Impl extends xtc.util.Tool{
                 tmpCode = "";
                 onMeth = true;
                 Node parent0 = (Node)n.getProperty("parent0");
-                System.out.println(n.hasProperty("parent1"));
                 Node parent1 = (Node)parent0.getProperty("parent0");
-                System.out.println("IMPL parent0: " + parent0.getName());
-                System.out.println("IMPL parent1: " + parent1.getName());
-                
+
                 //Parent 1 Should be class decl
-                //Classname = parent1.getString(1)
-                //Methodname = n.getString(3);
-                //curMub = new Mubble(ClassName, methodname);
+                String classname = parent1.getString(1);
+                String methodname = n.getString(3);
+                for(Mubble m : mubbleList){
+                    if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                        curMub = m;
+                }
+
                 //Add code to curMub.code
                 //find curMub match in mubbleList
                 //set match = curMub
-                
-                /*if ((parent1.getName().equals("FieldDeclaration")) &&
-                        (parent2.getName().equals("ClassBody"))){
-                    String name = n.getString(0);
-                    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
-                        }
-                */
 
-                
+ //==============Assigning Package to CurMub===================//
+                //Assuming curMub has code
+                for(Bubble b: bubbleList)
+                {
+                    if(b.getName().equals(className)) // b's package is curMub's package
+                    {
+                        curMub.setPackageName(b.getPackageName());
+                        break;
+                    }
+                }
+                //Adding curMub to the right pNode
+                for(PNode p : packageTree)
+                {
+                    if(p.getName().equals(curMub.getPackageName()))
+                        p.addMubble(curMub);
+                }
+//==============================================================//
+                visit(n);
+
+
                 onMeth = false;
             }
 
