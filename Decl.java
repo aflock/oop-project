@@ -934,10 +934,6 @@ public class Decl extends xtc.util.Tool
         hwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
-        Mubble test = new Mubble("classy", "String (*getName)(Class);");
-	    test.formatMethodHeader(test.getHeader());
-
-
 
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
@@ -951,7 +947,7 @@ public class Decl extends xtc.util.Tool
             }
         }
 
-        //IMPL SHIT
+//===============IMPL SHIT====================================//
         Impl Q = new Impl(bubbleList, packageTree, mubbleList);
         Q.init();
         Q.prepare();
@@ -960,6 +956,28 @@ public class Decl extends xtc.util.Tool
                 Q.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
+        
+        
+        //Write .cc to file
+        try{
+        File out = new File("test.cc");
+        FileWriter ccstream = new FileWriter(out);
+        BufferedWriter ccwrite = new BufferedWriter(ccstream);
+
+        /*
+         *Iterate through packageTree: in order (dfs)
+         */
+        String dotcc = "";
+        //find Default package
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                dotcc += p.getOutputCC();
+            }
+        }
+
+        ccwrite.write(dotcc);
+        ccwrite.close();
+        } catch (Exception e){System.out.println("Error writing: "+ e);}
     }//}}}
 
 
@@ -1118,13 +1136,19 @@ class Impl extends xtc.util.Tool{
                 {
                     if(b.getName().equals(classname)) // b's package is curMub's package
                     {
-                        curMub.setPackageName(b.getPackageName());
+                        if(b.getPackageName().equals(""))
+                            curMub.setPackageName("DefaultPackage");
+                        else
+                            curMub.setPackageName(b.getPackageName());
                         break;
                     }
                 }
                 //Adding curMub to the right pNode
                 for(PNode p : packageTree)
                 {
+                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
+                    //System.out.println("P name: " + p.getName());
+                    //System.out.println("curMub: " + curMub.getPackageName());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
