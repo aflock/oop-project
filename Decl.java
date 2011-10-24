@@ -845,21 +845,6 @@ public class Decl extends xtc.util.Tool
 
 
 
-                /*
-
-                for( String s : b.getVtable() ) {
-                    if(!s.equals("Class __isa;")){
-                        String toModify = s;
-                        String[] tms = toModify.split("\\(");
-                        tms[1] = tms[1].substring(1, tms[1].length() -1);
-                        tms[2] = "(" + tms[2];
-
-                        struct +=(indentLevel(indent) + "static " +
-                                tms[0] + " " + tms[1] +" " + tms[2] + "\n");
-                    }
-                }
-
-                */
 
 
 
