@@ -104,6 +104,9 @@ public class PNode{
             for(int i = 0; i <packageChildren.length; i++){
                 toReturn += packageChildren[i].getForwardDecl() + "\n";
             }
+        if(!name.equals("DefaultPackage")){
+            toReturn += "}\n";
+        }
         return toReturn;
     }
 
@@ -131,8 +134,6 @@ public class PNode{
             toReturn+= "}\n";
         }
 
-        System.out.println("AND THE OUTPUT IS!!!!!!:");
-        System.out.println(toReturn);
         return toReturn;
     }
 

@@ -736,6 +736,117 @@ public class Decl extends xtc.util.Tool
                 struct +="\n";
                 struct +=("//Forward declaration of methods"+ "\n");
                 //print forward declarations of methods
+
+
+                //want to count number of words after any final/public/etc
+                //if  even:
+                //  first word after public/static etc is return type
+                //  following pairs are parameters in (type, name) format
+                //  last word is method name
+                //if odd:
+                //  following pairs are (type, name)
+                //  last word is method name
+                //
+                //Want to go from:
+                //  public String int  indent indentLevel
+                //To:
+                //  static <return type> <method name> (<Class name>, <argument type>)
+                for( String s : b.getMethods()){
+                    int count = 0;
+                    //String[] splitsies =  s.split(" ");
+                    //want to remove extra
+                    String returnType = "void";
+                    String methodName;//{{{
+                    String className = b.getName();
+
+
+                    int square = 0;//{{{
+                    for (int i = 0; i < s.length(); i++) {
+                        if (s.charAt(i) == '[') square++;
+                    }
+                    String[] temp2 = s.split(" ");
+                    for (int j = 0; j < temp2.length; j++) {
+                        if (temp2[j].length() != 0) count++;
+                    }
+
+                    //take out pub/priv/etc and group [ with its previous word
+                    for(String g : temp2){//{{{
+                        //System.out.println(g);
+                        if (g.equals("public") ||
+                                g.equals("private") ||
+                                g.equals("protected") ||
+                                g.equals("static") ||
+                                g.equals("final")) {count--;}
+                        //count - square = the number of words (minus [ which are extras )
+                        else{
+
+                        }
+                    }//}}}
+                    String[] realWords = new String[count-square];
+                    int gi=0;
+                    //System.out.println(s);
+                    //System.out.println("size of realWords = " + realWords.length);
+                    for(int i = 0; i < temp2.length ; i++){//{{{
+                        String g = temp2[i];
+                        if (!(g.equals("public") || g.equals("private") ||g.equals("protected") ||
+                                    g.equals("static") ||g.equals("final") || g.equals(" ") || g.length() == 0)) {
+                            //System.out.println("The part of temp2 is: " + g);
+                            if(g.equals("[")){
+                                realWords[gi-1] += "[]";
+                                gi--;
+                            }
+                            else{
+                                realWords[gi] = g;
+                            }
+                            gi++;
+                        }
+                    }//}}}
+                    //realwords now has return type if there is one,
+                    //pairs of parameters, and method name//}}}
+                    int realLen = realWords.length;
+                    methodName = realWords[realLen -1];
+
+                    //change types
+                    //replace arrays
+                    for(int i=0; i < realLen; i++){
+                        String word = realWords[i];
+                        if(word.equals("int"))
+                            realWords[i] = "int32_t";
+                        if(word.equals("boolean"))
+                            realWords[i] = "bool";
+                        if(word.charAt(word.length()-1)==']'){
+                            realWords[i] = "__rt::Array<"+ word.substring(0, word.length() -3) +">*";
+                        }
+                    }
+
+
+
+                    if(realLen % 2 == 0){
+                        returnType = realWords[0];
+                        //System.out.println("return type is:" + returnType);
+                        for(int i = 1; i < realLen -1; i++){
+                            if(i%2 == 1){
+                                className += ", " +realWords[i];
+                            }
+                        }
+                    }
+                    else{
+                        for(int i = 0; i < realLen -1; i++){
+                            if(i%2 == 0){
+                                className += ", " + realWords[i];
+                            }
+                        }
+                    }//}}}
+
+                    //everything should be in correct format by now;
+                    struct += "static " + returnType + " " + methodName + " (" + className + ")\n";
+                    //System.out.println("static " + returnType + " " + methodName + " (" + className + ");\n");
+                }
+
+
+
+                /*
+
                 for( String s : b.getVtable() ) {
                     if(!s.equals("Class __isa;")){
                         String toModify = s;
@@ -747,6 +858,12 @@ public class Decl extends xtc.util.Tool
                                 tms[0] + " " + tms[1] +" " + tms[2] + "\n");
                     }
                 }
+
+                */
+
+
+
+
                 struct +="\n";
 
                 //extra shit
@@ -760,7 +877,7 @@ public class Decl extends xtc.util.Tool
                     struct +="\n";
                 }//}}}
                // System.out.println(struct);
-                System.out.println("think my package node is: " + p.getName());
+                //System.out.println("think my package node is: " + p.getName());
 
                 //Add struct to correct PNode
                 p.addStructChild(struct);
@@ -889,13 +1006,6 @@ public class Decl extends xtc.util.Tool
         ////////////////////////////////////////////////////////////////////////////////////////
 
 
-        int defcount = 0;
-        for(PNode p : packageTree){
-            if(p.getName().equals("DefaultPackage")){
-                defcount++;
-            }
-        }
-        System.out.println("How many default packages: " + defcount);
         //Write .h to file
         try{
         File out = new File("test.h");
