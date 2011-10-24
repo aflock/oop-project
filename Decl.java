@@ -694,15 +694,15 @@ public class Decl extends xtc.util.Tool
                     uniStruct += "struct _" + b.getName() + ";\n";
                     uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
                     typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
-                    
+
                  }
            }
            uniStruct += typedefs;
-        
+
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
-           
-           
+
+
 
             /*
             System.out.println(b);
@@ -855,12 +855,14 @@ public class Decl extends xtc.util.Tool
                 }
             }
         }
+        /*
         System.out.println("NOW PRINTING PNODE TREE");
         //Print out each PNode
         for(PNode p : packageTree){
             System.out.println("------------------"+ p.getName() + "----------------");
             System.out.println(p);
         }
+        */
 
         /* print later
 	for (Bubble b : bubbleList)
@@ -872,18 +874,42 @@ public class Decl extends xtc.util.Tool
         ////////////////////////// Should be done with .h by here///////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
 
+
+        int defcount = 0;
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                defcount++;
+            }
+        }
+        System.out.println("How many default packages: " + defcount);
         //Write .h to file
-        FileWriter hstream = new FileWrite("test.h");
+        try{
+        File out = new File("test.h");
+        FileWriter hstream = new FileWriter(out);
         BufferedWriter hwrite = new BufferedWriter(hstream);
 
+
+        String forwardh ="";
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                forwardh += p.getForwardDecl();
+            }
+        }
         /*
          *Iterate through packageTree: in order (dfs)
          */
+        String doth = "";
         //find Default package
         for(PNode p : packageTree){
-            if()
+            if(p.getName().equals("DefaultPackage")){
+                doth += p.getOutput();
+            }
         }
 
+        hwrite.write(forwardh);
+        hwrite.write(doth);
+        hwrite.close();
+        } catch (Exception e){System.out.println("Error writing: "+ e);}
 
         Mubble test = new Mubble("classy", "String (*getName)(Class);");
 	    test.formatMethodHeader(test.getHeader());
@@ -901,7 +927,7 @@ public class Decl extends xtc.util.Tool
                 }
             }
         }
-        
+
         //IMPL SHIT
         Impl Q = new Impl();
         Q.init();
@@ -1045,7 +1071,7 @@ class Impl extends xtc.util.Tool{
                 Node parent1 = (Node)parent0.getProperty("parent0");
                 System.out.println("IMPL parent0: " + parent0.getName());
                 System.out.println("IMPL parent1: " + parent1.getName());
-                
+
                 //Parent 1 Should be class decl
                 //Classname = parent1.getString(1)
                 //Methodname = n.getString(3);
@@ -1053,7 +1079,7 @@ class Impl extends xtc.util.Tool{
                 //Add code to curMub.code
                 //find curMub match in mubbleList
                 //set match = curMub
-                
+
                 /*if ((parent1.getName().equals("FieldDeclaration")) &&
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(0);
@@ -1061,7 +1087,7 @@ class Impl extends xtc.util.Tool{
                         }
                 */
                 visit(n);
-                
+
                 onMeth = false;
             }
 
