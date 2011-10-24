@@ -643,7 +643,7 @@ public class Decl extends xtc.util.Tool
     static Decl d;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
-    static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
+    public static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
     {//{{{
         packageTree.add(new PNode("DefaultPackage", null));
@@ -842,9 +842,9 @@ public class Decl extends xtc.util.Tool
                     }
                 }
             }
-            
+
         }
-        
+
         for(PNode p : packageTree)
         {
             uniStruct = "";
@@ -867,7 +867,7 @@ public class Decl extends xtc.util.Tool
             }
             uniStruct += typedefs;
             p.addFirstStruct(uniStruct);
-             
+
         }
         /*
         System.out.println("NOW PRINTING PNODE TREE");
@@ -943,7 +943,7 @@ public class Decl extends xtc.util.Tool
         }
 
         //IMPL SHIT
-        Impl Q = new Impl();
+        Impl Q = new Impl(bubbleList, packageTree, mubbleList);
         Q.init();
         Q.prepare();
         for(int i = 0; i< args.length; i++){
@@ -1028,10 +1028,19 @@ public class Decl extends xtc.util.Tool
 
 class Impl extends xtc.util.Tool{
 
-    public Impl(){}
+    public static ArrayList<Bubble> bubbleList;
+    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Mubble> mubbleList;
 
-    public void init()
+    public Impl(ArrayList<Bubble> bubbleList,
+            ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
     {
+        this.bubbleList = bubbleList;
+        this.packageTree = packageTree;
+        this.mubbleList = mubbleList;
+    }
+
+    public void init(){
         super.init();
     }
 
@@ -1059,6 +1068,7 @@ class Impl extends xtc.util.Tool{
         new Visitor()
         {
 
+
             public void visitFieldDeclaration(GNode n){
                 visit(n);
             }
@@ -1075,9 +1085,11 @@ class Impl extends xtc.util.Tool{
             String tempString = "";
             String tmpCode = "";
             boolean onMeth = false;
-            Mubble curMub;
+            Mubble curMub = null;
             public void visitMethodDeclaration(GNode n)
             {
+                visit(n);
+
                 tmpCode = "";
                 onMeth = true;
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -1086,8 +1098,13 @@ class Impl extends xtc.util.Tool{
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
                 String methodname = n.getString(3);
-                curMub = new Mubble(classname, methodname);
-                
+
+                for(Mubble m : mubbleList){
+                    if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                        curMub = m;
+                }
+
+
  //==============Assigning Package to CurMub===================//
                 //Assuming curMub has code
                 for(Bubble b: bubbleList)
@@ -1106,6 +1123,7 @@ class Impl extends xtc.util.Tool{
                 }
 //==============================================================//
                 visit(n);
+
 
                 onMeth = false;
             }
@@ -1191,7 +1209,6 @@ class Impl extends xtc.util.Tool{
                     while(temp != null) {
                         //System.out.println(temp);
                         //temp = (Node)temp.getProperty("parent0");
-
 
                         n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
                         temp = (Node)temp.getProperty("parent0");
