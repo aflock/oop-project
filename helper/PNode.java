@@ -159,13 +159,12 @@ public class PNode{
         //ADD MUBBLES
         if(mubbleList != null)
         {
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             for(int i=0; i < mubbleList.length; i++)
             {
                 toReturn += mubbleList[i].prettyPrinter() + "\n";
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             }
         }
+        
         if(packageChildren != null)
             for(int i = 0; i <packageChildren.length; i++){
                 toReturn += packageChildren[i].getOutputCC() + "\n";

@@ -906,11 +906,16 @@ public class Decl extends xtc.util.Tool
         }
         System.out.println("How many default packages: " + defcount);
         //Write .h to file
+        String hFile = "test.h";
         try{
-        File out = new File("test.h");
+        File out = new File(hFile);
         FileWriter hstream = new FileWriter(out);
         BufferedWriter hwrite = new BufferedWriter(hstream);
-
+        String includes = "#pragma once\n";
+        includes += "#include \"java_lang.h\"\n";
+        includes += "#include <stdint.h>\n";
+        includes += "\n\n"; //for good measure
+        hwrite.write(includes);
 
         String forwardh ="";
         for(PNode p : packageTree){
@@ -963,7 +968,10 @@ public class Decl extends xtc.util.Tool
         File out = new File("test.cc");
         FileWriter ccstream = new FileWriter(out);
         BufferedWriter ccwrite = new BufferedWriter(ccstream);
-
+        String includes = "#pragma once\n";
+        includes += "#include \"" + hFile + "\"\n";
+        includes += "\n\n"; //for good measure
+        ccwrite.write(includes);
         /*
          *Iterate through packageTree: in order (dfs)
          */
