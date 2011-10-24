@@ -18,11 +18,14 @@ import xtc.tree.Location;
 import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
+
 //our imports
 import xtc.oop.helper.Bubble;
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.PNode;
 import java.util.regex.*;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -683,23 +686,13 @@ public class Decl extends xtc.util.Tool
          */
         String uniStruct = "//Forward Decls of All Structs in package \n";
         String typedefs = "\n";
+        String methName = "";
         //ADDED --Forward Decls of stucts and vtables
-           for(Bubble b : bubbleList)
-           {
-                 if(b.getName() != "String" && b.getName() != "Object")
-                 {
-                    uniStruct += "struct _" + b.getName() + ";\n";
-                    uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
-                    typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
-                    
-                 }
-           }
-           uniStruct += typedefs;
-        
+
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
-           
-           
+
+
 
             /*
             System.out.println(b);
@@ -838,7 +831,22 @@ public class Decl extends xtc.util.Tool
 		p.addStructChild(struct);
 
 	    }
-
+           for(PNode p : packageTree)
+           {
+                for(String c : p.getStructChildren())
+                {
+                    methName = Mubble.getStringBetween(c, "struct", "{");
+                    if(b.getName() != "String" && b.getName() != "Object")
+                    {
+                        uniStruct += "struct _" + b.getName() + ";\n";
+                        uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
+                        typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
+                    }
+                }
+                uniStruct += typedefs;
+                p.addFirstStruct(uniStruct);
+           }
+           
 
         }//}}}
 
@@ -852,12 +860,14 @@ public class Decl extends xtc.util.Tool
                 }
             }
         }
+        /*
         System.out.println("NOW PRINTING PNODE TREE");
         //Print out each PNode
         for(PNode p : packageTree){
             System.out.println("------------------"+ p.getName() + "----------------");
             System.out.println(p);
         }
+        */
 
         /* print later
 	for (Bubble b : bubbleList)
@@ -868,6 +878,43 @@ public class Decl extends xtc.util.Tool
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////// Should be done with .h by here///////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
+
+
+        int defcount = 0;
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                defcount++;
+            }
+        }
+        System.out.println("How many default packages: " + defcount);
+        //Write .h to file
+        try{
+        File out = new File("test.h");
+        FileWriter hstream = new FileWriter(out);
+        BufferedWriter hwrite = new BufferedWriter(hstream);
+
+
+        String forwardh ="";
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                forwardh += p.getForwardDecl();
+            }
+        }
+        /*
+         *Iterate through packageTree: in order (dfs)
+         */
+        String doth = "";
+        //find Default package
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                doth += p.getOutput();
+            }
+        }
+
+        hwrite.write(forwardh);
+        hwrite.write(doth);
+        hwrite.close();
+        } catch (Exception e){System.out.println("Error writing: "+ e);}
 
         Mubble test = new Mubble("classy", "String (*getName)(Class);");
 	    test.formatMethodHeader(test.getHeader());
@@ -881,9 +928,19 @@ public class Decl extends xtc.util.Tool
             {
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry));
-                    
+
                 }
             }
+        }
+
+        //IMPL SHIT
+        Impl Q = new Impl();
+        Q.init();
+        Q.prepare();
+        for(int i = 0; i< args.length; i++){
+            try{
+                Q.process(args[i]);
+            } catch (Exception e) {System.out.println(e);}
         }
     }//}}}
 
@@ -990,7 +1047,6 @@ class Impl extends xtc.util.Tool{
 
     public void process(Node node)
     {
-
         new Visitor()
         {
 
@@ -1008,10 +1064,37 @@ class Impl extends xtc.util.Tool{
             }
 
             String tempString = "";
-            public void visitMethodDeclaration(GNode n){
-                //assign current mubble TODO
+            String tmpCode = "";
+            boolean onMeth = false;
+            Mubble curMub;
+            public void visitMethodDeclaration(GNode n)
+            {
+                tmpCode = "";
+                onMeth = true;
+                Node parent0 = (Node)n.getProperty("parent0");
+                System.out.println(n.hasProperty("parent1"));
+                Node parent1 = (Node)parent0.getProperty("parent0");
+                System.out.println("IMPL parent0: " + parent0.getName());
+                System.out.println("IMPL parent1: " + parent1.getName());
 
+                //Parent 1 Should be class decl
+                String classname = parent1.getString(1);
+                String methodname = n.getString(3);
+                curMub = new Mubble(classname, methodname);
+
+                //Add code to curMub.code
+                //find curMub match in mubbleList
+                //set match = curMub
+
+                /*if ((parent1.getName().equals("FieldDeclaration")) &&
+                        (parent2.getName().equals("ClassBody"))){
+                    String name = n.getString(0);
+                    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
+                        }
+                */
                 visit(n);
+
+                onMeth = false;
             }
 
             public void visitModifier(GNode n){
