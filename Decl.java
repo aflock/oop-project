@@ -478,8 +478,17 @@ public class Decl extends xtc.util.Tool
                 visit(n);
             }
 
-            public void visitPrimitiveType(GNode n) {
+            public void visitPrimitiveType(GNode n) 
+            {
                 visit(n);
+                Node parent1 = (Node)n.getProperty("parent1");
+                Node parent2 = (Node)n.getProperty("parent2");
+                
+                if ((parent1.getName().equals("MethodDeclaration")) &&
+                        (parent2.getName().equals("ClassBody")))
+                {
+                    methods.set(methods.size()-1,methods.get(methods.size()-1)+" " + n.getString(0));
+                }
             }
 
 
@@ -992,11 +1001,16 @@ public class Decl extends xtc.util.Tool
 
 
         //Write .h to file
+        String hFile = "test.h";
         try{
-        File out = new File("test.h");
+        File out = new File(hFile);
         FileWriter hstream = new FileWriter(out);
         BufferedWriter hwrite = new BufferedWriter(hstream);
-
+        String includes = "#pragma once\n";
+        includes += "#include \"java_lang.h\"\n";
+        includes += "#include <stdint.h>\n";
+        includes += "\n\n"; //for good measure
+        hwrite.write(includes);
 
         String forwardh ="";
         for(PNode p : packageTree){
@@ -1020,10 +1034,6 @@ public class Decl extends xtc.util.Tool
         hwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
-        Mubble test = new Mubble("classy", "String (*getName)(Class);");
-	    test.formatMethodHeader(test.getHeader());
-
-
 
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
@@ -1037,7 +1047,7 @@ public class Decl extends xtc.util.Tool
             }
         }
 
-        //IMPL SHIT
+//===============IMPL SHIT====================================//
         Impl Q = new Impl(bubbleList, packageTree, mubbleList);
         Q.init();
         Q.prepare();
@@ -1046,6 +1056,31 @@ public class Decl extends xtc.util.Tool
                 Q.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
+        
+        
+        //Write .cc to file
+        try{
+        File out = new File("test.cc");
+        FileWriter ccstream = new FileWriter(out);
+        BufferedWriter ccwrite = new BufferedWriter(ccstream);
+        String includes = "#pragma once\n";
+        includes += "#include \"" + hFile + "\"\n";
+        includes += "\n\n"; //for good measure
+        ccwrite.write(includes);
+        /*
+         *Iterate through packageTree: in order (dfs)
+         */
+        String dotcc = "";
+        //find Default package
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                dotcc += p.getOutputCC();
+            }
+        }
+
+        ccwrite.write(dotcc);
+        ccwrite.close();
+        } catch (Exception e){System.out.println("Error writing: "+ e);}
     }//}}}
 
 
@@ -1127,8 +1162,7 @@ class Impl extends xtc.util.Tool{
     public static ArrayList<PNode> packageTree;
     public static ArrayList<Mubble> mubbleList;
 
-    public Impl(ArrayList<Bubble> bubbleList,
-            ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
+    public Impl(ArrayList<Bubble> bubbleList, ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
     {
         this.bubbleList = bubbleList;
         this.packageTree = packageTree;
@@ -1165,7 +1199,13 @@ class Impl extends xtc.util.Tool{
 
 
             public void visitFieldDeclaration(GNode n){
+		if (onMeth) {
+		   ; 
+		}
                 visit(n);
+		if (onMeth) {
+		    //methodString += ";\n";
+		}
             }
 
             public void visitDimensions(GNode n) {
@@ -1174,19 +1214,19 @@ class Impl extends xtc.util.Tool{
 
             public void visitModifiers(GNode n){
                 visit(n);
-
             }
 
             String tempString = "";
             String tmpCode = "";
             boolean onMeth = false;
             Mubble curMub = null;
+	    String methodString = "";
             public void visitMethodDeclaration(GNode n)
             {
                 visit(n);
 
                 tmpCode = "";
-                onMeth = true;
+
                 Node parent0 = (Node)n.getProperty("parent0");
                 Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -1199,28 +1239,34 @@ class Impl extends xtc.util.Tool{
                         curMub = m;
                 }
 
-
  //==============Assigning Package to CurMub===================//
                 //Assuming curMub has code
                 for(Bubble b: bubbleList)
                 {
                     if(b.getName().equals(classname)) // b's package is curMub's package
                     {
-                        curMub.setPackageName(b.getPackageName());
+                        if(b.getPackageName().equals(""))
+                            curMub.setPackageName("DefaultPackage");
+                        else
+                            curMub.setPackageName(b.getPackageName());
                         break;
                     }
                 }
                 //Adding curMub to the right pNode
                 for(PNode p : packageTree)
                 {
+                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
+                    //System.out.println("P name: " + p.getName());
+                    //System.out.println("curMub: " + curMub.getPackageName());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
 //==============================================================//
-                visit(n);
-
-
-                onMeth = false;
+                
+		//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		//System.out.println(methodString);
+                //onMeth = false;
+		//methodString = "";
             }
 
             public void visitModifier(GNode n){
@@ -1228,15 +1274,133 @@ class Impl extends xtc.util.Tool{
 
             }
 
+	    public void visitCallExpression(GNode n) {
+		//visit(n);
+		if (onMeth) {		
+		    String tmp = "";
+		    /*
+		    for (Object o : n) {
+			if (o instanceof String && !((String)o).equals("")) {
+			    methodString += (String)o + "(";
+			}
+		    }
+		    */
+		    dispatchBitch(n);
+		    dispatch(n.getNode(0));
+		    methodString += n.getString(2) + "(";
+		    dispatch(n.getNode(3));
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitEmptyStatement(GNode n) {
+		if (onMeth) {
+		    methodString += ";\n";
+		}
+		visit(n);
+	    }
+
+	    public void visitConditionalStatement(GNode n) {
+		if (onMeth) {
+		    dispatchBitch(n);
+		    Node parent = (Node)n.getProperty("parent0");
+		    if (parent.getName().equals("ConditionalStatement")) {
+			methodString += "\n}\nelse ";
+		    }
+		    methodString += "if (";
+		    dispatch(n.getNode(0));
+		    methodString += ") {\n";
+		    for (int i = 1; i < n.size()-1; i++) {
+			dispatch(n.getNode(i));
+		    }
+		    if (n.getNode(n.size()-1) != null) {
+			Node parent1 = (Node)parent.getProperty("parent0");
+			if (!n.getNode(n.size()-1).getName()
+			    .equals("ConditionalStatement")) {
+			    methodString += "\n}\nelse {\n";
+			}
+			/*
+			if (!parent.getName().equals("ConditionalStatement")) {
+			    methodString += "\n}\nelse {\n";
+			}
+			*/
+			dispatch(n.getNode(n.size()-1));
+		    }
+		    if (!parent.getName().equals("ConditionalStatement")) {
+			methodString += "\n}\n";
+		    }
+		    //methodString += "}\n";
+		} 
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitConditionalExpression(GNode n) {
+		if (onMeth) {
+		    dispatchBitch(n);
+		    methodString += "(";
+		    dispatch(n.getNode(0));
+		    methodString += " ? ";
+		    dispatch(n.getNode(1));
+		    methodString += " : ";
+		    dispatch(n.getNode(2));
+		    methodString += ")";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
             public void visitDeclarators(GNode n) {
                 visit(n);
+		
+		if (onMeth && !((Node)n.getProperty("parent0")).getName()
+		    .equals("BasicForControl")) {
+		    methodString += ";\n";
+		}
             }
+
+	    public void visitBooleanLiteral(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0); 
+		}
+		visit(n);
+	    }
 
             public void visitDeclarator(GNode n) {
+		if (onMeth) {
+		    methodString += " " + n.getString(0); 
+		    Object third = n.get(2);
+		    if (third instanceof Node) {
+			methodString += " = ";
+		    }
+		}
                 visit(n);
+		if (onMeth) {
+		    //methodString += ";\n";
+		}
             }
 
+	    public void visitEqualityExpression(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    dispatch(n.getNode(0));
+		    methodString += " " + n.getString(1) + " ";
+		    dispatch(n.getNode(2));
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+
             public void visitIntegerLiteral(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0); 
+		}
                 visit(n);
             }
 
@@ -1267,17 +1431,183 @@ class Impl extends xtc.util.Tool{
 
             public void visitForStatement(GNode n)
             {
-                visit(n);
+		if (onMeth) {
+		    methodString += "for("; 
+		}		
+                visit(n);		
+		if (onMeth) {
+		    methodString += "}\n";		    
+		}
             }
+
+	    public void visitLogicalAndExpression(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    methodString += "(";
+		    dispatch(n.getNode(0));		    
+		    methodString += ") && (";
+		    dispatch(n.getNode(1));
+		    methodString += ")";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitExpression(GNode n) {
+		if (onMeth) {
+		    dispatchBitch(n);
+		    dispatch(n.getNode(0));
+		    methodString += " " + n.getString(1) + " ";
+		    dispatch(n.getNode(2));
+
+		} else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitExpressionStatement(GNode n) {		
+		visit(n);
+		if (onMeth) {
+		    methodString += ";\n";
+		}
+	    }
+
+	    public void visitLogicalOrExpression(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    methodString += "(";
+		    dispatch(n.getNode(0));
+		    methodString += ") || (";
+		    dispatch(n.getNode(1));
+		    methodString += ")";
+		}
+		else {
+		    visit(n);
+		}
+	    }
 
             public void visitBasicForControl(GNode n)
             {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    for(int i = 0; i < n.size(); i++) {
+			dispatch(n.getNode(i));
+			if( i >= 2 && i < n.size()-1) {
+			    methodString += "; ";
+			}
+		    }
+		    methodString += ") {\n";
+		}
+		else {
+		    visit(n);
+		}
+            }
+	    
+	    public void visitBlock(GNode n) {
+		if(((Node)n.getProperty("parent0")).getName()
+		   .equals("MethodDeclaration")) {
+		    onMeth = true;
+
+		    visit(n);
+		    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		    System.out.println(methodString);
+		    onMeth = false;
+		    methodString = "";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitPostfixExpression(GNode n) {
+		if (onMeth) {
+		    visit(n);
+		    methodString += n.getString(1);
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitPrimaryIdentifier(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0);
+		}
+		visit(n);
+	    }
+
+            public void visitPrimitiveType(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0); 
+		}
                 visit(n);
             }
 
-            public void visitPrimitiveType(GNode n) {
-                visit(n);
-            }
+	    public void visitStringLiteral(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0);
+		}
+		visit(n);
+	    }
+
+	    public void visitArguments(GNode n) {
+		if (onMeth) {
+		    visit(n);
+		    methodString += ")";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitSelectionExpression(GNode n) {
+		if (onMeth) {
+		    visit(n);
+		    if (n.get(1) != null) {
+			methodString += "." + n.getString(1) + ".";
+		    }
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitReturnStatement(GNode n) {
+		if (onMeth) {
+		    methodString += "return "; 
+		}
+		visit(n);
+		if (onMeth) {
+		    methodString += ";\n";
+		}
+	    }
+
+	    public void visitUnaryExpression(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0);
+		    visit(n);
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitWhileStatement(GNode n) {
+		if (onMeth) {
+		    dispatchBitch(n);
+		    methodString += "while("; 
+		    dispatch(n.getNode(0));
+		    methodString += ") {\n";
+		    for(int i = 1; i < n.size(); i++) {
+			dispatch(n.getNode(i));
+		    }
+		    methodString += "}\n";
+		}
+		else {
+		    visit(n);
+		}
+	    }
 
             public void visitType(GNode n)
             {
@@ -1291,8 +1621,46 @@ class Impl extends xtc.util.Tool{
 
             public void visitRelationalExpression(GNode n)
             {
-                visit(n);
+		if (onMeth) {
+		    dispatchBitch(n);
+		    dispatch(n.getNode(0));
+		    methodString += " " + n.getString(1) + " ";
+		    dispatch(n.getNode(2));
+		    //methodString += ";";
+		}
+		
+                //visit(n);
             }
+
+	    public void dispatchBitch(Node n) {
+                int counter = 1;
+                if(n.hasProperty("parent0")) {
+                    Node temp = (Node)n.getProperty("parent0");
+
+                    while(temp != null) {
+                        //System.out.println(temp);
+                        //temp = (Node)temp.getProperty("parent0");
+
+                        n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                        temp = (Node)temp.getProperty("parent0");
+                        //if(n.getProperty("parent2") == null)
+                        //System.out.println(temp);
+                    }
+                }
+                //don't need this, but not deleting.
+                for (String s : n.properties()) {
+                    //System.out.println(n.getProperty(s));
+                }
+
+                for (Object o : n){
+                    if (o instanceof Node){
+                        ((Node)o).setProperty("parent_name", n.getName() );
+                        ((Node)o).setProperty("parent0", n );
+                        //dispatch((Node)o);
+                    }
+                }
+
+	    }
 
             public void visit(Node n)
             {

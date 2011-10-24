@@ -91,12 +91,14 @@ public class PNode{
 
     public String getForwardDecl(){
         String toReturn = "";
-
+        int indent = 0;
         String lastname = name.split(" ")[name.split(" ").length -1];
         if(!name.equals("DefaultPackage")){
-            toReturn += "namespace "+ lastname +"{\n";
+            toReturn += indentLevel(indent) + "namespace "+ lastname +"{\n";
+            indent++;
         }
 
+        //adding forward Decls
         if(structChildren != null && structChildren[0] != null)
             toReturn += structChildren[0] + "\n";
 
@@ -104,11 +106,13 @@ public class PNode{
             for(int i = 0; i <packageChildren.length; i++){
                 toReturn += packageChildren[i].getForwardDecl() + "\n";
             }
+
         if(!name.equals("DefaultPackage")){
             toReturn += "}\n";
         }
         return toReturn;
     }
+
 
     public String getOutput(){
         System.out.println("method getOutput called");
@@ -134,6 +138,42 @@ public class PNode{
             toReturn+= "}\n";
         }
 
+        return toReturn;
+    }
+
+    public String getOutputCC(){
+        int indent= 0;
+        String toReturn = "";
+        //for printing the entire .cc
+        //print my CONSTRUCTORS, print my formatted Mubbles
+        String lastname = name.split(" ")[name.split(" ").length -1];
+        if(!name.equals("DefaultPackage")){
+            toReturn += indentLevel(indent) + "namespace "+ lastname +"{\n";
+            indent++;
+        }
+
+        //ADD CONSTUCTORS
+
+        //ADD MUBBLES
+        if(mubbleList != null)
+        {
+            for(int i=0; i < mubbleList.length; i++)
+            {
+                toReturn += mubbleList[i].prettyPrinter() + "\n";
+            }
+        }
+
+        if(packageChildren != null)
+            for(int i = 0; i <packageChildren.length; i++){
+                toReturn += packageChildren[i].getOutputCC() + "\n";
+            }
+
+        if(!name.equals("DefaultPackage")){
+            toReturn+= "}\n";
+        }
+
+        System.out.println("AND THE OUTPUT IS!!!!!!:");
+        System.out.println(toReturn);
         return toReturn;
     }
 
