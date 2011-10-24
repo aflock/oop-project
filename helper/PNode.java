@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class PNode{
     String name;
     PNode[] packageChildren;
+    Mubble[] mubbleList;
     String[] structChildren;
     PNode parent;
     ArrayList<String> structs = new ArrayList<String>();
@@ -21,6 +22,31 @@ public class PNode{
     {
         return structs.contains(s);
     }
+
+
+    public Mubble[] getMubblelist(){
+        return this.mubbleList;
+    }
+
+    public void addMubble(Mubble child){
+        if(child == null){
+            return;
+        }
+        int len = mubbleList == null ? 1 : mubbleList.length + 1;
+        Mubble[] temp = new Mubble[len];
+        if(mubbleList == null){
+            temp[0] = child;
+            mubbleList = temp;
+        }
+        else{
+            for (int i = 0; i < mubbleList.length ; i++ ){
+                temp[i] = mubbleList[i];
+            }
+            temp[len-1] = child;
+            mubbleList = temp;
+        }
+    }
+
 
     public void addPNodeChild(PNode child){
         if(child == null){
@@ -71,7 +97,7 @@ public class PNode{
             toReturn += "namespace "+ lastname +"{\n";
         }
 
-        if(structChildren != null)
+        if(structChildren != null && structChildren[0] != null)
             toReturn += structChildren[0] + "\n";
 
         if(packageChildren != null)
