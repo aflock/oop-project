@@ -1032,8 +1032,7 @@ class Impl extends xtc.util.Tool{
     public static ArrayList<PNode> packageTree;
     public static ArrayList<Mubble> mubbleList;
 
-    public Impl(ArrayList<Bubble> bubbleList,
-            ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
+    public Impl(ArrayList<Bubble> bubbleList, ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
     {
         this.bubbleList = bubbleList;
         this.packageTree = packageTree;
@@ -1103,7 +1102,6 @@ class Impl extends xtc.util.Tool{
                     if(m.getName().equals(classname) && m.getMethName().equals(methodname))
                         curMub = m;
                 }
-
 
  //==============Assigning Package to CurMub===================//
                 //Assuming curMub has code

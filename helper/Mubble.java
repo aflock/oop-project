@@ -16,6 +16,17 @@ public class Mubble{
         this.code = "";
      }
 
+     //returns a String of the formatted method for .cc file
+     public String prettyPrinter()
+     {
+        String ret = "";
+        ret += this.header + "{\n";
+        ret += this.code + "\n";
+        ret += "}\n";
+        
+        return ret;
+     }
+
      public void setPackageName(String pack)
      {
         this.packageName = pack;
