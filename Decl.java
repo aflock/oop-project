@@ -683,18 +683,10 @@ public class Decl extends xtc.util.Tool
          */
         String uniStruct = "//Forward Decls of All Structs in package \n";
         String typedefs = "\n";
+        String methName = "";
         //ADDED --Forward Decls of stucts and vtables
-           for(Bubble b : bubbleList)
-           {
-                 if(b.getName() != "String" && b.getName() != "Object")
-                 {
-                    uniStruct += "struct _" + b.getName() + ";\n";
-                    uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
-                    typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
-                    
-                 }
-           }
-           uniStruct += typedefs;
+        //USE add as 1st 
+
         
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
@@ -838,7 +830,22 @@ public class Decl extends xtc.util.Tool
 		p.addStructChild(struct);
 
 	    }
-
+           for(PNode p : packageTree)
+           {
+                for(String c : p.getStructChildren())
+                {
+                    methName = Mubble.getStringBetween(c, "struct", "{");
+                    if(b.getName() != "String" && b.getName() != "Object")
+                    {
+                        uniStruct += "struct _" + b.getName() + ";\n";
+                        uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
+                        typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
+                    }
+                }
+                uniStruct += typedefs;
+                p.addFirstStruct(uniStruct);
+           }
+           
 
         }//}}}
 
@@ -1000,7 +1007,6 @@ class Impl extends xtc.util.Tool{
 
     public void process(Node node)
     {
-        Mubble curMub;
         new Visitor()
         {
 
@@ -1020,6 +1026,7 @@ class Impl extends xtc.util.Tool{
             String tempString = "";
             String tmpCode = "";
             boolean onMeth = false;
+            Mubble curMub;
             public void visitMethodDeclaration(GNode n)
             {
                 tmpCode = "";
@@ -1031,9 +1038,10 @@ class Impl extends xtc.util.Tool{
                 System.out.println("IMPL parent1: " + parent1.getName());
                 
                 //Parent 1 Should be class decl
-                //Classname = parent1.getString(1)
-                //Methodname = n.getString(3);
-                //curMub = new Mubble(ClassName, methodname);
+                String classname = parent1.getString(1);
+                String methodname = n.getString(3);
+                curMub = new Mubble(classname, methodname);
+
                 //Add code to curMub.code
                 //find curMub match in mubbleList
                 //set match = curMub

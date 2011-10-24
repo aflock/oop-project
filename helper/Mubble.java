@@ -143,6 +143,10 @@ public class Mubble{
         return this.header;
      }
      
+     public String getMethName(){
+        return this.methName;
+     }
+     
      public String getName(){
         return this.name;
      }
