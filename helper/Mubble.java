@@ -21,7 +21,7 @@ public class Mubble{
         this.packageName = pack;
      }
 
-     public void getPackageName(){
+     public String getPackageName(){
         return this.packageName;
      }
 

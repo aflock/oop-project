@@ -1109,7 +1109,7 @@ class Impl extends xtc.util.Tool{
                 //Assuming curMub has code
                 for(Bubble b: bubbleList)
                 {
-                    if(b.getName().equals(className)) // b's package is curMub's package
+                    if(b.getName().equals(classname)) // b's package is curMub's package
                     {
                         curMub.setPackageName(b.getPackageName());
                         break;
