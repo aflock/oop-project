@@ -27,6 +27,16 @@ public class Mubble{
         
         return ret;
      }
+     
+     public String JavatoCpp(String s)
+     {
+        String temp = s;
+        temp = s.replace("boolean", "bool");
+        //CHANGE to REGEX to make so it cannot be in a word
+        temp = temp.replace("int ", "int32_t ");
+        
+        return temp;
+     }
 
      public void setPackageName(String pack)
      {
