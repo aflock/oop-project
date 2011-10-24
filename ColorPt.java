@@ -14,7 +14,7 @@ class ColorPt extends Pt{
     }
     */
 
-    final String color;
+    String color;
 
     public ColorPt(String color){
         this.color = color;
