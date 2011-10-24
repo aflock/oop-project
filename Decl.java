@@ -709,8 +709,7 @@ public class Decl extends xtc.util.Tool
                 //find which package node to add this struct to
                 String packName = b.getPackageName();
                 PNode p = constructPackageTree(packName);
-                if(!p.hasStruct(uniStruct))
-                    p.addStructChild(uniStruct);
+
 
                 //assemble the struct as a large string
 //{{{
@@ -831,22 +830,6 @@ public class Decl extends xtc.util.Tool
 		p.addStructChild(struct);
 
 	    }
-           for(PNode p : packageTree)
-           {
-                for(String c : p.getStructChildren())
-                {
-                    methName = Mubble.getStringBetween(c, "struct", "{");
-                    if(b.getName() != "String" && b.getName() != "Object")
-                    {
-                        uniStruct += "struct _" + b.getName() + ";\n";
-                        uniStruct += "struct _" + b.getName() + "_" + "VT;\n";
-                        typedefs += "typedef _" + b.getName() + "* " + b.getName() + ";\n";
-                    }
-                }
-                uniStruct += typedefs;
-                p.addFirstStruct(uniStruct);
-           }
-           
 
         }//}}}
 
@@ -859,6 +842,32 @@ public class Decl extends xtc.util.Tool
                     }
                 }
             }
+            
+        }
+        
+        for(PNode p : packageTree)
+        {
+            uniStruct = "";
+            typedefs = "";
+            if(p.getStructChildren() == null)
+                continue;
+            for(String c : p.getStructChildren())
+            {
+                if(c == null)
+                    continue;
+                else if (c.indexOf("struct") == -1)
+                    continue;
+
+                String className = Mubble.getStringBetween(c, "struct ", " {");
+                uniStruct += "struct " + className + ";\n";
+                String bareClassName = className.replace("_", "");
+                bareClassName = bareClassName.replace("VT", "");
+                if(className.indexOf("VT") == -1)
+                    typedefs += "typedef _" + className + "* " + bareClassName + ";\n";
+            }
+            uniStruct += typedefs;
+            p.addFirstStruct(uniStruct);
+             
         }
         /*
         System.out.println("NOW PRINTING PNODE TREE");
