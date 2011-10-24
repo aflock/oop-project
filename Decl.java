@@ -478,8 +478,17 @@ public class Decl extends xtc.util.Tool
                 visit(n);
             }
 
-            public void visitPrimitiveType(GNode n) {
+            public void visitPrimitiveType(GNode n) 
+            {
                 visit(n);
+                Node parent1 = (Node)n.getProperty("parent1");
+                Node parent2 = (Node)n.getProperty("parent2");
+                
+                if ((parent1.getName().equals("MethodDeclaration")) &&
+                        (parent2.getName().equals("ClassBody")))
+                {
+                    methods.set(methods.size()-1,methods.get(methods.size()-1)+" " + n.getString(0));
+                }
             }
 
 
