@@ -1022,6 +1022,8 @@ class Impl extends xtc.util.Tool{
             boolean onMeth = false;
             public void visitMethodDeclaration(GNode n)
             {
+                visit(n);
+
                 tmpCode = "";
                 onMeth = true;
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -1044,7 +1046,7 @@ class Impl extends xtc.util.Tool{
                     dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
                         }
                 */
-                visit(n);
+
                 
                 onMeth = false;
             }
@@ -1130,7 +1132,6 @@ class Impl extends xtc.util.Tool{
                     while(temp != null) {
                         //System.out.println(temp);
                         //temp = (Node)temp.getProperty("parent0");
-
 
                         n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
                         temp = (Node)temp.getProperty("parent0");
