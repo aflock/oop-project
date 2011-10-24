@@ -324,7 +324,8 @@ public class Bubble{
 	    for (int j = 0; j < temp2.length; j++) {
 		if (temp2[j].length() != 0) {
 		    if (temp2[j].charAt(0) == '[') {
-			temp[index-1] += "[]";
+			//temp[index-1] += "[]";
+			temp[index-1] = "__rt::Array<" + temp[index-1] + ">*";
 		    }
 		    else {
 			temp[index++] = temp2[j];
@@ -370,7 +371,6 @@ public class Bubble{
     public void printToFile(int indent) {
 	// namespace needs to be added
 	// String or java.lang::String ?
-	System.out.println("*******************>>>>FILE START<<<<<**********************");
 	if (getName().equals("Object") ||
 	    getName().equals("String") ||
 	    getName().equals("Class")) return;
@@ -414,8 +414,6 @@ public class Bubble{
 	}
 	System.out.println();
 	System.out.println("};");
-	
-    System.out.println("*******************>>>>FILE END<<<<<**********************");
     }
 
     public String indentLevel(int indent){
