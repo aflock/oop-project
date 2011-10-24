@@ -10,6 +10,8 @@ public class Mubble{
      {
         this.name = iName;
         this.header = formatMethodHeader(iHeader);
+        System.out.println("========HEADER: " + iHeader);
+        System.out.println("========HEADER: " + header);
         this.code = "";
      }
      
@@ -56,7 +58,8 @@ public class Mubble{
 	 for (int j = 0; j < temp2.length; j++) {
 	     if (temp2[j].length() != 0) {
 		 if (temp2[j].charAt(0) == '[') {
-		     temp[index-1] += "[]";
+		     //temp[index-1] += "[]";
+		     temp[index-1] = "__rt::Array<" + temp[index-1] + ">*";
 		 }
 		 else {
 		     temp[index++] = convertPrimitiveType(temp2[j]);
