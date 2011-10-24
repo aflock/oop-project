@@ -1088,11 +1088,6 @@ class Impl extends xtc.util.Tool{
                 String methodname = n.getString(3);
                 curMub = new Mubble(classname, methodname);
                 
-
-                //Add code to curMub.code
-                //find curMub match in mubbleList
-                //set match = curMub
-
  //==============Assigning Package to CurMub===================//
                 //Assuming curMub has code
                 for(Bubble b: bubbleList)
