@@ -132,7 +132,6 @@ public class Mubble{
         String ret = "";  
         lnStart = src.indexOf(start);  
         lnEnd = src.indexOf(end);  
-        System.out.println("lnStart: " + lnStart + "\nlnEnd: " + lnEnd);
         if(lnStart != -1 && lnEnd != -1)  
             ret = src.substring(lnStart + start.length(), lnEnd);  
       
