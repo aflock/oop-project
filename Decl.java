@@ -18,11 +18,14 @@ import xtc.tree.Location;
 import xtc.tree.Printer;
 
 import xtc.lang.JavaFiveParser;
+
 //our imports
 import xtc.oop.helper.Bubble;
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.PNode;
 import java.util.regex.*;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 /** A Java file Scope analyzer
  * For each static scope, prints
@@ -685,13 +688,11 @@ public class Decl extends xtc.util.Tool
         String typedefs = "\n";
         String methName = "";
         //ADDED --Forward Decls of stucts and vtables
-        //USE add as 1st 
 
-        
         for(Bubble b: bubbleList){//{{{
             System.out.println("--------------------" + b.getName() + "--------------------");
-           
-           
+
+
 
             /*
             System.out.println(b);
@@ -859,12 +860,14 @@ public class Decl extends xtc.util.Tool
                 }
             }
         }
+        /*
         System.out.println("NOW PRINTING PNODE TREE");
         //Print out each PNode
         for(PNode p : packageTree){
             System.out.println("------------------"+ p.getName() + "----------------");
             System.out.println(p);
         }
+        */
 
         /* print later
 	for (Bubble b : bubbleList)
@@ -875,6 +878,43 @@ public class Decl extends xtc.util.Tool
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////// Should be done with .h by here///////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
+
+
+        int defcount = 0;
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                defcount++;
+            }
+        }
+        System.out.println("How many default packages: " + defcount);
+        //Write .h to file
+        try{
+        File out = new File("test.h");
+        FileWriter hstream = new FileWriter(out);
+        BufferedWriter hwrite = new BufferedWriter(hstream);
+
+
+        String forwardh ="";
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                forwardh += p.getForwardDecl();
+            }
+        }
+        /*
+         *Iterate through packageTree: in order (dfs)
+         */
+        String doth = "";
+        //find Default package
+        for(PNode p : packageTree){
+            if(p.getName().equals("DefaultPackage")){
+                doth += p.getOutput();
+            }
+        }
+
+        hwrite.write(forwardh);
+        hwrite.write(doth);
+        hwrite.close();
+        } catch (Exception e){System.out.println("Error writing: "+ e);}
 
         Mubble test = new Mubble("classy", "String (*getName)(Class);");
 	    test.formatMethodHeader(test.getHeader());
@@ -888,11 +928,11 @@ public class Decl extends xtc.util.Tool
             {
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry));
-                    
+
                 }
             }
         }
-        
+
         //IMPL SHIT
         Impl Q = new Impl();
         Q.init();
@@ -1036,7 +1076,7 @@ class Impl extends xtc.util.Tool{
                 Node parent1 = (Node)parent0.getProperty("parent0");
                 System.out.println("IMPL parent0: " + parent0.getName());
                 System.out.println("IMPL parent1: " + parent1.getName());
-                
+
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
                 String methodname = n.getString(3);
@@ -1045,7 +1085,7 @@ class Impl extends xtc.util.Tool{
                 //Add code to curMub.code
                 //find curMub match in mubbleList
                 //set match = curMub
-                
+
                 /*if ((parent1.getName().equals("FieldDeclaration")) &&
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(0);
@@ -1053,7 +1093,7 @@ class Impl extends xtc.util.Tool{
                         }
                 */
                 visit(n);
-                
+
                 onMeth = false;
             }
 
