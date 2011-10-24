@@ -863,7 +863,7 @@ public class Decl extends xtc.util.Tool
                 String bareClassName = className.replace("_", "");
                 bareClassName = bareClassName.replace("VT", "");
                 if(className.indexOf("VT") == -1)
-                    typedefs += "typedef _" + className + "* " + bareClassName + ";\n";
+                    typedefs += "typedef " + className + "* " + bareClassName + ";\n";
             }
             uniStruct += typedefs;
             p.addFirstStruct(uniStruct);
@@ -1081,10 +1081,7 @@ class Impl extends xtc.util.Tool{
                 tmpCode = "";
                 onMeth = true;
                 Node parent0 = (Node)n.getProperty("parent0");
-                System.out.println(n.hasProperty("parent1"));
                 Node parent1 = (Node)parent0.getProperty("parent0");
-                System.out.println("IMPL parent0: " + parent0.getName());
-                System.out.println("IMPL parent1: " + parent1.getName());
 
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
