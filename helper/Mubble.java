@@ -6,19 +6,25 @@ public class Mubble{
      String methName; //name of the method
      String name; //class method is in
      String code; //actual code of class, in Block() type node of AST
+     String packageName;
 
      public Mubble(String iName, String iHeader)
      {
         this.name = iName;
         this.header = formatMethodHeader(iHeader);
-        System.out.println("========HEADER: " + iHeader);
-        System.out.println("========HEADER: " + header);
         this.methName = extractMethodName(iHeader);
         this.code = "";
      }
 
+     public void setPackageName(String pack)
+     {
+        this.packageName = pack;
+     }
 
-     public String toString
+     public void getPackageName(){
+        return this.packageName;
+     }
+
      public String extractMethodName(String in)
      {
         String[] sploded = in.split(" ");

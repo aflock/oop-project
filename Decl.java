@@ -1105,12 +1105,23 @@ class Impl extends xtc.util.Tool{
                 //find curMub match in mubbleList
                 //set match = curMub
 
-                /*if ((parent1.getName().equals("FieldDeclaration")) &&
-                        (parent2.getName().equals("ClassBody"))){
-                    String name = n.getString(0);
-                    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+name);
-                        }
-                */
+ //==============Assigning Package to CurMub===================//
+                //Assuming curMub has code
+                for(Bubble b: bubbleList)
+                {
+                    if(b.getName().equals(className)) // b's package is curMub's package
+                    {
+                        curMub.setPackageName(b.getPackageName());
+                        break;
+                    }
+                }
+                //Adding curMub to the right pNode
+                for(PNode p : packageTree)
+                {
+                    if(p.getName().equals(curMub.getPackageName()))
+                        p.addMubble(curMub);
+                }
+//==============================================================//
                 visit(n);
 
                 onMeth = false;
