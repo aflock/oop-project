@@ -21,6 +21,9 @@ public class Mubble{
         this.packageName = pack;
      }
      
+     public void getPackageName(){
+        return this.packageName;
+     }
      public String extractMethodName(String in)
      {
         String[] sploded = in.split(" ");
