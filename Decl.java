@@ -1403,9 +1403,17 @@ class Impl extends xtc.util.Tool{
         new Visitor()
         {
 
+
+        public void visitSubscriptExpression(GNode n)
+        {
+            visit(n);   
+            String arrName = n.getNode(0).getString(0);
+            String index = n.getNode(1).getString(0);
+            methodString += arrName + "->__data[" + index + "]";
+        }
+        
 	    String tan;
 	    boolean inArrayExpress = false;
-
         public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
 		    tan = "";
@@ -1698,7 +1706,7 @@ class Impl extends xtc.util.Tool{
                 visit(n);
 
 		if (onMeth && !((Node)n.getProperty("parent0")).getName()
-		    .equals("BasicForControl")) {
+		    .equals("BasicForControl") && !inArray) {
 		    methodString += ";\n";
 		    
 		}
@@ -1712,7 +1720,7 @@ class Impl extends xtc.util.Tool{
 	    }
 
             public void visitDeclarator(GNode n) {
-		if (onMeth) {
+		if (onMeth && !inArray) {
 		    methodString += " " + n.getString(0);
 		    Object third = n.get(2);
 		    if (third instanceof Node) {
@@ -1739,9 +1747,11 @@ class Impl extends xtc.util.Tool{
 	    }
 
 
-            public void visitIntegerLiteral(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);
+        public void visitIntegerLiteral(GNode n) {
+        Node parent0 = (Node)n.getProperty("parent0");
+		if (onMeth && !inArray) {
+		    if(!parent0.getName().equals("SubscriptExpression"))
+		        methodString += n.getString(0);
 		}
                 visit(n);
             }
@@ -1973,8 +1983,10 @@ class Impl extends xtc.util.Tool{
 	    }
 
 	    public void visitPrimaryIdentifier(GNode n) {
+	    Node parent0 = (Node)n.getProperty("parent0");
 		if (onMeth) {
-		    methodString += n.getString(0);
+		    if(!parent0.getName().equals("SubscriptExpression"))
+		        methodString += n.getString(0);
 		    //key = n.getString(0);
 		}
 		visit(n);
