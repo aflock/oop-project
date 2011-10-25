@@ -136,11 +136,12 @@ public class PNode{
         if(!name.equals("DefaultPackage")){
             toReturn+= "}\n";
         }
-        System.out.println(toReturn);
+        //System.out.println(toReturn);
         return toReturn;
     }
 
     public String getOutputCC(){
+        ArrayList<String> done = new ArrayList<String>();
         int indent= 0;
         String toReturn = "";
         //for printing the entire .cc
@@ -152,13 +153,36 @@ public class PNode{
         }
 
         //ADD CONSTUCTORS
+        if(mubbleList != null)
+        {
+            for(int i=0; i < mubbleList.length; i++)
+            {
+                if(mubbleList[i].isConstructor())
+                    toReturn += mubbleList[i].prettyPrinter() + "\n";
+            }
+        }
+
 
         //ADD MUBBLES
         if(mubbleList != null)
         {
             for(int i=0; i < mubbleList.length; i++)
             {
-                toReturn += mubbleList[i].prettyPrinter() + "\n";
+                if(!mubbleList[i].isConstructor())
+                    toReturn += mubbleList[i].prettyPrinter() + "\n";
+            }
+        }
+        
+        //CONSTRUCT VTABLES
+        if(mubbleList != null)
+        {
+            for(int i=0; i < mubbleList.length; i++)
+            {
+                if(!done.contains(mubbleList[i].getName()))
+                {
+                    toReturn += "_" + mubbleList[i].getName() + "_VT _" + mubbleList[i].getName() + ":: __vtable;\n";
+                    done.add(mubbleList[i].getName());
+                }
             }
         }
 

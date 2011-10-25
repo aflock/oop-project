@@ -115,7 +115,7 @@ public class Decl extends xtc.util.Tool
     {
         //construct inheritance tree!
         new Visitor()
-        {//{{{
+        {
 
             //assemble the forces
             ArrayList<String> dataFields = new ArrayList<String>();
@@ -472,16 +472,16 @@ public class Decl extends xtc.util.Tool
 
                 if(!inList && !n.getString(n.size()-1).equals("String")){
 
-		    String path = "";
-		    for(int i = 0; i < n.size(); i++) {
-			path+="."+n.getString(i);
-		    }
+                    String path = "";
+                    for(int i = 0; i < n.size(); i++) {
+                        path+="."+n.getString(i);
+                    }
 
                     System.out.println("about to call findFile on: " + path.substring(1));
 
                     path = d.findFile(path);
 
-		    if(!path.equals("")){
+                    if(!path.equals("")){
                         System.out.println(path);
                         try{
                             d.process(path);
@@ -558,12 +558,12 @@ public class Decl extends xtc.util.Tool
                         dispatch((Node)o);
                     }
                 }
-            }//}}}
+            }
         }.dispatch(node);
     }
 
     //recursive call to populate all vtables in bubbleList
-    public static void populateVTables(Bubble root){//{{{
+    public static void populateVTables(Bubble root){
         boolean overwritten = false;
         for(Bubble b : bubbleList){
             if (b.getParent() == root){
@@ -603,9 +603,9 @@ public class Decl extends xtc.util.Tool
           i++;
         }
 
-    }//}}}
+    }
 
-    public static void formatConstructors()//{{{
+    public static void formatConstructors()
     {
         String tmp = "";
         String cls = ""; //class name of constructor
@@ -670,7 +670,7 @@ public class Decl extends xtc.util.Tool
         markNewMethods();
         formatConstructors();
     }
-    
+
     public static String formatHConstruct(String s)
     {
         String begin = Mubble.getStringBetween(s, "" , "(");
@@ -711,7 +711,7 @@ public class Decl extends xtc.util.Tool
             correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
         }
         if (correctHeader.length() == 0)
-            return "";
+            return begin + "();";
         else
             return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
     }
@@ -721,11 +721,12 @@ public class Decl extends xtc.util.Tool
      * @param args The command line arguments.
      */
     static Decl d;
+    public static Impl Q;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
     public static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
-    {//{{{
+    {
         packageTree.add(new PNode("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
@@ -769,7 +770,7 @@ public class Decl extends xtc.util.Tool
         String methName = "";
         //ADDED --Forward Decls of stucts and vtables
 
-        for(Bubble b: bubbleList){//{{{
+        for(Bubble b: bubbleList){
             //System.out.println("--------------------" + b.getName() + "--------------------");
 
 
@@ -792,7 +793,7 @@ public class Decl extends xtc.util.Tool
 
 
                 //assemble the struct as a large string
-//{{{
+
                 struct +=(indentLevel(indent) + "struct _" + b.getName() + " {"+ "\n");
                 indent++;
 
@@ -809,8 +810,10 @@ public class Decl extends xtc.util.Tool
                 //print constructors (assumes correct format)
                 struct +=("//Constructors"+ "\n");
                 String[] constructors = b.getConstructors();
-                
+
                 for(int i= 0; i< constructors.length; i++){
+                    System.out.println("++++++++++++ Constructor: " + constructors[i]);
+                    System.out.println("++++++++++++ Formated: " + formatHConstruct(constructors[i]));
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 
@@ -837,11 +840,11 @@ public class Decl extends xtc.util.Tool
                     //String[] splitsies =  s.split(" ");
                     //want to remove extra
                     String returnType = "void";
-                    String methodName;//{{{
+                    String methodName;
                     String className = b.getName();
 
 
-                    int square = 0;//{{{
+                    int square = 0;
                     for (int i = 0; i < s.length(); i++) {
                         if (s.charAt(i) == '[') square++;
                     }
@@ -851,7 +854,7 @@ public class Decl extends xtc.util.Tool
                     }
 
                     //take out pub/priv/etc and group [ with its previous word
-                    for(String g : temp2){//{{{
+                    for(String g : temp2){
                         //System.out.println(g);
                         if (g.equals("public") ||
                                 g.equals("private") ||
@@ -862,12 +865,12 @@ public class Decl extends xtc.util.Tool
                         else{
 
                         }
-                    }//}}}
+                    }
                     String[] realWords = new String[count-square];
                     int gi=0;
                     //System.out.println(s);
                     //System.out.println("size of realWords = " + realWords.length);
-                    for(int i = 0; i < temp2.length ; i++){//{{{
+                    for(int i = 0; i < temp2.length ; i++){
                         String g = temp2[i];
                         if (!(g.equals("public") || g.equals("private") ||g.equals("protected") ||
                                     g.equals("static") ||g.equals("final") || g.equals(" ") || g.length() == 0)) {
@@ -881,9 +884,9 @@ public class Decl extends xtc.util.Tool
                             }
                             gi++;
                         }
-                    }//}}}
+                    }
                     //realwords now has return type if there is one,
-                    //pairs of parameters, and method name//}}}
+                    //pairs of parameters, and method name
                     int realLen = realWords.length;
                     methodName = realWords[realLen -1];
 
@@ -917,10 +920,10 @@ public class Decl extends xtc.util.Tool
                                 className += ", " + realWords[i];
                             }
                         }
-                    }//}}}
+                    }
 
                     //everything should be in correct format by now;
-                    struct += "static " + returnType + " " + methodName + " (" + className + ")\n";
+                    struct += "static " + returnType + " " + methodName + " (" + className + ");\n";
                     //System.out.println("static " + returnType + " " + methodName + " (" + className + ");\n");
                 }
 
@@ -941,7 +944,7 @@ public class Decl extends xtc.util.Tool
                     if(indent == 1)
                         struct+=(";");
                     struct +="\n";
-                }//}}}
+                }
                // System.out.println(struct);
                 //System.out.println("think my package node is: " + p.getName());
 
@@ -1015,7 +1018,7 @@ public class Decl extends xtc.util.Tool
 
 	    }
 
-        }//}}}
+        }
 
         //assign Children to PNodes
         for(PNode p : packageTree){
@@ -1110,6 +1113,7 @@ public class Decl extends xtc.util.Tool
 
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
+
             String[] methods = b.getMethods();
             if (methods != null)
             {
@@ -1125,42 +1129,47 @@ public class Decl extends xtc.util.Tool
                     String correctHeader = "_"+ b.getName() + "::_" + b.getName() + "(";
                     String params = Mubble.getStringBetween(a, "(", ")").trim();
                     String[] paramSplit = params.split(" ");
-                    String[] temp;
-                    int emptyCount=0;
-                    for(int i=0; i < paramSplit.length ; i++){
-                        if(paramSplit[i].length() == 0) {
-                            emptyCount++;
-                        }
-                    }
-                    temp = new String[paramSplit.length-(emptyCount)];
-                    int ti=0;
-                    //System.out.println("temp length is: " +temp.length);
-                    for(int i=0; i < paramSplit.length ; i++){
-                        if(!(paramSplit[i].length() == 0)) {
-                            temp[ti] = paramSplit[i];
-                            ti++;
-                        }
-                    }
-                    paramSplit = temp;
-
-                    for(int i=0; i < paramSplit.length; i++){
-                        if(paramSplit[i].length() != 0){
-                            String word = paramSplit[i];
-                            if(word.equals("int"))
-                                paramSplit[i] = "int32_t";
-                            if(word.equals("boolean"))
-                                paramSplit[i] = "bool";
-                            if(word.charAt(word.length()-1)==']'){
-                                paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
+                    if (paramSplit[0].length() == 0)
+                        correctHeader += ")";
+                    else
+                    {
+                        String[] temp;
+                        int emptyCount=0;
+                        for(int i=0; i < paramSplit.length ; i++){
+                            if(paramSplit[i].length() == 0) {
+                                emptyCount++;
                             }
                         }
-                    }
-                    for(int i=0; i < paramSplit.length - 1; i+=2){
-                        correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
-                    }
+                        temp = new String[paramSplit.length-(emptyCount)];
+                        int ti=0;
+                        //System.out.println("temp length is: " +temp.length);
+                        for(int i=0; i < paramSplit.length ; i++){
+                            if(!(paramSplit[i].length() == 0)) {
+                                temp[ti] = paramSplit[i];
+                                ti++;
+                            }
+                        }
+                        paramSplit = temp;
 
-                    correctHeader = correctHeader.substring(0, correctHeader.length()-2) + ")";
-                    //System.out.println(correctHeader);
+                        for(int i=0; i < paramSplit.length; i++){
+                            if(paramSplit[i].length() != 0){
+                                String word = paramSplit[i];
+                                if(word.equals("int"))
+                                    paramSplit[i] = "int32_t";
+                                if(word.equals("boolean"))
+                                    paramSplit[i] = "bool";
+                                if(word.charAt(word.length()-1)==']'){
+                                    paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
+                                }
+                            }
+                        }
+                        for(int i=0; i < paramSplit.length - 1; i+=2){
+                            correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
+                        }
+
+                        correctHeader = correctHeader.substring(0, correctHeader.length()-2) + ")";
+                        //System.out.println(correctHeader);
+                    }
                     mubbleList.add(new Mubble(b.getName(),correctHeader, true ));
                 }
 
@@ -1169,7 +1178,7 @@ public class Decl extends xtc.util.Tool
         }
 
 //===============IMPL SHIT====================================//
-        Impl Q = new Impl(bubbleList, packageTree, mubbleList);
+        Q = new Impl(bubbleList, packageTree, mubbleList);
         Q.init();
         Q.prepare();
         for(int i = 0; i< args.length; i++){
@@ -1202,11 +1211,11 @@ public class Decl extends xtc.util.Tool
         ccwrite.write(dotcc);
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
-    }//}}}
+    }
 
 
 
-    public static PNode constructPackageTree(String packageName){//{{{
+    public static PNode constructPackageTree(String packageName){
 
         //making sure tree branch exists for this full package name
         // returns node at the leaf of the branch
@@ -1266,7 +1275,7 @@ public class Decl extends xtc.util.Tool
         packageTree.add(toReturn);
 
         return toReturn;
-    }//}}}
+    }
 
     public static String indentLevel(int indent){
         String toReturn = "";
@@ -1282,12 +1291,13 @@ class Impl extends xtc.util.Tool{
     public static ArrayList<Bubble> bubbleList;
     public static ArrayList<PNode> packageTree;
     public static ArrayList<Mubble> mubbleList;
-
+    public static ArrayList<String> parsed;//keeps track of what ASTs have been parsed
     public Impl(ArrayList<Bubble> bubbleList, ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
     {
         this.bubbleList = bubbleList;
         this.packageTree = packageTree;
         this.mubbleList = mubbleList;
+        this.parsed = new ArrayList<String>();
     }
 
     public void init(){
@@ -1378,7 +1388,6 @@ class Impl extends xtc.util.Tool{
                             curMub.setPackageName("DefaultPackage");
                         else
                             curMub.setPackageName(b.getPackageName());
-                        break;
                     }
                 }
                 //Adding curMub to the right pNode
@@ -1387,6 +1396,7 @@ class Impl extends xtc.util.Tool{
                     //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
                     //System.out.println("P name: " + p.getName());
                     //System.out.println("curMub: " + curMub.getPackageName());
+
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1402,6 +1412,51 @@ class Impl extends xtc.util.Tool{
                 visit(n);
 
             }
+
+        public void visitConstructorDeclaration(GNode n)
+        {
+            visit(n);
+
+            Node parent0 = (Node)n.getProperty("parent0");
+            Node parent1 = (Node)parent0.getProperty("parent0");
+
+            //Parent 1 Should be class decl
+            String classname = parent1.getString(1);
+            String methodname = n.getString(2);
+
+           for(Mubble m : mubbleList){
+                if(m.getName().equals(classname) && m.isConstructor())
+                {
+                    curMub = m;
+                }
+            }
+
+
+    //==============Assigning Package to CurMub===================//
+            //Assuming curMub has code
+            for(Bubble b: bubbleList)
+            {
+                if(b.getName().equals(classname)) // b's package is curMub's package
+                {
+                    if(b.getPackageName().equals(""))
+                        curMub.setPackageName("DefaultPackage");
+                    else
+                        curMub.setPackageName(b.getPackageName());
+                }
+            }
+
+            //Adding curMub to the right pNode
+            for(PNode p : packageTree)
+            {
+                //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
+                //System.out.println("P name: " + p.getName());
+                //System.out.println("curMub: " + curMub.getPackageName());
+
+                if(p.getName().equals(curMub.getPackageName()))
+                    p.addMubble(curMub);
+            }
+    //==============================================================//
+        }
 
 	    public void visitCallExpression(GNode n) {
 		//visit(n);
@@ -1593,6 +1648,34 @@ class Impl extends xtc.util.Tool{
 		    methodString += n.getString(0);
 		}
                 visit(n);
+
+                boolean inList = false;
+                for(String s : parsed){
+                    if(s.equals(n.getString(n.size()-1))){
+                        inList = true;
+                    }
+                    //System.out.println(b);
+                }
+                parsed.add(n.getString(n.size()-1));
+
+                if(!inList && !n.getString(n.size()-1).equals("String")){
+
+                    String path = "";
+                    for(int i = 0; i < n.size(); i++) {
+                        path+="."+n.getString(i);
+                    }
+
+                    System.out.println("IMPLSabout to call findFile on: " + path.substring(1));
+
+                    path = Decl.findFile(path);
+
+                    if(!path.equals("")){
+                        System.out.println(path);
+                        try{
+                            Decl.Q.process(path);
+                        } catch (Exception e) {System.out.println(e);}
+                    }
+                }
             }
 
 	    public void visitNewClassExpression(GNode n) {
