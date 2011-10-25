@@ -9,12 +9,14 @@ public class Mubble{
      String packageName;
      boolean mainMeth; //method is the main method
      boolean isConstructor;
-
      public Mubble(String iName, String iHeader, boolean construct)
      {
         this.name = iName;
         this.methName = extractMethodName(iHeader);
-        this.header = formatMethodHeader(iHeader);
+        if(construct)
+            this.header = iHeader;
+        else
+            this.header = formatMethodHeader(iHeader);
         this.code = "";
         this.isConstructor = construct;
      }
@@ -23,7 +25,7 @@ public class Mubble{
      {
         return this.isConstructor;
      }
-     
+
      //returns a String of the formatted method for .cc file
      public String prettyPrinter()
      {
@@ -31,10 +33,10 @@ public class Mubble{
         ret += this.header + "{\n";
         ret += this.code + "\n";
         ret += "}\n";
-        
+
         return ret;
      }
-     
+
 
      public void setPackageName(String pack)
      {
@@ -52,7 +54,7 @@ public class Mubble{
             mainMeth = true;
         else
             mainMeth = false;
-            
+
         return sploded[sploded.length - 1];
      }
      public String formatMethodHeader(String in)
@@ -61,7 +63,7 @@ public class Mubble{
      //-Deal with isA methods
         if (mainMeth == true)
             return "int main(void)";
-        
+
 
         //converts method header from .h format to .cc format
         //From: public String toString

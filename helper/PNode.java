@@ -115,7 +115,6 @@ public class PNode{
 
 
     public String getOutput(){
-        System.out.println("method getOutput called");
         int indent= 0;
         String toReturn = "";
         //for printing the entire .h
@@ -172,8 +171,7 @@ public class PNode{
             toReturn+= "}\n";
         }
 
-        System.out.println("AND THE OUTPUT IS!!!!!!:");
-        System.out.println(toReturn);
+        //System.out.println(toReturn);
         return toReturn;
     }
 
