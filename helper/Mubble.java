@@ -63,7 +63,8 @@ public class Mubble{
 
      public String extractMethodName(String in)
      {
-        String[] sploded = in.split(" ");
+	
+	 String[] sploded = in.trim().split(" ");
         if (sploded[sploded.length - 1] == "main")
             mainMeth = true;
         else
