@@ -42,7 +42,7 @@ public class Bubble{
     public String[] trim(String[] constructors) {
 	int index = 0;
 	String[] temp = new String[constructors.length];
-	
+
 	for (int i = 0; i < constructors.length; i++) {
 	    String[] a = constructors[i].split(" ");
 	    for (int j = 0; j < a.length; j++) {
@@ -84,7 +84,7 @@ public class Bubble{
         return this.methods;
     }
 
-    public String[] getFormatedMethods() { 
+    public String[] getFormatedMethods() {
 	String[] mm = new String[vtable.size()-1];
 	String[] temp = new String[mm.length];
 	for (int i = 0; i < mm.length; i++) {
@@ -121,7 +121,7 @@ public class Bubble{
 	}
 	this.vtable = vtable;
     }
-    
+
     public void setMethodAtIndex(int index, String meth)
     {
        this.methods[index] = meth;
@@ -154,7 +154,7 @@ public class Bubble{
         this.vtable.set(index,add + "\t");
                 return true;
         }
-        else 
+        else
         {
             this.vtable.add(add);
                     return false;
@@ -338,7 +338,8 @@ public class Bubble{
 		if (temp[j].equals("public") ||
 		    temp[j].equals("private") ||
 		    temp[j].equals("protected") ||
-		    temp[j].equals("static")) {
+		    temp[j].equals("static") ||
+            temp[j].equals("final")) {
 		    //do nothing
 		}
 		else {
@@ -385,9 +386,9 @@ public class Bubble{
 	System.out.println("typdef _" + getName() + "* " + getName() + ";");
 	System.out.println();
 	System.out.println("struct _" + getName() + " {");
-	System.out.println(indentLevel(indent) + "_" + getName() + 
+	System.out.println(indentLevel(indent) + "_" + getName() +
 			   "_VT* __vprt;");
-	
+
 	String[] s = getConstructors();
 	for (int i = 0; i < s.length; i++) {
 	    System.out.println(indentLevel(indent) + "_" + s[i]);
@@ -398,15 +399,15 @@ public class Bubble{
 	for (int i = 0; i < m.length; i++) {
 	    System.out.println(indentLevel(indent) + "static " + m[i]);
 	}
-	
+
 	System.out.println();
 	System.out.println(indentLevel(indent) + "static Class __class();");
 	System.out.println();
-	System.out.println(indentLevel(indent) + "static _" + getName() + 
+	System.out.println(indentLevel(indent) + "static _" + getName() +
 			   "_VT __vtable;");
 	System.out.println("};");
 	System.out.println();
-	
+
 	System.out.println("struct _" + getName() + "_VT {");
 	ArrayList<String> vt = getVtable();
 	for (int i = 0; i < vt.size(); i++) {

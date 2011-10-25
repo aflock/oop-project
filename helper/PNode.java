@@ -106,14 +106,14 @@ public class PNode{
             for(int i = 0; i <packageChildren.length; i++){
                 toReturn += packageChildren[i].getForwardDecl() + "\n";
             }
-            
+
         if(!name.equals("DefaultPackage")){
-            toReturn+= "}\n";
+            toReturn += "}\n";
         }
         return toReturn;
     }
 
-    
+
     public String getOutput(){
         System.out.println("method getOutput called");
         int indent= 0;
@@ -138,8 +138,6 @@ public class PNode{
             toReturn+= "}\n";
         }
 
-        System.out.println("AND THE OUTPUT IS!!!!!!:");
-        System.out.println(toReturn);
         return toReturn;
     }
 
@@ -153,7 +151,7 @@ public class PNode{
             toReturn += indentLevel(indent) + "namespace "+ lastname +"{\n";
             indent++;
         }
-        
+
         //ADD CONSTUCTORS
 
         //ADD MUBBLES
@@ -164,7 +162,7 @@ public class PNode{
                 toReturn += mubbleList[i].prettyPrinter() + "\n";
             }
         }
-        
+
         if(packageChildren != null)
             for(int i = 0; i <packageChildren.length; i++){
                 toReturn += packageChildren[i].getOutputCC() + "\n";
@@ -178,7 +176,7 @@ public class PNode{
         System.out.println(toReturn);
         return toReturn;
     }
-    
+
     public void addStructChild(String child){
         structs.add(child);
         if(child == null){

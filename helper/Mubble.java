@@ -7,12 +7,13 @@ public class Mubble{
      String name; //class method is in
      String code; //actual code of class, in Block() type node of AST
      String packageName;
+     boolean mainMeth; //method is the main method
 
      public Mubble(String iName, String iHeader)
      {
         this.name = iName;
-        this.header = formatMethodHeader(iHeader);
         this.methName = extractMethodName(iHeader);
+        this.header = formatMethodHeader(iHeader);
         this.code = "";
      }
 
@@ -25,6 +26,16 @@ public class Mubble{
         ret += "}\n";
         
         return ret;
+     }
+     
+     public String JavatoCpp(String s)
+     {
+        String temp = s;
+        temp = s.replace("boolean", "bool");
+        //CHANGE to REGEX to make so it cannot be in a word
+        temp = temp.replace("int ", "int32_t ");
+        
+        return temp;
      }
 
      public void setPackageName(String pack)
@@ -39,13 +50,20 @@ public class Mubble{
      public String extractMethodName(String in)
      {
         String[] sploded = in.split(" ");
+        if (sploded[sploded.length - 1] == "main")
+            mainMeth = true;
+        else
+            mainMeth = false;
+            
         return sploded[sploded.length - 1];
      }
      public String formatMethodHeader(String in)
      {
      //====TODO===//
      //-Deal with isA methods
-     //-Go from METHOD FORMAT NOT VTABLE FORMAT
+        if (mainMeth == true)
+            return "int main(void)";
+        
 
         //converts method header from .h format to .cc format
         //From: public String toString
