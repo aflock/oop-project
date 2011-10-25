@@ -670,6 +670,51 @@ public class Decl extends xtc.util.Tool
         markNewMethods();
         formatConstructors();
     }
+    
+    public static String formatHConstruct(String s)
+    {
+        String begin = Mubble.getStringBetween(s, "" , "(");
+        String params = Mubble.getStringBetween(s, "(", ")").trim();
+        String[] paramSplit = params.split(" ");
+        String[] temp;
+        int emptyCount=0;
+        for(int i=0; i < paramSplit.length ; i++){
+            if(paramSplit[i].length() == 0) {
+                emptyCount++;
+            }
+        }
+        temp = new String[paramSplit.length-(emptyCount)];
+        int ti=0;
+        //System.out.println("temp length is: " +temp.length);
+        for(int i=0; i < paramSplit.length ; i++){
+            if(!(paramSplit[i].length() == 0)) {
+                temp[ti] = paramSplit[i];
+                ti++;
+            }
+        }
+        paramSplit = temp;
+
+        for(int i=0; i < paramSplit.length; i++){
+            if(paramSplit[i].length() != 0){
+                String word = paramSplit[i];
+                if(word.equals("int"))
+                    paramSplit[i] = "int32_t";
+                if(word.equals("boolean"))
+                    paramSplit[i] = "bool";
+                if(word.charAt(word.length()-1)==']'){
+                    paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
+                }
+            }
+        }
+        String correctHeader = "";
+        for(int i=0; i < paramSplit.length - 1; i+=2){
+            correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
+        }
+        if (correctHeader.length() == 0)
+            return "";
+        else
+            return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
+    }
     /**
      * Run the thing with the specified command line arguments.
      *
@@ -764,8 +809,9 @@ public class Decl extends xtc.util.Tool
                 //print constructors (assumes correct format)
                 struct +=("//Constructors"+ "\n");
                 String[] constructors = b.getConstructors();
+                
                 for(int i= 0; i< constructors.length; i++){
-                    struct +=(indentLevel(indent) + "_" + constructors[i]+ "\n");
+                    struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 
                 struct +="\n";
