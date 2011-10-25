@@ -1456,6 +1456,22 @@ class Impl extends xtc.util.Tool{
 		visit(n);
 	    }
 
+	    public void visitSwitchStatement(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    methodString += "switch(";
+		    dispatch(n.getNode(0));
+		    methodString += ") {\n";
+		    for(int i = 1; i < n.size(); i++) {
+			dispatch(n.getNode(i));
+		    }
+		    
+		}
+		else {
+
+		}
+	    }
+
 	    public void visitArguments(GNode n) {
 		if (onMeth) {
 		    visit(n);
