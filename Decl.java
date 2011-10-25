@@ -1400,6 +1400,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitMethodDeclaration(GNode n)
             {
+            
                 Node parent0 = (Node)n.getProperty("parent0");
                 Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -1410,7 +1411,7 @@ class Impl extends xtc.util.Tool{
 		    cName = classname;
 
 
-		tmpCode = "";
+                
 
 
                 String methodname = n.getString(3);
@@ -1449,10 +1450,6 @@ class Impl extends xtc.util.Tool{
                 //Adding curMub to the right pNode
                 for(PNode p : packageTree)
                 {
-                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
-                    //System.out.println("P name: " + p.getName());
-                    //System.out.println("curMub: " + curMub.getPackageName());
-                    //System.out.println("?????????????????????CurMub: " + curMub.getHeader());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1462,6 +1459,7 @@ class Impl extends xtc.util.Tool{
 		//System.out.println(methodString);
                 //onMeth = false;
 		//methodString = "";
+		
             }
 
             public void visitModifier(GNode n){
