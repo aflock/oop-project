@@ -1905,6 +1905,7 @@ class Impl extends xtc.util.Tool{
 		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		    //System.out.println(methodString);
 		    onMeth = false;
+		    curMub.setCode(methodString);
 		    methodString = "";
 		    table = null;
 		}
