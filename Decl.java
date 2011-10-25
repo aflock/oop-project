@@ -1420,11 +1420,11 @@ class Impl extends xtc.util.Tool{
            
 
                 for(Mubble m : mubbleList){
+                    if(m.getName() == null || m.getMethName() == null || methodname == null || classname == null)
+                        System.out.println("****************YOURE FUCKED**************");
                     if(m.getName().equals(classname) && m.getMethName().trim().equals(methodname))
                     {
-                        System.out.println("curMub1: " + curMub.getHeader());
                         curMub = m;
-                        System.out.println("curMub2: " + curMub.getHeader());
                     }
 
                 }
