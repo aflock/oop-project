@@ -967,7 +967,7 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-        
+
         int i = -1;
 		for(Object m : b.getVtable().toArray()) {
 		    i++;
@@ -1000,7 +1000,7 @@ public class Decl extends xtc.util.Tool
 
 			    //Add that shit to struct
 			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
@@ -1088,6 +1088,13 @@ public class Decl extends xtc.util.Tool
         includes += "#include <stdint.h>\n";
         includes += "\n\n"; //for good measure
         hwrite.write(includes);
+        String hardType = "typedef java::lang::Class Class;\n" +
+        "typedef java::lang::__Class __Class;\n" +
+        "typedef java::lang::String String;\n" +
+        "typedef java::lang::__String __String;\n" +
+        "typedef java::lang::Object Object;\n" +
+        "typedef java::lang::__Object __Object;\n";
+        hwrite.write(hardType);
 
         String forwardh ="";
         for(PNode p : packageTree){
@@ -1106,6 +1113,8 @@ public class Decl extends xtc.util.Tool
             }
         }
 
+        forwardh = forwardh.replace(" boolean " , " bool ");
+        doth = doth.replace(" boolean " , " bool ");
         hwrite.write(forwardh);
         hwrite.write(doth);
         hwrite.close();
@@ -1177,8 +1186,8 @@ public class Decl extends xtc.util.Tool
             }
 
         }
-        
- 
+
+
 
 //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList);
@@ -1234,7 +1243,7 @@ public class Decl extends xtc.util.Tool
         ArrayList<String> vtable = parent.getVtable();
         String entry = vtable.get(index);
         if(parent.getParent() == null){
-            return parent.getName();
+            return "_" + parent.getName();
         }
         if(entry.charAt(entry.length()-1)=='\t'){
             return parent.getName();
@@ -1242,7 +1251,6 @@ public class Decl extends xtc.util.Tool
         else{
             return findRootImpl(parent.getParent(), index) ;
         }
-
     }
 
 
@@ -1362,7 +1370,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
-		    
+
 
 		}
                 visit(n);
@@ -1394,9 +1402,8 @@ class Impl extends xtc.util.Tool{
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
 
-		//setting global class name
-		cName = classname;
-
+		    //setting global class name
+		    cName = classname;
 
 
 		tmpCode = "";
@@ -1406,8 +1413,10 @@ class Impl extends xtc.util.Tool{
 
                 for(Mubble m : mubbleList){
                     if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                    {
+                        curMub = m;
+                    }
 
-			curMub = m;
                 }
 
 		//visit
@@ -1431,7 +1440,7 @@ class Impl extends xtc.util.Tool{
                     //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
                     //System.out.println("P name: " + p.getName());
                     //System.out.println("curMub: " + curMub.getPackageName());
-
+                    System.out.println("?????????????????????CurMub: " + curMub.getHeader());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1956,15 +1965,15 @@ class Impl extends xtc.util.Tool{
 			p+= " " + m.group();
 		    }
 		    System.out.println(n.size());
-		    String [] par = p.trim().split("\\s");   
-		    for( String g : par) 
+		    String [] par = p.trim().split("\\s");
+		    for( String g : par)
 			System.out.println(g);
 		    //System.out.println(p);
 		    */
 		    for(int i = 0; i < n.size(); i++) {
 			//methodString += ", (("+par[i]+") ";
-			
-			dispatch(n.getNode(i));			
+
+			dispatch(n.getNode(i));
 			//methodString += ")";
 		    }
 		    methodString += ")";
