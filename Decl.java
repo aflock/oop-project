@@ -999,8 +999,8 @@ public class Decl extends xtc.util.Tool
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
-			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";
+			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";*/
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
