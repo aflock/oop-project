@@ -29,7 +29,7 @@ public class PNode{
     }
 
     public void addMubble(Mubble child){
-        if(mubbleList ! = null)
+        if(mubbleList != null)
         for(Mubble m: mubbleList){
             if(m.getHeader().equals(child.getHeader()))
                 return;

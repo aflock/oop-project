@@ -1404,6 +1404,7 @@ class Impl extends xtc.util.Tool{
         {
 
 	    String tan;
+	    boolean inArrayExpress = false;
 
         public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
@@ -1423,7 +1424,7 @@ class Impl extends xtc.util.Tool{
 
 		    }
 	    }
-            visit(n);
+
 
 		    if (onMeth) {
 		        if(inArray)
@@ -1432,6 +1433,13 @@ class Impl extends xtc.util.Tool{
                     String arrType = n.getNode(1).getNode(0).getString(0);
                     String arrName = n.getNode(2).getNode(0).getString(0);
                     methodString += "__rt::Array<" + arrType + ">* " + arrName;
+                    table.put(arrName, "__rt::Array<" + arrType + ">* ");
+                    if(inArrayExpress)
+                    {
+                        String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
+                        methodString += "= new __rt::Array<" + arrType + ">(" + size + ");\n";
+                        inArrayExpress = false;
+                    }
                     
                     inArray = false;
                 }
@@ -1445,6 +1453,12 @@ class Impl extends xtc.util.Tool{
 		        
 		        System.out.println(tan);
 		    }
+        }
+        
+        public void visitNewArrayExpression(GNode n)
+        {
+            visit(n);
+            inArrayExpress = true;
         }
 
             public void visitDimensions(GNode n) {
