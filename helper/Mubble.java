@@ -30,12 +30,17 @@ public class Mubble{
      public String prettyPrinter()
      {
         String ret = "";
-        ret += this.header + "{\n";
+        if(isConstructor())
+            ret += this.header + " : __vptr(&__vtable) {\n";
+        else
+            ret += this.header + "{\n";
         ret += this.code + "\n";
         ret += "}\n";
 
         return ret;
      }
+     
+     
 
 
      public void setPackageName(String pack)
