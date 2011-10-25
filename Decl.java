@@ -1221,7 +1221,7 @@ public class Decl extends xtc.util.Tool
 
 
 //===============IMPL SHIT====================================//
-        Q = new Impl(bubbleList, packageTree, mubbleList);
+        Q = new Impl(bubbleList, packageTree, mubbleList, langList);
         Q.init();
         Q.prepare();
         for(int i = 0; i< args.length; i++){
@@ -1247,7 +1247,7 @@ public class Decl extends xtc.util.Tool
         //find Default package
         for(PNode p : packageTree){
             if(p.getName().equals("DefaultPackage")){
-                dotcc += p.getOutputCC();
+                dotcc += p.getOutputCC(bubbleList);
             }
         }
 
@@ -1364,12 +1364,14 @@ class Impl extends xtc.util.Tool{
     public static ArrayList<Bubble> bubbleList;
     public static ArrayList<PNode> packageTree;
     public static ArrayList<Mubble> mubbleList;
+    public static ArrayList<Mubble> langList;
     public static ArrayList<String> parsed;//keeps track of what ASTs have been parsed
-    public Impl(ArrayList<Bubble> bubbleList, ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList)
+    public Impl(ArrayList<Bubble> bubbleList, ArrayList<PNode> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Mubble> langList)
     {
         this.bubbleList = bubbleList;
         this.packageTree = packageTree;
         this.mubbleList = mubbleList;
+	this.langList = langList;
         this.parsed = new ArrayList<String>();
     }
 
@@ -1402,11 +1404,23 @@ class Impl extends xtc.util.Tool{
         {
 
 	    String tan;
+
         public void visitFieldDeclaration(GNode n){
-		    if (onMeth) {
-		        tan = "";
-		        //Node qual = n.getNode(1).getNode(0);
-		        //if (qual.getName().equals(
+		if (onMeth) {
+		    tan = "";
+		    //Node qual = n.getNode(1).getNode(0);
+		    //if (qual.getName().equals(
+		}
+                visit(n);
+		if (onMeth) {
+		    //methodString += ";\n";
+		    String[] z = tan.trim().split("\\s+");
+		    // this could be fucked up
+		    String type = z[0];
+		    System.out.println("Z"+tan+"\n");
+		    for (int i = 1; i < z.length; i++) {
+			table.put(z[i], type);
+
 		    }
             visit(n);
 
@@ -1758,8 +1772,11 @@ class Impl extends xtc.util.Tool{
 
             public void visitQualifiedIdentifier(GNode n){
 		if (onMeth) {
-		    tan += n.getString(0) + " ";
-
+		    Node parent0 = (Node)n.getProperty("parent0");
+		    Node parent1 = (Node)parent0.getProperty("parent0");
+		    if(parent1.getName().equals("FieldDeclaration")) {
+			tan += n.getString(0) + " ";
+		    }
 		    String s = inNameSpace(n.getString(0));
 		    //System.out.println("QI: "+s);
 		    //??
@@ -2084,7 +2101,16 @@ class Impl extends xtc.util.Tool{
 			    mSign = m.getHeader();
 			}
 		    }
-		   mSign = "char __String::charAt(String __this, int32_t idx)";
+
+		    for (Mubble m : langList) {
+			
+			if (m.getName().equals(type) &&
+			    m.getMethName().equals(mName)) {
+			    mSign = m.getHeader();
+			}
+		    }
+
+		    //mSign = "char __String::charAt(String __this, int32_t idx)";
 		    //iterate through java lang list
 		    //System.out.println("FUCK"+mSign);
 		    
