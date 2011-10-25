@@ -147,7 +147,7 @@ public class PNode{
         return toReturn;
     }
 
-    public String getOutputCC(){
+    public String getOutputCC(ArrayList<Bubble> bubbleList){
         ArrayList<String> done = new ArrayList<String>();
         int indent= 0;
         String toReturn = "";
@@ -180,6 +180,9 @@ public class PNode{
             }
         }
 
+
+
+
         //CONSTRUCT VTABLES
         if(mubbleList != null)
         {
@@ -187,6 +190,21 @@ public class PNode{
             {
                 if(!done.contains(mubbleList[i].getName()))
                 {
+                    //want to find the parent class of whatever method this is
+                    String cName = mubbleList[i].getName();
+                    String bParent ="Object";
+                    for(Bubble b: bubbleList){
+                        if(b.getName().trim().equals(cName.trim())){
+                            bParent = b.getParent().getName();
+                        }
+                    }
+                    toReturn += "Class _" + mubbleList[i].getName() + "::__class() {\n  \tstatic Class k = \n";
+                    toReturn += "\tnew __Class(__rt::literal(\""+ getName().replace(" ",".") + "\"), _";
+                    if(bParent.equals("Object"))
+                        toReturn +=  "_Object::__class());\n \treturn k;\n}\n";
+                    else
+                        toReturn += bParent +"::__class());\n \treturn k;\n}\n";
+
                     toReturn += "_" + mubbleList[i].getName() + "_VT _" + mubbleList[i].getName() + ":: __vtable;\n";
                     done.add(mubbleList[i].getName());
                 }
@@ -195,7 +213,7 @@ public class PNode{
 
         if(packageChildren != null)
             for(int i = 0; i <packageChildren.length; i++){
-                toReturn += packageChildren[i].getOutputCC() + "\n";
+                toReturn += packageChildren[i].getOutputCC(bubbleList) + "\n";
             }
 
         if(!name.equals("DefaultPackage")){
