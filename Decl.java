@@ -812,8 +812,6 @@ public class Decl extends xtc.util.Tool
                 String[] constructors = b.getConstructors();
 
                 for(int i= 0; i< constructors.length; i++){
-                    System.out.println("++++++++++++ Constructor: " + constructors[i]);
-                    System.out.println("++++++++++++ Formated: " + formatHConstruct(constructors[i]));
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 
@@ -969,8 +967,10 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-
+        
+        int i = -1;
 		for(Object m : b.getVtable().toArray()) {
+		    i++;
 		    String mm = (String)m;
 
 		    //if it's in the right format
@@ -999,7 +999,8 @@ public class Decl extends xtc.util.Tool
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";
+			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
@@ -1176,6 +1177,8 @@ public class Decl extends xtc.util.Tool
             }
 
         }
+        
+ 
 
 //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList);
@@ -1359,7 +1362,8 @@ class Impl extends xtc.util.Tool{
 
             public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
-		   ;
+		    
+
 		}
                 visit(n);
 		if (onMeth) {
@@ -1381,6 +1385,7 @@ class Impl extends xtc.util.Tool{
             Mubble curMub = null;
 	    String methodString = "";
 	    String cName = "";
+	    //HashMap<String> table;
             public void visitMethodDeclaration(GNode n)
             {
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -1392,19 +1397,21 @@ class Impl extends xtc.util.Tool{
 		//setting global class name
 		cName = classname;
 
-		//visit
-                visit(n);
 
-                tmpCode = "";
+
+		tmpCode = "";
 
 
                 String methodname = n.getString(3);
 
-
                 for(Mubble m : mubbleList){
                     if(m.getName().equals(classname) && m.getMethName().equals(methodname))
-                        curMub = m;
+
+			curMub = m;
                 }
+
+		//visit
+                visit(n);
 
  //==============Assigning Package to CurMub===================//
                 //Assuming curMub has code
@@ -1497,9 +1504,15 @@ class Impl extends xtc.util.Tool{
 			}
 		    }
 		    */
+		    //check that it's Obj.meth()
+		    //deal with commas again
+		    //look at argument ^
+		    //the parameters for meth()
+		    //casting
 		    dispatchBitch(n);
 		    dispatch(n.getNode(0));
-		    methodString += n.getString(2) + "(";
+		    methodString += "->__vptr->"+n.getString(2) + "(";
+		    dispatch(n.getNode(0));//here
 		    dispatch(n.getNode(3));
 		}
 		else {
@@ -1813,12 +1826,14 @@ class Impl extends xtc.util.Tool{
 		if(((Node)n.getProperty("parent0")).getName()
 		   .equals("MethodDeclaration")) {
 		    onMeth = true;
+		    //table = new HashMap<String>();
 
 		    visit(n);
 		    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		    System.out.println(methodString);
 		    onMeth = false;
 		    methodString = "";
+		    //table = null;
 		}
 		else {
 		    visit(n);
@@ -1922,13 +1937,35 @@ class Impl extends xtc.util.Tool{
 	    public void visitArguments(GNode n) {
 		if (onMeth) {
 		    dispatchBitch(n);
+		    /*
 		    if (n.size() > 0) {
 			dispatch(n.getNode(0));
 		    }
-		    for(int i = 1; i < n.size(); i++) {
-			methodString += ", ";
+		    */
+		    /*
+		    String params = "";
+		    for(Mubble m : MubbleList) {
+			if (m.getMethName().equals(
+		    }
+		    //String params = curMub.getHeader();
+		    //System.out.println("HEY, LISTEN\n"+params);
+		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(params);
+		    String p = "";
 
-			dispatch(n.getNode(i));
+		    while(m.find()){
+			p+= " " + m.group();
+		    }
+		    System.out.println(n.size());
+		    String [] par = p.trim().split("\\s");   
+		    for( String g : par) 
+			System.out.println(g);
+		    //System.out.println(p);
+		    */
+		    for(int i = 0; i < n.size(); i++) {
+			//methodString += ", (("+par[i]+") ";
+			
+			dispatch(n.getNode(i));			
+			//methodString += ")";
 		    }
 		    methodString += ")";
 		}
