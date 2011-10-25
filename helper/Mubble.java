@@ -13,8 +13,9 @@ public class Mubble{
      {
         this.name = iName;
         this.methName = extractMethodName(iHeader);
-        if(construct)
+        if(construct){
             this.header = iHeader;
+        }
         else
             this.header = formatMethodHeader(iHeader);
         this.code = "";
