@@ -1247,7 +1247,7 @@ public class Decl extends xtc.util.Tool
         //find Default package
         for(PNode p : packageTree){
             if(p.getName().equals("DefaultPackage")){
-                dotcc += p.getOutputCC();
+                dotcc += p.getOutputCC(bubbleList);
             }
         }
 
