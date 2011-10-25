@@ -699,7 +699,7 @@ public class Decl extends xtc.util.Tool
         //ADDED --Forward Decls of stucts and vtables
 
         for(Bubble b: bubbleList){//{{{
-            System.out.println("--------------------" + b.getName() + "--------------------");
+            //System.out.println("--------------------" + b.getName() + "--------------------");
 
 
 
@@ -1046,7 +1046,7 @@ public class Decl extends xtc.util.Tool
             }
             if(b.getConstructors() != null){
                 for(String a : b.getConstructors()){
-                    System.out.println(a);
+                    //System.out.println(a);
                     String correctHeader = "_"+ b.getName() + "::_" + b.getName() + "(";
                     String params = Mubble.getStringBetween(a, "(", ")").trim();
                     String[] paramSplit = params.split(" ");
@@ -1059,7 +1059,7 @@ public class Decl extends xtc.util.Tool
                     }
                     temp = new String[paramSplit.length-(emptyCount)];
                     int ti=0;
-                    System.out.println("temp length is: " +temp.length);
+                    //System.out.println("temp length is: " +temp.length);
                     for(int i=0; i < paramSplit.length ; i++){
                         if(!(paramSplit[i].length() == 0)) {
                             temp[ti] = paramSplit[i];
@@ -1167,7 +1167,7 @@ public class Decl extends xtc.util.Tool
                 parentName += packageNameSplit[i] + " ";
             else
                 parentName += packageNameSplit[i];
-        System.out.println("Parent Name is: "+ parentName);
+        //System.out.println("Parent Name is: "+ parentName);
 
         if(parentName == "")
             parentName = "DefaultPackage";
