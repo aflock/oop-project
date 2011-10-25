@@ -1423,7 +1423,7 @@ class Impl extends xtc.util.Tool{
 
 		    }
 	    }
-            visit(n);
+
 
 		    if (onMeth) {
 		        if(inArray)
@@ -1743,6 +1743,23 @@ class Impl extends xtc.util.Tool{
                 visit(n);
             }
 
+	    public String outputFormat(String s) {
+		//to turn int to int32_t in a string:
+		s = s.replaceAll("(^int(?=\\s+))|(?<=\\s+)int(?=\\s+)","int32_t");
+
+		//to turn boolean to bool in a string:
+		s = s.replaceAll("(^boolean(?=\\s+))|(?<=\\s+)boolean(?=\\s+)","bool");
+
+		//to turn final to const in a string:
+		//s = s.replaceAll("(?<=\\s+)final(?=\\s+)","const");
+
+		//turn systemoutprints into printf
+		s = s.replaceAll("System->out->__vptr->println\\(System->out, \\(\\(\\)","printf(");
+
+		//turn mains into right format
+		//s = s.replaceAll("void\\s[\\w$_]*::main\\([\\w$_]*\\s__this,","int main(");
+		return s;
+	    }
 
 	    public String inNameSpace(String obj) {
 		String ns1 = "";
@@ -1826,14 +1843,14 @@ class Impl extends xtc.util.Tool{
 		    methodString += "new ";
 		    dispatch(n.getNode(0));
 		    dispatch(n.getNode(1));
-		    /*
+		    
 		    if(n.getNode(2).getString(0).equals("Object") ||
 		       n.getNode(2).getString(0).equals("String") ||
 		       n.getNode(2).getString(0).equals("Class")) {
 			methodString += "_";
 		    }
-		    */
-		    //methodString += "_";
+		    
+		    methodString += "_";
 		    dispatch(n.getNode(2));
 		    methodString += "(";
 		    dispatch(n.getNode(3));
@@ -1928,12 +1945,12 @@ class Impl extends xtc.util.Tool{
 		   .equals("MethodDeclaration")) {
 		    onMeth = true;
 		    table = new HashMap<String, String>();
-
+		    
 		    visit(n);
 		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		    //System.out.println(methodString);
 		    onMeth = false;
-		    curMub.setCode(methodString);
+		    curMub.setCode(outputFormat(methodString));
 		    methodString = "";
 		    table = null;
 		}
