@@ -75,7 +75,7 @@ public class PNode{
         for(int i = 0; i< len; i++){
             temp[i+1] = structChildren[i];
         }
-        temp[1] = struct;
+        temp[0] = struct;
         structChildren = temp;
 
     }
@@ -136,7 +136,7 @@ public class PNode{
         if(!name.equals("DefaultPackage")){
             toReturn+= "}\n";
         }
-
+        System.out.println(toReturn);
         return toReturn;
     }
 

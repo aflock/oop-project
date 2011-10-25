@@ -850,7 +850,7 @@ public class Decl extends xtc.util.Tool
                         if(word.equals("boolean"))
                             realWords[i] = "bool";
                         if(word.charAt(word.length()-1)==']'){
-                            realWords[i] = "__rt::Array<"+ word.substring(0, word.length() -3) +">*";
+                            realWords[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
                         }
                     }
 
@@ -900,6 +900,7 @@ public class Decl extends xtc.util.Tool
                 //System.out.println("think my package node is: " + p.getName());
 
                 //Add struct to correct PNode
+                //System.out.println(struct);
                 p.addStructChild(struct);
 
 		//////////////////////
