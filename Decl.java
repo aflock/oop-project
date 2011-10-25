@@ -812,8 +812,6 @@ public class Decl extends xtc.util.Tool
                 String[] constructors = b.getConstructors();
 
                 for(int i= 0; i< constructors.length; i++){
-                    System.out.println("++++++++++++ Constructor: " + constructors[i]);
-                    System.out.println("++++++++++++ Formated: " + formatHConstruct(constructors[i]));
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 
@@ -969,8 +967,10 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-
+        
+        int i = -1;
 		for(Object m : b.getVtable().toArray()) {
+		    i++;
 		    String mm = (String)m;
 
 		    //if it's in the right format
@@ -999,7 +999,8 @@ public class Decl extends xtc.util.Tool
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";
+			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
@@ -1176,6 +1177,8 @@ public class Decl extends xtc.util.Tool
             }
 
         }
+        
+ 
 
 //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList);
