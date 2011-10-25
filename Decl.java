@@ -811,6 +811,8 @@ public class Decl extends xtc.util.Tool
                 String[] constructors = b.getConstructors();
                 
                 for(int i= 0; i< constructors.length; i++){
+                    System.out.println("++++++++++++ Constructor: " + constructors[i]);
+                    System.out.println("++++++++++++ Formated: " + formatHConstruct(constructors[i]));
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 

@@ -141,6 +141,7 @@ public class PNode{
     }
 
     public String getOutputCC(){
+        ArrayList<String> done = new ArrayList<String>();
         int indent= 0;
         String toReturn = "";
         //for printing the entire .cc
@@ -169,6 +170,19 @@ public class PNode{
             {
                 if(!mubbleList[i].isConstructor())
                     toReturn += mubbleList[i].prettyPrinter() + "\n";
+            }
+        }
+        
+        //CONSTRUCT VTABLES
+        if(mubbleList != null)
+        {
+            for(int i=0; i < mubbleList.length; i++)
+            {
+                if(!done.contains(mubbleList[i].getName()))
+                {
+                    toReturn += "_" + mubbleList[i].getName() + "_VT _" + mubbleList[i].getName() + ":: __vtable;\n";
+                    done.add(mubbleList[i].getName());
+                }
             }
         }
 
