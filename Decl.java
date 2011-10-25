@@ -812,8 +812,6 @@ public class Decl extends xtc.util.Tool
                 String[] constructors = b.getConstructors();
 
                 for(int i= 0; i< constructors.length; i++){
-                    System.out.println("++++++++++++ Constructor: " + constructors[i]);
-                    System.out.println("++++++++++++ Formated: " + formatHConstruct(constructors[i]));
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 
@@ -969,8 +967,10 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-
+        
+        int i = -1;
 		for(Object m : b.getVtable().toArray()) {
+		    i++;
 		    String mm = (String)m;
 
 		    //if it's in the right format
@@ -999,7 +999,8 @@ public class Decl extends xtc.util.Tool
 			    params = match_p.group(0);
 
 			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";
+			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
@@ -1176,6 +1177,8 @@ public class Decl extends xtc.util.Tool
             }
 
         }
+        
+ 
 
 //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList);
@@ -1213,6 +1216,25 @@ public class Decl extends xtc.util.Tool
         } catch (Exception e){System.out.println("Error writing: "+ e);}
     }
 
+    //accept parent bubble, index, return className where it was first implemented
+    //
+    public static String findRootImpl(Bubble parent, int index){
+        //want to investigate this parent's vtable: if tab last char - return className
+        //else: get parent, do that
+        //Object m : b.getVtable().toArray()
+        ArrayList<String> vtable = parent.getVtable();
+        String entry = vtable.get(index);
+        if(parent.getParent() == null){
+            return parent.getName();
+        }
+        if(entry.charAt(entry.length()-1)=='\t'){
+            return parent.getName();
+        }
+        else{
+            return findRootImpl(parent.getParent(), index) ;
+        }
+
+    }
 
 
     public static PNode constructPackageTree(String packageName){
@@ -1993,14 +2015,14 @@ class Impl extends xtc.util.Tool{
 
 	    public void visitFloatingPointLiteral(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
                 visit(n);
 	    }
 
 	    public void visitCharacterLiteral(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
                 visit(n);
 	    }
