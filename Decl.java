@@ -1599,12 +1599,13 @@ class Impl extends xtc.util.Tool{
                 visit(n);
 
                 boolean inList = false;
-                for(Bubble b : bubbleList){
-                    if(b.getName().equals(n.getString(n.size()-1))){
+                for(String s : parsed){
+                    if(s.equals(n.getString(n.size()-1))){
                         inList = true;
                     }
                     //System.out.println(b);
                 }
+                parsed.add(n.getString(n.size()-1));
 
                 if(!inList && !n.getString(n.size()-1).equals("String")){
 
