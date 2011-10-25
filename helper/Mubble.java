@@ -48,8 +48,6 @@ public class Mubble{
 
         return ret;
      }
-     
-     
 
 
      public void setPackageName(String pack)
