@@ -967,7 +967,7 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-        
+
         int i = -1;
 		for(Object m : b.getVtable().toArray()) {
 		    i++;
@@ -1112,7 +1112,7 @@ public class Decl extends xtc.util.Tool
                 doth += p.getOutput();
             }
         }
-        
+
         forwardh = forwardh.replace(" boolean " , " bool ");
         doth = doth.replace(" boolean " , " bool ");
         hwrite.write(forwardh);
@@ -1186,8 +1186,8 @@ public class Decl extends xtc.util.Tool
             }
 
         }
-        
- 
+
+
 
 //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList);
@@ -1223,14 +1223,18 @@ public class Decl extends xtc.util.Tool
         ccwrite.write(dotcc);
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
-        
-        
-        System.out.println("==================TROLOLOLOLOLOLOL=====================");
-   
-            for(Mubble s : mubbleList)
-                System.out.println("    " + s.getMethName());
-        
-        
+
+        /*
+        for(PNode p : packageTree){
+            System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
+            if(p.getMubblelist() != null)
+            for(Mubble m: p.getMubblelist()){
+                System.out.println("_________VVV__V__V_V_V__VVVVV");
+                System.out.println(m.prettyPrinter());
+            }
+        }
+        */
+
     }
 
     //accept parent bubble, index, return className where it was first implemented
@@ -1369,7 +1373,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
-		    
+
 
 		}
                 visit(n);
@@ -1415,7 +1419,7 @@ class Impl extends xtc.util.Tool{
            
 
                 for(Mubble m : mubbleList){
-                    if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                    if(m.getName().equals(classname) && m.getMethName().trim().equals(methodname))
                     {
                         System.out.println("curMub1: " + curMub.getHeader());
                         curMub = m;
@@ -1448,7 +1452,7 @@ class Impl extends xtc.util.Tool{
                     //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
                     //System.out.println("P name: " + p.getName());
                     //System.out.println("curMub: " + curMub.getPackageName());
-                    System.out.println("?????????????????????CurMub: " + curMub.getHeader());
+                    //System.out.println("?????????????????????CurMub: " + curMub.getHeader());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1467,7 +1471,6 @@ class Impl extends xtc.util.Tool{
 
         public void visitConstructorDeclaration(GNode n)
         {
-            visit(n);
 
             Node parent0 = (Node)n.getProperty("parent0");
             Node parent1 = (Node)parent0.getProperty("parent0");
@@ -1477,12 +1480,13 @@ class Impl extends xtc.util.Tool{
             String methodname = n.getString(2);
 
            for(Mubble m : mubbleList){
-                if(m.getName().equals(classname) && m.isConstructor())
+                if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
                 {
                     curMub = m;
                 }
             }
 
+            visit(n);
 
     //==============Assigning Package to CurMub===================//
             //Assuming curMub has code
@@ -1667,7 +1671,7 @@ class Impl extends xtc.util.Tool{
 	    public String inNameSpace(String obj) {
 		String ns1 = "";
 		String ns2 = "";
-		System.out.println("COMPARING "+obj+" and "+cName);
+		//System.out.println("COMPARING "+obj+" and "+cName);
 		for( Bubble b : bubbleList) {
 		    //doesn't account for multiple classes of the same name
 		    //System.out.println("BUBBLE: "+b.getName()+";");
@@ -1846,8 +1850,8 @@ class Impl extends xtc.util.Tool{
 		    //table = new HashMap<String>();
 
 		    visit(n);
-		    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		    System.out.println(methodString);
+		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		    //System.out.println(methodString);
 		    onMeth = false;
 		    methodString = "";
 		    //table = null;
@@ -1973,15 +1977,15 @@ class Impl extends xtc.util.Tool{
 			p+= " " + m.group();
 		    }
 		    System.out.println(n.size());
-		    String [] par = p.trim().split("\\s");   
-		    for( String g : par) 
+		    String [] par = p.trim().split("\\s");
+		    for( String g : par)
 			System.out.println(g);
 		    //System.out.println(p);
 		    */
 		    for(int i = 0; i < n.size(); i++) {
 			//methodString += ", (("+par[i]+") ";
-			
-			dispatch(n.getNode(i));			
+
+			dispatch(n.getNode(i));
 			//methodString += ")";
 		    }
 		    methodString += ")";
