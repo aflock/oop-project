@@ -1393,6 +1393,7 @@ class Impl extends xtc.util.Tool{
 	    String methodString = "";
 	    String cName = "";
 	    //HashMap<String> table;
+
             public void visitMethodDeclaration(GNode n)
             {
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -1409,14 +1410,22 @@ class Impl extends xtc.util.Tool{
 
 
                 String methodname = n.getString(3);
+               
+                    
+           
 
                 for(Mubble m : mubbleList){
                     if(m.getName().equals(classname) && m.getMethName().equals(methodname))
                     {
+                        System.out.println("curMub1: " + curMub.getHeader());
                         curMub = m;
+                        System.out.println("curMub2: " + curMub.getHeader());
                     }
 
                 }
+                
+
+                 
 
 		//visit
                 visit(n);
