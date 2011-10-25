@@ -1224,6 +1224,7 @@ public class Decl extends xtc.util.Tool
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
+        /*
         for(PNode p : packageTree){
             System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
             if(p.getMubblelist() != null)
@@ -1232,6 +1233,8 @@ public class Decl extends xtc.util.Tool
                 System.out.println(m.prettyPrinter());
             }
         }
+        */
+
     }
 
     //accept parent bubble, index, return className where it was first implemented
@@ -1412,7 +1415,7 @@ class Impl extends xtc.util.Tool{
                 String methodname = n.getString(3);
 
                 for(Mubble m : mubbleList){
-                    if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                    if(m.getName().equals(classname) && m.getMethName().trim().equals(methodname))
                     {
                         curMub = m;
                     }
@@ -1440,7 +1443,7 @@ class Impl extends xtc.util.Tool{
                     //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
                     //System.out.println("P name: " + p.getName());
                     //System.out.println("curMub: " + curMub.getPackageName());
-                    System.out.println("?????????????????????CurMub: " + curMub.getHeader());
+                    //System.out.println("?????????????????????CurMub: " + curMub.getHeader());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1459,7 +1462,6 @@ class Impl extends xtc.util.Tool{
 
         public void visitConstructorDeclaration(GNode n)
         {
-            visit(n);
 
             Node parent0 = (Node)n.getProperty("parent0");
             Node parent1 = (Node)parent0.getProperty("parent0");
@@ -1469,12 +1471,13 @@ class Impl extends xtc.util.Tool{
             String methodname = n.getString(2);
 
            for(Mubble m : mubbleList){
-                if(m.getName().equals(classname) && m.isConstructor())
+                if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
                 {
                     curMub = m;
                 }
             }
 
+            visit(n);
 
     //==============Assigning Package to CurMub===================//
             //Assuming curMub has code
@@ -1659,7 +1662,7 @@ class Impl extends xtc.util.Tool{
 	    public String inNameSpace(String obj) {
 		String ns1 = "";
 		String ns2 = "";
-		System.out.println("COMPARING "+obj+" and "+cName);
+		//System.out.println("COMPARING "+obj+" and "+cName);
 		for( Bubble b : bubbleList) {
 		    //doesn't account for multiple classes of the same name
 		    //System.out.println("BUBBLE: "+b.getName()+";");
@@ -1838,8 +1841,8 @@ class Impl extends xtc.util.Tool{
 		    //table = new HashMap<String>();
 
 		    visit(n);
-		    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		    System.out.println(methodString);
+		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		    //System.out.println(methodString);
 		    onMeth = false;
 		    methodString = "";
 		    //table = null;
