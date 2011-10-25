@@ -29,13 +29,6 @@ public class PNode{
     }
 
     public void addMubble(Mubble child){
-
-        if(mubbleList != null)
-        for(Mubble m: mubbleList){
-            if(m.getHeader().equals(child.getHeader())) {
-                return;
-            }
-        }
         if(child == null){
             return;
         }
@@ -179,7 +172,7 @@ public class PNode{
                     toReturn += mubbleList[i].prettyPrinter() + "\n";
             }
         }
-
+        
         //CONSTRUCT VTABLES
         if(mubbleList != null)
         {

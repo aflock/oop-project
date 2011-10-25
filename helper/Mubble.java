@@ -204,4 +204,8 @@ public class Mubble{
      public String getCode(){
         return this.code;
      }
+
+    public void setCode(String s) {
+	this.code = s;
+    }
 }
