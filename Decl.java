@@ -558,7 +558,7 @@ public class Decl extends xtc.util.Tool
                         dispatch((Node)o);
                     }
                 }
-            }//}}}
+
         }.dispatch(node);
     }
 
@@ -670,7 +670,7 @@ public class Decl extends xtc.util.Tool
         markNewMethods();
         formatConstructors();
     }
-    
+
     public static String formatHConstruct(String s)
     {
         String begin = Mubble.getStringBetween(s, "" , "(");
@@ -809,7 +809,7 @@ public class Decl extends xtc.util.Tool
                 //print constructors (assumes correct format)
                 struct +=("//Constructors"+ "\n");
                 String[] constructors = b.getConstructors();
-                
+
                 for(int i= 0; i< constructors.length; i++){
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
@@ -1110,6 +1110,7 @@ public class Decl extends xtc.util.Tool
 
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
+
             String[] methods = b.getMethods();
             if (methods != null)
             {
