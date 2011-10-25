@@ -14,7 +14,7 @@ class ColorPt extends Pt{
     }
     */
 
-    final String color;
+    String color;
 
     public ColorPt(String color){
         this.color = color;
@@ -25,6 +25,10 @@ class ColorPt extends Pt{
     public void setColor(String color){
         this.color = color;
     }
+
+    public int fuckyou() {
+	return 1;
+    }
     public char doalltheshits(int num) {
 	boolean ishigh = false;
 	int b;
@@ -33,7 +37,7 @@ class ColorPt extends Pt{
 
 	if (ishigh && true) {	    
 	    num++;
-	    return num;
+	    return 0;
 	}
 	else {
 	    ishigh = true;
@@ -70,11 +74,22 @@ class ColorPt extends Pt{
 	    System.out.println("Infinity while loop");
 
 	while (afunction()) {
-	    System.out.pritnln("shit");
+	    System.out.println("shit");
 	}
 
 	while (b <= 5 || b >= -1 && b == 2) {
-	    dont();
+	    //dont();
+	}
+
+	switch(b=fuckyou()) {
+	case 1:   
+	case 2: num++;
+	    num--; 
+	    break;
+	case 4: break;
+	case 5: num--; break;
+	default:
+	    fuckyou();
 	}
 		
 	return 0;
@@ -83,5 +98,9 @@ class ColorPt extends Pt{
 
     public boolean afunction() {
 	return true;
+    }
+
+    public static void main(String[] args) {
+
     }
 }
