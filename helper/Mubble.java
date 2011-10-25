@@ -40,7 +40,7 @@ public class Mubble{
      {
          String ret = "";
 
-         if(methName.equal("main")){
+         if(methName.equals("main")){
              ret += "int main(int argc, char* argv[]){\n";
              ret += this.code +"\n";
              ret += "return 0;\n";
