@@ -1826,15 +1826,30 @@ class Impl extends xtc.util.Tool{
 		    if(parent1.getName().equals("FieldDeclaration")) {
 			tan += n.getString(0) + " ";
 		    }
+		    
+		    if(parent1.getName().equals("FieldDeclaration"))
+		    {
+		        for(Object o : parent0)
+		        { 
+		            if (o instanceof Node )
+		            {
+		                if(((Node)o).getName().equals("Dimensions"))
+		                    inArray = true;
+		            }
+                    
+                }
+            }
+		    
 		    String s = inNameSpace(n.getString(0));
 		    //System.out.println("QI: "+s);
 		    //??
-		    if (s != null) {
+		    if (s != null && !inArray) {
 			//using absolute namespace
 			methodString += "::"+s.trim().replaceAll("\\s+", "::")
 			    +"::";
 		    }
-		    methodString += n.getString(0);
+		    if(!inArray)
+		        methodString += n.getString(0);
 		}
                 visit(n);
 
