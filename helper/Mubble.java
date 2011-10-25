@@ -8,15 +8,22 @@ public class Mubble{
      String code; //actual code of class, in Block() type node of AST
      String packageName;
      boolean mainMeth; //method is the main method
+     boolean isConstructor;
 
-     public Mubble(String iName, String iHeader)
+     public Mubble(String iName, String iHeader, boolean construct)
      {
         this.name = iName;
         this.methName = extractMethodName(iHeader);
         this.header = formatMethodHeader(iHeader);
         this.code = "";
+        this.isConstructor = construct;
      }
 
+     public boolean isConstructor()
+     {
+        return this.isConstructor;
+     }
+     
      //returns a String of the formatted method for .cc file
      public String prettyPrinter()
      {
@@ -28,15 +35,6 @@ public class Mubble{
         return ret;
      }
      
-     public String JavatoCpp(String s)
-     {
-        String temp = s;
-        temp = s.replace("boolean", "bool");
-        //CHANGE to REGEX to make so it cannot be in a word
-        temp = temp.replace("int ", "int32_t ");
-        
-        return temp;
-     }
 
      public void setPackageName(String pack)
      {
