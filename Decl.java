@@ -711,7 +711,7 @@ public class Decl extends xtc.util.Tool
             correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
         }
         if (correctHeader.length() == 0)
-            return "";
+            return begin + "();";
         else
             return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
     }
@@ -812,6 +812,8 @@ public class Decl extends xtc.util.Tool
                 String[] constructors = b.getConstructors();
 
                 for(int i= 0; i< constructors.length; i++){
+                    System.out.println("++++++++++++ Constructor: " + constructors[i]);
+                    System.out.println("++++++++++++ Formated: " + formatHConstruct(constructors[i]));
                     struct +=(indentLevel(indent) + "_" + formatHConstruct(constructors[i])+ "\n");
                 }
 
