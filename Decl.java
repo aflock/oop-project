@@ -921,7 +921,7 @@ public class Decl extends xtc.util.Tool
                     }
 
                     //everything should be in correct format by now;
-                    struct += "static " + returnType + " " + methodName + " (" + className + ")\n";
+                    struct += "static " + returnType + " " + methodName + " (" + className + ");\n";
                     //System.out.println("static " + returnType + " " + methodName + " (" + className + ");\n");
                 }
 
