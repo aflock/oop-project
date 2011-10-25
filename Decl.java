@@ -1215,13 +1215,13 @@ public class Decl extends xtc.util.Tool
 
     //accept parent bubble, index, return className where it was first implemented
     //
-    public String findRootImpl(Bubble parent, int index){
+    public static String findRootImpl(Bubble parent, int index){
         //want to investigate this parent's vtable: if tab last char - return className
         //else: get parent, do that
         //Object m : b.getVtable().toArray()
         ArrayList<String> vtable = parent.getVtable();
         String entry = vtable.get(index);
-        if(entry.charAt(entry.length()-1)=="\t"){
+        if(entry.charAt(entry.length()-1)=='\t'){
             return parent.getName();
         }
         else{
@@ -1915,8 +1915,8 @@ class Impl extends xtc.util.Tool{
 		    }
 		    for(int i = 1; i < n.size(); i++) {
 			methodString += ", ";
-		    
-			dispatch(n.getNode(i));			
+
+			dispatch(n.getNode(i));
 		    }
 		    methodString += ")";
 		}
@@ -1975,14 +1975,14 @@ class Impl extends xtc.util.Tool{
 
 	    public void visitFloatingPointLiteral(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
                 visit(n);
 	    }
 
 	    public void visitCharacterLiteral(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
                 visit(n);
 	    }
