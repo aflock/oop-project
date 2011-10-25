@@ -1211,6 +1211,15 @@ public class Decl extends xtc.util.Tool
         ccwrite.write(dotcc);
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
+
+        for(PNode p : packageTree){
+            System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
+            if(p.getMubblelist() != null)
+            for(Mubble m: p.getMubblelist()){
+                System.out.println("_________VVV__V__V_V_V__VVVVV");
+                System.out.println(m.prettyPrinter());
+            }
+        }
     }
 
     //accept parent bubble, index, return className where it was first implemented
