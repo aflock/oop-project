@@ -1350,15 +1350,24 @@ class Impl extends xtc.util.Tool{
         new Visitor()
         {
 
-
+	    String tan;
             public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
-		    
-
+		    tan = "";
+		    //Node qual = n.getNode(1).getNode(0);
+		    //if (qual.getName().equals(
 		}
                 visit(n);
 		if (onMeth) {
 		    //methodString += ";\n";
+		    String[] z = tan.split("\\s+");
+		    // this could be fucked up
+		    String type = z[0];
+		    for (int i = 1; i < z.length; i++) {
+			table.put(z[i], type);
+		    }
+		    
+		    System.out.println(tan);
 		}
             }
 
@@ -1376,7 +1385,7 @@ class Impl extends xtc.util.Tool{
             Mubble curMub = null;
 	    String methodString = "";
 	    String cName = "";
-	    //HashMap<String> table;
+	    HashMap<String, String> table;
             public void visitMethodDeclaration(GNode n)
             {
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -1483,10 +1492,11 @@ class Impl extends xtc.util.Tool{
             }
     //==============================================================//
         }
-
+	    String mName;
 	    public void visitCallExpression(GNode n) {
 		//visit(n);
 		if (onMeth) {
+		    mName = n.getString(2);
 		    String tmp = "";
 		    /*
 		    for (Object o : n) {
@@ -1495,15 +1505,18 @@ class Impl extends xtc.util.Tool{
 			}
 		    }
 		    */
-		    //check that it's Obj.meth()
-		    //deal with commas again
-		    //look at argument ^
-		    //the parameters for meth()
-		    //casting
+
 		    dispatchBitch(n);
 		    dispatch(n.getNode(0));
-		    methodString += "->__vptr->"+n.getString(2) + "(";
-		    dispatch(n.getNode(0));//here
+		    if(n.getNode(0) != null) {
+			methodString += "->__vptr->"+n.getString(2);
+			methodString += "(";
+			dispatch(n.getNode(0));//adding self
+			methodString += ", ";
+		    }
+		    else {
+			methodString += n.getString(2) + "(";
+		    }
 		    dispatch(n.getNode(3));
 		}
 		else {
@@ -1576,6 +1589,7 @@ class Impl extends xtc.util.Tool{
 		if (onMeth && !((Node)n.getProperty("parent0")).getName()
 		    .equals("BasicForControl")) {
 		    methodString += ";\n";
+		    
 		}
             }
 
@@ -1593,6 +1607,7 @@ class Impl extends xtc.util.Tool{
 		    if (third instanceof Node) {
 			methodString += " = ";
 		    }
+		    tan += n.getString(0);
 		}
                 visit(n);
 		if (onMeth) {
@@ -1668,6 +1683,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitQualifiedIdentifier(GNode n){
 		if (onMeth) {
+		    tan += n.getString(0) + " ";
 
 		    String s = inNameSpace(n.getString(0));
 		    //System.out.println("QI: "+s);
@@ -1817,14 +1833,14 @@ class Impl extends xtc.util.Tool{
 		if(((Node)n.getProperty("parent0")).getName()
 		   .equals("MethodDeclaration")) {
 		    onMeth = true;
-		    //table = new HashMap<String>();
+		    table = new HashMap<String, String>();
 
 		    visit(n);
 		    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		    System.out.println(methodString);
 		    onMeth = false;
 		    methodString = "";
-		    //table = null;
+		    table = null;
 		}
 		else {
 		    visit(n);
@@ -1844,13 +1860,14 @@ class Impl extends xtc.util.Tool{
 	    public void visitPrimaryIdentifier(GNode n) {
 		if (onMeth) {
 		    methodString += n.getString(0);
+		    //key = n.getString(0);
 		}
 		visit(n);
 	    }
 
             public void visitPrimitiveType(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0);
+		    methodString += n.getString(0);		    
 		}
                 visit(n);
             }
@@ -1925,14 +1942,26 @@ class Impl extends xtc.util.Tool{
 		}
 	    }
 
+	    //String key;
 	    public void visitArguments(GNode n) {
 		if (onMeth) {
+		    String key = "";
 		    dispatchBitch(n);
-		    /*
-		    if (n.size() > 0) {
-			dispatch(n.getNode(0));
+		    String type = "";
+		    Node callex = (Node)n.getProperty("parent0");
+		    if (callex.getName().equals("CallExpression") && 
+			callex.getNode(0) != null && callex
+			.getNode(0).getName().equals("PrimaryIdentifier")) {
+			key = callex.getNode(0).getString(0);
+			type = table.get(key);
+			System.out.println(key + " " + type);
 		    }
-		    */
+
+		    //String type = table.get(key);
+		    //System.out.println(key + " " + type);
+		    //key = "";
+
+		    
 		    /*
 		    String params = "";
 		    for(Mubble m : MubbleList) {
@@ -1952,12 +1981,44 @@ class Impl extends xtc.util.Tool{
 			System.out.println(g);
 		    //System.out.println(p);
 		    */
-		    for(int i = 0; i < n.size(); i++) {
-			//methodString += ", (("+par[i]+") ";
+
+		    String mSign = "";
+		    for (Mubble m : mubbleList) {
 			
-			dispatch(n.getNode(i));			
-			//methodString += ")";
+			if (m.getName().equals(type) &&
+			    m.getMethName().equals(mName)) {
+			    mSign = m.getHeader();
+			}
 		    }
+		   mSign = "char __String::charAt(String __this, int32_t idx)";
+		    //iterate through java lang list
+		    //System.out.println("FUCK"+mSign);
+		    
+
+		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
+		    String p = "";
+		    System.out.println(mSign);
+		    while(m.find()){
+			p+= " " + m.group();
+		    }
+		    //System.out.println(n.size());
+		    String [] par = p.trim().split("\\s");   
+		    for( String g : par) 
+			System.out.println(g);
+
+
+		    if (n.size() > 0) {
+			methodString += "(("+par[0]+") ";
+			dispatch(n.getNode(0));
+			methodString += ")";
+		    }
+
+		    for(int i = 1; i < n.size(); i++) {
+			methodString += ", (("+par[i]+") ";
+			dispatch(n.getNode(i));			
+			methodString += ")";
+		    }
+
 		    methodString += ")";
 		}
 		else {
@@ -1969,7 +2030,7 @@ class Impl extends xtc.util.Tool{
 		if (onMeth) {
 		    visit(n);
 		    if (n.get(1) != null) {
-			methodString += "." + n.getString(1) + ".";
+			methodString += "->" + n.getString(1);
 		    }
 		}
 		else {
