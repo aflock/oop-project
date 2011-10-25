@@ -715,6 +715,33 @@ public class Decl extends xtc.util.Tool
         else
             return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
     }
+    
+    public static void populateLangList()
+    {
+        langList.add(new Mubble("Object", "Object", "__Object::__Object() : __vptr(&__vtable)", true));
+        langList.add(new Mubble("Object", "hashCode", "int32_t __Object::hashCode(Object __this)", false));
+        langList.add(new Mubble("Object", "equals", "bool __Object::equals(Object __this, Object other)", false));
+        langList.add(new Mubble("Object", "getClass", "Class __Object::getClass(Object __this)", false));
+        langList.add(new Mubble("Object", "toString", "String __Object::toString(Object __this)", false));
+        
+        langList.add(new Mubble("String", "String" , "__String::__String(std::string data) : __vptr(&__vtable), data(data)", true));
+        langList.add(new Mubble("String", "hashCode" , "int32_t __String::hashCode(String __this)", false));
+        langList.add(new Mubble("String", "equals" , "bool __String::equals(String __this, Object o)", false));
+        langList.add(new Mubble("String", "toString" , "String __String::toString(String __this)", false));
+        langList.add(new Mubble("String", "length" , "int32_t __String::length(String __this)", false));
+        langList.add(new Mubble("String", "charAt" , "har __String::charAt(String __this, int32_t idx)", false));
+        
+        langList.add(new Mubble("Class", "Class" , "__Class::__Class(String name, Class parent, Class component, bool primitive): __vptr(&__vtable), name(name), parent(parent), component(component), primitive(primitive)", true));
+        langList.add(new Mubble("Class", "toString" , "String __Class::toString(Class __this)", false));
+        langList.add(new Mubble("Class", "getName" , "String __Class::getName(Class __this)", false));
+        langList.add(new Mubble("Class", "getSuperClass" , "Class __Class::getSuperclass(Class __this)", false));
+        langList.add(new Mubble("Class", "isPrimitive" , "bool __Class::isPrimitive(Class __this)", false));
+        langList.add(new Mubble("Class", "isArray" , "bool __Class::isArray(Class __this)", false));
+        langList.add(new Mubble("Class", "getComponentType" , "Class __Class::getComponentType(Class __this)", false));
+        langList.add(new Mubble("Class", "isInstance" , "bool __Class::isInstance(Class __this, Object o)", false));
+
+    }
+    
     /**
      * Run the thing with the specified command line arguments.
      *
@@ -723,10 +750,14 @@ public class Decl extends xtc.util.Tool
     static Decl d;
     public static Impl Q;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
+    static ArrayList<Mubble> langList = new ArrayList<Mubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
     public static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
     {
+        
+        populateLangList();
+        
         packageTree.add(new PNode("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
@@ -967,7 +998,7 @@ public class Decl extends xtc.util.Tool
 		}
 		//Add the constructor decl and :
 		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
-        
+
         int i = -1;
 		for(Object m : b.getVtable().toArray()) {
 		    i++;
@@ -1000,7 +1031,7 @@ public class Decl extends xtc.util.Tool
 
 			    //Add that shit to struct
 			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
@@ -1088,6 +1119,13 @@ public class Decl extends xtc.util.Tool
         includes += "#include <stdint.h>\n";
         includes += "\n\n"; //for good measure
         hwrite.write(includes);
+        String hardType = "typedef java::lang::Class Class;\n" +
+        "typedef java::lang::__Class __Class;\n" +
+        "typedef java::lang::String String;\n" +
+        "typedef java::lang::__String __String;\n" +
+        "typedef java::lang::Object Object;\n" +
+        "typedef java::lang::__Object __Object;\n";
+        hwrite.write(hardType);
 
         String forwardh ="";
         for(PNode p : packageTree){
@@ -1106,6 +1144,8 @@ public class Decl extends xtc.util.Tool
             }
         }
 
+        forwardh = forwardh.replace(" boolean " , " bool ");
+        doth = doth.replace(" boolean " , " bool ");
         hwrite.write(forwardh);
         hwrite.write(doth);
         hwrite.close();
@@ -1177,8 +1217,8 @@ public class Decl extends xtc.util.Tool
             }
 
         }
-        
- 
+
+
 
 //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList);
@@ -1214,6 +1254,18 @@ public class Decl extends xtc.util.Tool
         ccwrite.write(dotcc);
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
+
+        /*
+        for(PNode p : packageTree){
+            System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
+            if(p.getMubblelist() != null)
+            for(Mubble m: p.getMubblelist()){
+                System.out.println("_________VVV__V__V_V_V__VVVVV");
+                System.out.println(m.prettyPrinter());
+            }
+        }
+        */
+
     }
 
     //accept parent bubble, index, return className where it was first implemented
@@ -1225,7 +1277,7 @@ public class Decl extends xtc.util.Tool
         ArrayList<String> vtable = parent.getVtable();
         String entry = vtable.get(index);
         if(parent.getParent() == null){
-            return parent.getName();
+            return "_" + parent.getName();
         }
         if(entry.charAt(entry.length()-1)=='\t'){
             return parent.getName();
@@ -1233,7 +1285,6 @@ public class Decl extends xtc.util.Tool
         else{
             return findRootImpl(parent.getParent(), index) ;
         }
-
     }
 
 
@@ -1385,30 +1436,42 @@ class Impl extends xtc.util.Tool{
             Mubble curMub = null;
 	    String methodString = "";
 	    String cName = "";
+
 	    HashMap<String, String> table;
+
             public void visitMethodDeclaration(GNode n)
             {
+            
                 Node parent0 = (Node)n.getProperty("parent0");
                 Node parent1 = (Node)parent0.getProperty("parent0");
 
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
 
-		//setting global class name
-		cName = classname;
+		    //setting global class name
+		    cName = classname;
 
 
-
-		tmpCode = "";
+                
 
 
                 String methodname = n.getString(3);
+               
+                    
+           
 
                 for(Mubble m : mubbleList){
-                    if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                    if(m.getName() == null || m.getMethName() == null || methodname == null || classname == null)
+                        System.out.println("****************YOURE FUCKED**************");
+                    if(m.getName().equals(classname) && m.getMethName().trim().equals(methodname))
+                    {
+                        curMub = m;
+                    }
 
-			curMub = m;
                 }
+                
+
+                 
 
 		//visit
                 visit(n);
@@ -1428,10 +1491,6 @@ class Impl extends xtc.util.Tool{
                 //Adding curMub to the right pNode
                 for(PNode p : packageTree)
                 {
-                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
-                    //System.out.println("P name: " + p.getName());
-                    //System.out.println("curMub: " + curMub.getPackageName());
-
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1441,6 +1500,7 @@ class Impl extends xtc.util.Tool{
 		//System.out.println(methodString);
                 //onMeth = false;
 		//methodString = "";
+		
             }
 
             public void visitModifier(GNode n){
@@ -1450,7 +1510,6 @@ class Impl extends xtc.util.Tool{
 
         public void visitConstructorDeclaration(GNode n)
         {
-            visit(n);
 
             Node parent0 = (Node)n.getProperty("parent0");
             Node parent1 = (Node)parent0.getProperty("parent0");
@@ -1459,13 +1518,20 @@ class Impl extends xtc.util.Tool{
             String classname = parent1.getString(1);
             String methodname = n.getString(2);
 
+            int constructorCount = 0;
            for(Mubble m : mubbleList){
-                if(m.getName().equals(classname) && m.isConstructor())
+               System.out.println("m.getName ::" + m.getName()+ "::");
+               System.out.println("classname ::" + classname+ "::");
+                if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
                 {
+                    constructorCount++;
                     curMub = m;
                 }
+                System.out.println("Constructor COunt is: "+ constructorCount);
+               System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
             }
 
+            visit(n);
 
     //==============Assigning Package to CurMub===================//
             //Assuming curMub has code
@@ -1656,7 +1722,7 @@ class Impl extends xtc.util.Tool{
 	    public String inNameSpace(String obj) {
 		String ns1 = "";
 		String ns2 = "";
-		System.out.println("COMPARING "+obj+" and "+cName);
+		//System.out.println("COMPARING "+obj+" and "+cName);
 		for( Bubble b : bubbleList) {
 		    //doesn't account for multiple classes of the same name
 		    //System.out.println("BUBBLE: "+b.getName()+";");
@@ -1836,8 +1902,8 @@ class Impl extends xtc.util.Tool{
 		    table = new HashMap<String, String>();
 
 		    visit(n);
-		    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		    System.out.println(methodString);
+		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		    //System.out.println(methodString);
 		    onMeth = false;
 		    methodString = "";
 		    table = null;
@@ -1976,8 +2042,8 @@ class Impl extends xtc.util.Tool{
 			p+= " " + m.group();
 		    }
 		    System.out.println(n.size());
-		    String [] par = p.trim().split("\\s");   
-		    for( String g : par) 
+		    String [] par = p.trim().split("\\s");
+		    for( String g : par)
 			System.out.println(g);
 		    //System.out.println(p);
 		    */
