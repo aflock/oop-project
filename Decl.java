@@ -1470,11 +1470,17 @@ class Impl extends xtc.util.Tool{
             String classname = parent1.getString(1);
             String methodname = n.getString(2);
 
+            int constructorCount = 0;
            for(Mubble m : mubbleList){
+               System.out.println("m.getName ::" + m.getName()+ "::");
+               System.out.println("classname ::" + classname+ "::");
                 if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
                 {
+                    constructorCount++;
                     curMub = m;
                 }
+                System.out.println("Constructor COunt is: "+ constructorCount);
+               System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
             }
 
             visit(n);
