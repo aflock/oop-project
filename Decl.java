@@ -1000,7 +1000,7 @@ public class Decl extends xtc.util.Tool
 
 			    //Add that shit to struct
 			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
+			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
 			}
 			//inherited methods get parent after &
 			//if it's overwritten or new
@@ -1088,6 +1088,13 @@ public class Decl extends xtc.util.Tool
         includes += "#include <stdint.h>\n";
         includes += "\n\n"; //for good measure
         hwrite.write(includes);
+        String hardType = "typedef java::lang::Class Class;\n" +
+        "typedef java::lang::__Class __Class;\n" +
+        "typedef java::lang::String String;\n" +
+        "typedef java::lang::__String __String;\n" +
+        "typedef java::lang::Object Object;\n" +
+        "typedef java::lang::__Object __Object;\n";
+        hwrite.write(hardType);
 
         String forwardh ="";
         for(PNode p : packageTree){
@@ -1105,7 +1112,9 @@ public class Decl extends xtc.util.Tool
                 doth += p.getOutput();
             }
         }
-
+        
+        forwardh = forwardh.replace(" boolean " , " bool ");
+        doth = doth.replace(" boolean " , " bool ");
         hwrite.write(forwardh);
         hwrite.write(doth);
         hwrite.close();
@@ -1214,6 +1223,14 @@ public class Decl extends xtc.util.Tool
         ccwrite.write(dotcc);
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
+        
+        
+        System.out.println("==================TROLOLOLOLOLOLOL=====================");
+   
+            for(Mubble s : mubbleList)
+                System.out.println("    " + s.getMethName());
+        
+        
     }
 
     //accept parent bubble, index, return className where it was first implemented
@@ -1225,7 +1242,7 @@ public class Decl extends xtc.util.Tool
         ArrayList<String> vtable = parent.getVtable();
         String entry = vtable.get(index);
         if(parent.getParent() == null){
-            return parent.getName();
+            return "_" + parent.getName();
         }
         if(entry.charAt(entry.length()-1)=='\t'){
             return parent.getName();
@@ -1233,7 +1250,6 @@ public class Decl extends xtc.util.Tool
         else{
             return findRootImpl(parent.getParent(), index) ;
         }
-
     }
 
 
@@ -1383,10 +1399,10 @@ class Impl extends xtc.util.Tool{
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
 
-		//setting global class name
-		cName = classname;
+		    //setting global class name
+		    cName = classname;
 
-		//visit
+		    //visit
                 visit(n);
 
                 tmpCode = "";
@@ -1397,7 +1413,9 @@ class Impl extends xtc.util.Tool{
 
                 for(Mubble m : mubbleList){
                     if(m.getName().equals(classname) && m.getMethName().equals(methodname))
+                    {
                         curMub = m;
+                    }
                 }
 
  //==============Assigning Package to CurMub===================//
@@ -1418,7 +1436,7 @@ class Impl extends xtc.util.Tool{
                     //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
                     //System.out.println("P name: " + p.getName());
                     //System.out.println("curMub: " + curMub.getPackageName());
-
+                    System.out.println("?????????????????????CurMub: " + curMub.getHeader());
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
