@@ -478,12 +478,12 @@ public class Decl extends xtc.util.Tool
                 visit(n);
             }
 
-            public void visitPrimitiveType(GNode n) 
+            public void visitPrimitiveType(GNode n)
             {
                 visit(n);
                 Node parent1 = (Node)n.getProperty("parent1");
                 Node parent2 = (Node)n.getProperty("parent2");
-                
+
                 if ((parent1.getName().equals("MethodDeclaration")) &&
                         (parent2.getName().equals("ClassBody")))
                 {
@@ -1035,14 +1035,35 @@ public class Decl extends xtc.util.Tool
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
 
+        System.out.println("AYO HERE GO THE CONSTRUCTORS : : : :ASDASD:ASD: : ");
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
             String[] methods = b.getMethods();
             if (methods != null)
             {
                 for(String entry : methods) {
-                    mubbleList.add(new Mubble(b.getName(), entry));
+                    mubbleList.add(new Mubble(b.getName(), entry, false));
+                }
+                for(String a : b.getConstructors()){
+                    String correctHeader = "_"+ b.getName() + "::_" + b.getName() + "(";
+                    String params = Mubble.getStringBetween(s, "(", ")").trim();
+                    String[] paramSplit = params.split(" ");
 
+                    for(int i=0; i < paramSplit.length; i++){
+                        String word = paramSplit[i];
+                        if(word.equals("int"))
+                            paramSplit[i] = "int32_t";
+                        if(word.equals("boolean"))
+                            paramSplit[i] = "bool";
+                        if(word.charAt(word.length()-1)==']'){
+                            paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -3) +">*";
+                        }
+                    }
+                    for(int i=0; i < paramSplit.length - 1; i+=2){
+                        correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
+                    }
+                    correctHeader = correctHeader.substring(0, correctHeader.length()-3) + ")";
+                    System.out.println(correctHeader);
                 }
             }
         }
@@ -1056,8 +1077,8 @@ public class Decl extends xtc.util.Tool
                 Q.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
-        
-        
+
+
         //Write .cc to file
         try{
         File out = new File("test.cc");
@@ -1200,7 +1221,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitFieldDeclaration(GNode n){
 		if (onMeth) {
-		   ; 
+		   ;
 		}
                 visit(n);
 		if (onMeth) {
@@ -1262,7 +1283,7 @@ class Impl extends xtc.util.Tool{
                         p.addMubble(curMub);
                 }
 //==============================================================//
-                
+
 		//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		//System.out.println(methodString);
                 //onMeth = false;
@@ -1276,7 +1297,7 @@ class Impl extends xtc.util.Tool{
 
 	    public void visitCallExpression(GNode n) {
 		//visit(n);
-		if (onMeth) {		
+		if (onMeth) {
 		    String tmp = "";
 		    /*
 		    for (Object o : n) {
@@ -1332,7 +1353,7 @@ class Impl extends xtc.util.Tool{
 			methodString += "\n}\n";
 		    }
 		    //methodString += "}\n";
-		} 
+		}
 		else {
 		    visit(n);
 		}
@@ -1356,7 +1377,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitDeclarators(GNode n) {
                 visit(n);
-		
+
 		if (onMeth && !((Node)n.getProperty("parent0")).getName()
 		    .equals("BasicForControl")) {
 		    methodString += ";\n";
@@ -1365,14 +1386,14 @@ class Impl extends xtc.util.Tool{
 
 	    public void visitBooleanLiteral(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
 		visit(n);
 	    }
 
             public void visitDeclarator(GNode n) {
 		if (onMeth) {
-		    methodString += " " + n.getString(0); 
+		    methodString += " " + n.getString(0);
 		    Object third = n.get(2);
 		    if (third instanceof Node) {
 			methodString += " = ";
@@ -1399,7 +1420,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitIntegerLiteral(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
                 visit(n);
             }
@@ -1432,11 +1453,11 @@ class Impl extends xtc.util.Tool{
             public void visitForStatement(GNode n)
             {
 		if (onMeth) {
-		    methodString += "for("; 
-		}		
-                visit(n);		
+		    methodString += "for(";
+		}
+                visit(n);
 		if (onMeth) {
-		    methodString += "}\n";		    
+		    methodString += "}\n";
 		}
             }
 
@@ -1444,7 +1465,7 @@ class Impl extends xtc.util.Tool{
 		if(onMeth) {
 		    dispatchBitch(n);
 		    methodString += "(";
-		    dispatch(n.getNode(0));		    
+		    dispatch(n.getNode(0));
 		    methodString += ") && (";
 		    dispatch(n.getNode(1));
 		    methodString += ")";
@@ -1466,7 +1487,7 @@ class Impl extends xtc.util.Tool{
 		}
 	    }
 
-	    public void visitExpressionStatement(GNode n) {		
+	    public void visitExpressionStatement(GNode n) {
 		visit(n);
 		if (onMeth) {
 		    methodString += ";\n";
@@ -1503,7 +1524,7 @@ class Impl extends xtc.util.Tool{
 		    visit(n);
 		}
             }
-	    
+
 	    public void visitBlock(GNode n) {
 		if(((Node)n.getProperty("parent0")).getName()
 		   .equals("MethodDeclaration")) {
@@ -1539,7 +1560,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitPrimitiveType(GNode n) {
 		if (onMeth) {
-		    methodString += n.getString(0); 
+		    methodString += n.getString(0);
 		}
                 visit(n);
             }
@@ -1575,7 +1596,7 @@ class Impl extends xtc.util.Tool{
 
 	    public void visitReturnStatement(GNode n) {
 		if (onMeth) {
-		    methodString += "return "; 
+		    methodString += "return ";
 		}
 		visit(n);
 		if (onMeth) {
@@ -1596,7 +1617,7 @@ class Impl extends xtc.util.Tool{
 	    public void visitWhileStatement(GNode n) {
 		if (onMeth) {
 		    dispatchBitch(n);
-		    methodString += "while("; 
+		    methodString += "while(";
 		    dispatch(n.getNode(0));
 		    methodString += ") {\n";
 		    for(int i = 1; i < n.size(); i++) {
@@ -1628,7 +1649,7 @@ class Impl extends xtc.util.Tool{
 		    dispatch(n.getNode(2));
 		    //methodString += ";";
 		}
-		
+
                 //visit(n);
             }
 

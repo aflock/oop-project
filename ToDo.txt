@@ -82,11 +82,10 @@ For each Bubble:
 
 
 
-####TODO FOR SUNDAY####
--implement above ^^
--review DK's printer of PNode (namespace correct, includes vtable constructor)
--re-route standard out to write to a file (___.h instead of terminal)
--write a sample .cc to test our generated .h
+####TODO FOR moNDAY####
+
+-make sure boolean -> bool in .h :P
+
 
 
 
