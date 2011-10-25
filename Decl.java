@@ -1035,7 +1035,6 @@ public class Decl extends xtc.util.Tool
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
 
-        System.out.println("AYO HERE GO THE CONSTRUCTORS : : : :ASDASD:ASD: : ");
         //Add all Mubbles to the list
         for(Bubble b: bubbleList){
             String[] methods = b.getMethods();
@@ -1044,28 +1043,52 @@ public class Decl extends xtc.util.Tool
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry, false));
                 }
+            }
+            if(b.getConstructors() != null){
                 for(String a : b.getConstructors()){
+                    System.out.println(a);
                     String correctHeader = "_"+ b.getName() + "::_" + b.getName() + "(";
-                    String params = Mubble.getStringBetween(s, "(", ")").trim();
+                    String params = Mubble.getStringBetween(a, "(", ")").trim();
                     String[] paramSplit = params.split(" ");
+                    String[] temp;
+                    int emptyCount=0;
+                    for(int i=0; i < paramSplit.length ; i++){
+                        if(paramSplit[i].length() == 0) {
+                            emptyCount++;
+                        }
+                    }
+                    temp = new String[paramSplit.length-(emptyCount)];
+                    int ti=0;
+                    System.out.println("temp length is: " +temp.length);
+                    for(int i=0; i < paramSplit.length ; i++){
+                        if(!(paramSplit[i].length() == 0)) {
+                            temp[ti] = paramSplit[i];
+                            ti++;
+                        }
+                    }
+                    paramSplit = temp;
 
                     for(int i=0; i < paramSplit.length; i++){
-                        String word = paramSplit[i];
-                        if(word.equals("int"))
-                            paramSplit[i] = "int32_t";
-                        if(word.equals("boolean"))
-                            paramSplit[i] = "bool";
-                        if(word.charAt(word.length()-1)==']'){
-                            paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -3) +">*";
+                        if(paramSplit[i].length() != 0){
+                            String word = paramSplit[i];
+                            if(word.equals("int"))
+                                paramSplit[i] = "int32_t";
+                            if(word.equals("boolean"))
+                                paramSplit[i] = "bool";
+                            if(word.charAt(word.length()-1)==']'){
+                                paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
+                            }
                         }
                     }
                     for(int i=0; i < paramSplit.length - 1; i+=2){
                         correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
                     }
-                    correctHeader = correctHeader.substring(0, correctHeader.length()-3) + ")";
-                    System.out.println(correctHeader);
+                    correctHeader = correctHeader.substring(0, correctHeader.length()-2) + ")";
+                    //System.out.println(correctHeader);
+                    mubbleList.add(new Mubble(b.getName(),correctHeader, true ));
                 }
             }
+
         }
 
 //===============IMPL SHIT====================================//
@@ -1581,7 +1604,7 @@ class Impl extends xtc.util.Tool{
 		    for(int i = 1; i < n.size(); i++) {
 			dispatch(n.getNode(i));
 		    }
-		    
+
 		}
 		else {
 
