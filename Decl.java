@@ -1402,25 +1402,34 @@ class Impl extends xtc.util.Tool{
         {
 
 	    String tan;
-            public void visitFieldDeclaration(GNode n){
-		if (onMeth) {
-		    tan = "";
-		    //Node qual = n.getNode(1).getNode(0);
-		    //if (qual.getName().equals(
-		}
-                visit(n);
-		if (onMeth) {
-		    //methodString += ";\n";
-		    String[] z = tan.split("\\s+");
-		    // this could be fucked up
-		    String type = z[0];
-		    for (int i = 1; i < z.length; i++) {
-			table.put(z[i], type);
+        public void visitFieldDeclaration(GNode n){
+		    if (onMeth) {
+		        tan = "";
+		        //Node qual = n.getNode(1).getNode(0);
+		        //if (qual.getName().equals(
 		    }
-		    
-		    System.out.println(tan);
-		}
-            }
+            visit(n);
+
+		    if (onMeth) {
+		        if(inArray)
+                {
+                    //getting type
+                    String arrType = n.getNode(1).getNode(0).getString(0);
+                    String arrName = n.getNode(2).getNode(0).getString(0);
+                    System.out.println("*********************************\n  ArrType: " + arrType + 
+                            "\n  ArrName: " + arrName);
+                }
+		        //methodString += ";\n";
+		        String[] z = tan.split("\\s+");
+		        // this could be fucked up
+		        String type = z[0];
+		        for (int i = 1; i < z.length; i++) {
+			    table.put(z[i], type);
+		        }
+		        
+		        System.out.println(tan);
+		    }
+        }
 
             public void visitDimensions(GNode n) {
                 visit(n);
@@ -1932,12 +1941,30 @@ class Impl extends xtc.util.Tool{
 		visit(n);
 	    }
 
-            public void visitPrimitiveType(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);		    
-		}
-                visit(n);
+        boolean inArray = false;
+        public void visitPrimitiveType(GNode n) {
+            visit(n);
+		    Node parent0 = (Node)n.getProperty("parent0");
+		    Node parent1 = (Node)n.getProperty("parent1");
+		    
+		    if(parent1.getName().equals("FieldDeclaration"))
+		    {
+		        for(Object o : parent0)
+		        { 
+		            if (o instanceof Node )
+		            {
+		                if(((Node)o).getName().equals("Dimensions"))
+		                    inArray = true;
+		            }
+                    
+                }
             }
+            if (onMeth && !inArray) {
+                methodString += n.getString(0);		    
+            }
+            
+            
+        }
 
 	    public void visitStringLiteral(GNode n) {
 		if (onMeth) {
