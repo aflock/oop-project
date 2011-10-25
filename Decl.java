@@ -715,6 +715,33 @@ public class Decl extends xtc.util.Tool
         else
             return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
     }
+    
+    public static void populateLangList()
+    {
+        langList.add(new Mubble("Object", "Object", "__Object::__Object() : __vptr(&__vtable)", true));
+        langList.add(new Mubble("Object", "hashCode", "int32_t __Object::hashCode(Object __this)", false));
+        langList.add(new Mubble("Object", "equals", "bool __Object::equals(Object __this, Object other)", false));
+        langList.add(new Mubble("Object", "getClass", "Class __Object::getClass(Object __this)", false));
+        langList.add(new Mubble("Object", "toString", "String __Object::toString(Object __this)", false));
+        
+        langList.add(new Mubble("String", "String" , "__String::__String(std::string data) : __vptr(&__vtable), data(data)", true));
+        langList.add(new Mubble("String", "hashCode" , "int32_t __String::hashCode(String __this)", false));
+        langList.add(new Mubble("String", "equals" , "bool __String::equals(String __this, Object o)", false));
+        langList.add(new Mubble("String", "toString" , "String __String::toString(String __this)", false));
+        langList.add(new Mubble("String", "length" , "int32_t __String::length(String __this)", false));
+        langList.add(new Mubble("String", "charAt" , "har __String::charAt(String __this, int32_t idx)", false));
+        
+        langList.add(new Mubble("Class", "Class" , "__Class::__Class(String name, Class parent, Class component, bool primitive): __vptr(&__vtable), name(name), parent(parent), component(component), primitive(primitive)", true));
+        langList.add(new Mubble("Class", "toString" , "String __Class::toString(Class __this)", false));
+        langList.add(new Mubble("Class", "getName" , "String __Class::getName(Class __this)", false));
+        langList.add(new Mubble("Class", "getSuperClass" , "Class __Class::getSuperclass(Class __this)", false));
+        langList.add(new Mubble("Class", "isPrimitive" , "bool __Class::isPrimitive(Class __this)", false));
+        langList.add(new Mubble("Class", "isArray" , "bool __Class::isArray(Class __this)", false));
+        langList.add(new Mubble("Class", "getComponentType" , "Class __Class::getComponentType(Class __this)", false));
+        langList.add(new Mubble("Class", "isInstance" , "bool __Class::isInstance(Class __this, Object o)", false));
+
+    }
+    
     /**
      * Run the thing with the specified command line arguments.
      *
@@ -723,10 +750,14 @@ public class Decl extends xtc.util.Tool
     static Decl d;
     public static Impl Q;
     static ArrayList<Bubble> bubbleList = new ArrayList<Bubble>();
+    static ArrayList<Mubble> langList = new ArrayList<Mubble>();
     static ArrayList<PNode> packageTree = new ArrayList<PNode>();
     public static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
     {
+        
+        populateLangList();
+        
         packageTree.add(new PNode("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);

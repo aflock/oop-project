@@ -21,6 +21,14 @@ public class Mubble{
         this.code = "";
         this.isConstructor = construct;
      }
+     
+     public Mubble(String classname , String methodname, String header, boolean construct)
+     {
+        this.name = classname;
+        this.methName = methodname;
+        this.header = header;
+        this.isConstructor = construct;
+     }
 
      public boolean isConstructor()
      {
