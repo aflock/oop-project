@@ -1422,6 +1422,7 @@ class Impl extends xtc.util.Tool{
 			table.put(z[i], type);
 
 		    }
+	    }
             visit(n);
 
 		    if (onMeth) {
@@ -1430,8 +1431,9 @@ class Impl extends xtc.util.Tool{
                     //getting type
                     String arrType = n.getNode(1).getNode(0).getString(0);
                     String arrName = n.getNode(2).getNode(0).getString(0);
-                    System.out.println("*********************************\n  ArrType: " + arrType + 
-                            "\n  ArrName: " + arrName);
+                    methodString += "__rt::Array<" + arrType + ">* " + arrName;
+                    
+                    inArray = false;
                 }
 		        //methodString += ";\n";
 		        String[] z = tan.split("\\s+");
