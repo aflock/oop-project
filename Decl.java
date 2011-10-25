@@ -1431,15 +1431,21 @@ class Impl extends xtc.util.Tool{
                 {
                     //getting type
                     String arrType = n.getNode(1).getNode(0).getString(0);
+                    if(arrType.equals("int"))
+                        arrType = "int32_t";
+                    if(arrType.equals("boolean"))
+                        arrType = "bool";
+                        
                     String arrName = n.getNode(2).getNode(0).getString(0);
                     methodString += "__rt::Array<" + arrType + ">* " + arrName;
                     table.put(arrName, "__rt::Array<" + arrType + ">* ");
                     if(inArrayExpress)
                     {
                         String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
-                        methodString += "= new __rt::Array<" + arrType + ">(" + size + ");\n";
+                        methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
                         inArrayExpress = false;
                     }
+                    methodString += ";\n";
                     
                     inArray = false;
                 }
