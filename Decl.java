@@ -137,10 +137,36 @@ public class Decl extends xtc.util.Tool
 
             public void visitDimensions(GNode n) {
                 visit(n);
+                Node parent0 = (Node)n.getProperty("parent0");
+                Node parent1 = (Node)n.getProperty("parent1");
+                if ((parent1.getName().equals("MethodDeclaration")) &&
+                        (parent0.getName().equals("Type")))
+                {
+                    String dims = getDimensions(n);
+                    methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+dims);
+                }
             }
 
-
-
+            public String getDimensions(GNode n)
+            {
+                String toReturn = "";
+                //runtime.console().pln("PARENT NODE: " + ((Node)(n.getProperty("parent"))).getName()).flush();
+                //runtime.console().pln("NODE: " + n.getName()).flush();
+                for(Object o : n)
+                {
+                    if(o != null)
+                    {
+                        //runtime.console().pln("CHILD: " + o.toString()).flush();
+                        if(o instanceof String){
+                            //System.out.println(o.toString());
+                            toReturn +=  o.toString();
+                        }
+                        else
+                            toReturn +=  getDimensions((GNode)o);
+                    }
+                }
+                return toReturn;
+            }
 
 
             public void visitModifiers(GNode n){
@@ -1044,7 +1070,7 @@ public class Decl extends xtc.util.Tool
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry, false));
                 }
-                for(String a : b.getConstructors()){
+               /* for(String a : b.getConstructors()){
                     String correctHeader = "_"+ b.getName() + "::_" + b.getName() + "(";
                     String params = Mubble.getStringBetween(s, "(", ")").trim();
                     String[] paramSplit = params.split(" ");
@@ -1064,7 +1090,7 @@ public class Decl extends xtc.util.Tool
                     }
                     correctHeader = correctHeader.substring(0, correctHeader.length()-3) + ")";
                     System.out.println(correctHeader);
-                }
+                }*/
             }
         }
 
