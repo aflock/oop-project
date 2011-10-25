@@ -1126,42 +1126,47 @@ public class Decl extends xtc.util.Tool
                     String correctHeader = "_"+ b.getName() + "::_" + b.getName() + "(";
                     String params = Mubble.getStringBetween(a, "(", ")").trim();
                     String[] paramSplit = params.split(" ");
-                    String[] temp;
-                    int emptyCount=0;
-                    for(int i=0; i < paramSplit.length ; i++){
-                        if(paramSplit[i].length() == 0) {
-                            emptyCount++;
-                        }
-                    }
-                    temp = new String[paramSplit.length-(emptyCount)];
-                    int ti=0;
-                    //System.out.println("temp length is: " +temp.length);
-                    for(int i=0; i < paramSplit.length ; i++){
-                        if(!(paramSplit[i].length() == 0)) {
-                            temp[ti] = paramSplit[i];
-                            ti++;
-                        }
-                    }
-                    paramSplit = temp;
-
-                    for(int i=0; i < paramSplit.length; i++){
-                        if(paramSplit[i].length() != 0){
-                            String word = paramSplit[i];
-                            if(word.equals("int"))
-                                paramSplit[i] = "int32_t";
-                            if(word.equals("boolean"))
-                                paramSplit[i] = "bool";
-                            if(word.charAt(word.length()-1)==']'){
-                                paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
+                    if (paramSplit[0].length() == 0)
+                        correctHeader += ")";
+                    else
+                    {
+                        String[] temp;
+                        int emptyCount=0;
+                        for(int i=0; i < paramSplit.length ; i++){
+                            if(paramSplit[i].length() == 0) {
+                                emptyCount++;
                             }
                         }
-                    }
-                    for(int i=0; i < paramSplit.length - 1; i+=2){
-                        correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
-                    }
+                        temp = new String[paramSplit.length-(emptyCount)];
+                        int ti=0;
+                        //System.out.println("temp length is: " +temp.length);
+                        for(int i=0; i < paramSplit.length ; i++){
+                            if(!(paramSplit[i].length() == 0)) {
+                                temp[ti] = paramSplit[i];
+                                ti++;
+                            }
+                        }
+                        paramSplit = temp;
 
-                    correctHeader = correctHeader.substring(0, correctHeader.length()-2) + ")";
-                    //System.out.println(correctHeader);
+                        for(int i=0; i < paramSplit.length; i++){
+                            if(paramSplit[i].length() != 0){
+                                String word = paramSplit[i];
+                                if(word.equals("int"))
+                                    paramSplit[i] = "int32_t";
+                                if(word.equals("boolean"))
+                                    paramSplit[i] = "bool";
+                                if(word.charAt(word.length()-1)==']'){
+                                    paramSplit[i] = "__rt::Array<"+ word.substring(0, word.length() -2) +">*";
+                                }
+                            }
+                        }
+                        for(int i=0; i < paramSplit.length - 1; i+=2){
+                            correctHeader += paramSplit[i] + " " + paramSplit[i+1]+ ", ";
+                        }
+
+                        correctHeader = correctHeader.substring(0, correctHeader.length()-2) + ")";
+                        //System.out.println(correctHeader);
+                    }
                     mubbleList.add(new Mubble(b.getName(),correctHeader, true ));
                 }
 
@@ -1371,7 +1376,6 @@ class Impl extends xtc.util.Tool{
                             curMub.setPackageName("DefaultPackage");
                         else
                             curMub.setPackageName(b.getPackageName());
-                        break;
                     }
                 }
                 //Adding curMub to the right pNode
@@ -1380,6 +1384,7 @@ class Impl extends xtc.util.Tool{
                     //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
                     //System.out.println("P name: " + p.getName());
                     //System.out.println("curMub: " + curMub.getPackageName());
+
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
@@ -1395,6 +1400,51 @@ class Impl extends xtc.util.Tool{
                 visit(n);
 
             }
+         
+        public void visitConstructorDeclaration(GNode n)
+        {
+            visit(n);
+            
+            Node parent0 = (Node)n.getProperty("parent0");
+            Node parent1 = (Node)parent0.getProperty("parent0");
+
+            //Parent 1 Should be class decl
+            String classname = parent1.getString(1);
+            String methodname = n.getString(2);
+
+           for(Mubble m : mubbleList){
+                if(m.getName().equals(classname) && m.isConstructor())
+                { 
+                    curMub = m;
+                }
+            }
+            
+
+    //==============Assigning Package to CurMub===================//
+            //Assuming curMub has code
+            for(Bubble b: bubbleList)
+            {
+                if(b.getName().equals(classname)) // b's package is curMub's package
+                {
+                    if(b.getPackageName().equals(""))
+                        curMub.setPackageName("DefaultPackage");
+                    else
+                        curMub.setPackageName(b.getPackageName());
+                }
+            }
+            
+            //Adding curMub to the right pNode
+            for(PNode p : packageTree)
+            {
+                //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
+                //System.out.println("P name: " + p.getName());
+                //System.out.println("curMub: " + curMub.getPackageName());
+
+                if(p.getName().equals(curMub.getPackageName()))
+                    p.addMubble(curMub);
+            }
+    //==============================================================//
+        }
 
 	    public void visitCallExpression(GNode n) {
 		//visit(n);

@@ -152,13 +152,23 @@ public class PNode{
         }
 
         //ADD CONSTUCTORS
+        if(mubbleList != null)
+        {
+            for(int i=0; i < mubbleList.length; i++)
+            {
+                if(mubbleList[i].isConstructor())
+                    toReturn += mubbleList[i].prettyPrinter() + "\n";
+            }
+        }
+
 
         //ADD MUBBLES
         if(mubbleList != null)
         {
             for(int i=0; i < mubbleList.length; i++)
             {
-                toReturn += mubbleList[i].prettyPrinter() + "\n";
+                if(!mubbleList[i].isConstructor())
+                    toReturn += mubbleList[i].prettyPrinter() + "\n";
             }
         }
 
