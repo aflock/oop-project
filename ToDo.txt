@@ -4,6 +4,7 @@ For Nov. 1st Meeting:
 -Get rid of all REGEX and string parsing
 -Put specific fields for Mubbles and Bubbles
 -Rename shit? (get rid of cursing??)
+-Method chainging will be in test cases
 -Do it in order
     PNode (Packages) have Bubbles (Classes) which have Mubbles (Methods) which have all the properties of a method like 
         -Classname
@@ -21,6 +22,12 @@ For Nov. 1st Meeting:
 -Trouble class for exception handling
 -special case string as an object
 -Exception handling
+-Use hashmap to map java primative types to c++ types
+-Shouldn't have to deal with $ in java
+-Method overloading WILL mangle names
+-getName() == BLA to -hasName("BLA")
+-printing strings and variable types in c++ is different
+-there can be many main methods in java, 1 per class, but the only one that is called is the main of the class that is called
 
 Timeline:
 Week 1: 
