@@ -1,4 +1,58 @@
 To Do:
+For Nov. 1st Meeting:
+-Ask grimm how overloaded methods are handled in java's vtable
+-Get rid of all REGEX and string parsing
+-Put specific fields for Mubbles and Bubbles
+-Rename shit? (get rid of cursing??)
+-Do it in order
+    PNode (Packages) have Bubbles (Classes) which have Mubbles (Methods) which have all the properties of a method like 
+        -Classname
+        -Methodname
+        -parameters
+        -return type
+        -visibility
+        -code
+-Clean code into helper methods
+-Use xtc.tree.printer
+-For testing:
+    -specific files for each case (ImportTest.java, ForLoopTest.java)
+    -write a script to diff output
+-Nested arrays
+-Trouble class for exception handling
+-special case string as an object
+-Exception handling
+
+Timeline:
+Week 1: 
+-Test suite
+-High level, detailed program structure and plan
+
+Week 2:
+-Refactoring
+
+Week 3:
+-Refactoring
+-Overloading
+-Exceptions
+
+Week 4:
+
+
+Project Bubble:
+B - 
+u
+b
+b - bilingual
+l - language
+e - 
+PNode (namespaces, packages)
+Bubble (classes)
+Mubble (methods)
+
+
+
+
+=================================PRE-MIDTERM===================================
 -Deal with for(o:N) type loops in C++
 -Final methods == const?
 -change printStringDescendants to visitor methods
