@@ -1,5 +1,3 @@
-import java.util.Scanner;
-import java.util.*;
 
 public class Goldilocks{
     public static void main (String [] args)
@@ -25,12 +23,6 @@ public class Goldilocks{
             int theInt = 5;
             System.out.println(theInt);
         }
-       try{
-           Scanner sc = new Scanner(System.in);
-           System.out.println(sc.toString());
-       } catch(Exception e){
-           System.out.println(e);
-       }
 
 
 

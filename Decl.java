@@ -1,4 +1,4 @@
-package xtc.oop;
+package xtc.oop;//{{{
 
 import java.io.File;
 import java.io.IOException;
@@ -26,52 +26,48 @@ import xtc.oop.helper.PNode;
 import java.util.regex.*;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
-
-/** A Java file Scope analyzer
- * For each static scope, prints
- * 		Enter scope at <filename>:<line>:<column>
- * upon entering the scope.
- *
- * @author Calvin Hawkes
+//}}}
+/** A translator
+ * @author Ninja Assassins
  * @version 1.0
  */
 
 public class Decl extends xtc.util.Tool
-{
+{//{{{
 
 
     public static String findFile(String query) {
 
         String sep = System.getProperty("file.separator");
         String cp = System.getProperty("java.class.path");
-	//Hardcoded as the working directory, otherwise real classpath
+        //Hardcoded as the working directory, otherwise real classpath
         cp = ".";
 
         query = query.replace(".",sep).concat(".java");
-	//System.out.println("+++++"+query);
+        //System.out.println("+++++"+query);
         return findFile(cp, query);
     }
 
     //can return File if necessary
     public static String findFile(String cp, String query) {
         String sep = System.getProperty("file.separator");
-	File f = new File(cp);
-	File [] files = f.listFiles();
-	for(int i = 0; i < files.length; i++) {
-	    //System.out.println(sep+(cp.equals(".") ? "\\\\" : "")+cp+sep);
-	    //////////////////////////////////////
-	    //Hardcoding that sep is / and cp is .
-	    //////////////////////////////////////
-	    //System.out.println(query);
-	    if(files[i].isDirectory()) {
-		String a = findFile(files[i].getAbsolutePath(), query);
-		if(!a.equals(""))
-		    return a;
-	    }
-	    else if(files[i].getAbsolutePath().replaceAll("/\\./",sep).endsWith(query))
-		return files[i].getAbsolutePath();
-	}
-	return "";
+        File f = new File(cp);
+        File [] files = f.listFiles();
+        for(int i = 0; i < files.length; i++) {
+            //System.out.println(sep+(cp.equals(".") ? "\\\\" : "")+cp+sep);
+            //////////////////////////////////////
+            //Hardcoding that sep is / and cp is .
+            //////////////////////////////////////
+            //System.out.println(query);
+            if(files[i].isDirectory()) {
+                String a = findFile(files[i].getAbsolutePath(), query);
+                if(!a.equals(""))
+                    return a;
+            }
+            else if(files[i].getAbsolutePath().replaceAll("/\\./",sep).endsWith(query))
+                return files[i].getAbsolutePath();
+        }
+        return "";
     }
 
 
@@ -97,10 +93,10 @@ public class Decl extends xtc.util.Tool
         super.init();
 
         /*
-        runtime.
-            bool("printClassH", "printClassH", false, "print the .h that is interpreted from given AST").
-            bool("printClassCC", "printClassCC", false, "Print Java AST.");
-        */
+           runtime.
+           bool("printClassH", "printClassH", false, "print the .h that is interpreted from given AST").
+           bool("printClassCC", "printClassCC", false, "Print Java AST.");
+           */
     }
 
     public Node parse(Reader in, File file) throws IOException, ParseException
@@ -200,11 +196,11 @@ public class Decl extends xtc.util.Tool
                         (parent2.getName().equals("ClassBody"))){
                     String name = n.getString(0);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
-		}
-		else if((parent1.getName().equals("FieldDeclaration")) &&
-			(parent2.getName().equals("ClassBody"))) {
-		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
-		}
+                        }
+                else if((parent1.getName().equals("FieldDeclaration")) &&
+                        (parent2.getName().equals("ClassBody"))) {
+                    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
+                        }
             }
 
             public void visitDeclarators(GNode n) {
@@ -364,11 +360,11 @@ public class Decl extends xtc.util.Tool
                     constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
                         }
             }
-	    /*
-	     *
-	      WTF IS THIS SHIT WITH THE PARENT1 != GETPROPERTY("PARENT0")
-	      *
-	     */
+            /*
+             *
+             WTF IS THIS SHIT WITH THE PARENT1 != GETPROPERTY("PARENT0")
+             *
+             */
             public void visitType(GNode n) {
                 visit(n);
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -380,23 +376,23 @@ public class Decl extends xtc.util.Tool
 
                     String name = getStringDescendants(n);
                     methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
-                }
+                        }
                 else if ((parent2.getName().equals("ConstructorDeclaration")) &&
                         (parent3.getName().equals("ClassBody"))){
                     String name = getStringDescendants(n);
                     constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
-                }
+                        }
 
             }
 
-	    public void visitTypeInstantiation(GNode n) {
-		visit(n);
-		Node parent2 = (Node)n.getProperty("parent2");
-		Node parent3 = (Node)n.getProperty("parent3");
-		if(parent2.getName().equals("FieldDeclaration") && parent3.getName().equals("ClassBody")) {
-		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
-		}
-	    }
+            public void visitTypeInstantiation(GNode n) {
+                visit(n);
+                Node parent2 = (Node)n.getProperty("parent2");
+                Node parent3 = (Node)n.getProperty("parent3");
+                if(parent2.getName().equals("FieldDeclaration") && parent3.getName().equals("ClassBody")) {
+                    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
+                }
+            }
 
             public void visitConstructorDeclaration(GNode n)
             {
@@ -577,14 +573,14 @@ public class Decl extends xtc.util.Tool
                     //if its a main method, don't add it to vtable
                     if((s.indexOf("public static String [  args") == -1) && (s.indexOf("main") == -1))
                     {
-                       overwritten = b.add2Vtable(s);
-                       if(overwritten)
-                       {
-                           s = s + "\t";
-                           b.setMethodAtIndex(i, s);
+                        overwritten = b.add2Vtable(s);
+                        if(overwritten)
+                        {
+                            s = s + "\t";
+                            b.setMethodAtIndex(i, s);
 
-                           overwritten = false;
-                       }
+                            overwritten = false;
+                        }
                     }
 
                     i++;
@@ -598,9 +594,9 @@ public class Decl extends xtc.util.Tool
         int i = 0;
         for(String s : root.getVtable())
         {
-          s = s.replace("(Object", "(" + root.getName());
-          root.setVtableIndex(i, s);
-          i++;
+            s = s.replace("(Object", "(" + root.getName());
+            root.setVtableIndex(i, s);
+            i++;
         }
 
     }
@@ -807,15 +803,15 @@ public class Decl extends xtc.util.Tool
 
 
             /*
-            System.out.println(b);
-            */
+               System.out.println(b);
+               */
             //keep track of where we are indent-wise
             int indent = 0;
 
             //ignore string and object, they are lame
             if(b.getName() != "String" && b.getName() != "Object"){
 
-		        String struct = "";
+                String struct = "";
                 //print the .h SON
 
                 //find which package node to add this struct to
@@ -913,7 +909,7 @@ public class Decl extends xtc.util.Tool
                                 realWords[gi] = g;
                             }
                             gi++;
-                        }
+                                    }
                     }
                     //realwords now has return type if there is one,
                     //pairs of parameters, and method name
@@ -976,81 +972,81 @@ public class Decl extends xtc.util.Tool
                         struct+=(";");
                     struct +="\n";
                 }
-               // System.out.println(struct);
+                // System.out.println(struct);
                 //System.out.println("think my package node is: " + p.getName());
 
                 //Add struct to correct PNode
                 //System.out.println(struct);
                 p.addStructChild(struct);
 
-		//////////////////////
-		//Making vtable struct
-		//////////////////////
+                //////////////////////
+                //Making vtable struct
+                //////////////////////
 
-		indent = 0;
-		String fullName = b.getPackageName().trim().replaceAll("\\s",".")+(b.getPackageName().equals("") ? "" : ".")+b.getName();
-		//Vtable comment
-		struct = indentLevel(indent) + "// The vtable layout for "+fullName+".\n";
-		//First struct line
-		struct += indentLevel(indent) + "struct _"+b.getName()+"_VT {\n";
-		indent++;
-		//Add vtable method decls
-		for(Object m : b.getVtable().toArray()) {
-		    struct += indentLevel(indent)+((String)m)+"\n";
-		}
-		//Add the constructor decl and :
-		struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
+                indent = 0;
+                String fullName = b.getPackageName().trim().replaceAll("\\s",".")+(b.getPackageName().equals("") ? "" : ".")+b.getName();
+                //Vtable comment
+                struct = indentLevel(indent) + "// The vtable layout for "+fullName+".\n";
+                //First struct line
+                struct += indentLevel(indent) + "struct _"+b.getName()+"_VT {\n";
+                indent++;
+                //Add vtable method decls
+                for(Object m : b.getVtable().toArray()) {
+                    struct += indentLevel(indent)+((String)m)+"\n";
+                }
+                //Add the constructor decl and :
+                struct+= "\n"+indentLevel(indent)+"_"+b.getName()+"_VT()\n"+indentLevel(indent)+":";
 
-        int i = -1;
-		for(Object m : b.getVtable().toArray()) {
-		    i++;
-		    String mm = (String)m;
+                int i = -1;
+                for(Object m : b.getVtable().toArray()) {
+                    i++;
+                    String mm = (String)m;
 
-		    //if it's in the right format
-		    if(mm.matches("\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;\\s*")){
-			String methodName = "";
-			String retType = "";
-			String params = "";
-			//get method name
-			Matcher match_m = Pattern.compile("(?<=(\\(\\*))\\w+(?=(\\)))").matcher(mm);
-			match_m.find();
-			methodName = match_m.group(0);
+                    //if it's in the right format
+                    if(mm.matches("\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;\\s*")){
+                        String methodName = "";
+                        String retType = "";
+                        String params = "";
+                        //get method name
+                        Matcher match_m = Pattern.compile("(?<=(\\(\\*))\\w+(?=(\\)))").matcher(mm);
+                        match_m.find();
+                        methodName = match_m.group(0);
 
-			//if it's inherited
-			if(mm.charAt(mm.length()-1)!='\t') {
+                        //if it's inherited
+                        if(mm.charAt(mm.length()-1)!='\t') {
 
-			    //get return type
-			    Matcher match_rt = Pattern.compile("\\w+(?=(\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;))").matcher(mm);
-			    match_rt.find();
-			    retType = match_rt.group(0);
+                            //get return type
+                            Matcher match_rt = Pattern.compile("\\w+(?=(\\s*\\(\\*\\w+\\)\\s*\\(.*\\)\\s*;))").matcher(mm);
+                            match_rt.find();
+                            retType = match_rt.group(0);
 
-			    //get params
-			    Matcher match_p = Pattern.compile("(?<=(\\())[^\\*].+(?=\\))").matcher(mm);
-			    //Matcher match_p = Pattern.compile("(?<=(\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\()).*(?=(\\)))").matcher(mm);
-			    match_p.find();
+                            //get params
+                            Matcher match_p = Pattern.compile("(?<=(\\())[^\\*].+(?=\\))").matcher(mm);
+                            //Matcher match_p = Pattern.compile("(?<=(\\s*\\w+\\s*\\(\\*\\w+\\)\\s*\\()).*(?=(\\)))").matcher(mm);
+                            match_p.find();
 
-			    params = match_p.group(0);
+                            params = match_p.group(0);
 
-			    //Add that shit to struct
-			    /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
-			    struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
-			}
-			//inherited methods get parent after &
-			//if it's overwritten or new
-			else {
-			    //Add that shit to struct
-			    struct += indentLevel(indent)+"  "+methodName+"(&_"+b.getName()+"::"+methodName+"),\n";
-			}
-		    }
-		    //if it's just __isa
-		    else if(mm.contains("__isa")) {
-			struct+= " __isa(_"+b.getName()+"::__class()),\n";
-		    }
-		}
-		struct = struct.substring(0,struct.length()-2)+" {\n"+indentLevel(indent--)+"}\n"+indentLevel(indent)+"};";
-		p.addStructChild(struct);
+                            //Add that shit to struct
+                            /*struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+(b.getParent().getName().equals("Object") || b.getParent().getName().equals("String") ? "_" : "")+b.getParent().getName()+"::"+methodName+"),\n";*/
+                            struct += indentLevel(indent)+"  "+methodName+"(("+retType+"(*)("+params+"))&_"+ findRootImpl(b.getParent(), i) +"::"+methodName+"),\n";
+                        }
+                        //inherited methods get parent after &
+                        //if it's overwritten or new
+                        else {
+                            //Add that shit to struct
+                            struct += indentLevel(indent)+"  "+methodName+"(&_"+b.getName()+"::"+methodName+"),\n";
+                        }
+                    }
+                    //if it's just __isa
+                    else if(mm.contains("__isa")) {
+                        struct+= " __isa(_"+b.getName()+"::__class()),\n";
+                    }
+                }
+                struct = struct.substring(0,struct.length()-2)+" {\n"+indentLevel(indent--)+"}\n"+indentLevel(indent)+"};";
+                p.addStructChild(struct);
 
-	    }
+            }
 
         }
 
@@ -1091,19 +1087,19 @@ public class Decl extends xtc.util.Tool
 
         }
         /*
-        System.out.println("NOW PRINTING PNODE TREE");
+           System.out.println("NOW PRINTING PNODE TREE");
         //Print out each PNode
         for(PNode p : packageTree){
-            System.out.println("------------------"+ p.getName() + "----------------");
-            System.out.println(p);
+        System.out.println("------------------"+ p.getName() + "----------------");
+        System.out.println(p);
         }
         */
 
         /* print later
-	for (Bubble b : bubbleList)
-	    b.printToFile(1);
+           for (Bubble b : bubbleList)
+           b.printToFile(1);
 
-        */
+*/
 
         ////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////// Should be done with .h by here///////////////////////////////
@@ -1113,51 +1109,51 @@ public class Decl extends xtc.util.Tool
         //Write .h to file
         String hFile = "test.h";
         try{
-        File out = new File(hFile);
-        FileWriter hstream = new FileWriter(out);
-        BufferedWriter hwrite = new BufferedWriter(hstream);
-        String includes = "#pragma once\n";
-        includes += "#include \"java_lang.h\"\n";
-        includes += "#include <stdint.h>\n";
-        includes += "\n\n"; //for good measure
-        hwrite.write(includes);
-        String hardType = "typedef java::lang::Class Class;\n" +
-        "typedef java::lang::__Class __Class;\n" +
-        "typedef java::lang::String String;\n" +
-        "typedef java::lang::__String __String;\n" +
-        "typedef java::lang::Object Object;\n" +
-        "typedef java::lang::__Object __Object;\n";
-        hwrite.write(hardType);
+            File out = new File(hFile);
+            FileWriter hstream = new FileWriter(out);
+            BufferedWriter hwrite = new BufferedWriter(hstream);
+            String includes = "#pragma once\n";
+            includes += "#include \"java_lang.h\"\n";
+            includes += "#include <stdint.h>\n";
+            includes += "\n\n"; //for good measure
+            hwrite.write(includes);
+            String hardType = "typedef java::lang::Class Class;\n" +
+                "typedef java::lang::__Class __Class;\n" +
+                "typedef java::lang::String String;\n" +
+                "typedef java::lang::__String __String;\n" +
+                "typedef java::lang::Object Object;\n" +
+                "typedef java::lang::__Object __Object;\n";
+            hwrite.write(hardType);
 
-        String forwardh ="";
-        for(PNode p : packageTree){
-            if(p.getName().equals("DefaultPackage")){
-                forwardh += p.getForwardDecl();
+            String forwardh ="";
+            for(PNode p : packageTree){
+                if(p.getName().equals("DefaultPackage")){
+                    forwardh += p.getForwardDecl();
+                }
             }
-        }
-        /*
-         *Iterate through packageTree: in order (dfs)
-         */
-        String doth = "";
-        //find Default package
-        for(PNode p : packageTree){
-            if(p.getName().equals("DefaultPackage")){
-                doth += p.getOutput();
+            /*
+             *Iterate through packageTree: in order (dfs)
+             */
+            String doth = "";
+            //find Default package
+            for(PNode p : packageTree){
+                if(p.getName().equals("DefaultPackage")){
+                    doth += p.getOutput();
+                }
             }
-        }
 
-        forwardh = forwardh.replace(" boolean " , " bool ");
-        forwardh = forwardh.replace(" int " , " int32_t ");
-        forwardh = forwardh.replace(" int)" , " int32_t)");
-        forwardh = forwardh.replace(" int," , " int32_t,");
-        doth = doth.replace(" boolean " , " bool ");
-        doth = doth.replace(" int " , " int32_t ");
-        doth = doth.replace(" int)" , " int32_t)");
-        doth = doth.replace(" int," , " int32_t,");
+            forwardh = forwardh.replace(" boolean " , " bool ");
+            forwardh = forwardh.replace(" int " , " int32_t ");
+            forwardh = forwardh.replace(" int)" , " int32_t)");
+            forwardh = forwardh.replace(" int," , " int32_t,");
+            doth = doth.replace(" boolean " , " bool ");
+            doth = doth.replace(" int " , " int32_t ");
+            doth = doth.replace(" int)" , " int32_t)");
+            doth = doth.replace(" int," , " int32_t,");
 
-        hwrite.write(forwardh);
-        hwrite.write(doth);
-        hwrite.close();
+            hwrite.write(forwardh);
+            hwrite.write(doth);
+            hwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
 
@@ -1229,7 +1225,7 @@ public class Decl extends xtc.util.Tool
 
 
 
-//===============IMPL SHIT====================================//
+        //===============IMPL SHIT====================================//
         Q = new Impl(bubbleList, packageTree, mubbleList, langList);
         Q.init();
         Q.prepare();
@@ -1242,38 +1238,38 @@ public class Decl extends xtc.util.Tool
 
         //Write .cc to file
         try{
-        File out = new File("test.cc");
-        FileWriter ccstream = new FileWriter(out);
-        BufferedWriter ccwrite = new BufferedWriter(ccstream);
-        String includes = "#pragma once\n";
-        includes += "#include \"" + hFile + "\"\n";
-        includes += "\n\n"; //for good measure
-        ccwrite.write(includes);
-        /*
-         *Iterate through packageTree: in order (dfs)
-         */
-        String dotcc = "";
-        //find Default package
-        for(PNode p : packageTree){
-            if(p.getName().equals("DefaultPackage")){
-                dotcc += p.getOutputCC(bubbleList);
+            File out = new File("test.cc");
+            FileWriter ccstream = new FileWriter(out);
+            BufferedWriter ccwrite = new BufferedWriter(ccstream);
+            String includes = "#pragma once\n";
+            includes += "#include \"" + hFile + "\"\n";
+            includes += "\n\n"; //for good measure
+            ccwrite.write(includes);
+            /*
+             *Iterate through packageTree: in order (dfs)
+             */
+            String dotcc = "";
+            //find Default package
+            for(PNode p : packageTree){
+                if(p.getName().equals("DefaultPackage")){
+                    dotcc += p.getOutputCC(bubbleList);
+                }
             }
-        }
 
-        ccwrite.write(dotcc);
-        ccwrite.close();
+            ccwrite.write(dotcc);
+            ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
         /*
-        for(PNode p : packageTree){
-            System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
-            if(p.getMubblelist() != null)
-            for(Mubble m: p.getMubblelist()){
-                System.out.println("_________VVV__V__V_V_V__VVVVV");
-                System.out.println(m.prettyPrinter());
-            }
-        }
-        */
+           for(PNode p : packageTree){
+           System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
+           if(p.getMubblelist() != null)
+           for(Mubble m: p.getMubblelist()){
+           System.out.println("_________VVV__V__V_V_V__VVVVV");
+           System.out.println(m.prettyPrinter());
+           }
+           }
+           */
 
     }
 
@@ -1366,9 +1362,9 @@ public class Decl extends xtc.util.Tool
         }
         return toReturn;
     }
-}
+}//}}}
 
-class Impl extends xtc.util.Tool{
+class Impl extends xtc.util.Tool{//{{{
 
     public static ArrayList<Bubble> bubbleList;
     public static ArrayList<PNode> packageTree;
@@ -1380,7 +1376,7 @@ class Impl extends xtc.util.Tool{
         this.bubbleList = bubbleList;
         this.packageTree = packageTree;
         this.mubbleList = mubbleList;
-	this.langList = langList;
+        this.langList = langList;
         this.parsed = new ArrayList<String>();
     }
 
@@ -1413,76 +1409,76 @@ class Impl extends xtc.util.Tool{
         {
 
 
-        public void visitSubscriptExpression(GNode n)
-        {
-            visit(n);
-            String arrName = n.getNode(0).getString(0);
-            String index = n.getNode(1).getString(0);
-            methodString += arrName + "->__data[" + index + "]";
-        }
-
-	    String tan;
-	    boolean inArrayExpress = false;
-        public void visitFieldDeclaration(GNode n){
-		if (onMeth) {
-		    tan = "";
-		    //Node qual = n.getNode(1).getNode(0);
-		    //if (qual.getName().equals(
-		}
+            public void visitSubscriptExpression(GNode n)
+            {
                 visit(n);
-		if (onMeth) {
-		    //methodString += ";\n";
-		    String[] z = tan.trim().split("\\s+");
-		    // this could be fucked up
-		    String type = z[0];
-		    System.out.println("Z"+tan+"\n");
-		    for (int i = 1; i < z.length; i++) {
-			table.put(z[i], type);
+                String arrName = n.getNode(0).getString(0);
+                String index = n.getNode(1).getString(0);
+                methodString += arrName + "->__data[" + index + "]";
+            }
 
-		    }
-	    }
-
-
-		    if (onMeth) {
-		        if(inArray)
-                {
-                    //getting type
-                    String arrType = n.getNode(1).getNode(0).getString(0);
-                    if(arrType.equals("int"))
-                        arrType = "int32_t";
-                    if(arrType.equals("boolean"))
-                        arrType = "bool";
-
-                    String arrName = n.getNode(2).getNode(0).getString(0);
-                    methodString += "__rt::Array<" + arrType + ">* " + arrName;
-                    table.put(arrName, "__rt::Array<" + arrType + ">* ");
-                    if(inArrayExpress)
-                    {
-                        String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
-                        methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
-                        inArrayExpress = false;
-                    }
-                    methodString += ";\n";
-
-                    inArray = false;
+            String tan;
+            boolean inArrayExpress = false;
+            public void visitFieldDeclaration(GNode n){
+                if (onMeth) {
+                    tan = "";
+                    //Node qual = n.getNode(1).getNode(0);
+                    //if (qual.getName().equals(
                 }
-		        //methodString += ";\n";
-		        String[] z = tan.split("\\s+");
-		        // this could be fucked up
-		        String type = z[0];
-		        for (int i = 1; i < z.length; i++) {
-			    table.put(z[i], type);
-		        }
+                visit(n);
+                if (onMeth) {
+                    //methodString += ";\n";
+                    String[] z = tan.trim().split("\\s+");
+                    // this could be fucked up
+                    String type = z[0];
+                    System.out.println("Z"+tan+"\n");
+                    for (int i = 1; i < z.length; i++) {
+                        table.put(z[i], type);
 
-		        System.out.println(tan);
-		    }
-        }
+                    }
+                }
 
-        public void visitNewArrayExpression(GNode n)
-        {
-            visit(n);
-            inArrayExpress = true;
-        }
+
+                if (onMeth) {
+                    if(inArray)
+                    {
+                        //getting type
+                        String arrType = n.getNode(1).getNode(0).getString(0);
+                        if(arrType.equals("int"))
+                            arrType = "int32_t";
+                        if(arrType.equals("boolean"))
+                            arrType = "bool";
+
+                        String arrName = n.getNode(2).getNode(0).getString(0);
+                        methodString += "__rt::Array<" + arrType + ">* " + arrName;
+                        table.put(arrName, "__rt::Array<" + arrType + ">* ");
+                        if(inArrayExpress)
+                        {
+                            String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
+                            methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
+                            inArrayExpress = false;
+                        }
+                        methodString += ";\n";
+
+                        inArray = false;
+                    }
+                    //methodString += ";\n";
+                    String[] z = tan.split("\\s+");
+                    // this could be fucked up
+                    String type = z[0];
+                    for (int i = 1; i < z.length; i++) {
+                        table.put(z[i], type);
+                    }
+
+                    System.out.println(tan);
+                }
+            }
+
+            public void visitNewArrayExpression(GNode n)
+            {
+                visit(n);
+                inArrayExpress = true;
+            }
 
             public void visitDimensions(GNode n) {
                 visit(n);
@@ -1496,10 +1492,10 @@ class Impl extends xtc.util.Tool{
             String tmpCode = "";
             boolean onMeth = false;
             Mubble curMub = null;
-	    String methodString = "";
-	    String cName = "";
+            String methodString = "";
+            String cName = "";
 
-	    HashMap<String, String> table;
+            HashMap<String, String> table;
 
             public void visitMethodDeclaration(GNode n)
             {
@@ -1510,18 +1506,12 @@ class Impl extends xtc.util.Tool{
                 //Parent 1 Should be class decl
                 String classname = parent1.getString(1);
 
-		    //setting global class name
-		    cName = classname;
-
-
-
-
+                //setting global class name
+                cName = classname;
 
                 String methodname = n.getString(3);
 
-
-
-
+                //==============Assigning Current Method curMub===================//
                 for(Mubble m : mubbleList){
                     if(m.getName() == null || m.getMethName() == null || methodname == null || classname == null)
                         System.out.println("****************YOURE FUCKED**************");
@@ -1533,12 +1523,10 @@ class Impl extends xtc.util.Tool{
                 }
 
 
-
-
-		//visit
+                //visit
                 visit(n);
 
- //==============Assigning Package to CurMub===================//
+                //==============Assigning Package to CurMub===================//
                 //Assuming curMub has code
                 for(Bubble b: bubbleList)
                 {
@@ -1556,12 +1544,12 @@ class Impl extends xtc.util.Tool{
                     if(p.getName().equals(curMub.getPackageName()))
                         p.addMubble(curMub);
                 }
-//==============================================================//
+                //==============================================================//
 
-		//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		//System.out.println(methodString);
+                //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                //System.out.println(methodString);
                 //onMeth = false;
-		//methodString = "";
+                //methodString = "";
 
             }
 
@@ -1570,198 +1558,198 @@ class Impl extends xtc.util.Tool{
 
             }
 
-        public void visitConstructorDeclaration(GNode n)
-        {
-
-            Node parent0 = (Node)n.getProperty("parent0");
-            Node parent1 = (Node)parent0.getProperty("parent0");
-
-            //Parent 1 Should be class decl
-            String classname = parent1.getString(1);
-            String methodname = n.getString(2);
-
-            int constructorCount = 0;
-           for(Mubble m : mubbleList){
-               System.out.println("m.getName ::" + m.getName()+ "::");
-               System.out.println("classname ::" + classname+ "::");
-                if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
-                {
-                    constructorCount++;
-                    curMub = m;
-                }
-                System.out.println("Constructor COunt is: "+ constructorCount);
-               System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
-            }
-
-            visit(n);
-
-    //==============Assigning Package to CurMub===================//
-            //Assuming curMub has code
-            for(Bubble b: bubbleList)
+            public void visitConstructorDeclaration(GNode n)
             {
-                if(b.getName().equals(classname)) // b's package is curMub's package
+
+                Node parent0 = (Node)n.getProperty("parent0");
+                Node parent1 = (Node)parent0.getProperty("parent0");
+
+                //Parent 1 Should be class decl
+                String classname = parent1.getString(1);
+                String methodname = n.getString(2);
+
+                int constructorCount = 0;
+                for(Mubble m : mubbleList){
+                    System.out.println("m.getName ::" + m.getName()+ "::");
+                    System.out.println("classname ::" + classname+ "::");
+                    if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
+                    {
+                        constructorCount++;
+                        curMub = m;
+                    }
+                    System.out.println("Constructor COunt is: "+ constructorCount);
+                    System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
+                }
+
+                visit(n);
+
+                //==============Assigning Package to CurMub===================//
+                //Assuming curMub has code
+                for(Bubble b: bubbleList)
                 {
-                    if(b.getPackageName().equals(""))
-                        curMub.setPackageName("DefaultPackage");
-                    else
-                        curMub.setPackageName(b.getPackageName());
+                    if(b.getName().equals(classname)) // b's package is curMub's package
+                    {
+                        if(b.getPackageName().equals(""))
+                            curMub.setPackageName("DefaultPackage");
+                        else
+                            curMub.setPackageName(b.getPackageName());
+                    }
+                }
+
+                //Adding curMub to the right pNode
+                for(PNode p : packageTree)
+                {
+                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
+                    //System.out.println("P name: " + p.getName());
+                    //System.out.println("curMub: " + curMub.getPackageName());
+
+                    if(p.getName().equals(curMub.getPackageName()))
+                        p.addMubble(curMub);
+                }
+                //==============================================================//
+            }
+            String mName;
+            public void visitCallExpression(GNode n) {
+                //visit(n);
+                if (onMeth) {
+                    mName = n.getString(2);
+                    String tmp = "";
+                    /*
+                       for (Object o : n) {
+                       if (o instanceof String && !((String)o).equals("")) {
+                       methodString += (String)o + "(";
+                       }
+                       }
+                       */
+
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    if(n.getNode(0) != null) {
+                        methodString += "->__vptr->"+n.getString(2);
+                        methodString += "(";
+                        dispatch(n.getNode(0));//adding self
+                        methodString += ", ";
+                    }
+                    else {
+                        methodString += n.getString(2) + "(";
+                    }
+                    dispatch(n.getNode(3));
+                }
+                else {
+                    visit(n);
                 }
             }
 
-            //Adding curMub to the right pNode
-            for(PNode p : packageTree)
-            {
-                //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7 ADDING MUBBLE");
-                //System.out.println("P name: " + p.getName());
-                //System.out.println("curMub: " + curMub.getPackageName());
-
-                if(p.getName().equals(curMub.getPackageName()))
-                    p.addMubble(curMub);
+            public void visitEmptyStatement(GNode n) {
+                if (onMeth) {
+                    methodString += ";\n";
+                }
+                visit(n);
             }
-    //==============================================================//
-        }
-	    String mName;
-	    public void visitCallExpression(GNode n) {
-		//visit(n);
-		if (onMeth) {
-		    mName = n.getString(2);
-		    String tmp = "";
-		    /*
-		    for (Object o : n) {
-			if (o instanceof String && !((String)o).equals("")) {
-			    methodString += (String)o + "(";
-			}
-		    }
-		    */
 
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    if(n.getNode(0) != null) {
-			methodString += "->__vptr->"+n.getString(2);
-			methodString += "(";
-			dispatch(n.getNode(0));//adding self
-			methodString += ", ";
-		    }
-		    else {
-			methodString += n.getString(2) + "(";
-		    }
-		    dispatch(n.getNode(3));
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitConditionalStatement(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    Node parent = (Node)n.getProperty("parent0");
+                    if (parent.getName().equals("ConditionalStatement")) {
+                        methodString += "\n}\nelse ";
+                    }
+                    methodString += "if (";
+                    dispatch(n.getNode(0));
+                    methodString += ") {\n";
+                    for (int i = 1; i < n.size()-1; i++) {
+                        dispatch(n.getNode(i));
+                    }
+                    if (n.getNode(n.size()-1) != null) {
+                        Node parent1 = (Node)parent.getProperty("parent0");
+                        if (!n.getNode(n.size()-1).getName()
+                                .equals("ConditionalStatement")) {
+                            methodString += "\n}\nelse {\n";
+                                }
+                        /*
+                           if (!parent.getName().equals("ConditionalStatement")) {
+                           methodString += "\n}\nelse {\n";
+                           }
+                           */
+                        dispatch(n.getNode(n.size()-1));
+                    }
+                    if (!parent.getName().equals("ConditionalStatement")) {
+                        methodString += "\n}\n";
+                    }
+                    //methodString += "}\n";
+                }
+                else {
+                    visit(n);
+                }
+            }
 
-	    public void visitEmptyStatement(GNode n) {
-		if (onMeth) {
-		    methodString += ";\n";
-		}
-		visit(n);
-	    }
-
-	    public void visitConditionalStatement(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    Node parent = (Node)n.getProperty("parent0");
-		    if (parent.getName().equals("ConditionalStatement")) {
-			methodString += "\n}\nelse ";
-		    }
-		    methodString += "if (";
-		    dispatch(n.getNode(0));
-		    methodString += ") {\n";
-		    for (int i = 1; i < n.size()-1; i++) {
-			dispatch(n.getNode(i));
-		    }
-		    if (n.getNode(n.size()-1) != null) {
-			Node parent1 = (Node)parent.getProperty("parent0");
-			if (!n.getNode(n.size()-1).getName()
-			    .equals("ConditionalStatement")) {
-			    methodString += "\n}\nelse {\n";
-			}
-			/*
-			if (!parent.getName().equals("ConditionalStatement")) {
-			    methodString += "\n}\nelse {\n";
-			}
-			*/
-			dispatch(n.getNode(n.size()-1));
-		    }
-		    if (!parent.getName().equals("ConditionalStatement")) {
-			methodString += "\n}\n";
-		    }
-		    //methodString += "}\n";
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitConditionalExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    methodString += "(";
-		    dispatch(n.getNode(0));
-		    methodString += " ? ";
-		    dispatch(n.getNode(1));
-		    methodString += " : ";
-		    dispatch(n.getNode(2));
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitConditionalExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    methodString += "(";
+                    dispatch(n.getNode(0));
+                    methodString += " ? ";
+                    dispatch(n.getNode(1));
+                    methodString += " : ";
+                    dispatch(n.getNode(2));
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
 
             public void visitDeclarators(GNode n) {
                 visit(n);
 
-		if (onMeth && !((Node)n.getProperty("parent0")).getName()
-		    .equals("BasicForControl") && !inArray) {
-		    methodString += ";\n";
+                if (onMeth && !((Node)n.getProperty("parent0")).getName()
+                        .equals("BasicForControl") && !inArray) {
+                    methodString += ";\n";
 
-		}
+                        }
             }
 
-	    public void visitBooleanLiteral(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);
-		}
-		visit(n);
-	    }
+            public void visitBooleanLiteral(GNode n) {
+                if (onMeth) {
+                    methodString += n.getString(0);
+                }
+                visit(n);
+            }
 
             public void visitDeclarator(GNode n) {
-		if (onMeth && !inArray) {
-		    methodString += " " + n.getString(0);
-		    Object third = n.get(2);
-		    if (third instanceof Node) {
-			methodString += " = ";
-		    }
-		    tan += n.getString(0);
-		}
+                if (onMeth && !inArray) {
+                    methodString += " " + n.getString(0);
+                    Object third = n.get(2);
+                    if (third instanceof Node) {
+                        methodString += " = ";
+                    }
+                    tan += n.getString(0);
+                }
                 visit(n);
-		if (onMeth) {
-		    //methodString += ";\n";
-		}
+                if (onMeth) {
+                    //methodString += ";\n";
+                }
             }
 
-	    public void visitEqualityExpression(GNode n) {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    methodString += " " + n.getString(1) + " ";
-		    dispatch(n.getNode(2));
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitEqualityExpression(GNode n) {
+                if(onMeth) {
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    methodString += " " + n.getString(1) + " ";
+                    dispatch(n.getNode(2));
+                }
+                else {
+                    visit(n);
+                }
+            }
 
 
-        public void visitIntegerLiteral(GNode n) {
-        Node parent0 = (Node)n.getProperty("parent0");
-		if (onMeth && !inArray) {
-		    if(!parent0.getName().equals("SubscriptExpression"))
-		        methodString += n.getString(0);
-		}
+            public void visitIntegerLiteral(GNode n) {
+                Node parent0 = (Node)n.getProperty("parent0");
+                if (onMeth && !inArray) {
+                    if(!parent0.getName().equals("SubscriptExpression"))
+                        methodString += n.getString(0);
+                }
                 visit(n);
             }
 
@@ -1782,84 +1770,84 @@ class Impl extends xtc.util.Tool{
                 visit(n);
             }
 
-	    public String outputFormat(String s) {
-		//to turn int to int32_t in a string:
-		s = s.replaceAll("(^int(?=\\s+))|(?<=\\s+)int(?=\\s+)","int32_t");
+            public String outputFormat(String s) {
+                //to turn int to int32_t in a string:
+                s = s.replaceAll("(^int(?=\\s+))|(?<=\\s+)int(?=\\s+)","int32_t");
 
-		//to turn boolean to bool in a string:
-		s = s.replaceAll("(^boolean(?=\\s+))|(?<=\\s+)boolean(?=\\s+)","bool");
+                //to turn boolean to bool in a string:
+                s = s.replaceAll("(^boolean(?=\\s+))|(?<=\\s+)boolean(?=\\s+)","bool");
 
-		//to turn final to const in a string:
-		//s = s.replaceAll("(?<=\\s+)final(?=\\s+)","const");
+                //to turn final to const in a string:
+                //s = s.replaceAll("(?<=\\s+)final(?=\\s+)","const");
 
-		//turn systemoutprints into printf
-		s = s.replaceAll("System->out->__vptr->println\\(System->out, \\(\\(\\)","printf(");
+                //turn systemoutprints into printf
+                s = s.replaceAll("System->out->__vptr->println\\(System->out, \\(\\(\\)","printf(");
 
-		//turn mains into right format
-		//s = s.replaceAll("void\\s[\\w$_]*::main\\([\\w$_]*\\s__this,","int main(");
-		return s;
-	    }
+                //turn mains into right format
+                //s = s.replaceAll("void\\s[\\w$_]*::main\\([\\w$_]*\\s__this,","int main(");
+                return s;
+            }
 
-	    public String inNameSpace(String obj) {
-		String ns1 = "";
-		String ns2 = "";
-		//System.out.println("COMPARING "+obj+" and "+cName);
-		for( Bubble b : bubbleList) {
-		    //doesn't account for multiple classes of the same name
-		    //System.out.println("BUBBLE: "+b.getName()+";");
-		    if (b.getName().equals(obj)) {
-			ns1 = b.getPackageName();
-			//System.out.println("FOUND OBJ: "+ns1);
-		    }
-		    if (b.getName().equals(cName)) {
-			ns2 = b.getPackageName();
-			//System.out.println("FOUND CNAME: "+ns2);
-		    }
-		}
+            public String inNameSpace(String obj) {
+                String ns1 = "";
+                String ns2 = "";
+                //System.out.println("COMPARING "+obj+" and "+cName);
+                for( Bubble b : bubbleList) {
+                    //doesn't account for multiple classes of the same name
+                    //System.out.println("BUBBLE: "+b.getName()+";");
+                    if (b.getName().equals(obj)) {
+                        ns1 = b.getPackageName();
+                        //System.out.println("FOUND OBJ: "+ns1);
+                    }
+                    if (b.getName().equals(cName)) {
+                        ns2 = b.getPackageName();
+                        //System.out.println("FOUND CNAME: "+ns2);
+                    }
+                }
 
-		if(ns1 == null) {
-		    return "java lang";
-		}
-		else if(ns1.equals(ns2)) {
-		    return null;
-		}
-		else {
-		    return ns1;
-		}
-	    }
-
-            public void visitQualifiedIdentifier(GNode n){
-		if (onMeth) {
-		    Node parent0 = (Node)n.getProperty("parent0");
-		    Node parent1 = (Node)parent0.getProperty("parent0");
-		    if(parent1.getName().equals("FieldDeclaration")) {
-			tan += n.getString(0) + " ";
-		    }
-		    
-		    if(parent1.getName().equals("FieldDeclaration"))
-		    {
-		        for(Object o : parent0)
-		        { 
-		            if (o instanceof Node )
-		            {
-		                if(((Node)o).getName().equals("Dimensions"))
-		                    inArray = true;
-		            }
-                    
+                if(ns1 == null) {
+                    return "java lang";
+                }
+                else if(ns1.equals(ns2)) {
+                    return null;
+                }
+                else {
+                    return ns1;
                 }
             }
-		    
-		    String s = inNameSpace(n.getString(0));
-		    //System.out.println("QI: "+s);
-		    //??
-		    if (s != null && !inArray) {
-			//using absolute namespace
-			methodString += "::"+s.trim().replaceAll("\\s+", "::")
-			    +"::";
-		    }
-		    if(!inArray)
-		        methodString += n.getString(0);
-		}
+
+            public void visitQualifiedIdentifier(GNode n){
+                if (onMeth) {
+                    Node parent0 = (Node)n.getProperty("parent0");
+                    Node parent1 = (Node)parent0.getProperty("parent0");
+                    if(parent1.getName().equals("FieldDeclaration")) {
+                        tan += n.getString(0) + " ";
+                    }
+
+                    if(parent1.getName().equals("FieldDeclaration"))
+                    {
+                        for(Object o : parent0)
+                        {
+                            if (o instanceof Node )
+                            {
+                                if(((Node)o).getName().equals("Dimensions"))
+                                    inArray = true;
+                            }
+
+                        }
+                    }
+
+                    String s = inNameSpace(n.getString(0));
+                    //System.out.println("QI: "+s);
+                    //??
+                    if (s != null && !inArray) {
+                        //using absolute namespace
+                        methodString += "::"+s.trim().replaceAll("\\s+", "::")
+                            +"::";
+                    }
+                    if(!inArray)
+                        methodString += n.getString(0);
+                }
                 visit(n);
 
                 boolean inList = false;
@@ -1891,29 +1879,29 @@ class Impl extends xtc.util.Tool{
                 }
             }
 
-	    public void visitNewClassExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    methodString += "new ";
-		    dispatch(n.getNode(0));
-		    dispatch(n.getNode(1));
+            public void visitNewClassExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    methodString += "new ";
+                    dispatch(n.getNode(0));
+                    dispatch(n.getNode(1));
 
-		    if(n.getNode(2).getString(0).equals("Object") ||
-		       n.getNode(2).getString(0).equals("String") ||
-		       n.getNode(2).getString(0).equals("Class")) {
-			methodString += "_";
-		    }
+                    if(n.getNode(2).getString(0).equals("Object") ||
+                            n.getNode(2).getString(0).equals("String") ||
+                            n.getNode(2).getString(0).equals("Class")) {
+                        methodString += "_";
+                            }
 
-		    methodString += "_";
-		    dispatch(n.getNode(2));
-		    methodString += "(";
-		    dispatch(n.getNode(3));
-		    dispatch(n.getNode(4));
-		}
-		else {
-		    visit(n);
-		}
-	    }
+                    methodString += "_";
+                    dispatch(n.getNode(2));
+                    methodString += "(";
+                    dispatch(n.getNode(3));
+                    dispatch(n.getNode(4));
+                }
+                else {
+                    visit(n);
+                }
+            }
 
             public void visitImportDeclaration(GNode n){
                 visit(n);
@@ -1921,467 +1909,467 @@ class Impl extends xtc.util.Tool{
 
             public void visitForStatement(GNode n)
             {
-		if (onMeth) {
-		    methodString += "for(";
-		}
+                if (onMeth) {
+                    methodString += "for(";
+                }
                 visit(n);
-		if (onMeth) {
-		    methodString += "}\n";
-		}
+                if (onMeth) {
+                    methodString += "}\n";
+                }
             }
 
-	    public void visitLogicalAndExpression(GNode n) {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    methodString += "(";
-		    dispatch(n.getNode(0));
-		    methodString += ") && (";
-		    dispatch(n.getNode(1));
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitLogicalAndExpression(GNode n) {
+                if(onMeth) {
+                    dispatchBitch(n);
+                    methodString += "(";
+                    dispatch(n.getNode(0));
+                    methodString += ") && (";
+                    dispatch(n.getNode(1));
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
 
-	    public void visitExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    methodString += " " + n.getString(1) + " ";
-		    dispatch(n.getNode(2));
+            public void visitExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    methodString += " " + n.getString(1) + " ";
+                    dispatch(n.getNode(2));
 
-		} else {
-		    visit(n);
-		}
-	    }
+                } else {
+                    visit(n);
+                }
+            }
 
-	    public void visitExpressionStatement(GNode n) {
-		visit(n);
-		if (onMeth) {
-		    methodString += ";\n";
-		}
-	    }
+            public void visitExpressionStatement(GNode n) {
+                visit(n);
+                if (onMeth) {
+                    methodString += ";\n";
+                }
+            }
 
-	    public void visitLogicalOrExpression(GNode n) {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    methodString += "(";
-		    dispatch(n.getNode(0));
-		    methodString += ") || (";
-		    dispatch(n.getNode(1));
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitLogicalOrExpression(GNode n) {
+                if(onMeth) {
+                    dispatchBitch(n);
+                    methodString += "(";
+                    dispatch(n.getNode(0));
+                    methodString += ") || (";
+                    dispatch(n.getNode(1));
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
 
             public void visitBasicForControl(GNode n)
             {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    for(int i = 0; i < n.size(); i++) {
-			dispatch(n.getNode(i));
-			if( i >= 2 && i < n.size()-1) {
-			    methodString += "; ";
-			}
-		    }
-		    methodString += ") {\n";
-		}
-		else {
-		    visit(n);
-		}
-            }
-
-	    public void visitBlock(GNode n) {
-		if(((Node)n.getProperty("parent0")).getName()
-		   .equals("MethodDeclaration")) {
-		    onMeth = true;
-		    table = new HashMap<String, String>();
-
-		    visit(n);
-		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		    //System.out.println(methodString);
-		    onMeth = false;
-		    curMub.setCode(outputFormat(methodString));
-		    methodString = "";
-		    table = null;
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitPostfixExpression(GNode n) {
-		if (onMeth) {
-		    visit(n);
-		    methodString += n.getString(1);
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitPrimaryIdentifier(GNode n) {
-	    Node parent0 = (Node)n.getProperty("parent0");
-		if (onMeth) {
-		    if(!parent0.getName().equals("SubscriptExpression"))
-		        methodString += n.getString(0);
-		    //key = n.getString(0);
-		}
-		visit(n);
-	    }
-
-        boolean inArray = false;
-        public void visitPrimitiveType(GNode n) {
-            visit(n);
-		    Node parent0 = (Node)n.getProperty("parent0");
-		    Node parent1 = (Node)n.getProperty("parent1");
-
-		    if(parent1.getName().equals("FieldDeclaration"))
-		    {
-		        for(Object o : parent0)
-		        {
-		            if (o instanceof Node )
-		            {
-		                if(((Node)o).getName().equals("Dimensions"))
-		                    inArray = true;
-		            }
-
+                if(onMeth) {
+                    dispatchBitch(n);
+                    for(int i = 0; i < n.size(); i++) {
+                        dispatch(n.getNode(i));
+                        if( i >= 2 && i < n.size()-1) {
+                            methodString += "; ";
+                        }
+                    }
+                    methodString += ") {\n";
+                }
+                else {
+                    visit(n);
                 }
             }
-            if (onMeth && !inArray) {
-                methodString += n.getString(0);
+
+            public void visitBlock(GNode n) {
+                if(((Node)n.getProperty("parent0")).getName()
+                        .equals("MethodDeclaration")) {
+                    onMeth = true;
+                    table = new HashMap<String, String>();
+
+                    visit(n);
+                    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                    //System.out.println(methodString);
+                    onMeth = false;
+                    curMub.setCode(outputFormat(methodString));
+                    methodString = "";
+                    table = null;
+                        }
+                else {
+                    visit(n);
+                }
             }
 
+            public void visitPostfixExpression(GNode n) {
+                if (onMeth) {
+                    visit(n);
+                    methodString += n.getString(1);
+                }
+                else {
+                    visit(n);
+                }
+            }
 
-        }
-
-	    public void visitStringLiteral(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);
-		}
-		visit(n);
-	    }
-
-	    public void visitSwitchStatement(GNode n) {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    methodString += "switch(";
-		    dispatch(n.getNode(0));
-		    methodString += ") {\n";
-		    for(int i = 1; i < n.size(); i++) {
-			dispatch(n.getNode(i));
-		    }
-		    methodString += "}\n";
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitDoWhileStatement(GNode n) {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    methodString += "do {\n";
-		    dispatch(n.getNode(0));
-		    methodString += "} while(";
-		    dispatch(n.getNode(1));
-		    methodString += ");\n";
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitDefaultClause(GNode n) {
-		if(onMeth) {
-		    methodString += "default:\n";
-		}
-		visit(n);
-	    }
-
-	    public void visitBreakStatement(GNode n) {
-		if(onMeth) {
-		    methodString += "break ";
-		    visit(n);
-		    methodString += ";\n";
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitCaseClause(GNode n) {
-		if(onMeth) {
-		    dispatchBitch(n);
-		    methodString += "case ";
-		    dispatch(n.getNode(0));
-		    methodString += ":\n";
-		    for(int i = 1; i < n.size(); i++) {
-			dispatch(n.getNode(i));
-		    }
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    //String key;
-	    public void visitArguments(GNode n) {
-		if (onMeth) {
-		    String key = "";
-		    dispatchBitch(n);
-		    String type = "";
-		    Node callex = (Node)n.getProperty("parent0");
-		    if (callex.getName().equals("CallExpression") &&
-			callex.getNode(0) != null && callex
-			.getNode(0).getName().equals("PrimaryIdentifier")) {
-			key = callex.getNode(0).getString(0);
-			type = table.get(key);
-			System.out.println(key + " " + type);
-		    }
-
-		    //String type = table.get(key);
-		    //System.out.println(key + " " + type);
-		    //key = "";
-
-
-		    /*
-		    String params = "";
-		    for(Mubble m : MubbleList) {
-			if (m.getMethName().equals(
-		    }
-		    //String params = curMub.getHeader();
-		    //System.out.println("HEY, LISTEN\n"+params);
-		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(params);
-		    String p = "";
-
-		    while(m.find()){
-			p+= " " + m.group();
-		    }
-		    System.out.println(n.size());
-		    String [] par = p.trim().split("\\s");
-		    for( String g : par)
-			System.out.println(g);
-		    //System.out.println(p);
-		    */
-
-		    String mSign = "";
-		    for (Mubble m : mubbleList) {
-
-			if (m.getName().equals(type) &&
-			    m.getMethName().equals(mName)) {
-			    mSign = m.getHeader();
-			}
-		    }
-
-		    for (Mubble m : langList) {
-
-			if (m.getName().equals(type) &&
-			    m.getMethName().equals(mName)) {
-			    mSign = m.getHeader();
-			}
-		    }
-
-		    //mSign = "char __String::charAt(String __this, int32_t idx)";
-		    //iterate through java lang list
-		    //System.out.println("FUCK"+mSign);
-
-
-		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
-		    String p = "";
-		    System.out.println(mSign);
-		    while(m.find()){
-			p+= " " + m.group();
-		    }
-		    //System.out.println(n.size());
-		    String [] par = p.trim().split("\\s");
-		    for( String g : par)
-			System.out.println(g);
-
-
-		    if (n.size() > 0) {
-			methodString += "(("+par[0]+") ";
-			dispatch(n.getNode(0));
-			methodString += ")";
-		    }
-
-		    for(int i = 1; i < n.size(); i++) {
-			methodString += ", (("+par[i]+") ";
-			dispatch(n.getNode(i));
-			methodString += ")";
-		    }
-
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitSelectionExpression(GNode n) {
-		if (onMeth) {
-		    visit(n);
-		    if (n.get(1) != null) {
-			methodString += "->" + n.getString(1);
-		    }
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitReturnStatement(GNode n) {
-		if (onMeth) {
-		    methodString += "return ";
-		}
-		visit(n);
-		if (onMeth) {
-		    methodString += ";\n";
-		}
-	    }
-
-	    public void visitUnaryExpression(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);
-		    visit(n);
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitWhileStatement(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    methodString += "while(";
-		    dispatch(n.getNode(0));
-		    methodString += ") {\n";
-		    for(int i = 1; i < n.size(); i++) {
-			dispatch(n.getNode(i));
-		    }
-		    methodString += "}\n";
-		}
-		else {
-		    visit(n);
-		}
-	    }
-
-	    public void visitFloatingPointLiteral(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);
-		}
+            public void visitPrimaryIdentifier(GNode n) {
+                Node parent0 = (Node)n.getProperty("parent0");
+                if (onMeth) {
+                    if(!parent0.getName().equals("SubscriptExpression"))
+                        methodString += n.getString(0);
+                    //key = n.getString(0);
+                }
                 visit(n);
-	    }
+            }
 
-	    public void visitCharacterLiteral(GNode n) {
-		if (onMeth) {
-		    methodString += n.getString(0);
-		}
+            boolean inArray = false;
+            public void visitPrimitiveType(GNode n) {
                 visit(n);
-	    }
-	    //hmm..
-	    public void visitNullLiteral(GNode n) {
-		if (onMeth) {
-		    methodString += "__rt::null()";
-		}
-		visit(n);
-	    }
+                Node parent0 = (Node)n.getProperty("parent0");
+                Node parent1 = (Node)n.getProperty("parent1");
 
-	    public void visitAdditiveExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    methodString += " "+n.getString(1)+" ";
-		    dispatch(n.getNode(2));
-		}
-		else {
-		    visit(n);
-		}
-	    }
+                if(parent1.getName().equals("FieldDeclaration"))
+                {
+                    for(Object o : parent0)
+                    {
+                        if (o instanceof Node )
+                        {
+                            if(((Node)o).getName().equals("Dimensions"))
+                                inArray = true;
+                        }
 
-	    public void visitMultiplicativeExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    methodString += " "+n.getString(1)+" ";
-		    dispatch(n.getNode(2));
-		}
-		else {
-		    visit(n);
-		}
-	    }
+                    }
+                }
+                if (onMeth && !inArray) {
+                    methodString += n.getString(0);
+                }
 
-	    public void visitCastExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    methodString += "((";
-		    dispatch(n.getNode(0));
-		    methodString += ") ";
-		    dispatch(n.getNode(1));
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
 
-	    //dunno why second child is null
-	    public void visitThisExpression(GNode n) {
-		if (onMeth) {
-		    methodString += "__this";
-		}
-		visit(n);
-	    }
+            }
 
-	    public void visitBasicCastExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    methodString += "((";
-		    dispatch(n.getNode(0));
-		    methodString += ") ";
-		    //not sure if there can be more children, just in case
-		    for(int i = 1; i < n.size(); i++) {
-			dispatch(n.getNode(i));
-		    }
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitStringLiteral(GNode n) {
+                if (onMeth) {
+                    methodString += n.getString(0);
+                }
+                visit(n);
+            }
 
-	    //////////////////
-	    //need to actually implement instanceof???
-	    //////////////////
-	    /////////////////
-	    ////will getstring always work?
-	    ////////////////
-	    public void visitInstanceOfExpression(GNode n) {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
-		    dispatch(n.getNode(1));
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitSwitchStatement(GNode n) {
+                if(onMeth) {
+                    dispatchBitch(n);
+                    methodString += "switch(";
+                    dispatch(n.getNode(0));
+                    methodString += ") {\n";
+                    for(int i = 1; i < n.size(); i++) {
+                        dispatch(n.getNode(i));
+                    }
+                    methodString += "}\n";
+                }
+                else {
+                    visit(n);
+                }
+            }
 
-	    public void visitLogicalNegationExpression(GNode n) {
-		if(onMeth) {
-		    methodString += "!(";
-		    visit(n);
-		    methodString += ")";
-		}
-		else {
-		    visit(n);
-		}
-	    }
+            public void visitDoWhileStatement(GNode n) {
+                if(onMeth) {
+                    dispatchBitch(n);
+                    methodString += "do {\n";
+                    dispatch(n.getNode(0));
+                    methodString += "} while(";
+                    dispatch(n.getNode(1));
+                    methodString += ");\n";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitDefaultClause(GNode n) {
+                if(onMeth) {
+                    methodString += "default:\n";
+                }
+                visit(n);
+            }
+
+            public void visitBreakStatement(GNode n) {
+                if(onMeth) {
+                    methodString += "break ";
+                    visit(n);
+                    methodString += ";\n";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitCaseClause(GNode n) {
+                if(onMeth) {
+                    dispatchBitch(n);
+                    methodString += "case ";
+                    dispatch(n.getNode(0));
+                    methodString += ":\n";
+                    for(int i = 1; i < n.size(); i++) {
+                        dispatch(n.getNode(i));
+                    }
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            //String key;
+            public void visitArguments(GNode n) {
+                if (onMeth) {
+                    String key = "";
+                    dispatchBitch(n);
+                    String type = "";
+                    Node callex = (Node)n.getProperty("parent0");
+                    if (callex.getName().equals("CallExpression") &&
+                            callex.getNode(0) != null && callex
+                            .getNode(0).getName().equals("PrimaryIdentifier")) {
+                        key = callex.getNode(0).getString(0);
+                        type = table.get(key);
+                        System.out.println(key + " " + type);
+                            }
+
+                    //String type = table.get(key);
+                    //System.out.println(key + " " + type);
+                    //key = "";
+
+
+                    /*
+                       String params = "";
+                       for(Mubble m : MubbleList) {
+                       if (m.getMethName().equals(
+                       }
+                    //String params = curMub.getHeader();
+                    //System.out.println("HEY, LISTEN\n"+params);
+                    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(params);
+                    String p = "";
+
+                    while(m.find()){
+                    p+= " " + m.group();
+                    }
+                    System.out.println(n.size());
+                    String [] par = p.trim().split("\\s");
+                    for( String g : par)
+                    System.out.println(g);
+                    //System.out.println(p);
+                    */
+
+                    String mSign = "";
+                    for (Mubble m : mubbleList) {
+
+                        if (m.getName().equals(type) &&
+                                m.getMethName().equals(mName)) {
+                            mSign = m.getHeader();
+                                }
+                    }
+
+                    for (Mubble m : langList) {
+
+                        if (m.getName().equals(type) &&
+                                m.getMethName().equals(mName)) {
+                            mSign = m.getHeader();
+                                }
+                    }
+
+                    //mSign = "char __String::charAt(String __this, int32_t idx)";
+                    //iterate through java lang list
+                    //System.out.println("FUCK"+mSign);
+
+
+                    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
+                    String p = "";
+                    System.out.println(mSign);
+                    while(m.find()){
+                        p+= " " + m.group();
+                    }
+                    //System.out.println(n.size());
+                    String [] par = p.trim().split("\\s");
+                    for( String g : par)
+                        System.out.println(g);
+
+
+                    if (n.size() > 0) {
+                        methodString += "(("+par[0]+") ";
+                        dispatch(n.getNode(0));
+                        methodString += ")";
+                    }
+
+                    for(int i = 1; i < n.size(); i++) {
+                        methodString += ", (("+par[i]+") ";
+                        dispatch(n.getNode(i));
+                        methodString += ")";
+                    }
+
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitSelectionExpression(GNode n) {
+                if (onMeth) {
+                    visit(n);
+                    if (n.get(1) != null) {
+                        methodString += "->" + n.getString(1);
+                    }
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitReturnStatement(GNode n) {
+                if (onMeth) {
+                    methodString += "return ";
+                }
+                visit(n);
+                if (onMeth) {
+                    methodString += ";\n";
+                }
+            }
+
+            public void visitUnaryExpression(GNode n) {
+                if (onMeth) {
+                    methodString += n.getString(0);
+                    visit(n);
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitWhileStatement(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    methodString += "while(";
+                    dispatch(n.getNode(0));
+                    methodString += ") {\n";
+                    for(int i = 1; i < n.size(); i++) {
+                        dispatch(n.getNode(i));
+                    }
+                    methodString += "}\n";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitFloatingPointLiteral(GNode n) {
+                if (onMeth) {
+                    methodString += n.getString(0);
+                }
+                visit(n);
+            }
+
+            public void visitCharacterLiteral(GNode n) {
+                if (onMeth) {
+                    methodString += n.getString(0);
+                }
+                visit(n);
+            }
+            //hmm..
+            public void visitNullLiteral(GNode n) {
+                if (onMeth) {
+                    methodString += "__rt::null()";
+                }
+                visit(n);
+            }
+
+            public void visitAdditiveExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    methodString += " "+n.getString(1)+" ";
+                    dispatch(n.getNode(2));
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitMultiplicativeExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    methodString += " "+n.getString(1)+" ";
+                    dispatch(n.getNode(2));
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitCastExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    methodString += "((";
+                    dispatch(n.getNode(0));
+                    methodString += ") ";
+                    dispatch(n.getNode(1));
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            //dunno why second child is null
+            public void visitThisExpression(GNode n) {
+                if (onMeth) {
+                    methodString += "__this";
+                }
+                visit(n);
+            }
+
+            public void visitBasicCastExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    methodString += "((";
+                    dispatch(n.getNode(0));
+                    methodString += ") ";
+                    //not sure if there can be more children, just in case
+                    for(int i = 1; i < n.size(); i++) {
+                        dispatch(n.getNode(i));
+                    }
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            //////////////////
+            //need to actually implement instanceof???
+            //////////////////
+            /////////////////
+            ////will getstring always work?
+            ////////////////
+            public void visitInstanceOfExpression(GNode n) {
+                if (onMeth) {
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
+                    dispatch(n.getNode(1));
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
+
+            public void visitLogicalNegationExpression(GNode n) {
+                if(onMeth) {
+                    methodString += "!(";
+                    visit(n);
+                    methodString += ")";
+                }
+                else {
+                    visit(n);
+                }
+            }
 
             public void visitType(GNode n)
             {
@@ -2395,18 +2383,18 @@ class Impl extends xtc.util.Tool{
 
             public void visitRelationalExpression(GNode n)
             {
-		if (onMeth) {
-		    dispatchBitch(n);
-		    dispatch(n.getNode(0));
-		    methodString += " " + n.getString(1) + " ";
-		    dispatch(n.getNode(2));
-		    //methodString += ";";
-		}
+                if (onMeth) {
+                    dispatchBitch(n);
+                    dispatch(n.getNode(0));
+                    methodString += " " + n.getString(1) + " ";
+                    dispatch(n.getNode(2));
+                    //methodString += ";";
+                }
 
                 //visit(n);
             }
 
-	    public void dispatchBitch(Node n) {
+            public void dispatchBitch(Node n) {
                 int counter = 1;
                 if(n.hasProperty("parent0")) {
                     Node temp = (Node)n.getProperty("parent0");
@@ -2434,7 +2422,7 @@ class Impl extends xtc.util.Tool{
                     }
                 }
 
-	    }
+            }
 
             public void visit(Node n)
             {
@@ -2468,5 +2456,5 @@ class Impl extends xtc.util.Tool{
             }
         }.dispatch(node);
     }
-}
+}//}}}
 

@@ -35,7 +35,7 @@ class ColorPt extends Pt{
 
 	b = (ishigh ? 4 : 3);
 
-	if (ishigh && true) {	    
+	if (ishigh && true) {
 	    num++;
 	    return 0;
 	}
@@ -50,12 +50,12 @@ class ColorPt extends Pt{
 
 	}
 
-	if (num == 4) 
+	if (num == 4)
 	    ;
-	else if (num == 5) 
+	else if (num == 5)
 	    ;
 	else if (num == 6) {
-	    
+
 	}
 	/*
 	else
@@ -70,7 +70,7 @@ class ColorPt extends Pt{
 	    fuckyou();
 	}
 
-	while (ishigh) 
+	while (ishigh)
 	    System.out.println("Infinity while loop");
 
 	while (afunction()) {
@@ -82,19 +82,19 @@ class ColorPt extends Pt{
 	}
 
 	switch(b=fuckyou()) {
-	case 1:   
+	case 1:
 	case 2: num++;
-	    num--; 
+	    num--;
 	    break;
 	case 4: break;
 	case 5: num--; break;
 	default:
 	    fuckyou();
 	}
-		
+
 	return 0;
-	
-    }    
+
+    }
 
     public boolean afunction() {
 	return true;
