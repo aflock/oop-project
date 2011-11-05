@@ -1800,7 +1800,7 @@ class Impl extends xtc.util.Tool{
 		//s = s.replaceAll("(?<=\\s+)final(?=\\s+)","const");
 
 		//turn systemoutprints into printf
-		s = s.replaceAll("System->out->__vptr->println\\(System->out, \\(\\(\\)","printf(");
+		s = s.replaceAll("System->out->__vptr->println\\(System->out,\\s?","printf(");
 
 		//turn mains into right format
 		//s = s.replaceAll("void\\s[\\w$_]*::main\\([\\w$_]*\\s__this,","int main(");
