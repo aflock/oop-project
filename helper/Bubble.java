@@ -13,7 +13,8 @@ public class Bubble{
     String[] constructors;
 
     public Bubble(String name, String[] methods,
-		  String[] dataFields, Bubble parent, String[] children, String packageName, String[] constructors){
+		  String[] dataFields, Bubble parent, String[] children, 
+		  String packageName, String[] constructors){
 
         this.name = name;
         this.packageName = packageName;
@@ -60,7 +61,7 @@ public class Bubble{
 	
         //add = add.trim();
 	//format the string
-	add = format(add, this);
+	add = this.format(add);
 	//if it's a method [in the format: rt_type (*name)(params) ]
 	if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
 	    String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
@@ -111,8 +112,7 @@ public class Bubble{
 	}
     }
 
-    public String format(String method, Bubble b) {
-	//System.out.println(method);
+    public String format(String method) {	
 	if (method.startsWith(" ")) {
 	    int square = 0;
 	    for (int i = 0; i < method.length(); i++) {
@@ -144,7 +144,7 @@ public class Bubble{
 		    temp[j].equals("private") ||
 		    temp[j].equals("protected") ||
 		    temp[j].equals("static") ||
-            temp[j].equals("final")) {
+		    temp[j].equals("final")) {
 		    //do nothing
 		}
 		else {
@@ -161,7 +161,7 @@ public class Bubble{
 		index = temp.length-num;
 	    }
 
-	    s += "(*" + temp[temp.length-1] + ")(" + b.getName();
+	    s += "(*" + temp[temp.length-1] + ")(" + getName();
 
 	    for (int j = index; j < temp.length - 1; j+=2) {
 		s += ", " + temp[j];
