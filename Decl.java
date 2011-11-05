@@ -2190,41 +2190,234 @@ class Impl extends xtc.util.Tool{//{{{
                         System.out.println(g);
 
 
-                    if (n.size() > 0) {
-                        methodString += "(("+par[0]+") ";
-                        dispatch(n.getNode(0));
-                        methodString += ")";
-                    }
+	    public void visitStringLiteral(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0);
+		}
+		visit(n);
+	    }
 
-                    for(int i = 1; i < n.size(); i++) {
-                        methodString += ", (("+par[i]+") ";
-                        dispatch(n.getNode(i));
-                        methodString += ")";
-                    }
+	    public void visitSwitchStatement(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    methodString += "switch(";
+		    dispatch(n.getNode(0));
+		    methodString += ") {\n";
+		    for(int i = 1; i < n.size(); i++) {
+			dispatch(n.getNode(i));
+		    }
+		    methodString += "}\n";
+		}
+		else {
+		    visit(n);
+		}
+	    }
 
-                    methodString += ")";
-                }
-                else {
-                    visit(n);
-                }
-            }
+	    public void visitDoWhileStatement(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    methodString += "do {\n";
+		    dispatch(n.getNode(0));
+		    methodString += "} while(";
+		    dispatch(n.getNode(1));
+		    methodString += ");\n";
+		}
+		else {
+		    visit(n);
+		}
+	    }
 
-            public void visitSelectionExpression(GNode n) {
-                if (onMeth) {
-                    visit(n);
-                    if (n.get(1) != null) {
-                        methodString += "->" + n.getString(1);
-                    }
-                }
-                else {
-                    visit(n);
-                }
-            }
+	    public void visitDefaultClause(GNode n) {
+		if(onMeth) {
+		    methodString += "default:\n";
+		}
+		visit(n);
+	    }
 
-            public void visitReturnStatement(GNode n) {
-                if (onMeth) {
-                    methodString += "return ";
-                }
+	    public void visitBreakStatement(GNode n) {
+		if(onMeth) {
+		    methodString += "break ";
+		    visit(n);
+		    methodString += ";\n";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitCaseClause(GNode n) {
+		if(onMeth) {
+		    dispatchBitch(n);
+		    methodString += "case ";
+		    dispatch(n.getNode(0));
+		    methodString += ":\n";
+		    for(int i = 1; i < n.size(); i++) {
+			dispatch(n.getNode(i));
+		    }
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    //String key;
+	    public void visitArguments(GNode n) {
+		if (onMeth) {
+		    String key = "";
+		    dispatchBitch(n);
+		    String type = "";
+		    Node callex = (Node)n.getProperty("parent0");
+		    if (callex.getName().equals("CallExpression") &&
+			callex.getNode(0) != null && callex
+			.getNode(0).getName().equals("PrimaryIdentifier")) {
+			key = callex.getNode(0).getString(0);
+			type = table.get(key);
+			System.out.println(key + " " + type);
+		    }
+
+		    //String type = table.get(key);
+		    //System.out.println(key + " " + type);
+		    //key = "";
+
+
+		    /*
+		    String params = "";
+		    for(Mubble m : MubbleList) {
+			if (m.getMethName().equals(
+		    }
+		    //String params = curMub.getHeader();
+		    //System.out.println("HEY, LISTEN\n"+params);
+		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(params);
+		    String p = "";
+
+		    while(m.find()){
+			p+= " " + m.group();
+		    }
+		    System.out.println(n.size());
+		    String [] par = p.trim().split("\\s");
+		    for( String g : par)
+			System.out.println(g);
+		    //System.out.println(p);
+		    */
+
+		    String mSign = "";
+		    for (Mubble m : mubbleList) {
+
+			if (m.getName().equals(type) &&
+			    m.getMethName().equals(mName)) {
+			    mSign = m.getHeader();
+			}
+		    }
+
+		    for (Mubble m : langList) {
+
+			if (m.getName().equals(type) &&
+			    m.getMethName().equals(mName)) {
+			    mSign = m.getHeader();
+			}
+		    }
+
+		    //mSign = "char __String::charAt(String __this, int32_t idx)";
+		    //iterate through java lang list
+		    //System.out.println("FUCK"+mSign);
+
+
+		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
+		    String p = "";
+		    System.out.println(mSign);
+		    while(m.find()){
+			p+= " " + m.group();
+		    }
+		    //System.out.println(n.size());
+		    String [] par = p.trim().split("\\s");
+		    for( String g : par)
+			System.out.println(g);
+
+
+		    String s = "";
+		    //CASTING
+		    if (n.size() > 0) {
+
+			s = inNameSpace(par[0]);
+
+			methodString += "((";
+
+			if (s != null) {
+			    //using absolute namespace
+			    methodString += "::"+s.trim().replaceAll("\\s+", "::")+"::";
+			}
+			System.out.println(par.length);
+			methodString += par[0]+") ";
+			dispatch(n.getNode(0));
+			methodString += ")";
+		    }
+
+		    for(int i = 1; i < n.size(); i++) {
+			methodString += ", (("+(par.length > i ? par[i] : "")
+			    +") ";
+			dispatch(n.getNode(i));
+			methodString += ")";
+		    }
+
+		    methodString += ")";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitSelectionExpression(GNode n) {
+		if (onMeth) {
+		    visit(n);
+		    if (n.get(1) != null) {
+			methodString += "->" + n.getString(1);
+		    }
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitReturnStatement(GNode n) {
+		if (onMeth) {
+		    methodString += "return ";
+		}
+		visit(n);
+		if (onMeth) {
+		    methodString += ";\n";
+		}
+	    }
+
+	    public void visitUnaryExpression(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0);
+		    visit(n);
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitWhileStatement(GNode n) {
+		if (onMeth) {
+		    dispatchBitch(n);
+		    methodString += "while(";
+		    dispatch(n.getNode(0));
+		    methodString += ") {\n";
+		    for(int i = 1; i < n.size(); i++) {
+			dispatch(n.getNode(i));
+		    }
+		    methodString += "}\n";
+		}
+		else {
+		    visit(n);
+		}
+	    }
+
+	    public void visitFloatingPointLiteral(GNode n) {
+		if (onMeth) {
+		    methodString += n.getString(0);
+		}
                 visit(n);
                 if (onMeth) {
                     methodString += ";\n";
