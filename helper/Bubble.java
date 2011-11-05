@@ -112,39 +112,42 @@ public class Bubble{
 	}
     }
 
+    /* Given a method string, convert it into a format of an element of 
+       vtable entry. */     
     public String format(String method) {	
 	if (method.startsWith(" ")) {
-	    int square = 0;
+	    int square = 0; //count the number of arrays. fix me.
 	    for (int i = 0; i < method.length(); i++) {
 		if (method.charAt(i) == '[') square++;
 	    }
 	    String[] temp2 = method.split(" ");
 	    int count = 0;
-	    for (int j = 0; j < temp2.length; j++) {
-		if (temp2[j].length() != 0) count++;
+
+	    // count the number of non-empty strings
+	    for (int i = 0; i < temp2.length; i++) {
+		if (temp2[i].length() != 0) count++;
 	    }
 
 	    String[] temp = new String[count-square];
 	    int index = 0;
-	    for (int j = 0; j < temp2.length; j++) {
-		if (temp2[j].length() != 0) {
-		    if (temp2[j].charAt(0) == '[') {
-			//temp[index-1] += "[]";
+	    for (int i = 0; i < temp2.length; i++) {
+		if (temp2[i].length() != 0) {
+		    if (temp2[i].charAt(0) == '[') {			
 			temp[index-1] = "__rt::Array<" + temp[index-1] + ">*";
 		    }
 		    else {
-			temp[index++] = temp2[j];
+			temp[index++] = temp2[i];
 		    }
 		}
 	    }
 
 	    int num = 0;
-	    for (int j = 0; j < temp.length; j++) {
-		if (temp[j].equals("public") ||
-		    temp[j].equals("private") ||
-		    temp[j].equals("protected") ||
-		    temp[j].equals("static") ||
-		    temp[j].equals("final")) {
+	    for (int i = 0; i < temp.length; i++) {
+		if (temp[i].equals("public") ||
+		    temp[i].equals("private") ||
+		    temp[i].equals("protected") ||
+		    temp[i].equals("static") ||
+		    temp[i].equals("final")) {
 		    //do nothing
 		}
 		else {
