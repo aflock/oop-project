@@ -1636,14 +1636,20 @@ class Impl extends xtc.util.Tool{
 
 		    dispatchBitch(n);
 		    dispatch(n.getNode(0));
+		    
+
 		    if(n.getNode(0) != null) {
 			methodString += "->__vptr->"+n.getString(2);
 			methodString += "(";
+			//should cast self to expected type
+			//not doing now because castify is not a method,
+			//too complicated right now
 			dispatch(n.getNode(0));//adding self
 			methodString += ", ";
 		    }
 		    else {
 			methodString += n.getString(2) + "(";
+			
 		    }
 		    dispatch(n.getNode(3));
 		}
@@ -1806,7 +1812,7 @@ class Impl extends xtc.util.Tool{
 		//System.out.println("COMPARING "+obj+" and "+cName);
 		for( Bubble b : bubbleList) {
 		    //doesn't account for multiple classes of the same name
-		    //System.out.println("BUBBLE: "+b.getName()+";");
+		    //System.out.println("BUBBLE: "+b.getName()+" || "+obj+";");
 		    if (b.getName().equals(obj)) {
 			ns1 = b.getPackageName();
 			//System.out.println("FOUND OBJ: "+ns1);
@@ -1854,6 +1860,8 @@ class Impl extends xtc.util.Tool{
 		    //??
 		    if (s != null && !inArray) {
 			//using absolute namespace
+			//System.out.println("========WOAH");
+			//check to see if Bubble is found by inNameSpace
 			methodString += "::"+s.trim().replaceAll("\\s+", "::")
 			    +"::";
 		    }
@@ -2167,11 +2175,11 @@ class Impl extends xtc.util.Tool{
 			System.out.println(g);
 		    //System.out.println(p);
 		    */
-
+		    //System.out.println("Type: "+type+"\nMethod Name: "+mName);
 		    String mSign = "";
 		    for (Mubble m : mubbleList) {
 
-			if (m.getName().equals(type) &&
+			if ((m.getName().equals(type) || type.equals("")) &&
 			    m.getMethName().equals(mName)) {
 			    mSign = m.getHeader();
 			}
@@ -2192,39 +2200,49 @@ class Impl extends xtc.util.Tool{
 
 		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
 		    String p = "";
-		    System.out.println(mSign);
+		    System.out.println(mSign+"abc");
 		    while(m.find()){
 			p+= " " + m.group();
 		    }
-		    //System.out.println(n.size());
+		    System.out.println(p + "asdf");
 		    String [] par = p.trim().split("\\s");
 		    for( String g : par)
 			System.out.println(g);
 
-
+		    
 		    String s = "";
 		    //CASTING
 		    if (n.size() > 0) {
-			
+			//should still cast on that shit
 			s = inNameSpace(par[0]);
+			if(!par[0].trim().equals("")) {
+			    methodString += "(("; 
 			
-			methodString += "(("; 
-			
-			if (s != null) {
-			    //using absolute namespace
-			    methodString += "::"+s.trim().replaceAll("\\s+", "::")+"::";
+			    if (s != null && !s.trim().equals("")) {
+				//using absolute namespace
+				methodString += "::"+s.trim().replaceAll("\\s+", "::")+"::";
+
+			    }
+			    //System.out.println(par[0]);
+			    methodString += par[0]+") ";
+			    dispatch(n.getNode(0));
+			    methodString += ")";
 			}
-			System.out.println(par.length);
-			methodString += par[0]+") ";
-			dispatch(n.getNode(0));
-			methodString += ")";
+			else {
+			    dispatch(n.getNode(0));
+			}
 		    }
 		    
 		    for(int i = 1; i < n.size(); i++) {
-			methodString += ", (("+(par.length > i ? par[i] : "")
+			if(!par[i].trim().equals("")) {
+			    methodString += ", (("+(par.length > i ? par[i] : "")
 			    +") ";
-			dispatch(n.getNode(i));			
-			methodString += ")";
+			    dispatch(n.getNode(i));			
+			    methodString += ")";
+			}
+			else{
+			    dispatch(n.getNode(i));
+			}
 		    }
 
 		    methodString += ")";
