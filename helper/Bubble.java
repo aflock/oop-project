@@ -35,225 +35,6 @@ public class Bubble{
         this.methods = null;
     }
 
-    public void setConstructors(String[] constructors){
-        this.constructors = trim(constructors);
-    }
-
-    public String[] trim(String[] constructors) {
-	int index = 0;
-	String[] temp = new String[constructors.length];
-
-	for (int i = 0; i < constructors.length; i++) {
-	    String[] a = constructors[i].split(" ");
-	    for (int j = 0; j < a.length; j++) {
-		//System.out.println(a[j] + " " + this.name);
-		if (a[j].startsWith(this.name)) {
-		    temp[index++] = constructors[i];
-		    break;
-		}
-	    }
-	}
-
-	String[] result = new String[index];
-	for (int i = 0; i < index; i++) {
-	    result[i] = temp[i];
-	}
-	return result;
-    }
-
-    public String[] getConstructors(){
-        return this.constructors;
-    }
-
-    public void setPackageName(String name){
-        this.packageName = name;
-    }
-
-    public String getPackageName(){
-        return this.packageName;
-    }
-
-    public void setMethods(String[] methods) {
-	if (methods == null) {
-	    return;
-	}
-	this.methods = methods;
-    }
-
-    public String[] getMethods(){
-        return this.methods;
-    }
-
-    public String[] getFormatedMethods() {
-	String[] mm = new String[vtable.size()-1];
-	String[] temp = new String[mm.length];
-	for (int i = 0; i < mm.length; i++) {
-	    temp[i] = vtable.get(i+1);
-	    String[] s = temp[i].split("[\\s\\(\\)\\*\\,\\;]");
-	    String real = "";
-	    int num = 0;
-	    for (int j = 0; j < s.length; j++) {
-		if (!s[j].equals("")) {
-		    if (num == 0) {
-			real += s[j] + " ";
-		    }
-		    else if (num == 1) {
-			real += s[j] + "(";
-		    }
-		    else if (num == 2) {
-			real += s[j];
-		    }
-		    else {
-			real += ", " + s[j];
-		    }
-		    num++;
-		}
-	    }
-	    mm[i] = real + ");";
-	}
-	return mm;
-    }
-
-    //changed to make it arraylist
-    public void setVtable(ArrayList<String> vtable) {
-	if (vtable == null) {
-	    return;
-	}
-	this.vtable = vtable;
-    }
-
-    public void setMethodAtIndex(int index, String meth)
-    {
-       this.methods[index] = meth;
-    }
-
-    public boolean add2Vtable(String add){
-        /* returns true if the method is an overwritten method, false if not*/
-
-        //add = add.trim();
-    //format the string
-    add = format(add, this);
-    //if it's a method [in the format: rt_type (*name)(params) ]
-    if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
-        String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
-        // System.out.println("SIG: \t\t"+sig);
-        int index = -1;
-        for(int i = 0; i < this.vtable.size(); i++) {
-            //System.out.println("-----"+this.vtable.get(i));
-            if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
-            this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1].equals(sig))
-            {
-                //System.out.println("WOWOOWOWOWOWOWOWOWOWO");
-                index = i;
-            }
-        }
-
-        if(index != -1) {
-        System.out.println("==========OVERWRITING " + sig + "in " + this.name);
-
-        this.vtable.set(index,add + "\t");
-                return true;
-        }
-        else
-        {
-            this.vtable.add(add);
-                    return false;
-        }
-
-        }
-        //if it's not a method
-    else {
-        this.vtable.add(add);
-    }
-    return false;
-}
-
-
-
-    public ArrayList<String> getVtable(){
-        return this.vtable;
-    }
-
-    public void printVtable(){
-        System.out.println("//==============================================");
-        System.out.println("//" + this.name + "'s vtable:");
-        for(String s : this.vtable)
-            System.out.println(s);
-
-        //System.out.println("================================");
-    }
-
-    public void setDataFields(String[] dataFields) {
-	if (dataFields == null) {
-	    return;
-	}
-
-	//find number of non-null strings
-	int r_length = 0;
-	for(int i = 0; i < dataFields.length; i++) {
-	    if(!dataFields[i].equals(""))
-		r_length++;
-	}
-	//make temp array of correct size
-	String [] temp = new String [r_length];
-	int temp_i = 0;
-
-	for(int i = 0; i < dataFields.length; i++) {
-	    //types
-	    dataFields[i] = dataFields[i].replaceAll("(?<!\\w)int(?!\\w)","int32_t");
-	    dataFields[i] = dataFields[i].replaceAll("(?<!\\w)boolean(?!\\w)","bool");
-	    dataFields[i] = dataFields[i].replaceAll("(?<!\\w)final(?!\\w)","const");
-
-	    //don't add nulls to temp
-	    if(!dataFields[i].equals("")){
-		//System.out.println("_______________________"+dataFields[i]);
-		temp[temp_i++] = dataFields[i]+";";
-	    }
-	}
-
-	this.dataFields = temp;
-    }
-
-    public String[] getDataFields(){
-        return this.dataFields;
-    }
-
-    public String getName() {
-	if (name == null) {
-	    return "No Name";
-	}
-	return name;
-    }
-
-    public Bubble getParent() {
-	return parent;
-    }
-
-    public void setParent(Bubble parent) {
-	if (parent == null) {
-	    return;
-	}
-	this.parent = parent;
-    }
-
-    public void setChildren(String[] children) {
-	if (children == null) {
-	    return;
-	}
-	this.children = children;
-    }
-
-    public String[] getChildren()
-    {
-        return this.children;
-    }
-
-    //sets the vtable at index i to string s
-    public void setVtableIndex(int i, String s)
-    {
-        this.vtable.set(i, s);
-    }
-
     public void addChild(String child) {
 	if (child == null) {
 	    return;
@@ -274,6 +55,47 @@ public class Bubble{
         }
     }
 
+    public boolean add2Vtable(String add){
+        /* returns true if the method is an overwritten method, false if not*/
+	
+        //add = add.trim();
+	//format the string
+	add = format(add, this);
+	//if it's a method [in the format: rt_type (*name)(params) ]
+	if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
+	    String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
+	    // System.out.println("SIG: \t\t"+sig);
+	    int index = -1;
+	    for(int i = 0; i < this.vtable.size(); i++) {
+		//System.out.println("-----"+this.vtable.get(i));
+		if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
+		   this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1]
+		   .equals(sig)) {
+		    //System.out.println("WOWOOWOWOWOWOWOWOWOWO");
+		    index = i;
+		}
+	    }
+	    
+	    if(index != -1) {
+		System.out.println("==========OVERWRITING " + sig + "in " 
+				   + this.name);
+		
+		this.vtable.set(index,add + "\t");
+                return true;
+	    }
+	    else {
+		    this.vtable.add(add);
+		    return false;
+	    }
+	    
+        }
+        //if it's not a method
+	else {
+	    this.vtable.add(add);
+	}
+	return false;
+    }
+
     public String childrenToString() {
 	if (children == null) {
 	    return "No Children";
@@ -287,23 +109,6 @@ public class Bubble{
 	    }
 	    return s.append("]").toString();
 	}
-    }
-
-    public String parentToString(){
-        if(this.parent != null) {
-            return this.parent.getName();
-	}
-        else {
-            return "No Parent";
-	}
-    }
-
-    public String toString() {
-        StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
-        s.append("Package: " + getPackageName() + "\n");
-        s.append("Children: " + childrenToString() + "\n");
-        s.append("Parent: " + parentToString());
-        return s.toString();
     }
 
     public String format(String method, Bubble b) {
@@ -369,6 +174,88 @@ public class Bubble{
 	return method;
     }
 
+    public String[] getChildren() {
+        return this.children;
+    }
+    
+    public String[] getConstructors(){
+        return this.constructors;
+    }
+
+    public String[] getDataFields(){
+        return this.dataFields;
+    }    
+
+    public String[] getFormatedMethods() {
+	String[] mm = new String[vtable.size()-1];
+	String[] temp = new String[mm.length];
+	for (int i = 0; i < mm.length; i++) {
+	    temp[i] = vtable.get(i+1);
+	    String[] s = temp[i].split("[\\s\\(\\)\\*\\,\\;]");
+	    String real = "";
+	    int num = 0;
+	    for (int j = 0; j < s.length; j++) {
+		if (!s[j].equals("")) {
+		    if (num == 0) {
+			real += s[j] + " ";
+		    }
+		    else if (num == 1) {
+			real += s[j] + "(";
+		    }
+		    else if (num == 2) {
+			real += s[j];
+		    }
+		    else {
+			real += ", " + s[j];
+		    }
+		    num++;
+		}
+	    }
+	    mm[i] = real + ");";
+	}
+	return mm;
+    }
+
+    public String[] getMethods(){
+        return this.methods;
+    }
+
+    public String getName() {
+	if (name == null) {
+	    return "No Name";
+	}
+	return name;
+    }
+    
+    public String getPackageName(){
+        return this.packageName;
+    }    
+    
+    public Bubble getParent() {
+	return parent;
+    }
+
+    public ArrayList<String> getVtable(){
+        return this.vtable;
+    }    
+
+    public String indentLevel(int indent){
+        String toReturn = "";
+        for( int i=0; i<indent; i++){
+            toReturn += "  ";
+        }
+        return toReturn;
+    }
+
+    public String parentToString(){
+        if(this.parent != null) {
+            return this.parent.getName();
+	}
+        else {
+            return "No Parent";
+	}
+    }
+
     public void printToFile(int indent) {
 	// namespace needs to be added
 	// String or java.lang::String ?
@@ -417,11 +304,124 @@ public class Bubble{
 	System.out.println("};");
     }
 
-    public String indentLevel(int indent){
-        String toReturn = "";
-        for( int i=0; i<indent; i++){
-            toReturn += "  ";
-        }
-        return toReturn;
+    public void printVtable(){
+        System.out.println("//==============================================");
+        System.out.println("//" + this.name + "'s vtable:");
+        for(String s : this.vtable)
+            System.out.println(s);
+
+        //System.out.println("================================");
     }
+
+    
+
+    public void setChildren(String[] children) {
+	if (children == null) {
+	    return;
+	}
+	this.children = children;
+    }
+
+    public void setConstructors(String[] constructors){
+        this.constructors = trim(constructors);
+    }
+
+    
+    public void setDataFields(String[] dataFields) {
+	if (dataFields == null) {
+	    return;
+	}
+	
+	//find number of non-null strings
+	int r_length = 0;
+	for(int i = 0; i < dataFields.length; i++) {
+	    if(!dataFields[i].equals(""))
+		r_length++;
+	}
+	//make temp array of correct size
+	String [] temp = new String [r_length];
+	int temp_i = 0;
+	
+	for(int i = 0; i < dataFields.length; i++) {
+	    //types
+	    dataFields[i] 
+		= dataFields[i].replaceAll("(?<!\\w)int(?!\\w)","int32_t");
+	    dataFields[i] 
+		= dataFields[i].replaceAll("(?<!\\w)boolean(?!\\w)","bool");
+	    dataFields[i] 
+		= dataFields[i].replaceAll("(?<!\\w)final(?!\\w)","const");
+
+	    //don't add nulls to temp
+	    if(!dataFields[i].equals("")){
+		//System.out.println("_______________________"+dataFields[i]);
+		temp[temp_i++] = dataFields[i]+";";
+	    }
+	}
+
+	this.dataFields = temp;
+    }
+
+    public void setMethodAtIndex(int index, String meth) {
+       this.methods[index] = meth;
+    }
+
+    public void setMethods(String[] methods) {
+	if (methods == null) {
+	    return;
+	}
+	this.methods = methods;
+    }    
+
+    public void setPackageName(String name) {
+        this.packageName = name;
+    }
+
+    public void setParent(Bubble parent) {
+	if (parent == null) {
+	    return;
+	}
+	this.parent = parent;
+    }
+
+    //changed to make it arraylist
+    public void setVtable(ArrayList<String> vtable) {
+	if (vtable == null) {
+	    return;
+	}
+	this.vtable = vtable;
+    }    
+
+    //sets the vtable at index i to string s
+    public void setVtableIndex(int i, String s) {
+        this.vtable.set(i, s);
+    }    
+
+    public String toString() {
+        StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
+        s.append("Package: " + getPackageName() + "\n");
+        s.append("Children: " + childrenToString() + "\n");
+        s.append("Parent: " + parentToString());
+        return s.toString();
+    }
+
+    public String[] trim(String[] s) {
+	int index = 0;
+	String[] temp = new String[s.length];
+
+	for (int i = 0; i < s.length; i++) {
+	    String[] a = s[i].split(" ");
+	    for (int j = 0; j < a.length; j++) {		
+		if (a[j].startsWith(this.name)) {
+		    temp[index++] = s[i];
+		    break;
+		}
+	    }
+	}
+
+	String[] result = new String[index];
+	for (int i = 0; i < index; i++) {
+	    result[i] = temp[i];
+	}
+	return result;
+    }    
 }
