@@ -21,7 +21,7 @@ public class Mubble{
         this.code = "";
         this.isConstructor = construct;
      }
-     
+
      public Mubble(String classname , String methodname, String header, boolean construct)
      {
         this.name = classname;
@@ -38,15 +38,24 @@ public class Mubble{
      //returns a String of the formatted method for .cc file
      public String prettyPrinter()
      {
-        String ret = "";
-        if(isConstructor())
-            ret += this.header + " : __vptr(&__vtable) {\n";
-        else
-            ret += this.header + "{\n";
-        ret += this.code + "\n";
-        ret += "}\n";
+         String ret = "";
 
-        return ret;
+         if(methName.equals("main")){
+             ret += "int main(int argc, char* argv[]){\n";
+             ret += this.code +"\n";
+             ret += "return 0;\n";
+             ret += "}\n";
+         }
+         else{
+             if(isConstructor())
+                 ret += this.header + " : __vptr(&__vtable) {\n";
+             else
+                 ret += this.header + "{\n";
+             ret += this.code + "\n";
+             ret += "}\n";
+         }
+
+         return ret;
      }
 
 
@@ -61,7 +70,7 @@ public class Mubble{
 
      public String extractMethodName(String in)
      {
-	
+
 	 String[] sploded = in.trim().split(" ");
         if (sploded[sploded.length - 1] == "main")
             mainMeth = true;

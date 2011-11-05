@@ -715,7 +715,7 @@ public class Decl extends xtc.util.Tool
         else
             return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
     }
-    
+
     public static void populateLangList()
     {
         langList.add(new Mubble("Object", "Object", "__Object::__Object() : __vptr(&__vtable)", true));
@@ -723,14 +723,14 @@ public class Decl extends xtc.util.Tool
         langList.add(new Mubble("Object", "equals", "bool __Object::equals(Object __this, Object other)", false));
         langList.add(new Mubble("Object", "getClass", "Class __Object::getClass(Object __this)", false));
         langList.add(new Mubble("Object", "toString", "String __Object::toString(Object __this)", false));
-        
+
         langList.add(new Mubble("String", "String" , "__String::__String(std::string data) : __vptr(&__vtable), data(data)", true));
         langList.add(new Mubble("String", "hashCode" , "int32_t __String::hashCode(String __this)", false));
         langList.add(new Mubble("String", "equals" , "bool __String::equals(String __this, Object o)", false));
         langList.add(new Mubble("String", "toString" , "String __String::toString(String __this)", false));
         langList.add(new Mubble("String", "length" , "int32_t __String::length(String __this)", false));
         langList.add(new Mubble("String", "charAt" , "har __String::charAt(String __this, int32_t idx)", false));
-        
+
         langList.add(new Mubble("Class", "Class" , "__Class::__Class(String name, Class parent, Class component, bool primitive): __vptr(&__vtable), name(name), parent(parent), component(component), primitive(primitive)", true));
         langList.add(new Mubble("Class", "toString" , "String __Class::toString(Class __this)", false));
         langList.add(new Mubble("Class", "getName" , "String __Class::getName(Class __this)", false));
@@ -741,7 +741,7 @@ public class Decl extends xtc.util.Tool
         langList.add(new Mubble("Class", "isInstance" , "bool __Class::isInstance(Class __this, Object o)", false));
 
     }
-    
+
     /**
      * Run the thing with the specified command line arguments.
      *
@@ -755,9 +755,9 @@ public class Decl extends xtc.util.Tool
     public static ArrayList<Mubble> mubbleList = new ArrayList<Mubble>();
     public static void main(String[] args)
     {
-        
+
         populateLangList();
-        
+
         packageTree.add(new PNode("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
@@ -868,6 +868,7 @@ public class Decl extends xtc.util.Tool
                     int count = 0;
                     //String[] splitsies =  s.split(" ");
                     //want to remove extra
+
                     String returnType = "void";
                     String methodName;
                     String className = b.getName();
@@ -952,7 +953,8 @@ public class Decl extends xtc.util.Tool
                     }
 
                     //everything should be in correct format by now;
-                    struct += "static " + returnType + " " + methodName + " (" + className + ");\n";
+                    if(!methodName.trim().equals("main"))
+                        struct += "static " + returnType + " " + methodName + " (" + className + ");\n";
                     //System.out.println("static " + returnType + " " + methodName + " (" + className + ");\n");
                 }
 
@@ -1145,7 +1147,14 @@ public class Decl extends xtc.util.Tool
         }
 
         forwardh = forwardh.replace(" boolean " , " bool ");
+        forwardh = forwardh.replace(" int " , " int32_t ");
+        forwardh = forwardh.replace(" int)" , " int32_t)");
+        forwardh = forwardh.replace(" int," , " int32_t,");
         doth = doth.replace(" boolean " , " bool ");
+        doth = doth.replace(" int " , " int32_t ");
+        doth = doth.replace(" int)" , " int32_t)");
+        doth = doth.replace(" int," , " int32_t,");
+
         hwrite.write(forwardh);
         hwrite.write(doth);
         hwrite.close();
@@ -1406,12 +1415,12 @@ class Impl extends xtc.util.Tool{
 
         public void visitSubscriptExpression(GNode n)
         {
-            visit(n);   
+            visit(n);
             String arrName = n.getNode(0).getString(0);
             String index = n.getNode(1).getString(0);
             methodString += arrName + "->__data[" + index + "]";
         }
-        
+
 	    String tan;
 	    boolean inArrayExpress = false;
         public void visitFieldDeclaration(GNode n){
@@ -1443,7 +1452,7 @@ class Impl extends xtc.util.Tool{
                         arrType = "int32_t";
                     if(arrType.equals("boolean"))
                         arrType = "bool";
-                        
+
                     String arrName = n.getNode(2).getNode(0).getString(0);
                     methodString += "__rt::Array<" + arrType + ">* " + arrName;
                     table.put(arrName, "__rt::Array<" + arrType + ">* ");
@@ -1454,7 +1463,7 @@ class Impl extends xtc.util.Tool{
                         inArrayExpress = false;
                     }
                     methodString += ";\n";
-                    
+
                     inArray = false;
                 }
 		        //methodString += ";\n";
@@ -1464,11 +1473,11 @@ class Impl extends xtc.util.Tool{
 		        for (int i = 1; i < z.length; i++) {
 			    table.put(z[i], type);
 		        }
-		        
+
 		        System.out.println(tan);
 		    }
         }
-        
+
         public void visitNewArrayExpression(GNode n)
         {
             visit(n);
@@ -1494,7 +1503,7 @@ class Impl extends xtc.util.Tool{
 
             public void visitMethodDeclaration(GNode n)
             {
-            
+
                 Node parent0 = (Node)n.getProperty("parent0");
                 Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -1505,13 +1514,13 @@ class Impl extends xtc.util.Tool{
 		    cName = classname;
 
 
-                
+
 
 
                 String methodname = n.getString(3);
-               
-                    
-           
+
+
+
 
                 for(Mubble m : mubbleList){
                     if(m.getName() == null || m.getMethName() == null || methodname == null || classname == null)
@@ -1522,9 +1531,9 @@ class Impl extends xtc.util.Tool{
                     }
 
                 }
-                
 
-                 
+
+
 
 		//visit
                 visit(n);
@@ -1553,7 +1562,7 @@ class Impl extends xtc.util.Tool{
 		//System.out.println(methodString);
                 //onMeth = false;
 		//methodString = "";
-		
+
             }
 
             public void visitModifier(GNode n){
@@ -1708,7 +1717,7 @@ class Impl extends xtc.util.Tool{
 		if (onMeth && !((Node)n.getProperty("parent0")).getName()
 		    .equals("BasicForControl") && !inArray) {
 		    methodString += ";\n";
-		    
+
 		}
             }
 
@@ -1826,15 +1835,30 @@ class Impl extends xtc.util.Tool{
 		    if(parent1.getName().equals("FieldDeclaration")) {
 			tan += n.getString(0) + " ";
 		    }
+		    
+		    if(parent1.getName().equals("FieldDeclaration"))
+		    {
+		        for(Object o : parent0)
+		        { 
+		            if (o instanceof Node )
+		            {
+		                if(((Node)o).getName().equals("Dimensions"))
+		                    inArray = true;
+		            }
+                    
+                }
+            }
+		    
 		    String s = inNameSpace(n.getString(0));
 		    //System.out.println("QI: "+s);
 		    //??
-		    if (s != null) {
+		    if (s != null && !inArray) {
 			//using absolute namespace
 			methodString += "::"+s.trim().replaceAll("\\s+", "::")
 			    +"::";
 		    }
-		    methodString += n.getString(0);
+		    if(!inArray)
+		        methodString += n.getString(0);
 		}
                 visit(n);
 
@@ -1873,13 +1897,13 @@ class Impl extends xtc.util.Tool{
 		    methodString += "new ";
 		    dispatch(n.getNode(0));
 		    dispatch(n.getNode(1));
-		    
+
 		    if(n.getNode(2).getString(0).equals("Object") ||
 		       n.getNode(2).getString(0).equals("String") ||
 		       n.getNode(2).getString(0).equals("Class")) {
 			methodString += "_";
 		    }
-		    
+
 		    methodString += "_";
 		    dispatch(n.getNode(2));
 		    methodString += "(";
@@ -1975,7 +1999,7 @@ class Impl extends xtc.util.Tool{
 		   .equals("MethodDeclaration")) {
 		    onMeth = true;
 		    table = new HashMap<String, String>();
-		    
+
 		    visit(n);
 		    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		    //System.out.println(methodString);
@@ -2014,24 +2038,24 @@ class Impl extends xtc.util.Tool{
             visit(n);
 		    Node parent0 = (Node)n.getProperty("parent0");
 		    Node parent1 = (Node)n.getProperty("parent1");
-		    
+
 		    if(parent1.getName().equals("FieldDeclaration"))
 		    {
 		        for(Object o : parent0)
-		        { 
+		        {
 		            if (o instanceof Node )
 		            {
 		                if(((Node)o).getName().equals("Dimensions"))
 		                    inArray = true;
 		            }
-                    
+
                 }
             }
             if (onMeth && !inArray) {
-                methodString += n.getString(0);		    
+                methodString += n.getString(0);
             }
-            
-            
+
+
         }
 
 	    public void visitStringLiteral(GNode n) {
@@ -2111,7 +2135,7 @@ class Impl extends xtc.util.Tool{
 		    dispatchBitch(n);
 		    String type = "";
 		    Node callex = (Node)n.getProperty("parent0");
-		    if (callex.getName().equals("CallExpression") && 
+		    if (callex.getName().equals("CallExpression") &&
 			callex.getNode(0) != null && callex
 			.getNode(0).getName().equals("PrimaryIdentifier")) {
 			key = callex.getNode(0).getString(0);
@@ -2123,7 +2147,7 @@ class Impl extends xtc.util.Tool{
 		    //System.out.println(key + " " + type);
 		    //key = "";
 
-		    
+
 		    /*
 		    String params = "";
 		    for(Mubble m : MubbleList) {
@@ -2146,7 +2170,7 @@ class Impl extends xtc.util.Tool{
 
 		    String mSign = "";
 		    for (Mubble m : mubbleList) {
-			
+
 			if (m.getName().equals(type) &&
 			    m.getMethName().equals(mName)) {
 			    mSign = m.getHeader();
@@ -2154,7 +2178,7 @@ class Impl extends xtc.util.Tool{
 		    }
 
 		    for (Mubble m : langList) {
-			
+
 			if (m.getName().equals(type) &&
 			    m.getMethName().equals(mName)) {
 			    mSign = m.getHeader();
@@ -2164,7 +2188,7 @@ class Impl extends xtc.util.Tool{
 		    //mSign = "char __String::charAt(String __this, int32_t idx)";
 		    //iterate through java lang list
 		    //System.out.println("FUCK"+mSign);
-		    
+
 
 		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
 		    String p = "";
@@ -2173,8 +2197,8 @@ class Impl extends xtc.util.Tool{
 			p+= " " + m.group();
 		    }
 		    //System.out.println(n.size());
-		    String [] par = p.trim().split("\\s");   
-		    for( String g : par) 
+		    String [] par = p.trim().split("\\s");
+		    for( String g : par)
 			System.out.println(g);
 
 
