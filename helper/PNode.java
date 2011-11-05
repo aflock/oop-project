@@ -9,7 +9,6 @@ public class PNode{
     PNode parent;
     ArrayList<String> structs = new ArrayList<String>();
 
-
     public PNode(String name){
         this.name = name;
     }
@@ -18,15 +17,17 @@ public class PNode{
         this.parent = parent;
     }
 
-    public boolean hasStruct(String s)
-    {
-        return structs.contains(s);
-    }
-
-
-    public Mubble[] getMubblelist(){
-        return this.mubbleList;
-    }
+    public void addFirstStruct(String struct){
+        //In order to add the forward struct declarations and typedefs
+        int len = structChildren.length;
+        String[] temp = new String[len+1];
+        for(int i = 0; i< len; i++){
+            temp[i+1] = structChildren[i];
+        }
+        temp[0] = struct;
+        structChildren = temp;
+	
+    }    
 
     public void addMubble(Mubble child){
         if(mubbleList != null)
@@ -52,7 +53,6 @@ public class PNode{
         }
     }
 
-
     public void addPNodeChild(PNode child){
         if(child == null){
             return;
@@ -72,28 +72,32 @@ public class PNode{
         }
     }
 
-
-    public void addFirstStruct(String struct){
-        //In order to add the forward struct declarations and typedefs
-        int len = structChildren.length;
-        String[] temp = new String[len+1];
-        for(int i = 0; i< len; i++){
-            temp[i+1] = structChildren[i];
+    public void addStructChild(String child){
+        structs.add(child);
+        if(child == null){
+            return;
         }
-        temp[0] = struct;
-        structChildren = temp;
-
+        int len = structChildren == null ? 1 : structChildren.length + 1;
+        String[] temp = new String[len];
+        if(structChildren == null){
+            temp[0] = child;
+            structChildren = temp;
+        }
+        else{
+            for (int i = 0; i < structChildren.length ; i++ ){
+                temp[i] = structChildren[i];
+            }
+            temp[len-1] = child;
+            structChildren = temp;
+        }
+    }
+    
+    public boolean hasStruct(String s)
+    {
+        return structs.contains(s);
     }
 
-    public static String indentLevel(int indent){
-        String toReturn = "";
-        for( int i=0; i<indent; i++){
-            toReturn += "  ";
-        }
-        return toReturn;
-    }
-
-
+        
     public String getForwardDecl(){
         String toReturn = "";
         int indent = 0;
@@ -118,6 +122,13 @@ public class PNode{
         return toReturn;
     }
 
+    public Mubble[] getMubblelist(){
+        return this.mubbleList;
+    }
+
+    public String getName(){
+        return this.name;
+    }    
 
     public String getOutput(){
         int indent= 0;
@@ -193,14 +204,17 @@ public class PNode{
                             bParent = b.getParent().getName();
                         }
                     }
-                    toReturn += "Class _" + mubbleList[i].getName() + "::__class() {\n  \tstatic Class k = \n";
-                    toReturn += "\tnew __Class(__rt::literal(\""+ getName().replace(" ",".") + "\"), _";
+                    toReturn += "Class _" + mubbleList[i].getName() + 
+			"::__class() {\n  \tstatic Class k = \n";
+                    toReturn += "\tnew __Class(__rt::literal(\""+ 
+			getName().replace(" ",".") + "\"), _";
                     if(bParent.equals("Object"))
                         toReturn +=  "_Object::__class());\n \treturn k;\n}\n";
                     else
-                        toReturn += bParent +"::__class());\n \treturn k;\n}\n";
-
-                    toReturn += "_" + mubbleList[i].getName() + "_VT _" + mubbleList[i].getName() + ":: __vtable;\n";
+                        toReturn += bParent + 
+			    "::__class());\n \treturn k;\n}\n";
+                    toReturn += "_" + mubbleList[i].getName() + 
+			"_VT _" + mubbleList[i].getName() + ":: __vtable;\n";
                     done.add(mubbleList[i].getName());
                 }
             }
@@ -219,44 +233,28 @@ public class PNode{
         return toReturn;
     }
 
-    public void addStructChild(String child){
-        structs.add(child);
-        if(child == null){
-            return;
-        }
-        int len = structChildren == null ? 1 : structChildren.length + 1;
-        String[] temp = new String[len];
-        if(structChildren == null){
-            temp[0] = child;
-            structChildren = temp;
-        }
-        else{
-            for (int i = 0; i < structChildren.length ; i++ ){
-                temp[i] = structChildren[i];
-            }
-            temp[len-1] = child;
-            structChildren = temp;
-        }
-    }
-
-    public void setParent(PNode p){
-        this.parent = p;
-    }
-
     public PNode[] getPackageChildren(){
         return this.packageChildren;
     }
 
+    public PNode getParent(){
+        return this.parent;
+    }
+    
     public String[] getStructChildren(){
         return this.structChildren;
     }
 
-    public String getName(){
-        return this.name;
-    }
+    public static String indentLevel(int indent){
+        String toReturn = "";
+        for( int i=0; i<indent; i++){
+            toReturn += "  ";
+        }
+        return toReturn;
+    }    
 
-    public PNode getParent(){
-        return this.parent;
+    public void setParent(PNode p){
+        this.parent = p;
     }
 
     public String toString(){
@@ -282,5 +280,4 @@ public class PNode{
 
         return toReturn;
     }
-
 }
