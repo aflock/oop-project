@@ -1638,6 +1638,7 @@ class Impl extends xtc.util.Tool{
 		    dispatch(n.getNode(0));
 		    
 
+		    //need to fix casting for first arg
 		    if(n.getNode(0) != null) {
 			methodString += "->__vptr->"+n.getString(2);
 			methodString += "(";
@@ -1860,7 +1861,9 @@ class Impl extends xtc.util.Tool{
 		    //??
 		    if (s != null && !inArray) {
 			//using absolute namespace
+<<<<<<< HEAD
 			//System.out.println("========WOAH");
+
 			//check to see if Bubble is found by inNameSpace
 			methodString += "::"+s.trim().replaceAll("\\s+", "::")
 			    +"::";
@@ -2200,11 +2203,13 @@ class Impl extends xtc.util.Tool{
 
 		    Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
 		    String p = "";
-		    System.out.println(mSign+"abc");
+
+		    //System.out.println(mSign+"abc");
 		    while(m.find()){
 			p+= " " + m.group();
 		    }
-		    System.out.println(p + "asdf");
+		    //System.out.println(p + "asdf");
+
 		    String [] par = p.trim().split("\\s");
 		    for( String g : par)
 			System.out.println(g);
@@ -2213,11 +2218,11 @@ class Impl extends xtc.util.Tool{
 		    String s = "";
 		    //CASTING
 		    if (n.size() > 0) {
-			//should still cast on that shit
 			s = inNameSpace(par[0]);
 			if(!par[0].trim().equals("")) {
 			    methodString += "(("; 
 			
+
 			    if (s != null && !s.trim().equals("")) {
 				//using absolute namespace
 				methodString += "::"+s.trim().replaceAll("\\s+", "::")+"::";
@@ -2231,6 +2236,7 @@ class Impl extends xtc.util.Tool{
 			else {
 			    dispatch(n.getNode(0));
 			}
+
 		    }
 		    
 		    for(int i = 1; i < n.size(); i++) {

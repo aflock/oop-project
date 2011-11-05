@@ -1,0 +1,16 @@
+loops:
+    xfor
+    xwhile
+    -do while
+    -do until ?
+
+boolean statements
+
+
+Class things:
+    xinheritance from object
+    xinheritance from other object
+    xmethod overriding (toString)
+    xmethod overloading
+    xcalling a method
+    -chaining methods
