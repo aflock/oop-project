@@ -2178,14 +2178,27 @@ class Impl extends xtc.util.Tool{
 			System.out.println(g);
 
 
+		    String s = "";
+		    //CASTING
 		    if (n.size() > 0) {
-			methodString += "(("+par[0]+") ";
+			
+			s = inNameSpace(par[0]);
+			
+			methodString += "(("; 
+			
+			if (s != null) {
+			    //using absolute namespace
+			    methodString += "::"+s.trim().replaceAll("\\s+", "::")+"::";
+			}
+			System.out.println(par.length);
+			methodString += par[0]+") ";
 			dispatch(n.getNode(0));
 			methodString += ")";
 		    }
-
+		    
 		    for(int i = 1; i < n.size(); i++) {
-			methodString += ", (("+par[i]+") ";
+			methodString += ", (("+(par.length > i ? par[i] : "")
+			    +") ";
 			dispatch(n.getNode(i));			
 			methodString += ")";
 		    }
