@@ -1861,7 +1861,7 @@ class Impl extends xtc.util.Tool{
 		    //??
 		    if (s != null && !inArray) {
 			//using absolute namespace
-<<<<<<< HEAD
+
 			//System.out.println("========WOAH");
 
 			//check to see if Bubble is found by inNameSpace
