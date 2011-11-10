@@ -27,3 +27,4 @@ Other:
     x Arrays of Arrays
         x index out of bounds check
         x re-assign values
+    x Arrays of Objects //needs fleshing out? -AF
