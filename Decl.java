@@ -364,11 +364,8 @@ public class Decl extends xtc.util.Tool
                     constructors.set(constructors.size()-1,constructors.get(constructors.size()-1)+" "+name);
                         }
             }
-	    /*
-	     *
-	      WTF IS THIS SHIT WITH THE PARENT1 != GETPROPERTY("PARENT0")
-	      *
-	     */
+
+
             public void visitType(GNode n) {
                 visit(n);
                 Node parent0 = (Node)n.getProperty("parent0");
@@ -605,6 +602,7 @@ public class Decl extends xtc.util.Tool
 
     }
 
+    //TODO implement mubble so this is not needed
     public static void formatConstructors()
     {
         String tmp = "";
@@ -649,6 +647,7 @@ public class Decl extends xtc.util.Tool
 
     }
 
+    //TODO implement mubble so this is not needed
     public static void markNewMethods()
     {
         int index;
@@ -664,6 +663,7 @@ public class Decl extends xtc.util.Tool
         }
     }
 
+    //TODO implement mubble so this is not needed
     public static void start(Bubble object)
     {
         populateVTables(object);
@@ -671,6 +671,7 @@ public class Decl extends xtc.util.Tool
         formatConstructors();
     }
 
+    //TODO implement mubble so this is not needed
     public static String formatHConstruct(String s)
     {
         String begin = Mubble.getStringBetween(s, "" , "(");
@@ -716,6 +717,7 @@ public class Decl extends xtc.util.Tool
             return (begin + "("  + correctHeader.substring(0, correctHeader.length()-2) + ");");
     }
 
+    //TODO change to reflect update mubble structure
     public static void populateLangList()
     {
         langList.add(new Mubble("Object", "Object", "__Object::__Object() : __vptr(&__vtable)", true));
@@ -1636,7 +1638,7 @@ class Impl extends xtc.util.Tool{
 
 		    dispatchBitch(n);
 		    dispatch(n.getNode(0));
-		    
+
 
 		    //need to fix casting for first arg
 		    if(n.getNode(0) != null) {
@@ -1650,7 +1652,7 @@ class Impl extends xtc.util.Tool{
 		    }
 		    else {
 			methodString += n.getString(2) + "(";
-			
+
 		    }
 		    dispatch(n.getNode(3));
 		}
@@ -1842,20 +1844,20 @@ class Impl extends xtc.util.Tool{
 		    if(parent1.getName().equals("FieldDeclaration")) {
 			tan += n.getString(0) + " ";
 		    }
-		    
+
 		    if(parent1.getName().equals("FieldDeclaration"))
 		    {
 		        for(Object o : parent0)
-		        { 
+		        {
 		            if (o instanceof Node )
 		            {
 		                if(((Node)o).getName().equals("Dimensions"))
 		                    inArray = true;
 		            }
-                    
+
                 }
             }
-		    
+
 		    String s = inNameSpace(n.getString(0));
 		    //System.out.println("QI: "+s);
 		    //??
@@ -2214,14 +2216,14 @@ class Impl extends xtc.util.Tool{
 		    for( String g : par)
 			System.out.println(g);
 
-		    
+
 		    String s = "";
 		    //CASTING
 		    if (n.size() > 0) {
 			s = inNameSpace(par[0]);
 			if(!par[0].trim().equals("")) {
-			    methodString += "(("; 
-			
+			    methodString += "((";
+
 
 			    if (s != null && !s.trim().equals("")) {
 				//using absolute namespace
@@ -2238,12 +2240,12 @@ class Impl extends xtc.util.Tool{
 			}
 
 		    }
-		    
+
 		    for(int i = 1; i < n.size(); i++) {
 			if(!par[i].trim().equals("")) {
 			    methodString += ", (("+(par.length > i ? par[i] : "")
 			    +") ";
-			    dispatch(n.getNode(i));			
+			    dispatch(n.getNode(i));
 			    methodString += ")";
 			}
 			else{

@@ -3,7 +3,6 @@ loops:
     x while
     x do while
     x switch/case
-    -do until (Don't think this exists -Calvin)
 
 KeyWords:
     x boolean statements
@@ -17,8 +16,14 @@ Class things:
     x method overloading
     x calling a method
     x chaining methods
-    
+    - importing other classes
+    - casting
+        - up/down ?
+        - in arrays ?
+
 Other:
     x NameMashing (tests underscore names...etc)
     x Multiple Main Methods
     x Arrays of Arrays
+        x index out of bounds check
+        x re-assign values
