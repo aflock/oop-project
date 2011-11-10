@@ -1,4 +1,4 @@
-public class testDoWhile{
+public class testMethodOverwriting{
     String name;
     public testMethodOverwriting(){
         this.name = "AFLOCK OVERWRITE" ;

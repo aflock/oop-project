@@ -20,7 +20,7 @@ public class testArrayofArray
 
             //need to throw index out of bounds error but also retrieve data correctly
             //if you don't want the error, just remove that = sign ;)
-            for (int i = 0; i <=test[0].length(); i ++){
+            for (int i = 0; i <=test[0].length; i ++){
                 System.out.println(test[0][i]);
             }
 
