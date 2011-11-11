@@ -109,33 +109,34 @@ public class Translator extends xtc.util.tool{
 
     public void process(Node node){
 
-        StructureParser s = new StructureParser();
+        StructureParser s = new StructureParser(packageTree, mubbleList, bubbleList, parsed);
         s.dispatch(node);
 
-        ImplementationParser i = new ImplementationParser();
+        ImplementationParser i = new ImplementationParser(packageTree, mubbleList, bubbleList, parsed);
         i.dispatch(node);
+
 
     }
 
     public static void main (String [] args)
     {
         /* new Translator
-         * new StructParser
-         * new ImplParser
+         * new StructParser //was Decl
+         * new ImplParser   //was Impl
          */
 
         prepStructures();
 
         Translator t = new Translator();
         t.init();
-        t.prepate();
+        t.prepare();
         for(int i = 0; i< args.length; i++){
-            try{
+            try{ //TODO put in flag to not system exit also maybe change to run
                 t.process(args[i]);
             } catch (Exception e) {System.out.println(e);}
         }
 
-        //at this point,
+        //at this point, shit should be ready to print
 
     }
 
