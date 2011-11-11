@@ -1,0 +1,12 @@
+Typical git flow:
+
+	(Modify files)
+	git add (.)	//Adding to commit stage, use . to add all
+	git commit -m 'Message'  //Commit with message
+	git pull      		 //Pull current version from github
+	git push (origin master) //Push your copy to the master on github
+
+Useful:
+	git status		//Print status of your commit
+	git checkout (file name)//Get file(s) from github
+

@@ -1,6 +1,0 @@
-Start developing your own code:
-Add a new package, say the.package.name, by creating the src/the/package/name directory.
-Copy the make file template into that directory and rename it to Makefile.
-Update the Makefile for your new package by changing the definitions for PACKAGE, PACKAGE_LOC, and SOURCE.
-Add your new package to the Makefile in xtc's root directory, i.e., by adding the package name to the list of packages PACKAGES.
-You are good to go.
