@@ -1,6 +1,9 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
 
+//import helper.Pubble;
+//import helper.Bubble;
+
 public class Mubble {
     private final char INHERITED = 'i';
     private final char NEW = 'n';
@@ -113,7 +116,7 @@ public class Mubble {
 	return this;
     }
 
-    Mubble setPackage(String packageName) {
+    Mubble setPackage(Pubble packageName) {
 	this.packageName = packageName;
 	return this;
     }
