@@ -1,4 +1,4 @@
-package xtc.oop.helper;
+package xtc.oop.helper; //UPDATE PACKAGE
 import java.util.ArrayList;
 
 public class Pubble{
@@ -47,7 +47,7 @@ public class Pubble{
         }
         
         for(Bubble b: bubbles){
-            ret += b.getTypeDef;
+            ret += b.getTypeDef();
         }
         
         //now do it for all children
@@ -104,7 +104,7 @@ public class Pubble{
         return this.parent;
     }
     public void setParent(Pubble p){
-        return this.parent = p;
+        this.parent = p;
     }
 
     public ArrayList<Bubble> getBubbles(){
