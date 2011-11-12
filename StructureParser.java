@@ -42,7 +42,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         this.parsed = parsed;
     }
 
-    //all our visitor methods
+        
+    public void visitClassDeclaration(GNode n){
+        //n.getString(0) is the Modifiers node
+        //n.getString(1) is the name of the class
+        bubbleList.add(new Bubble()); //Create New Bubble which whatever constructor we decide
+        
+    }
 
 
 }

@@ -16,6 +16,68 @@ public class Pubble{
         this.name = name;
         this.parent = parent;
     }
+    
+    //returns a string with the correct information for a .h file
+    //lines will be delimited by \n but will not be correctly indented
+    public String getH()
+    {
+        String ret = "";
+        ret += getForwardDecl();
+        ret += getVTables();
+        return ret;
+        
+        
+    }
+    
+    /*prints all forward declarations of data fields, vtables and typedefs for this pnode
+    Ex. 
+    namespace lang {
+        struct __Object;
+        struct __Object_VT;
+
+        typedef __Object* Object;
+     }
+    */
+    public String getForwardDecl()
+    {
+        String ret = "";
+        ret += "namespace " + name + " {\n";
+        for(Bubble b : bubbles){
+            ret += b.getFDeclStruct();
+        }
+        
+        for(Bubble b: bubbles){
+            ret += b.getTypeDef;
+        }
+        
+        //now do it for all children
+        for(Pubble p : children){
+            ret += p.getForwardDecl();
+        }
+        ret += "}";
+        return ret;
+    }
+    
+    
+    //returns actual 
+    public String getVTables()
+    {
+        String ret = "";
+        ret += "namespace " + name + " {\n";
+        for(Bubble b : bubbles){
+            ret += b.getStruct();
+            ret += b.getStructVT();
+        }
+        
+        //now do it for all children
+        for(Pubble p : children){
+            ret += p.getVTables();
+        }
+        
+        ret += "}";
+        return ret;
+    }
+    
 
 //=========NON-GETTER/SETTER METHODS=======//
     
