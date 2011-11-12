@@ -127,7 +127,7 @@ public class Translator extends xtc.util.tool{
 
         prepStructures();
 
-        Translator t = new Translator();
+        NewTranslator t = new NewTranslator();
         t.init();
         t.prepare();
         for(int i = 0; i< args.length; i++){

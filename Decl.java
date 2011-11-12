@@ -27,14 +27,7 @@ import java.util.regex.*;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-/** A Java file Scope analyzer
- * For each static scope, prints
- * 		Enter scope at <filename>:<line>:<column>
- * upon entering the scope.
- *
- * @author Calvin Hawkes
- * @version 1.0
- */
+
 
 public class Decl extends xtc.util.Tool
 {
@@ -118,7 +111,8 @@ public class Decl extends xtc.util.Tool
         {
 
             //assemble the forces
-            ArrayList<String> dataFields = new ArrayList<String>();
+            //WHY DO WE HAVE THESE AND Bubblelist, MubbleList...etc
+            ArrayList<String> dataFields = new ArrayList<String>(); 
             ArrayList<String> methods = new ArrayList<String>();
             ArrayList<String> constructors = new ArrayList<String>();
             ArrayList<String> children = new ArrayList<String>();
