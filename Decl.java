@@ -718,6 +718,7 @@ public class Decl extends xtc.util.Tool
     }
 
     //TODO change to reflect update mubble structure
+    //Adds Java language 
     public static void populateLangList()
     {
         langList.add(new Mubble("Object", "Object", "__Object::__Object() : __vptr(&__vtable)", true));
@@ -774,7 +775,7 @@ public class Decl extends xtc.util.Tool
 
         //pre-load String Bubble
         Bubble string = new Bubble("String", null);
-        //Creating Object's Vtable
+        //Creating String's Vtable
         string.add2Vtable("Class __isa;");
         string.add2Vtable("int32_t (*hashCode)(String);");
         string.add2Vtable("bool (*equals)(String, Object);");
@@ -802,7 +803,7 @@ public class Decl extends xtc.util.Tool
         String typedefs = "\n";
         String methName = "";
         //ADDED --Forward Decls of stucts and vtables
-
+        System.out.println("TESET");
         for(Bubble b: bubbleList){
             //System.out.println("--------------------" + b.getName() + "--------------------");
 
@@ -1115,51 +1116,51 @@ public class Decl extends xtc.util.Tool
         //Write .h to file
         String hFile = "test.h";
         try{
-        File out = new File(hFile);
-        FileWriter hstream = new FileWriter(out);
-        BufferedWriter hwrite = new BufferedWriter(hstream);
-        String includes = "#pragma once\n";
-        includes += "#include \"java_lang.h\"\n";
-        includes += "#include <stdint.h>\n";
-        includes += "\n\n"; //for good measure
-        hwrite.write(includes);
-        String hardType = "typedef java::lang::Class Class;\n" +
-        "typedef java::lang::__Class __Class;\n" +
-        "typedef java::lang::String String;\n" +
-        "typedef java::lang::__String __String;\n" +
-        "typedef java::lang::Object Object;\n" +
-        "typedef java::lang::__Object __Object;\n";
-        hwrite.write(hardType);
+            File out = new File(hFile);
+            FileWriter hstream = new FileWriter(out);
+            BufferedWriter hwrite = new BufferedWriter(hstream);
+            String includes = "#pragma once\n";
+            includes += "#include \"java_lang.h\"\n";
+            includes += "#include <stdint.h>\n";
+            includes += "\n\n"; //for good measure
+            hwrite.write(includes);
+            String hardType = "typedef java::lang::Class Class;\n" +
+            "typedef java::lang::__Class __Class;\n" +
+            "typedef java::lang::String String;\n" +
+            "typedef java::lang::__String __String;\n" +
+            "typedef java::lang::Object Object;\n" +
+            "typedef java::lang::__Object __Object;\n";
+            hwrite.write(hardType);
 
-        String forwardh ="";
-        for(PNode p : packageTree){
-            if(p.getName().equals("DefaultPackage")){
-                forwardh += p.getForwardDecl();
+            String forwardh ="";
+            for(PNode p : packageTree){
+                if(p.getName().equals("DefaultPackage")){
+                    forwardh += p.getForwardDecl();
+                }
             }
-        }
-        /*
-         *Iterate through packageTree: in order (dfs)
-         */
-        String doth = "";
-        //find Default package
-        for(PNode p : packageTree){
-            if(p.getName().equals("DefaultPackage")){
-                doth += p.getOutput();
+            /*
+             *Iterate through packageTree: in order (dfs)
+             */
+            String doth = "";
+            //find Default package
+            for(PNode p : packageTree){
+                if(p.getName().equals("DefaultPackage")){
+                    doth += p.getOutput();
+                }
             }
-        }
 
-        forwardh = forwardh.replace(" boolean " , " bool ");
-        forwardh = forwardh.replace(" int " , " int32_t ");
-        forwardh = forwardh.replace(" int)" , " int32_t)");
-        forwardh = forwardh.replace(" int," , " int32_t,");
-        doth = doth.replace(" boolean " , " bool ");
-        doth = doth.replace(" int " , " int32_t ");
-        doth = doth.replace(" int)" , " int32_t)");
-        doth = doth.replace(" int," , " int32_t,");
+            forwardh = forwardh.replace(" boolean " , " bool ");
+            forwardh = forwardh.replace(" int " , " int32_t ");
+            forwardh = forwardh.replace(" int)" , " int32_t)");
+            forwardh = forwardh.replace(" int," , " int32_t,");
+            doth = doth.replace(" boolean " , " bool ");
+            doth = doth.replace(" int " , " int32_t ");
+            doth = doth.replace(" int)" , " int32_t)");
+            doth = doth.replace(" int," , " int32_t,");
 
-        hwrite.write(forwardh);
-        hwrite.write(doth);
-        hwrite.close();
+            hwrite.write(forwardh);
+            hwrite.write(doth);
+            hwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
 
@@ -1171,6 +1172,7 @@ public class Decl extends xtc.util.Tool
             {
                 for(String entry : methods) {
                     mubbleList.add(new Mubble(b.getName(), entry, false));
+                    System.out.println("****METHOD: " + entry);
                 }
 
             }
@@ -1266,16 +1268,24 @@ public class Decl extends xtc.util.Tool
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
-        /*
+        
         for(PNode p : packageTree){
-            System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
-            if(p.getMubblelist() != null)
+        System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
+        for(String s : p.getStructChildren())
+        {
+            System.out.println("===========Struct Child: " + s);
+        }
+        for(String s : p.getStructs())
+        {
+            System.out.println("Structs: " + s);
+        }
+           /* if(p.getMubblelist() != null)
             for(Mubble m: p.getMubblelist()){
                 System.out.println("_________VVV__V__V_V_V__VVVVV");
                 System.out.println(m.prettyPrinter());
-            }
+            } */
         }
-        */
+        
 
     }
 
@@ -1584,15 +1594,15 @@ class Impl extends xtc.util.Tool{
 
             int constructorCount = 0;
            for(Mubble m : mubbleList){
-               System.out.println("m.getName ::" + m.getName()+ "::");
-               System.out.println("classname ::" + classname+ "::");
+               //System.out.println("m.getName ::" + m.getName()+ "::");
+               //System.out.println("classname ::" + classname+ "::");
                 if(m.getName().trim().equals(classname.trim()) && m.isConstructor())
                 {
                     constructorCount++;
                     curMub = m;
                 }
-                System.out.println("Constructor COunt is: "+ constructorCount);
-               System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
+                //System.out.println("Constructor COunt is: "+ constructorCount);
+               //System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
             }
 
             visit(n);

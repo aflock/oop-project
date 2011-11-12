@@ -21,6 +21,9 @@ public class Mubble{
             this.header = formatMethodHeader(iHeader);
         this.code = "";
         this.isConstructor = construct;
+        
+        System.out.println("Header: " + this.header);
+        System.out.println("iHeader: " + iHeader);
     }
     
     public Mubble(String classname , String methodname, 

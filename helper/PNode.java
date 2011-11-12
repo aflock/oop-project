@@ -5,9 +5,9 @@ public class PNode{
     String name;
     PNode[] packageChildren;
     Mubble[] mubbleList;
-    String[] structChildren;
+    String[] structChildren; //should be in Mubble
     PNode parent;
-    ArrayList<String> structs = new ArrayList<String>();
+    ArrayList<String> structs = new ArrayList<String>(); //should be in mubble
 
     public PNode(String name){
         this.name = name;
@@ -17,6 +17,11 @@ public class PNode{
         this.parent = parent;
     }
 
+    public ArrayList<String> getStructs()
+    {
+        return this.structs;
+    }
+    
     public void addFirstStruct(String struct){
         //In order to add the forward struct declarations and typedefs
         int len = structChildren.length;
@@ -26,6 +31,7 @@ public class PNode{
         }
         temp[0] = struct;
         structChildren = temp;
+        //System.out.println("***********STRUCT: " + struct);
 	
     }    
 
