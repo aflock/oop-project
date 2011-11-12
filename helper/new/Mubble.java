@@ -1,7 +1,207 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
 
-public class Mubble{
+public class Mubble {
+    private final char INHERITED = 'i';
+    private final char NEW = 'n';
+    private final char OVERLOADED = 'l';
+    private final char OVERWRITTEN = 'w';
+       
+    boolean constructor;        
+    boolean main;
+    boolean staticMethod;
+    char from; 
+
+    Bubble className;
+    Pubble packageName;
+
+    String methodName;
+    String returnType;
+    String visibility;
+    ArrayList<String> paraName;
+    ArrayList<String> paraType;
+
+    public Mubble(String methodName) { // constructor with a method name
+	constructor = false;
+	main = false;
+	staticMethod = false;
+	this.methodName = methodName;
+    }
+
+    String code() {
+	return "";
+    }
+
+    /* generates header for .cc files */    
+    String ccHeader() {
+	return "";
+    }
+
+    String forward() {
+	StringBuilder s = new StringBuilder();
+	s.append(returnType).append(" ").append(methodName).append("(").
+	    append(className.getName());
+	for (String para : paraType) {
+	    s.append(", ").append(para);
+	}
+	s.append(");");
+	
+	return s.toString();
+    }
+
+    char from() {
+	return from;
+    }
+
+    Bubble getBubble() {
+	return className;
+    }
+
+    Pubble getPackage() {
+	return packageName;
+    }
+
+    String getName() {
+	return methodName;
+    }
+
+    String getReturnType() {
+	return returnType;
+    }
+
+    String getVisibility() {
+	return visibility;
+    }
+
+    ArrayList<String> getParameterNames() {
+	return paraName;
+    }
+
+    ArrayList<String> getParameterTypes() {
+	return paraType;
+    }
+
+    boolean isConstructor() { // returns true if this is constructor
+	return constructor;
+    }
+
+    boolean isMain() { // returns ture if this is main method
+	return main;
+    }
+
+    boolean isStatic() { // returns true if this is static method
+	return staticMethod;
+    }
+
+    Mubble setBubble(Bubble className) {
+	this.className = className;
+	return this;
+    }
+
+    Mubble setConstructor(boolean constructor) {
+	this.constructor = constructor;
+	return this;
+    }    
+
+    Mubble setFrom(char from) {
+	this.from = from;
+	return this;
+    }
+
+    Mubble setMain(boolean main) {
+	this.main = main;
+	return this;
+    }
+
+    Mubble setPackage(String packageName) {
+	this.packageName = packageName;
+	return this;
+    }
+
+    Mubble setReturnType(String returnType) {
+	this.returnType = returnType;
+	return this;
+    }
+
+    Mubble setStatic(boolean staticMethod) {
+	this.staticMethod = staticMethod;
+	return this;
+    }
+
+    Mubble setVisibility(String visibility) {
+	this.visibility = visibility;
+	return this;
+    }
+
+    Mubble setParameterNames(ArrayList<String> paraName) {	
+	this.paraName = paraName;
+	return this;
+    }
+    
+    Mubble setParameterTypes(ArrayList<String> paraType) {
+	this.paraType = paraType;
+	return this;
+    }
+
+    /* generates entry for vtable1 */
+    String vTable1() { 
+	StringBuilder s = new StringBuilder();
+	s.append(returnType).append(" (*");
+	s.append(methodName).append(")(");
+	if (!isStatic()) {
+	    s.append(className.getName());
+	    for (String para : paraType) {
+		s.append(", ").append(para);
+	    }
+	} 
+	else {
+	    // not sure what to do with static methods
+	    if (paraType.size() > 0) {
+		s.append(paraType.get(0));
+	    }
+
+	    for (int i = 1; i < paraType.size(); i++) {
+		s.append(", ").append(paraType.get(i));
+	    }
+	}	
+	
+	s.append(");");
+	
+	return s.toString();
+    }
+
+    /* generates entry for vtable.
+     * needs fixing. proper casting is needed.
+     */
+    String vTable2() {
+	StringBuilder type = new StringBuilder();
+	if (from == INHERITED) {
+	    type.append("(").append(returnType).append("(*)");
+	    type.append(className.getName());
+	    for (String para : paraType) {
+		type.append(",").append(para);
+	    }
+	    type.append(")");
+	}
+	
+	StringBuilder s = new StringBuilder();
+	s.append(methodName).append("(");
+	if (type != null) {
+	    s.append(type.toString()).append(")");
+	}
+
+	if (from == INHERITED) { // this line is not quite right
+	    s.append("&_").append(className.getParentBubble().getName());
+	}
+	else {
+	    s.append("&_").append(className.getName());
+	}		
+	s.append("::").append(methodName);
+		
+	return s.toString();
+    }
+
+    /*
     String header; //header for method
     String methName; //name of the method
     String name; //class method is in
@@ -222,4 +422,5 @@ public class Mubble{
     {
         this.packageName = pack;
     }    
+    */
 }
