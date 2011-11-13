@@ -33,7 +33,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public static ArrayList<PNode> packageTree;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
-    
+
     public ImplementationParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
     {
         this.packageTree = packageTree;
@@ -42,6 +42,94 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         this.parsed = parsed;
     }
 
+
+    public void visitFieldDeclaration(GNode n){
+        visit(n);
+    }
+
+    public void visitDimensions(GNode n) {
+        visit(n);
+    }
+
+    public void visitModifiers(GNode n){
+        visit(n);
+
+    }
+
+    public void visitMethodDeclaration(GNode n){
+        visit(n);
+    }
+
+    public void visitModifier(GNode n){
+        visit(n);
+
+    }
+
+    public void visitDeclarators(GNode n) {
+        visit(n);
+    }
+
+    public void visitDeclarator(GNode n) {
+        visit(n);
+    }
+
+    public void visitIntegerLiteral(GNode n) {
+        visit(n);
+    }
+
+    public void visitClassBody(GNode n){
+        visit(n);
+    }
+
+    public void visitClassDeclaration(GNode n){
+        visit(n);
+    }
+
+    public void visitFormalParameters(GNode n){
+        visit(n);
+    }
+
+    public void visitFormalParameter(GNode n) {
+
+        visit(n);
+    }
+
+    public void visitQualifiedIdentifier(GNode n){
+        visit(n);
+    }
+
+    public void visitImportDeclaration(GNode n){
+        visit(n);
+    }
+
+    public void visitForStatement(GNode n)
+    {
+        visit(n);
+    }
+
+    public void visitBasicForControl(GNode n)
+    {
+        visit(n);
+    }
+
+    public void visitPrimitiveType(GNode n) {
+        visit(n);
+    }
+
+    public void visitType(GNode n)
+    {
+        visit(n);
+    }
+
+    public void visitExpressionList(GNode n)
+    {
+        visit(n);
+    }
+
+    public void visitRelationalExpression(GNode n)
+    {
+        visit(n);
+    }
 
 
 
