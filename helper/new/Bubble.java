@@ -2,429 +2,209 @@ package xtc.oop.helper;
 import java.util.ArrayList;
 
 public class Bubble{
-    String name;
-    String[] methods;
-    String[] dataFields;
-    String packageName;
-    Bubble parent;
-    String[] children;
-    Bubble[] bChildren;
-    ArrayList<String> vtable;
-    String[] constructors;
+    ArrayList<Bubble> bubbles; //ArrayList of the children of this Bubble
+    ArrayList<Mubble> constructors; //ArrayList of constructor Mubbles
+    ArrayList<String> fieldTypes; //ArrayList of the data field variable types
+    ArrayList<String> fieldVars; //ArrayList of the data field variable names
+    ArrayList<Mubble> mubbles; //ArrayList of Mubbles in this class
+    String name; //This class' name
+    Bubble parentBubble; //This Bubble's parent Bubble
+    Pubble parentPubble; //This class' package (reference)
 
-    public Bubble(String name, String[] methods,
-		  String[] dataFields, Bubble parent, String[] children, 
-		  String packageName, String[] constructors){
+    /* DO WE NEED THIS?:
+    String visibility; //The visibility for this class
+    */
 
-        this.name = name;
-        this.packageName = packageName;
-        this.methods = methods;
-        this.dataFields = dataFields;
-        this.parent = parent;
-        this.children = children;
-        this.vtable = new ArrayList<String>();
-	this.constructors = trim(constructors);
+    ////////////////////
+    /* CONSTRUCTOR(S) */
+    ////////////////////
+
+    public Bubble() {
+	//TODO: Make this constructor, what are the params?
+	//What's the context it's called from?
+
+	this.bubbles = new ArrayList<Bubble>();
+	this.fieldTypes = new ArrayList<String>();
+	this.fieldVars = new ArrayList<String>();
+	this.mubbles = new ArrayList<Mubble>();
     }
 
-    public Bubble(String name, String child) {
-        this.name = name;
-        if (child != null) {
-            String temp[] = { child };
-            this.children = temp;
-        }
-        this.vtable = new ArrayList<String>();
-        this.methods = null;
+    /////////////
+    /* SETTERS */
+    /////////////
+
+
+    //Add a Bubble to the Bubble list
+    public void addBubble(Bubble b) {
+	this.bubbles.add(b);
     }
 
-    public void addChild(String child) {
-	if (child == null) {
-	    return;
-	}
-        int len = children == null ? 1 : children.length + 1;
-        String[] temp = new String[len];
-        if (children == null) {
-            temp[0] = child;
-            children = temp;
-        }
-        else {
-            for (int i = 0; i < children.length; i++) {
-                temp[i] = children[i];
-            }
-
-            temp[len - 1] = child;
-            children = temp;
-        }
+    //Add a data field
+    public void addField(String var, String type) {
+	this.fieldVars.add(var);
+	this.fieldTypes.add(type);
     }
 
-    public boolean add2Vtable(String add){
-        /* returns true if the method is an overwritten method, false if not*/
-	
-        //add = add.trim();
-	//format the string
-	add = this.format(add);
-	//if it's a method [in the format: rt_type (*name)(params) ]
-	if(add.matches(".*\\(\\*.*\\)\\(.*\\).*")) {
-	    String sig = add.split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1];
-	    // System.out.println("SIG: \t\t"+sig);
-	    int index = -1;
-	    for(int i = 0; i < this.vtable.size(); i++) {
-		//System.out.println("-----"+this.vtable.get(i));
-		if(this.vtable.get(i).matches(".*\\(\\*.*\\)\\(.*\\).*") &&
-		   this.vtable.get(i).split("([\\w\\s]*\\(\\*)|(\\)\\(.*)")[1]
-		   .equals(sig)) {
-		    //System.out.println("WOWOOWOWOWOWOWOWOWOWO");
-		    index = i;
-		}
-	    }
-	    
-	    if(index != -1) {
-		System.out.println("==========OVERWRITING " + sig + "in " 
-				   + this.name);
-		
-		this.vtable.set(index,add + "\t");
-                return true;
-	    }
-	    else {
-		    this.vtable.add(add);
-		    return false;
-	    }
-	    
-        }
-        //if it's not a method
-	else {
-	    this.vtable.add(add);
-	}
-	return false;
-    }
-
-    public String childrenToString() {
-	if (children == null) {
-	    return "No Children";
+    //Add a Mubble to this Bubble
+    public void addMubble(Mubble m) {
+	if(m.isConstructor()) {
+	    this.constructors.add(m);
 	}
 	else {
-	    StringBuilder s = new StringBuilder("[");
-	    for (int i = 0; i < children.length; i++) {
-		s.append(children[i]);
-		if (i != children.length - 1)
-		    s.append(", ");
-	    }
-	    return s.append("]").toString();
+	    this.mubbles.add(m);
 	}
     }
 
-    /* Given a method string, convert it into a format of an element of 
-       vtable entry. */     
-    public String format(String method) {	
-	if (method.startsWith(" ")) {
-	    int square = 0; //count the number of arrays. fix me.
-	    for (int i = 0; i < method.length(); i++) {
-		if (method.charAt(i) == '[') square++;
-	    }
-	    String[] temp2 = method.split(" ");
-	    int count = 0;
-
-	    // count the number of non-empty strings
-	    for (int i = 0; i < temp2.length; i++) {
-		if (temp2[i].length() != 0) count++;
-	    }
-
-	    String[] temp = new String[count-square];
-	    int index = 0;
-	    for (int i = 0; i < temp2.length; i++) {
-		if (temp2[i].length() != 0) {
-		    if (temp2[i].charAt(0) == '[') {			
-			temp[index-1] = "__rt::Array<" + temp[index-1] + ">*";
-		    }
-		    else {
-			temp[index++] = temp2[i];
-		    }
-		}
-	    }
-
-	    int num = 0;
-	    for (int i = 0; i < temp.length; i++) {
-		if (temp[i].equals("public") ||
-		    temp[i].equals("private") ||
-		    temp[i].equals("protected") ||
-		    temp[i].equals("static") ||
-		    temp[i].equals("final")) {
-		    //do nothing
-		}
-		else {
-		    num++;
-		}
-	    }
-	    String s = "";
-	    if (num % 2 == 0) { // there is a return type
-		s += temp[temp.length-num] + " ";
-		index = temp.length-num+1;
-	    }
-	    else { // void
-		s += "void ";
-		index = temp.length-num;
-	    }
-
-	    s += "(*" + temp[temp.length-1] + ")(" + getName();
-
-	    for (int j = index; j < temp.length - 1; j+=2) {
-		s += ", " + temp[j];
-	    }
-
-
-	    s += ");";
-	    return s;
-	}
-	return method;
+    //Set the name of this Bubble
+    public void setName(String name) {
+	this.name = name;
     }
 
-    public String[] getChildren() {
-        return this.children;
+    //Set the parent Bubble of this Bubble
+    public void setParentBubble(Bubble b) {
+	this.parentBubble = b;
     }
+
+    //Set the parent Pubble of this Bubble
+    public void setParentPubble(Pubble p) {
+	this.parentPubble = p;
+    }
+
+
+    //Add to constructors
+    public void addConstructor(Mubble constructor) {
+	this.constructors.add(constructor);
+    }
+    /* Setter for visibility    
+    //Set the visibility of this Bubble
+    public void getVisibility(String visibility) {
+	this.visibility = visibility;
+    }
+    */
     
-    public String[] getConstructors(){
-        return this.constructors;
+    /////////////
+    /* GETTERS */
+    /////////////
+
+    //Returns ArrayList of child Bubbles
+    public ArrayList<Bubble> getBubbles() {
+	return this.bubbles;
+	//return this.bubbles.toArray();
     }
 
-    public String[] getDataFields(){
-        return this.dataFields;
-    }    
-
-    public String[] getFormatedMethods() {
-	String[] mm = new String[vtable.size()-1];
-	String[] temp = new String[mm.length];
-	for (int i = 0; i < mm.length; i++) {
-	    temp[i] = vtable.get(i+1);
-	    String[] s = temp[i].split("[\\s\\(\\)\\*\\,\\;]");
-	    String real = "";
-	    int num = 0;
-	    for (int j = 0; j < s.length; j++) {
-		if (!s[j].equals("")) {
-		    if (num == 0) {
-			real += s[j] + " ";
-		    }
-		    else if (num == 1) {
-			real += s[j] + "(";
-		    }
-		    else if (num == 2) {
-			real += s[j];
-		    }
-		    else {
-			real += ", " + s[j];
-		    }
-		    num++;
-		}
-	    }
-	    mm[i] = real + ");";
-	}
-	return mm;
+    //Returns ArrayList of field variable types
+    public ArrayList<String> getFieldTypes() {
+	return this.fieldTypes;
+	//return this.fieldTypes.toArray();
     }
 
-    public String[] getMethods(){
-        return this.methods;
+    //Returns ArrayList of field variable names
+    public ArrayList<String> getFieldVars() {
+	return this.fieldVars;
+	//return this.fieldVars.toArray();
     }
 
+    //Returns ArrayList of Mubbles
+    public ArrayList<Mubble> getMubbles() {
+	return this.mubbles;
+	//return this.mubbles.toArray();
+    }
+
+    //Returns the name of this class
     public String getName() {
-	if (name == null) {
-	    return "No Name";
-	}
-	return name;
-    }
-    
-    public String getPackageName(){
-        return this.packageName;
-    }    
-    
-    public Bubble getParent() {
-	return parent;
+	return this.name;
     }
 
-    public ArrayList<String> getVtable(){
-        return this.vtable;
-    }    
-
-    public String indentLevel(int indent){
-        String toReturn = "";
-        for( int i=0; i<indent; i++){
-            toReturn += "  ";
-        }
-        return toReturn;
+    //Returns this class' parent class
+    public Bubble getParentBubble() {
+	return this.parentBubble;
     }
 
-    public String parentToString(){
-        if(this.parent != null) {
-            return this.parent.getName();
-	}
-        else {
-            return "No Parent";
-	}
+    //Returns this class' package
+    public Pubble getParentPubble() {
+	return this.parentPubble;
     }
 
-    public void printToFile(int indent) {
-	// namespace needs to be added
-	// String or java.lang::String ?
-	if (getName().equals("Object") ||
-	    getName().equals("String") ||
-	    getName().equals("Class")) return;
 
-	System.out.println("#pragma once");
-	System.out.println();
-	System.out.println("#include \"java_lang.h\"");
-	System.out.println();
-	System.out.println("struct _" + getName() + ";");
-	System.out.println("struct _" + getName() + "_VT;");
-	System.out.println();
-	System.out.println("typdef _" + getName() + "* " + getName() + ";");
-	System.out.println();
-	System.out.println("struct _" + getName() + " {");
-	System.out.println(indentLevel(indent) + "_" + getName() +
-			   "_VT* __vprt;");
+    //Returns this class' constructors
+    public ArrayList<Mubble> getConstructors() {
+	return this.constructors;
+    }
+    /* Getter for visibility      
+    //Returns the visibility of this class (public, private, etc.)
+    public String getVisibility() {
+	return this.visibility;
+    }
+    */
 
-	String[] s = getConstructors();
-	for (int i = 0; i < s.length; i++) {
-	    System.out.println(indentLevel(indent) + "_" + s[i]);
+    ///////////////////
+    /* MISC. METHODS */
+    ///////////////////
+
+    public String getTypeDef() {
+	String pkgpath = "";
+	Pubble p = this.parentPubble;
+	//e.g. java::lang::Object
+	while(p != null) {
+	    pkgpath = p.getName() + "::" + pkgpath;
+	    p = p.getParent();
 	}
-	//System.out.println(indentLevel(indent) + "_" + getName() + "();");
-	System.out.println();
-	String[] m = getFormatedMethods();
-	for (int i = 0; i < m.length; i++) {
-	    System.out.println(indentLevel(indent) + "static " + m[i]);
-	}
-
-	System.out.println();
-	System.out.println(indentLevel(indent) + "static Class __class();");
-	System.out.println();
-	System.out.println(indentLevel(indent) + "static _" + getName() +
-			   "_VT __vtable;");
-	System.out.println("};");
-	System.out.println();
-
-	System.out.println("struct _" + getName() + "_VT {");
-	ArrayList<String> vt = getVtable();
-	for (int i = 0; i < vt.size(); i++) {
-	    System.out.println(indentLevel(indent) + vt.get(i));
-	}
-	System.out.println();
-	System.out.println("};");
+	//why do we need two typedefs? one with underscores one without?
+	return "typedef " + pkgpath + this.name + " " + this.name + ";\n" +
+	    "typedef " + pkgpath + "_"+this.name + " _" + this.name + ";\n";
     }
 
-    public void printVtable(){
-        System.out.println("//==============================================");
-        System.out.println("//" + this.name + "'s vtable:");
-        for(String s : this.vtable)
-            System.out.println(s);
-
-        //System.out.println("================================");
+    public String getFDeclStruct() {
+	return "struct _"+this.name+";\n"+
+	    "struct _"+this.name+"_VT;\n";
     }
 
-    
-
-    public void setChildren(String[] children) {
-	if (children == null) {
-	    return;
+    public String getStruct() {
+	String struct = "struct _" + this.name + " {\n";
+	//indent
+	struct += "//Data fields\n";
+	//add the VT vptr
+	struct += "_"+this.name+"_VT* __vptr;\n";
+	//iterate through datafields, print them
+	for(int i = 0; i < this.fieldVars.size(); i++) {
+	    //output data fields
 	}
-	this.children = children;
+	struct+="\n//Constructors\n";
+	for(Mubble constructor : constructors) {
+	    struct += "_"+constructor.getName()+"();\n";
+	}
+	struct+="\n//Forward declaration of methods\n";
+	//Hardcoding the vt and class
+	struct += "static Class __class();\n" +
+	    "static _"+this.name+"_VT __vtable;\n";
+	for(Mubble m : mubbles) {
+	    //HARDCODING STATIC, MAY NEED TO CHANGE
+	    struct+= "static "+m.forward() + "\n";
+	}
+	//unindent
+	struct += "};\n";
+	return struct;	    
     }
 
-    public void setConstructors(String[] constructors){
-        this.constructors = trim(constructors);
+    public String getStructVT() {
+	String struct = "// The vtable layout for "+this.name+".\n";
+	struct += "struct _"+this.name+"_VT {\n";
+	//indent
+	//Hardcoding class
+	struct += "Class __isa;";
+	for(Mubble m : mubbles) {
+	    struct += m.vTable1()+"\n";
+	}
+	//Make VT constructor in-line, hardcoding class (indent?)
+	struct+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
+	for(Mubble m : mubbles) {
+	    struct += ",\n"+m.vTable2();
+	}
+	struct+=" {\n";
+	//unindent
+	struct+="}\n";
+	//unindent
+	struct+="};\n";
+	return struct;
     }
-
-    
-    public void setDataFields(String[] dataFields) {
-	if (dataFields == null) {
-	    return;
-	}
-	
-	//find number of non-null strings
-	int r_length = 0;
-	for(int i = 0; i < dataFields.length; i++) {
-	    if(!dataFields[i].equals(""))
-		r_length++;
-	}
-	//make temp array of correct size
-	String [] temp = new String [r_length];
-	int temp_i = 0;
-	
-	for(int i = 0; i < dataFields.length; i++) {
-	    //types
-	    dataFields[i] 
-		= dataFields[i].replaceAll("(?<!\\w)int(?!\\w)","int32_t");
-	    dataFields[i] 
-		= dataFields[i].replaceAll("(?<!\\w)boolean(?!\\w)","bool");
-	    dataFields[i] 
-		= dataFields[i].replaceAll("(?<!\\w)final(?!\\w)","const");
-
-	    //don't add nulls to temp
-	    if(!dataFields[i].equals("")){
-		//System.out.println("_______________________"+dataFields[i]);
-		temp[temp_i++] = dataFields[i]+";";
-	    }
-	}
-
-	this.dataFields = temp;
-    }
-
-    public void setMethodAtIndex(int index, String meth) {
-       this.methods[index] = meth;
-    }
-
-    public void setMethods(String[] methods) {
-	if (methods == null) {
-	    return;
-	}
-	this.methods = methods;
-    }    
-
-    public void setPackageName(String name) {
-        this.packageName = name;
-    }
-
-    public void setParent(Bubble parent) {
-	if (parent == null) {
-	    return;
-	}
-	this.parent = parent;
-    }
-
-    //changed to make it arraylist
-    public void setVtable(ArrayList<String> vtable) {
-	if (vtable == null) {
-	    return;
-	}
-	this.vtable = vtable;
-    }    
-
-    //sets the vtable at index i to string s
-    public void setVtableIndex(int i, String s) {
-        this.vtable.set(i, s);
-    }    
-
-    public String toString() {
-        StringBuilder s = new StringBuilder("Name: " + getName() + "\n");
-        s.append("Package: " + getPackageName() + "\n");
-        s.append("Children: " + childrenToString() + "\n");
-        s.append("Parent: " + parentToString());
-        return s.toString();
-    }
-
-    public String[] trim(String[] s) {
-	int index = 0;
-	String[] temp = new String[s.length];
-
-	for (int i = 0; i < s.length; i++) {
-	    String[] a = s[i].split(" ");
-	    for (int j = 0; j < a.length; j++) {		
-		if (a[j].startsWith(this.name)) {
-		    temp[index++] = s[i];
-		    break;
-		}
-	    }
-	}
-
-	String[] result = new String[index];
-	for (int i = 0; i < index; i++) {
-	    result[i] = temp[i];
-	}
-	return result;
-    }    
 }
