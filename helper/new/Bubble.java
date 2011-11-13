@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Bubble{
     ArrayList<Bubble> bubbles; //ArrayList of the children of this Bubble
-    ArrayList<Mubble> constructors; //ArrayList of constructor Mubbles
+    ArrayList<Mubble> constructors; //DONT THINK WE NEED THIS SINCE THERE IS A CONSTRUCTOR FLAG IN MUBBLE
     ArrayList<String> fieldTypes; //ArrayList of the data field variable types
     ArrayList<String> fieldVars; //ArrayList of the data field variable names
     ArrayList<Mubble> mubbles; //ArrayList of Mubbles in this class
@@ -19,10 +19,11 @@ public class Bubble{
     /* CONSTRUCTOR(S) */
     ////////////////////
 
-    public Bubble() {
+    public Bubble(String name) {
 	//TODO: Make this constructor, what are the params?
 	//What's the context it's called from?
 
+    this.name = name;
 	this.bubbles = new ArrayList<Bubble>();
 	this.fieldTypes = new ArrayList<String>();
 	this.fieldVars = new ArrayList<String>();

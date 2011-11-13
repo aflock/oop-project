@@ -33,6 +33,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public static ArrayList<PNode> packageTree;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
+    public Pubble curPub;
+    public Bubble curBub;
+    public Mubble curMub;
 
     public StructureParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
     {
@@ -41,13 +44,37 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         this.bubbleList = bubbleList;
         this.parsed = parsed;
     }
+    
+    public void visit(Node n)
+    {
+        int counter = 1;
+        if(n.hasProperty("parent0")) {
+            Node temp = (Node)n.getProperty("parent0");
+
+            while(temp != null) {
+                n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                temp = (Node)temp.getProperty("parent0");
+            }
+        }
+
+        for (Object o : n){
+            if (o instanceof Node){
+                ((Node)o).setProperty("parent_name", n.getName() );
+                ((Node)o).setProperty("parent0", n );
+                dispatch((Node)o);
+            }
+        }
+    }
 
 
     public void visitClassDeclaration(GNode n){
         //n.getString(0) is the Modifiers node
         //n.getString(1) is the name of the class
-        bubbleList.add(new Bubble()); //Create New Bubble which whatever constructor we decide
-
+        String className = n.getString(1);
+        curBub = new Bubble(className);
+        bubbleList.add(curBub);
+        visit(n);
+        
     }
 
 
