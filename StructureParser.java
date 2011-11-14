@@ -201,11 +201,34 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitDeclarator(GNode n) {
+        //TODO fact check with an AST (see testAssignmt..a.java)
         visit(n);
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)n.getProperty("parent1");
+        Node parent2 = (Node)n.getProperty("parent2");
+
+        //if an assignment is being made within a class declaration
+        if ((parent1.hasName("FieldDeclaration")) &&
+        (parent2.hasName("ClassDeclaration"))){
+            curField.setHasAssignment(true);
+            curField.setAssignmentNode(n); //save the node so we can re-parse it later
+        }
     }
 
     public void visitIntegerLiteral(GNode n) {
         visit(n);
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)n.getProperty("parent1");
+        Node parent2 = (Node)n.getProperty("parent2");
+
+        if ((parent0.hasName("ConcreteDimensions")) &&
+        (parent2.hasName("ClassDeclaration"))){
+            //TODO what do we do about full declarations? e.g.
+            //String[] SA = new String[4];
+            //int a = 5;
+            //Bubble b = new Bubble(param1, param2, param3)
+
+        }
     }
 
     public void visitClassBody(GNode n){

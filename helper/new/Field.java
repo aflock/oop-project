@@ -1,3 +1,4 @@
+import xtc.......where?......GNode;
 public class Field{
     /*
      * For holding info about parameters and data fields
@@ -7,22 +8,30 @@ public class Field{
     String type;
     boolean isArray;
     int arrayDims;
+    boolean hasAssignment;
+    GNode assignmentNode; //for the situations where a
+    ArrayList<Integer> concreteDims = new ArrayList<Integer>();
     ArrayList<String> modifiers = new ArrayList<String>();
 
     public Field(){};
 
     public Field(String name, String type, String modifier){
-        this.name      = name;
-        this.type      = type;
-        this.isArray   = false;
-        this.arrayDims = 0;
-
+        this.name           = name;
+        this.type           = type;
+        this.isArray        = false;
+        this.arrayDims      = 0;
+        this.hasAssignment  = false;
+        this.assignmentNode = null;
         modifiers.add(modifier);
     }
 
     public Field(String name, String type, ArrayList<String> modifiers){
-        this.name = name;
-        this.type = type;
+        this.name           = name;
+        this.type           = type;
+        this.isArray        = false;
+        this.arrayDims      = 0;
+        this.hasAssignment  = false;
+        this.assignmentNode = null;
         modifiers.addAll(modifiers);
     }
 
@@ -40,5 +49,14 @@ public class Field{
     }
     public void addModifier(String modifier){
         modifiers.add(modifier);
+    }
+    public void addConcreteDimension(int dim){
+        concreteDims.add(dim);
+    }
+    public void setHasAssignment(boolean hasAssignment){
+        this.hasAssignment = hasAssignment;
+    }
+    public void setAssignment(GNode assignmentNode){
+        this.assignmentNode = assignmentNode;
     }
 }
