@@ -25,7 +25,8 @@ import xtc.lang.JavaFiveParser;
 //our imports
 import xtc.oop.helper.Bubble;
 import xtc.oop.helper.Mubble;
-import xtc.oop.helper.PNode;
+import xtc.oop.helper.Pubble;
+import xtc.oop.helper.Field;
 
 import xtc.oop.StructureParser;
 import xtc.oop.ImplementationParser;
