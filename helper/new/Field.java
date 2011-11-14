@@ -7,6 +7,8 @@ public class Field{
     String type;
     ArrayList<String> modifiers = new ArrayList<String>();
 
+    public Field(){};
+
     public Field(String name, String type, String modifier){
         this.name = name;
         this.type = type;
@@ -17,5 +19,15 @@ public class Field{
         this.name = name;
         this.type = type;
         modifiers.addAll(modifiers);
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setType(String type){
+        this.type = type;
+    }
+    public void addModifier(String modifier){
+        modifiers.add(modifier);
     }
 }

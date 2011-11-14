@@ -37,6 +37,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public Bubble curBub;
     public Mubble curMub;
 
+    public Field curField;
+
     public StructureParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
     {
         this.packageTree = packageTree;
@@ -44,7 +46,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         this.bubbleList = bubbleList;
         this.parsed = parsed;
     }
-    
+
     public void visit(Node n)
     {
         int counter = 1;
@@ -86,7 +88,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Bubble parent = null;
         for(Bubble b : bubbleList){
             if(b.hasName(parentName)){             //if the parent has already been added by a child
-                parent = b;                        
+                parent = b;
                 parentFound = true;
                 b.addBubble(curBub);               //add myself as my parent's child
             }
@@ -97,7 +99,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             bubbleList.add(parent);
             parent.addBubble(curBub);              //adding myself as my paren't child
         }
-        
+
         //parentBubble is found at this point, setting it to curBub's parent, add curBub to parent's children
         curBub.setParentBubble(parent);
 
@@ -143,42 +145,37 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         else{
             freshMubble = new Mubble(name);
         }
+        curMub = freshMubble;
 
         visit(n);
 
-        mubbleList.add(freshMubble);
-        curBub.addMubble(freshMubble);
-
-        /*//{{{
-         * Old from Decl
-        methods.add("");
-        visit(n);
-        String name = n.getString(3);
-        if (name == "static")
-            name = name + " " + n.getString(4);
-        methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
-        *///}}}
+        mubbleList.add(curMub);
+        curBub.addMubble(curMub);
 
     }
 
     public void visitModifier(GNode n){
         visit(n);
-        //parent0 = Modifiers
+
+        Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
         Node parent2 = (Node)n.getProperty("parent2");
+        Node parent3 = (Node)n.getProperty("parent3");
+
         if ((parent1.hasName("MethodDeclaration")) &&
                 (parent2.hasName("ClassBody")))
         {
-            String name = n.getString(0);
-            methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
-		}
-		else if((parent1.hasName("FieldDeclaration")) &&
-			(parent2.hasName("ClassBody"))) 
-	    {
-		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
-		}
-     }
-            
+            String visibility = n.getString(0);
+            curMub.setVisibility(visibility);
+        }
+
+        if ((parent1.hasName("FormalParameter")) &&
+                (parent3.hasName("MethodDeclaration")))
+        {
+            String modifier = n.getString(0);
+            curField.addModifier(modifier);
+        }
+
     public void visitDeclarators(GNode n) {
         visit(n);
     }
@@ -205,6 +202,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitFormalParameter(GNode n) {
 
+        Field tempField = new Field();
+        curField = tempField;
         visit(n);
     }
 
@@ -213,14 +212,14 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
         Node parent2 = (Node)n.getProperty("parent2");
-        
+
         //finding inheritance
         if ((parent1.hasName("Extension")) &&
         (parent2.hasName("ClassDeclaration"))){
             String name = n.getString(0);
             parent2.setProperty("parent_class", name);
         }
-        
+
         //finding the package curBub belongs to
         if (parent0.getName().equals("PackageDeclaration")){
             //looping through something like...
@@ -245,16 +244,23 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                     packPub = p;
                 }
             }
-            
+
             //if its not in the packageList, create a new Pubble, and add it to pubbleList
             if(!inPubbleList)
             {
                 packPub = new Pubble(packageName);
                 pubbleList.add(packPub);
             }
-            
+
             packPub.addBubble(curBub);
             curBub.setParentPubble(packPub);
+
+
+        if ((parent0.hasName("Type")) &&
+                (parent1.hasName("MethodDeclaration")))
+        {
+            String type = n.getString(0);
+            curMub.setReturnType(type);
         }
     }
 
