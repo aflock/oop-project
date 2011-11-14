@@ -24,7 +24,7 @@ import java.io.BufferedWriter;
 
 import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
-import xtc.oop.helper.PNode;
+import xtc.oop.helper.Pubble;
 
 public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 {
