@@ -22,9 +22,10 @@ import xtc.lang.JavaFiveParser;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-import xtc.oop.helper.new.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
-import xtc.oop.helper.new.Mubble;
-import xtc.oop.helper.new.PNode;
+import xtc.oop.helper.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
+import xtc.oop.helper.Mubble;
+import xtc.oop.helper.Pubble;
+import xtc.oop.helper.Field;
 
 public class StructureParser extends xtc.tree.Visitor //aka Decl
 {
@@ -227,6 +228,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //String[] SA = new String[4];
             //int a = 5;
             //Bubble b = new Bubble(param1, param2, param3)
+            //THIS IS A BIG TODO
 
         }
     }
