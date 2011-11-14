@@ -123,7 +123,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         visit(n);
 
+        curMub.setClassName(curBub);
+        curMub.setPackageName(curPub);
+
         mubbleList.add(curMub);
+
         curBub.addMubble(curMub);
 
     }
@@ -149,6 +153,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             String modifier = n.getString(0);
             curField.addModifier(modifier);
         }
+    }
 
      }
             
@@ -181,7 +186,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         Field tempField = new Field();
         curField = tempField;
+
+        String name = n.getString(3);
+        curField.setName(name);
+
         visit(n);
+
+        curMub.addParameter(curField);
     }
 
     public void visitCompilationUnit(GNode n){
@@ -260,13 +271,22 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             */
         }
 
-        if ((parent0.hasName("Type")) &&
-                (parent1.hasName("MethodDeclaration")))
-        {
-            String type = n.getString(0);
-            curMub.setReturnType(type);
+            //get return type for methods
+            if ((parent0.hasName("Type")) &&
+                    (parent1.hasName("MethodDeclaration")))
+            {
+                String type = n.getString(0);
+                curMub.setReturnType(type);
+            }
+
+            //get parameter type for methods
+            if ((parent0.hasName("Type")) &&
+                    (parent1.hasName("FormalParameter")))
+            {
+                String type = n.getString(0);
+                curField.setType(type);
+            }
         }
-    }
 
     public void visitImportDeclaration(GNode n){
         visit(n);
@@ -284,6 +304,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitPrimitiveType(GNode n) {
         visit(n);
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)n.getProperty("parent1");
+        Node parent2 = (Node)n.getProperty("parent2");
+
+        //finding inheritance
+        if ((parent0.hasName("Type")) &&
+        (parent1.hasName("FormalParameter"))){
+            String type = n.getString(0);
+            curField.setType(type);
+        }
     }
 
     public void visitType(GNode n)

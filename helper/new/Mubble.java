@@ -20,7 +20,7 @@ public class Mubble {
     Pubble packageName;
 
     String methodName;
-    String returnType;
+    String returnType; //if none and not a constructor -->> void
     String visibility;
     ArrayList<Field> parameters;
 
