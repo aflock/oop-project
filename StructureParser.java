@@ -74,38 +74,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //n.getString(1) is the name of the class
         String className = n.getString(1);
         curBub = new Bubble(className);
+        curBub.setParentPubble(curPub); //curBub's package is curPub
         visit(n);
-
-
-        //===================Getting Inheritance=====================//
-        String parentName = "";
-        if (!n.hasProperty("parent_class")){
-            n.setProperty("parent_class", "Object");
-        }
-        parentName = (String)n.getProperty("parent_class");
-
-        Boolean parentFound = false;
-        Bubble parent = null;
-        for(Bubble b : bubbleList){
-            if(b.hasName(parentName)){             //if the parent has already been added by a child
-                parent = b;
-                parentFound = true;
-                b.addBubble(curBub);               //add myself as my parent's child
-            }
-        }
-
-        if(!parentFound){
-            parent = new Bubble(parentName);
-            bubbleList.add(parent);
-            parent.addBubble(curBub);              //adding myself as my paren't child
-        }
-
-        //parentBubble is found at this point, setting it to curBub's parent, add curBub to parent's children
-        curBub.setParentBubble(parent);
-
 
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
         bubbleList.add(curBub);
+        curPub.addBubble(curBub);
     }
 
 
@@ -176,6 +150,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curField.addModifier(modifier);
         }
 
+     }
+            
+
     public void visitDeclarators(GNode n) {
         visit(n);
     }
@@ -207,6 +184,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
     }
 
+    public void visitCompilationUnit(GNode n){
+        curPub = new Pubble();
+        visit(n);
+        pubbleList.add(curPub);
+    }
+    
     public void visitQualifiedIdentifier(GNode n){
         visit(n);
         Node parent0 = (Node)n.getProperty("parent0");
@@ -217,7 +200,23 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         if ((parent1.hasName("Extension")) &&
         (parent2.hasName("ClassDeclaration"))){
             String name = n.getString(0);
-            parent2.setProperty("parent_class", name);
+
+            Boolean parentFound = false;
+            Bubble parent;
+            for(Bubble b : bubbleList){
+                if(b.hasName(parentName)){             //if the parent is already in bubbleList
+                    parent = b;
+                    parentFound = true;
+                }
+            }
+
+            if(!parentFound){
+                parent = new Bubble(parentName);      //if parent isn't found, create it
+                bubbleList.add(parent);
+            }
+            
+            parent.addBubble(curBub);  //add myself as my parent's child
+            curBub.addParentBubble(parent); //set my parent
         }
 
         //finding the package curBub belongs to
@@ -233,6 +232,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 name = n.getString(i);
                 packageName += " " + name;
             }
+            
+            curPub.setName(packageName);
+            
+            /* ===============DON'T THINK WE NEED THIS=======================
             //check to see if this package is already in pubbleList
             Pubble packPub;
             Boolean inPubbleList = false;
@@ -254,7 +257,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             packPub.addBubble(curBub);
             curBub.setParentPubble(packPub);
-
+            */
+        }
 
         if ((parent0.hasName("Type")) &&
                 (parent1.hasName("MethodDeclaration")))

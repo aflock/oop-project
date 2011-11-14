@@ -38,7 +38,7 @@ public class Translator extends xtc.util.tool{
 
     //What is not needed? What is also needed?//
     public static ArrayList<Bubble> bubbleList;
-    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Pubble> pubbleList;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<Mubble> langList;
     public static ArrayList<String> parsed;//keeps track of what ASTs have been parsed
@@ -109,10 +109,10 @@ public class Translator extends xtc.util.tool{
 
     public void process(Node node){
 
-        StructureParser s = new StructureParser(packageTree, mubbleList, bubbleList, parsed);
+        StructureParser s = new StructureParser(pubbleList, mubbleList, bubbleList, parsed);
         s.dispatch(node);
 
-        ImplementationParser i = new ImplementationParser(packageTree, mubbleList, bubbleList, parsed);
+        ImplementationParser i = new ImplementationParser(pubbleList, mubbleList, bubbleList, parsed);
         i.dispatch(node);
 
 
@@ -136,6 +136,9 @@ public class Translator extends xtc.util.tool{
             } catch (Exception e) {System.out.println(e);}
         }
 
+        //At this point, pubbleList contains all the packages but they aren't linked together
+        constructPackageTree();
+        
         //at this point, shit should be ready to print
 
     }
@@ -153,9 +156,11 @@ public class Translator extends xtc.util.tool{
          */
         populateLangList();//putting all of java_lang methods into the langList
 
-        packageTree.add(new PNode("DefaultPackage", null));
+        pubbleList.add(new Pubble("DefaultPackage", null)); //parent is null
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
+        
+        /*DO WE NEED THIS? HOW ARE WE CONSTRUCTING A VTABLE NOW? */
         //Creating Object's Vtable
         object.add2Vtable("Class __isa;");
         object.add2Vtable("int32_t (*hashCode)(Object);");

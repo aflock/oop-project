@@ -8,11 +8,21 @@ public class Pubble{
     Pubble parent; //The parent package
 
 //=========Constructors=======//
+    public Pubble()
+    {
+        this.children = new ArrayList<Pubble>();
+        this.bubbles = new ArrayList<Bubble>();
+    }
+    
     public Pubble(String name){
         this.name = name;
+        this.children = new ArrayList<Pubble>();
+        this.bubbles = new ArrayList<Bubble>();
     }
     
     public Pubble(String name, Pubble parent){
+        this.children = new ArrayList<Pubble>();
+        this.bubbles = new ArrayList<Bubble>();
         this.name = name;
         this.parent = parent;
     }
@@ -30,6 +40,9 @@ public class Pubble{
         this.bubbles.add(b);
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
      //returns a string with the correct information for a .h file
     //lines will be delimited by \n but will not be correctly indented
     public String getH()
