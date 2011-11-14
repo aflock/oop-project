@@ -22,9 +22,9 @@ import xtc.lang.JavaFiveParser;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
-import xtc.oop.helper.Mubble;
-import xtc.oop.helper.PNode;
+import xtc.oop.helper.new.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
+import xtc.oop.helper.new.Mubble;
+import xtc.oop.helper.new.PNode;
 
 public class StructureParser extends xtc.tree.Visitor //aka Decl
 {
@@ -125,17 +125,39 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
 
         /*
-         *
+         * get method name
+         * Create a new mubble
+         * Visit
+         * Add this new mubble to curbub
+         * Also add to mubble list
          */
 
-        /*
+        //Create a Mubble to add
+        Mubble freshMubble;
+        String name = n.getString(3);
+        if (name == "static"){
+            name = n.getString(4);
+            freshMubble = new Mubble(name);
+            freshMubble.setStatic(true);
+        }
+        else{
+            freshMubble = new Mubble(name);
+        }
+
+        visit(n);
+
+        mubbleList.add(freshMubble);
+        curBub.addMubble(freshMubble);
+
+        /*//{{{
+         * Old from Decl
         methods.add("");
         visit(n);
         String name = n.getString(3);
         if (name == "static")
             name = name + " " + n.getString(4);
         methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
-        */
+        *///}}}
 
     }
 
