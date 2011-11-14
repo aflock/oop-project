@@ -1,6 +1,6 @@
-public class Test{
+public class testModifiedParams{
     public static void main (final String [] args)
     {
-        System.out.println("omgomgomg");
+        System.out.println("omgomgmg if you see this.. fsho ");
     }
 }
