@@ -149,7 +149,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         visit(n);
 
+        curMub.setClassName(curBub);
+        curMub.setPackageName(curPub);
+
         mubbleList.add(curMub);
+
         curBub.addMubble(curMub);
 
     }
