@@ -21,14 +21,17 @@ public class Bubble{
     public Bubble(String name) {
 	//TODO: Make this constructor, what are the params?
 	//What's the context it's called from?
-
+    
         this.name = name;
 	    this.bubbles = new ArrayList<Bubble>();
 	    this.fieldTypes = new ArrayList<String>();
-	    this.fieldVars = new ArrayList<String>();
+	    this.dataFields = new ArrayList<Field>();
 	    this.mubbles = new ArrayList<Mubble>();
     }
 
+    public Bubble(){
+        //Default Constructor
+    }
 
     /////////////
     /* SETTERS */

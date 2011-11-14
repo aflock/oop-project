@@ -22,7 +22,7 @@ import xtc.lang.JavaFiveParser;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-import xtc.oop.helper.new.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
+import xtc.oop.helper.new.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.new.Mubble;
 import xtc.oop.helper.new.PNode;
 
@@ -269,7 +269,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         (parent2.hasName("ClassDeclaration"))){
             String name = n.getString(0);
 
-            Boolean parentFound = false;
+            boolean parentFound = false;
             Bubble parent;
             for(Bubble b : bubbleList){
                 if(b.hasName(parentName)){             //if the parent is already in bubbleList

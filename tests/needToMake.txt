@@ -28,5 +28,7 @@ Other:
         x index out of bounds check
         x re-assign values
     x Arrays of Objects //needs fleshing out? -AF
-    - Two different param types (ex. public add(final int bla, int two))
-    - assignment chaining
+    x Two different param types (ex. public add(final int bla, int two))
+    x assignment chaining
+    x Setting specific values in arrays/2 dimenstional arrays (array[1][2] = 3)
+    x testing weird datafield declarations
