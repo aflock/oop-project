@@ -17,7 +17,20 @@ public class Pubble{
         this.parent = parent;
     }
     
-    //returns a string with the correct information for a .h file
+   
+
+//=========NON-GETTER/SETTER METHODS=======//
+    
+    //Adds a new package to this Pubble's packageChildren
+    public void addChild(Pubble child){
+        this.children.add(child);
+    }
+    
+    public void addBubble(Bubble b){
+        this.bubbles.add(b);
+    }
+
+     //returns a string with the correct information for a .h file
     //lines will be delimited by \n but will not be correctly indented
     public String getH()
     {
@@ -77,19 +90,6 @@ public class Pubble{
         ret += "}";
         return ret;
     }
-    
-
-//=========NON-GETTER/SETTER METHODS=======//
-    
-    //Adds a new package to this Pubble's packageChildren
-    public void addChild(Pubble child){
-        this.children.add(child);
-    }
-    
-    public void addBubble(Bubble b){
-        this.bubbles.add(b);
-    }
-
     
 //=========GETTER/SETTER METHODS=======//  
     

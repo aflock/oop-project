@@ -3,13 +3,15 @@ import java.util.ArrayList;
 
 public class Bubble{
     ArrayList<Bubble> bubbles; //ArrayList of the children of this Bubble
-    ArrayList<Mubble> constructors; //DONT THINK WE NEED THIS SINCE THERE IS A CONSTRUCTOR FLAG IN MUBBLE
-    ArrayList<String> fieldTypes; //ArrayList of the data field variable types
-    ArrayList<String> fieldVars; //ArrayList of the data field variable names
     ArrayList<Mubble> mubbles; //ArrayList of Mubbles in this class
     String name; //This class' name
     Bubble parentBubble; //This Bubble's parent Bubble
     Pubble parentPubble; //This class' package (reference)
+    //Removed Constructor arraylist because mubbles have a flag for that
+    
+    //NEED TO CHANGE TO field because there can be multible modifiers
+    ArrayList<String> fieldTypes; //ArrayList of the data field variable types
+    ArrayList<String> fieldVars; //ArrayList of the data field variable names
 
     /* DO WE NEED THIS?:
     String visibility; //The visibility for this class
@@ -23,12 +25,13 @@ public class Bubble{
 	//TODO: Make this constructor, what are the params?
 	//What's the context it's called from?
 
-    this.name = name;
-	this.bubbles = new ArrayList<Bubble>();
-	this.fieldTypes = new ArrayList<String>();
-	this.fieldVars = new ArrayList<String>();
-	this.mubbles = new ArrayList<Mubble>();
+        this.name = name;
+	    this.bubbles = new ArrayList<Bubble>();
+	    this.fieldTypes = new ArrayList<String>();
+	    this.fieldVars = new ArrayList<String>();
+	    this.mubbles = new ArrayList<Mubble>();
     }
+
 
     /////////////
     /* SETTERS */

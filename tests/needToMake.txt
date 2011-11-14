@@ -28,3 +28,5 @@ Other:
         x index out of bounds check
         x re-assign values
     x Arrays of Objects //needs fleshing out? -AF
+    - Two different param types (ex. public add(final int bla, int two))
+    - assignment chaining

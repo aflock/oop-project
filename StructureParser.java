@@ -72,9 +72,38 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //n.getString(1) is the name of the class
         String className = n.getString(1);
         curBub = new Bubble(className);
-        bubbleList.add(curBub);
         visit(n);
+
+
+        //===================Getting Inheritance=====================//
+        String parentName = "";
+        if (!n.hasProperty("parent_class")){
+            n.setProperty("parent_class", "Object");
+        }
+        parentName = (String)n.getProperty("parent_class");
+
+        Boolean parentFound = false;
+        Bubble parent = null;
+        for(Bubble b : bubbleList){
+            if(b.hasName(parentName)){             //if the parent has already been added by a child
+                parent = b;                        
+                parentFound = true;
+                b.addBubble(curBub);               //add myself as my parent's child
+            }
+        }
+
+        if(!parentFound){
+            parent = new Bubble(parentName);
+            bubbleList.add(parent);
+            parent.addBubble(curBub);              //adding myself as my paren't child
+        }
         
+        //parentBubble is found at this point, setting it to curBub's parent, add curBub to parent's children
+        curBub.setParentBubble(parent);
+
+
+        //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
+        bubbleList.add(curBub);
     }
 
 
@@ -112,9 +141,22 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitModifier(GNode n){
         visit(n);
-
-    }
-
+        //parent0 = Modifiers
+        Node parent1 = (Node)n.getProperty("parent1");
+        Node parent2 = (Node)n.getProperty("parent2");
+        if ((parent1.hasName("MethodDeclaration")) &&
+                (parent2.hasName("ClassBody")))
+        {
+            String name = n.getString(0);
+            methods.set(methods.size()-1,methods.get(methods.size()-1)+" "+name);
+		}
+		else if((parent1.hasName("FieldDeclaration")) &&
+			(parent2.hasName("ClassBody"))) 
+	    {
+		    dataFields.set(dataFields.size()-1,dataFields.get(dataFields.size()-1)+" "+n.getString(0));
+		}
+     }
+            
     public void visitDeclarators(GNode n) {
         visit(n);
     }
@@ -146,6 +188,52 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitQualifiedIdentifier(GNode n){
         visit(n);
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)n.getProperty("parent1");
+        Node parent2 = (Node)n.getProperty("parent2");
+        
+        //finding inheritance
+        if ((parent1.hasName("Extension")) &&
+        (parent2.hasName("ClassDeclaration"))){
+            String name = n.getString(0);
+            parent2.setProperty("parent_class", name);
+        }
+        
+        //finding the package curBub belongs to
+        if (parent0.getName().equals("PackageDeclaration")){
+            //looping through something like...
+            /*QualifiedIdentifier(
+              "xtc",
+              "oop",
+              "helper"
+            )*/
+            String name, packageName;
+            for(int i=0; i<n.size(); i++){
+                name = n.getString(i);
+                packageName += " " + name;
+            }
+            //check to see if this package is already in pubbleList
+            Pubble packPub;
+            Boolean inPubbleList = false;
+            for(Pubble p : pubbleList)
+            {
+                if(p.getName().equals(packageName))
+                {
+                    inPubbleList = true;
+                    packPub = p;
+                }
+            }
+            
+            //if its not in the packageList, create a new Pubble, and add it to pubbleList
+            if(!inPubbleList)
+            {
+                packPub = new Pubble(packageName);
+                pubbleList.add(packPub);
+            }
+            
+            packPub.addBubble(curBub);
+            curBub.setParentPubble(packPub);
+        }
     }
 
     public void visitImportDeclaration(GNode n){
