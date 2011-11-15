@@ -35,7 +35,7 @@ import java.util.regex.*;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-public class Translator extends xtc.util.tool{
+public class NewTranslator extends xtc.util.tool{
 
     //What is not needed? What is also needed?//
     public static ArrayList<Bubble> bubbleList;
@@ -46,7 +46,7 @@ public class Translator extends xtc.util.tool{
     /*
      * all the shit from Decl
      */
-    public Translator()//{{{
+    public NewTranslator()//{{{
     {
         // Nothing to do.
     }
