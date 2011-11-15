@@ -24,13 +24,14 @@ public class Bubble{
     
         this.name = name;
 	    this.bubbles = new ArrayList<Bubble>();
-	    this.fieldTypes = new ArrayList<String>();
 	    this.dataFields = new ArrayList<Field>();
 	    this.mubbles = new ArrayList<Mubble>();
     }
 
     public Bubble(){
-        //Default Constructor
+        this.bubbles = new ArrayList<Bubble>();
+	    this.dataFields = new ArrayList<Field>();
+	    this.mubbles = new ArrayList<Mubble>();
     }
 
     /////////////
@@ -44,19 +45,13 @@ public class Bubble{
     }
 
     //Add a data field
-    public void addField(String var, String type) {
-	this.fieldVars.add(var);
-	this.fieldTypes.add(type);
+    public void addField(Field f) {
+        this.dataFields.add(f);
     }
 
     //Add a Mubble to this Bubble
     public void addMubble(Mubble m) {
-	if(m.isConstructor()) {
-	    this.constructors.add(m);
-	}
-	else {
 	    this.mubbles.add(m);
-	}
     }
 
     //Set the name of this Bubble
@@ -75,10 +70,6 @@ public class Bubble{
     }
 
 
-    //Add to constructors
-    public void addConstructor(Mubble constructor) {
-	this.constructors.add(constructor);
-    }
     /* Setter for visibility    
     //Set the visibility of this Bubble
     public void getVisibility(String visibility) {
@@ -96,16 +87,9 @@ public class Bubble{
 	//return this.bubbles.toArray();
     }
 
-    //Returns ArrayList of field variable types
-    public ArrayList<String> getFieldTypes() {
-	return this.fieldTypes;
-	//return this.fieldTypes.toArray();
-    }
-
-    //Returns ArrayList of field variable names
-    public ArrayList<String> getFieldVars() {
-	return this.fieldVars;
-	//return this.fieldVars.toArray();
+    //Returns ArrayList of dataFields
+    public ArrayList<Field> getDataFields() {
+	    return this.dataFields;
     }
 
     //Returns ArrayList of Mubbles
@@ -130,10 +114,6 @@ public class Bubble{
     }
 
 
-    //Returns this class' constructors
-    public ArrayList<Mubble> getConstructors() {
-	return this.constructors;
-    }
     /* Getter for visibility      
     //Returns the visibility of this class (public, private, etc.)
     public String getVisibility() {
@@ -170,12 +150,13 @@ public class Bubble{
 	//add the VT vptr
 	struct += "_"+this.name+"_VT* __vptr;\n";
 	//iterate through datafields, print them
-	for(int i = 0; i < this.fieldVars.size(); i++) {
+	for(int i = 0; i < this.dataFields.size(); i++) {
 	    //output data fields
 	}
 	struct+="\n//Constructors\n";
-	for(Mubble constructor : constructors) {
-	    struct += "_"+constructor.getName()+"();\n";
+	for(Mubble constructor : mubbles) {
+	    if(constructor.isConstructor())
+	        struct += "_"+constructor.getName()+"();\n";
 	}
 	struct+="\n//Forward declaration of methods\n";
 	//Hardcoding the vt and class

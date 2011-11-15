@@ -93,7 +93,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
         }
 
-        curBub.setParentBubble(ob)
+        curBub.setParentBubble(ob); 
 
         visit(n);
 
