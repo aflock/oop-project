@@ -137,17 +137,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitConstructorDeclaration(GNode n){
-        //TODO fix this to do constructor correctly @AFLOCK
-        Mubble freshMubble;
-        String name = n.getString(3);
-        if (name == "static"){
-            name = n.getString(4);
-            freshMubble = new Mubble(name);
-            freshMubble.setStatic(true);
-        }
-        else{
-            freshMubble = new Mubble(name);
-        }
+        String name = n.getString(2);
+        freshMubble = new Mubble(name);
+        freshMubble.setConstructor(true);
+
         curMub = freshMubble;
 
         visit(n);
@@ -156,7 +149,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curMub.setPackageName(curPub);
 
         mubbleList.add(curMub);
-
         curBub.addMubble(curMub);
 
 
