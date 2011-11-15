@@ -1,4 +1,7 @@
+package xtc.oop.helper; //UPDATE PACKAGE
+import java.util.ArrayList;
 import xtc.tree.GNode;
+
 public class Field{
     /*
      * For holding info about parameters and data fields
