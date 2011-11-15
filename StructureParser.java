@@ -136,6 +136,24 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     }
 
+    public void visitConstructorDeclaration(GNode n){
+        String name = n.getString(2);
+        freshMubble = new Mubble(name);
+        freshMubble.setConstructor(true);
+
+        curMub = freshMubble;
+
+        visit(n);
+
+        curMub.setClassName(curBub);
+        curMub.setPackageName(curPub);
+
+        mubbleList.add(curMub);
+        curBub.addMubble(curMub);
+
+
+    }
+
     public void visitMethodDeclaration(GNode n){
         visit(n);
 
