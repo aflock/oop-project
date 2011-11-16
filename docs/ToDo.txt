@@ -6,7 +6,7 @@ For Nov. 1st Meeting:
 -Rename shit? (get rid of cursing??)
 -Method chainging will be in test cases
 -Do it in order
-    PNode (Packages) have Bubbles (Classes) which have Mubbles (Methods) which have all the properties of a method like 
+    PNode (Packages) have Bubbles (Classes) which have Mubbles (Methods) which have all the properties of a method like
         -Classname
         -Methodname
         -parameters
@@ -30,7 +30,7 @@ For Nov. 1st Meeting:
 -there can be many main methods in java, 1 per class, but the only one that is called is the main of the class that is called
 
 Timeline:
-Week 1: 
+Week 1:
 -Test suite
 -High level, detailed program structure and plan
 
@@ -45,18 +45,21 @@ Week 3:
 Week 4:
 
 
-Project Bubble:
-B - 
-u
-b
-b - bilingual
-l - language
-e - 
+
+#
+LSD
+language
+switching
+device
+
+
 PNode (namespaces, packages)
 Bubble (classes)
 Mubble (methods)
 
 
+_V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
+-Need to deal with static blocks in class declarations.
 
 
 =================================PRE-MIDTERM===================================
