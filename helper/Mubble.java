@@ -28,12 +28,23 @@ public class Mubble {
 
     ArrayList<Field> parameters;
 
+	String code;
+
     public Mubble(String methodName) { // constructor with a method name
+		this.parameters = new ArrayList<Field>();
+		this.paraType = new ArrayList<String>();
+		this.paraName = new ArrayList<String>();
+		this.paraMod = new ArrayList<String>();
         constructor = false;
         main = false;
         staticMethod = false;
         this.methodName = methodName;
+		this.code = "";
     }
+
+	public void addCode(String code){
+		this.code += code;
+	}
 
     public void addParamter(Field parameter){
         //adds a parameter to both paraName and paraType lists
@@ -66,6 +77,9 @@ public class Mubble {
         return from;
     }
 
+	public String getClassName(){
+		return className.getName();
+	}
     public Bubble getBubble() {
         return className;
     }
@@ -170,7 +184,7 @@ public class Mubble {
 	}
 	return this;
     }
-    
+
     public Mubble setParameterNames(ArrayList<String> paraName) {
         this.paraName = paraName;
         return this;
@@ -179,7 +193,7 @@ public class Mubble {
     public Mubble setParameterTypes(ArrayList<String> paraType) {
         this.paraType = paraType;
         return this;
-    }    
+    }
 
     /* generates entry for vtable1 */
     public String vTable1() {

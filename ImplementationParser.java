@@ -63,10 +63,76 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
         }
     }
-//}}}
+    //}}}
+
+    public void visitSubscriptExpression(GNode n)
+    {
+        visit(n);
+        String arrName = n.getNode(0).getString(0);
+        String index = n.getNode(1).getString(0);
+        methodString += arrName + "->__data[" + index + "]";
+    }
+
+    String tan;
+    boolean inArrayExpress = false;
 
     public void visitFieldDeclaration(GNode n){
+        if (onMeth) {
+            tan = "";
+        }
+
         visit(n);
+
+        if (onMeth) {
+            String[] z = tan.trim().split("\\s+");
+            // this could be fucked up
+            String type = z[0];
+            System.out.println("Z"+tan+"\n");
+            for (int i = 1; i < z.length; i++) {
+                table.put(z[i], type);
+
+            }
+        }
+
+
+        if (onMeth) {
+            if(inArray)
+            {
+                //getting type
+                String arrType = n.getNode(1).getNode(0).getString(0);
+                if(arrType.equals("int"))
+                    arrType = "int32_t";
+                if(arrType.equals("boolean"))
+                    arrType = "bool";
+
+                String arrName = n.getNode(2).getNode(0).getString(0);
+                methodString += "__rt::Array<" + arrType + ">* " + arrName;
+                table.put(arrName, "__rt::Array<" + arrType + ">* ");
+                if(inArrayExpress)
+                {
+                    String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
+                    methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
+                    inArrayExpress = false;
+                }
+                methodString += ";\n";
+
+                inArray = false;
+            }
+            String[] z = tan.split("\\s+");
+            // this could be fucked up
+            String type = z[0];
+            for (int i = 1; i < z.length; i++) {
+                table.put(z[i], type);
+            }
+
+            System.out.println(tan);
+        }
+    }
+
+    public void visitNewArrayExpression(GNode n)
+    {
+        visit(n);
+        inArrayExpress = true;
     }
 
     public void visitDimensions(GNode n) {
@@ -75,11 +141,65 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitModifiers(GNode n){
         visit(n);
-
     }
 
-    public void visitMethodDeclaration(GNode n){
+    String tempString = "";
+    String tmpCode = "";
+    boolean onMeth = false;
+    Mubble curMub = null;
+    String methodString = "";
+    String cName = "";
+
+    HashMap<String, String> table;
+
+    public void visitMethodDeclaration(GNode n)
+    {
+
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)parent0.getProperty("parent0");
+
+        //Parent 1 Should be class decl
+        String classname = parent1.getString(1);
+
+        //setting global class name
+        cName = classname;
+        String methodname = n.getString(3);
+
+        for(Mubble m : mubbleList){
+            if(m.getClassName() == null || m.getName() == null || methodname == null || classname == null)
+                System.out.println("****************YOURE FUCKED**************");
+            if(m.getClassName().equals(classname) && m.getName().trim().equals(methodname))
+            {
+                curMub = m;
+            }
+
+        }
+
+        //visit
         visit(n);
+
+        //==============Assigning Package to CurMub===================//
+        //Assuming curMub has code
+        for(Bubble b: bubbleList)
+        {
+            if(b.getName().equals(classname)) // b's package is curMub's package
+            {
+                if(b.getPackageName().equals(""))
+                    curMub.setPackageName("DefaultPackage");
+                else
+                    curMub.setPackageName(b.getPackageName());
+            }
+        }
+        //Adding curMub to the right pNode
+        for(PNode p : packageTree)
+        {
+            if(p.getName().equals(curMub.getPackageName()))
+                p.addMubble(curMub);
+        }
+        //==============================================================//
+
+
+
     }
 
     public void visitModifier(GNode n){
@@ -87,15 +207,193 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     }
 
+    public void visitConstructorDeclaration(GNode n)
+    {
+
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)parent0.getProperty("parent0");
+
+        //Parent 1 Should be class decl
+        String classname = parent1.getString(1);
+        String methodname = n.getString(2);
+
+        int constructorCount = 0;
+        for(Mubble m : mubbleList){
+            if(m.getClassName().trim().equals(classname.trim()) && m.isConstructor())
+            {
+                constructorCount++;
+                curMub = m;
+            }
+            //System.out.println("Constructor COunt is: "+ constructorCount);
+            //System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
+        }
+
+        visit(n);
+
+        //==============Assigning Package to CurMub===================//
+        //Assuming curMub has code
+        for(Bubble b: bubbleList)
+        {
+            if(b.getName().equals(classname)) // b's package is curMub's package
+            {
+                if(b.getPackageName().equals(""))
+                    curMub.setPackageName("DefaultPackage");
+                else
+                    curMub.setPackageName(b.getPackageName());
+            }
+        }
+
+        //Adding curMub to the right pNode
+        for(PNode p : packageTree)
+        {
+
+            if(p.getName().equals(curMub.getPackageName()))
+                p.addMubble(curMub);
+        }
+        //==============================================================//
+    }
+    String mName;
+    public void visitCallExpression(GNode n) {
+        //visit(n);
+        if (onMeth) {
+            mName = n.getString(2);
+            String tmp = "";
+
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+
+
+            //need to fix casting for first arg
+            if(n.getNode(0) != null) {
+                methodString += "->__vptr->"+n.getString(2);
+                methodString += "(";
+                //should cast self to expected type
+                //not doing now because castify is not a method,
+                //too complicated right now
+                dispatch(n.getNode(0));//adding self
+                methodString += ", ";
+            }
+            else {
+                methodString += n.getString(2) + "(";
+
+            }
+            dispatch(n.getNode(3));
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitEmptyStatement(GNode n) {
+        if (onMeth) {
+            methodString += ";\n";
+        }
+        visit(n);
+    }
+
+    public void visitConditionalStatement(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            Node parent = (Node)n.getProperty("parent0");
+            if (parent.getName().equals("ConditionalStatement")) {
+                methodString += "\n}\nelse ";
+            }
+            methodString += "if (";
+            dispatch(n.getNode(0));
+            methodString += ") {\n";
+            for (int i = 1; i < n.size()-1; i++) {
+                dispatch(n.getNode(i));
+            }
+            if (n.getNode(n.size()-1) != null) {
+                Node parent1 = (Node)parent.getProperty("parent0");
+                if (!n.getNode(n.size()-1).getName()
+                        .equals("ConditionalStatement")) {
+                    methodString += "\n}\nelse {\n";
+                        }
+                /*
+                   if (!parent.getName().equals("ConditionalStatement")) {
+                   methodString += "\n}\nelse {\n";
+                   }
+                   */
+                dispatch(n.getNode(n.size()-1));
+            }
+            if (!parent.getName().equals("ConditionalStatement")) {
+                methodString += "\n}\n";
+            }
+            //methodString += "}\n";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitConditionalExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "(";
+            dispatch(n.getNode(0));
+            methodString += " ? ";
+            dispatch(n.getNode(1));
+            methodString += " : ";
+            dispatch(n.getNode(2));
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
     public void visitDeclarators(GNode n) {
+        visit(n);
+
+        if (onMeth && !((Node)n.getProperty("parent0")).getName()
+                .equals("BasicForControl") && !inArray) {
+            methodString += ";\n";
+
+                }
+    }
+
+    public void visitBooleanLiteral(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
+        }
         visit(n);
     }
 
     public void visitDeclarator(GNode n) {
+        if (onMeth && !inArray) {
+            methodString += " " + n.getString(0);
+            Object third = n.get(2);
+            if (third instanceof Node) {
+                methodString += " = ";
+            }
+            tan += n.getString(0);
+        }
         visit(n);
+        if (onMeth) {
+            //methodString += ";\n";
+        }
     }
 
+    public void visitEqualityExpression(GNode n) {
+        if(onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " " + n.getString(1) + " ";
+            dispatch(n.getNode(2));
+        }
+        else {
+            visit(n);
+        }
+    }
+
+
     public void visitIntegerLiteral(GNode n) {
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (onMeth && !inArray) {
+            if(!parent0.getName().equals("SubscriptExpression"))
+                methodString += n.getString(0);
+        }
         visit(n);
     }
 
@@ -116,8 +414,135 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         visit(n);
     }
 
+    public String outputFormat(String s) {
+        //to turn int to int32_t in a string:
+        s = s.replaceAll("(^int(?=\\s+))|(?<=\\s+)int(?=\\s+)","int32_t");
+
+        //to turn boolean to bool in a string:
+        s = s.replaceAll("(^boolean(?=\\s+))|(?<=\\s+)boolean(?=\\s+)","bool");
+
+        //to turn final to const in a string:
+        //s = s.replaceAll("(?<=\\s+)final(?=\\s+)","const");
+
+        //turn systemoutprints into printf
+        //TODO @ALott can you handle turning this to std::cout?
+        s = s.replaceAll("System->out->__vptr->println\\(System->out,\\s?","printf(");
+
+        //turn mains into right format
+        //s = s.replaceAll("void\\s[\\w$_]*::main\\([\\w$_]*\\s__this,","int main(");
+        return s;
+    }
+
+    public String inNameSpace(String obj) {
+        String ns1 = "";
+        String ns2 = "";
+        //System.out.println("COMPARING "+obj+" and "+cName);
+        for( Bubble b : bubbleList) {
+            //doesn't account for multiple classes of the same name
+            if (b.getName().equals(obj)) {
+                ns1 = b.getPackageName();
+            }
+            if (b.getName().equals(cName)) {
+                ns2 = b.getPackageName();
+            }
+        }
+
+        if(ns1 == null) {
+            return "java lang";
+        }
+        else if(ns1.equals(ns2)) {
+            return null;
+        }
+        else {
+            return ns1;
+        }
+    }
+
     public void visitQualifiedIdentifier(GNode n){
+        if (onMeth) {
+            Node parent0 = (Node)n.getProperty("parent0");
+            Node parent1 = (Node)parent0.getProperty("parent0");
+            if(parent1.getName().equals("FieldDeclaration")) {
+                tan += n.getString(0) + " ";
+            }
+
+            if(parent1.getName().equals("FieldDeclaration"))
+            {
+                for(Object o : parent0)
+                {
+                    if (o instanceof Node )
+                    {
+                        if(((Node)o).getName().equals("Dimensions"))
+                            inArray = true;
+                    }
+
+                }
+            }
+
+            String s = inNameSpace(n.getString(0));
+            if (s != null && !inArray) {
+                //using absolute namespace
+
+                //check to see if Bubble is found by inNameSpace
+                methodString += "::"+s.trim().replaceAll("\\s+", "::")
+                    +"::";
+            }
+            if(!inArray)
+                methodString += n.getString(0);
+        }
         visit(n);
+
+        boolean inList = false;
+        for(String s : parsed){
+            if(s.equals(n.getString(n.size()-1))){
+                inList = true;
+            }
+            //System.out.println(b);
+        }
+        parsed.add(n.getString(n.size()-1));
+
+        if(!inList && !n.getString(n.size()-1).equals("String")){
+
+            String path = "";
+            for(int i = 0; i < n.size(); i++) {
+                path+="."+n.getString(i);
+            }
+
+            System.out.println("IMPLSabout to call findFile on: " + path.substring(1));
+
+            path = Decl.findFile(path);
+
+            if(!path.equals("")){
+                System.out.println(path);
+                try{
+                    Decl.Q.process(path);
+                } catch (Exception e) {System.out.println(e);}
+            }
+        }
+    }
+
+    public void visitNewClassExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "new ";
+            dispatch(n.getNode(0));
+            dispatch(n.getNode(1));
+
+            if(n.getNode(2).getString(0).equals("Object") ||
+                    n.getNode(2).getString(0).equals("String") ||
+                    n.getNode(2).getString(0).equals("Class")) {
+                methodString += "_";
+                    }
+
+            methodString += "_";
+            dispatch(n.getNode(2));
+            methodString += "(";
+            dispatch(n.getNode(3));
+            dispatch(n.getNode(4));
+        }
+        else {
+            visit(n);
+        }
     }
 
     public void visitImportDeclaration(GNode n){
@@ -126,16 +551,459 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitForStatement(GNode n)
     {
+        if (onMeth) {
+            methodString += "for(";
+        }
         visit(n);
+        if (onMeth) {
+            methodString += "}\n";
+        }
+    }
+
+    public void visitLogicalAndExpression(GNode n) {
+        if(onMeth) {
+            dispatchBitch(n);
+            methodString += "(";
+            dispatch(n.getNode(0));
+            methodString += ") && (";
+            dispatch(n.getNode(1));
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " " + n.getString(1) + " ";
+            dispatch(n.getNode(2));
+
+        } else {
+            visit(n);
+        }
+    }
+
+    public void visitExpressionStatement(GNode n) {
+        visit(n);
+        if (onMeth) {
+            methodString += ";\n";
+        }
+    }
+
+    public void visitLogicalOrExpression(GNode n) {
+        if(onMeth) {
+            dispatchBitch(n);
+            methodString += "(";
+            dispatch(n.getNode(0));
+            methodString += ") || (";
+            dispatch(n.getNode(1));
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
     }
 
     public void visitBasicForControl(GNode n)
     {
+        if(onMeth) {
+            dispatchBitch(n);
+            for(int i = 0; i < n.size(); i++) {
+                dispatch(n.getNode(i));
+                if( i >= 2 && i < n.size()-1) {
+                    methodString += "; ";
+                }
+            }
+            methodString += ") {\n";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitBlock(GNode n) {
+        if(((Node)n.getProperty("parent0")).getName()
+                .equals("MethodDeclaration")) {
+            onMeth = true;
+            table = new HashMap<String, String>();
+
+            visit(n);
+            onMeth = false;
+            curMub.addCode(outputFormat(methodString));
+            methodString = "";
+            table = null;
+                }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitPostfixExpression(GNode n) {
+        if (onMeth) {
+            visit(n);
+            methodString += n.getString(1);
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitPrimaryIdentifier(GNode n) {
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (onMeth) {
+            if(!parent0.getName().equals("SubscriptExpression"))
+                methodString += n.getString(0);
+            //key = n.getString(0);
+        }
         visit(n);
     }
 
+    boolean inArray = false;
     public void visitPrimitiveType(GNode n) {
         visit(n);
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)n.getProperty("parent1");
+
+        if(parent1.getName().equals("FieldDeclaration"))
+        {
+            for(Object o : parent0)
+            {
+                if (o instanceof Node )
+                {
+                    if(((Node)o).getName().equals("Dimensions"))
+                        inArray = true;
+                }
+
+            }
+        }
+        if (onMeth && !inArray) {
+            methodString += n.getString(0);
+        }
+
+
+    }
+
+    public void visitStringLiteral(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
+        }
+        visit(n);
+    }
+
+    public void visitSwitchStatement(GNode n) {
+        if(onMeth) {
+            dispatchBitch(n);
+            methodString += "switch(";
+            dispatch(n.getNode(0));
+            methodString += ") {\n";
+            for(int i = 1; i < n.size(); i++) {
+                dispatch(n.getNode(i));
+            }
+            methodString += "}\n";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitDoWhileStatement(GNode n) {
+        if(onMeth) {
+            dispatchBitch(n);
+            methodString += "do {\n";
+            dispatch(n.getNode(0));
+            methodString += "} while(";
+            dispatch(n.getNode(1));
+            methodString += ");\n";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitDefaultClause(GNode n) {
+        if(onMeth) {
+            methodString += "default:\n";
+        }
+        visit(n);
+    }
+
+    public void visitBreakStatement(GNode n) {
+        if(onMeth) {
+            methodString += "break ";
+            visit(n);
+            methodString += ";\n";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitCaseClause(GNode n) {
+        if(onMeth) {
+            dispatchBitch(n);
+            methodString += "case ";
+            dispatch(n.getNode(0));
+            methodString += ":\n";
+            for(int i = 1; i < n.size(); i++) {
+                dispatch(n.getNode(i));
+            }
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    //String key;
+    public void visitArguments(GNode n) {
+        if (onMeth) {
+            String key = "";
+            dispatchBitch(n);
+            String type = "";
+            Node callex = (Node)n.getProperty("parent0");
+            if (callex.getName().equals("CallExpression") &&
+                    callex.getNode(0) != null && callex
+                    .getNode(0).getName().equals("PrimaryIdentifier")) {
+                key = callex.getNode(0).getString(0);
+                type = table.get(key);
+                System.out.println(key + " " + type);
+                    }
+
+
+            String mSign = "";
+            for (Mubble m : mubbleList) {
+
+                if ((m.getClassName().equals(type) || type.equals("")) &&
+                        m.getName().equals(mName)) {
+                    mSign = m.getHeader();
+                        }
+            }
+
+            for (Mubble m : langList) {
+
+                if (m.getClassName().equals(type) &&
+                        m.getName().equals(mName)) {
+                    mSign = m.getHeader();
+                        }
+            }
+
+                     Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
+            String p = "";
+
+            while(m.find()){
+                p+= " " + m.group();
+            }
+
+            String [] par = p.trim().split("\\s");
+            for( String g : par)
+                System.out.println(g);
+
+
+            String s = "";
+            //CASTING
+            if (n.size() > 0) {
+                s = inNameSpace(par[0]);
+                if(!par[0].trim().equals("")) {
+                    methodString += "((";
+
+
+                    if (s != null && !s.trim().equals("")) {
+                        //using absolute namespace
+                        methodString += "::"+s.trim().replaceAll("\\s+", "::")+"::";
+
+                    }
+                    //System.out.println(par[0]);
+                    methodString += par[0]+") ";
+                    dispatch(n.getNode(0));
+                    methodString += ")";
+                }
+                else {
+                    dispatch(n.getNode(0));
+                }
+
+            }
+
+            for(int i = 1; i < n.size(); i++) {
+                if(!par[i].trim().equals("")) {
+                    methodString += ", (("+(par.length > i ? par[i] : "")
+                        +") ";
+                    dispatch(n.getNode(i));
+                    methodString += ")";
+                }
+                else{
+                    dispatch(n.getNode(i));
+                }
+            }
+
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitSelectionExpression(GNode n) {
+        if (onMeth) {
+            visit(n);
+            if (n.get(1) != null) {
+                methodString += "->" + n.getString(1);
+            }
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitReturnStatement(GNode n) {
+        if (onMeth) {
+            methodString += "return ";
+        }
+        visit(n);
+        if (onMeth) {
+            methodString += ";\n";
+        }
+    }
+
+    public void visitUnaryExpression(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
+            visit(n);
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitWhileStatement(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "while(";
+            dispatch(n.getNode(0));
+            methodString += ") {\n";
+            for(int i = 1; i < n.size(); i++) {
+                dispatch(n.getNode(i));
+            }
+            methodString += "}\n";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitFloatingPointLiteral(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
+        }
+        visit(n);
+    }
+
+    public void visitCharacterLiteral(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
+        }
+        visit(n);
+    }
+    //hmm..
+    public void visitNullLiteral(GNode n) {
+        if (onMeth) {
+            methodString += "__rt::null()";
+        }
+        visit(n);
+    }
+
+    public void visitAdditiveExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " "+n.getString(1)+" ";
+            dispatch(n.getNode(2));
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitMultiplicativeExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " "+n.getString(1)+" ";
+            dispatch(n.getNode(2));
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitCastExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "((";
+            dispatch(n.getNode(0));
+            methodString += ") ";
+            dispatch(n.getNode(1));
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    //dunno why second child is null
+    public void visitThisExpression(GNode n) {
+        if (onMeth) {
+            methodString += "__this";
+        }
+        visit(n);
+    }
+
+    public void visitBasicCastExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "((";
+            dispatch(n.getNode(0));
+            methodString += ") ";
+            //not sure if there can be more children, just in case
+            for(int i = 1; i < n.size(); i++) {
+                dispatch(n.getNode(i));
+            }
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    //////////////////
+    //need to actually implement instanceof???
+    //////////////////
+    /////////////////
+    ////will getstring always work?
+    ////////////////
+    public void visitInstanceOfExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
+            dispatch(n.getNode(1));
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitLogicalNegationExpression(GNode n) {
+        if(onMeth) {
+            methodString += "!(";
+            visit(n);
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
     }
 
     public void visitType(GNode n)
@@ -150,7 +1018,45 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitRelationalExpression(GNode n)
     {
-        visit(n);
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " " + n.getString(1) + " ";
+            dispatch(n.getNode(2));
+            //methodString += ";";
+        }
+
+        //visit(n);
+    }
+
+    public void dispatchBitch(Node n) {
+        int counter = 1;
+        if(n.hasProperty("parent0")) {
+            Node temp = (Node)n.getProperty("parent0");
+
+            while(temp != null) {
+                //System.out.println(temp);
+                //temp = (Node)temp.getProperty("parent0");
+
+                n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                temp = (Node)temp.getProperty("parent0");
+                //if(n.getProperty("parent2") == null)
+                //System.out.println(temp);
+            }
+        }
+        //don't need this, but not deleting.
+        for (String s : n.properties()) {
+            //System.out.println(n.getProperty(s));
+        }
+
+        for (Object o : n){
+            if (o instanceof Node){
+                ((Node)o).setProperty("parent_name", n.getName() );
+                ((Node)o).setProperty("parent0", n );
+                //dispatch((Node)o);
+            }
+        }
+
     }
 
 
