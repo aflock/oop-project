@@ -112,7 +112,7 @@ public class Decl extends xtc.util.Tool
 
             //assemble the forces
             //WHY DO WE HAVE THESE AND Bubblelist, MubbleList...etc
-            ArrayList<String> dataFields = new ArrayList<String>(); 
+            ArrayList<String> dataFields = new ArrayList<String>();
             ArrayList<String> methods = new ArrayList<String>();
             ArrayList<String> constructors = new ArrayList<String>();
             ArrayList<String> children = new ArrayList<String>();
@@ -712,7 +712,7 @@ public class Decl extends xtc.util.Tool
     }
 
     //TODO change to reflect update mubble structure
-    //Adds Java language 
+    //Adds Java language
     public static void populateLangList()
     {
         langList.add(new Mubble("Object", "Object", "__Object::__Object() : __vptr(&__vtable)", true));
@@ -1262,7 +1262,7 @@ public class Decl extends xtc.util.Tool
         ccwrite.close();
         } catch (Exception e){System.out.println("Error writing: "+ e);}
 
-        
+
         for(PNode p : packageTree){
         System.out.println("^V^V^V^V^V^V^V^V^V^V^V^V" + p.getName() + "^V^V^V^V^V^V^V^V^V^V^V^V");
         for(String s : p.getStructChildren())
@@ -1279,7 +1279,7 @@ public class Decl extends xtc.util.Tool
                 System.out.println(m.prettyPrinter());
             } */
         }
-        
+
 
     }
 
@@ -1386,7 +1386,7 @@ class Impl extends xtc.util.Tool{
         this.bubbleList = bubbleList;
         this.packageTree = packageTree;
         this.mubbleList = mubbleList;
-	this.langList = langList;
+        this.langList = langList;
         this.parsed = new ArrayList<String>();
     }
 
@@ -1841,63 +1841,63 @@ class Impl extends xtc.util.Tool{
 		}
 	    }
 
-            public void visitQualifiedIdentifier(GNode n){
-		if (onMeth) {
-		    Node parent0 = (Node)n.getProperty("parent0");
-		    Node parent1 = (Node)parent0.getProperty("parent0");
-		    if(parent1.getName().equals("FieldDeclaration")) {
-			tan += n.getString(0) + " ";
-		    }
-
-		    if(parent1.getName().equals("FieldDeclaration"))
-		    {
-		        for(Object o : parent0)
-		        {
-		            if (o instanceof Node )
-		            {
-		                if(((Node)o).getName().equals("Dimensions"))
-		                    inArray = true;
-		            }
-
+        public void visitQualifiedIdentifier(GNode n){
+            if (onMeth) {
+                Node parent0 = (Node)n.getProperty("parent0");
+                Node parent1 = (Node)parent0.getProperty("parent0");
+                if(parent1.getName().equals("FieldDeclaration")) {
+                    tan += n.getString(0) + " ";
                 }
+
+                if(parent1.getName().equals("FieldDeclaration"))
+                {
+                    for(Object o : parent0)
+                    {
+                        if (o instanceof Node )
+                        {
+                            if(((Node)o).getName().equals("Dimensions"))
+                                inArray = true;
+                        }
+
+                    }
+                }
+
+                String s = inNameSpace(n.getString(0));
+                //System.out.println("QI: "+s);
+                //??
+                if (s != null && !inArray) {
+                    //using absolute namespace
+
+                    //System.out.println("========WOAH");
+
+                    //check to see if Bubble is found by inNameSpace
+                    methodString += "::"+s.trim().replaceAll("\\s+", "::")
+                        +"::";
+                }
+                if(!inArray)
+                    methodString += n.getString(0);
             }
+            visit(n);
 
-		    String s = inNameSpace(n.getString(0));
-		    //System.out.println("QI: "+s);
-		    //??
-		    if (s != null && !inArray) {
-			//using absolute namespace
-
-			//System.out.println("========WOAH");
-
-			//check to see if Bubble is found by inNameSpace
-			methodString += "::"+s.trim().replaceAll("\\s+", "::")
-			    +"::";
-		    }
-		    if(!inArray)
-		        methodString += n.getString(0);
-		}
-                visit(n);
-
-                boolean inList = false;
-                for(String s : parsed){
-                    if(s.equals(n.getString(n.size()-1))){
-                        inList = true;
-                    }
-                    //System.out.println(b);
+            boolean inList = false;
+            for(String s : parsed){
+                if(s.equals(n.getString(n.size()-1))){
+                    inList = true;
                 }
-                parsed.add(n.getString(n.size()-1));
+                //System.out.println(b);
+            }
+            parsed.add(n.getString(n.size()-1));
 
-                if(!inList && !n.getString(n.size()-1).equals("String")){
+            if(!inList && !n.getString(n.size()-1).equals("String")){
 
-                    String path = "";
-                    for(int i = 0; i < n.size(); i++) {
-                        path+="."+n.getString(i);
-                    }
+                String path = "";
+                for(int i = 0; i < n.size(); i++) {
+                    path+="."+n.getString(i);
+                }
 
-                    System.out.println("IMPLSabout to call findFile on: " + path.substring(1));
+                System.out.println("IMPLSabout to call findFile on: " + path.substring(1));
 
-                    path = Decl.findFile(path);
+                path = Decl.findFile(path);
 
                     if(!path.equals("")){
                         System.out.println(path);

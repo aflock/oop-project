@@ -38,10 +38,22 @@ import java.io.BufferedWriter;
 public class NewTranslator extends xtc.util.Tool{
 
 
-    public static ArrayList<Bubble> bubbleList; //Classes
-    public static ArrayList<Pubble> pubbleList;	//Packages
-    public static ArrayList<Mubble> mubbleList; //Methods
+    public static ArrayList<Bubble> bubbleList; // Classes
+    public static ArrayList<Pubble> pubbleList; // Packages
+    public static ArrayList<Mubble> mubbleList; // Methods
+    public static ArrayList<Mubble> langList;   // java_lang Methods (don't want to print them)
 
+    public String getName()
+    {
+        return "LSD: Language Switching Device";
+    }
+
+    public String getCopy()
+    {
+
+        return "Ninja assassins: dk, Calvin, Andrew*2";
+    }
+	public void init(){
         super.init();
     }
 
@@ -51,7 +63,7 @@ public class NewTranslator extends xtc.util.Tool{
         Result result = parser.pCompilationUnit(0);
 
         return (Node)parser.value(result);
-    }//}}}
+    }
 
     public static String findFile(String query) {//{{{
 
@@ -89,10 +101,10 @@ public class NewTranslator extends xtc.util.Tool{
 
     public void process(Node node){
 
-        StructureParser s = new StructureParser(pubbleList, mubbleList, bubbleList, parsed);
+        StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
 
-        ImplementationParser i = new ImplementationParser(pubbleList, mubbleList, bubbleList, parsed);
+        ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList);
         i.dispatch(node);
 
 

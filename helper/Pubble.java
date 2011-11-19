@@ -13,35 +13,35 @@ public class Pubble{
         this.children = new ArrayList<Pubble>();
         this.bubbles = new ArrayList<Bubble>();
     }
-    
+
     public Pubble(String name){
         this.name = name;
         this.children = new ArrayList<Pubble>();
         this.bubbles = new ArrayList<Bubble>();
     }
-    
+
     public Pubble(String name, Pubble parent){
         this.children = new ArrayList<Pubble>();
         this.bubbles = new ArrayList<Bubble>();
         this.name = name;
         this.parent = parent;
     }
-    
-   
+
+
 
 //=========NON-GETTER/SETTER METHODS=======//
-    
+
     //Adds a new package to this Pubble's packageChildren
     public void addChild(Pubble child){
         this.children.add(child);
     }
-    
+
     public void addBubble(Bubble b){
         this.bubbles.add(b);
     }
 
-    
-     //returns a string with the correct information for a .h file
+
+    //returns a string with the correct information for a .h file
     //lines will be delimited by \n but will not be correctly indented
     public String getH()
     {
@@ -49,12 +49,12 @@ public class Pubble{
         ret += getForwardDecl();
         ret += getVTables();
         return ret;
-        
-        
+
+
     }
-    
+
     /*prints all forward declarations of data fields, vtables and typedefs for this pnode
-    Ex. 
+    Ex.
     namespace lang {
         struct __Object;
         struct __Object_VT;
@@ -69,11 +69,11 @@ public class Pubble{
         for(Bubble b : bubbles){
             ret += b.getFDeclStruct();
         }
-        
+
         for(Bubble b: bubbles){
             ret += b.getTypeDef();
         }
-        
+
         //now do it for all children
         for(Pubble p : children){
             ret += p.getForwardDecl();
@@ -81,9 +81,9 @@ public class Pubble{
         ret += "}";
         return ret;
     }
-    
-    
-    //returns actual 
+
+
+    //returns actual
     public String getVTables()
     {
         String ret = "";
@@ -92,23 +92,23 @@ public class Pubble{
             ret += b.getStruct();
             ret += b.getStructVT();
         }
-        
+
         //now do it for all children
         for(Pubble p : children){
             ret += p.getVTables();
         }
-        
+
         ret += "}";
         return ret;
     }
-    
-//=========GETTER/SETTER METHODS=======//  
-    
+
+//=========GETTER/SETTER METHODS=======//
+
     public String getName(){
         return this.name;
     }
     public void setName(String n){
-        this.name = n;    
+        this.name = n;
     }
 
     public Pubble getParent(){
@@ -122,7 +122,7 @@ public class Pubble{
         return this.bubbles;
     }
     //No Setter
-    
+
     public ArrayList<Pubble> getChildren(){
         return this.children;
     }

@@ -88,6 +88,10 @@ public class Mubble {
         return packageName;
     }
 
+    public String getPackageName() {
+        return packageName.getName();
+    }
+
     public String getName() {
         return methodName;
     }

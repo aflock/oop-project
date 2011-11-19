@@ -21,6 +21,11 @@ import xtc.lang.JavaFiveParser;
 //OUR IMPORTS
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
 
 import xtc.oop.helper.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
@@ -33,6 +38,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public static ArrayList<Bubble> bubbleList;
     public static ArrayList<Pubble> pubbleList;
     public static ArrayList<Mubble> mubbleList;
+    public static ArrayList<Mubble> langList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
     public Pubble curPub;
     public Bubble curBub;
@@ -40,15 +46,53 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public Field curField;
 
-    public StructureParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
+    public NewTranslator t; //used for the parse method
+
+    public StructureParser(NewTranslator t, ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList)
     {
+        this.t = t;
         this.pubbleList = packageTree;
         this.mubbleList = mubbleList;
+        this.langList = langList;
         this.bubbleList = bubbleList;
         this.parsed = parsed;
     }
 
-    public void visit(Node n)
+
+    public static String findFile(String query) {//{{{
+
+        String sep = System.getProperty("file.separator");
+        String cp = System.getProperty("java.class.path");
+        //Hardcoded as the working directory, otherwise real classpath
+        cp = ".";
+
+        query = query.replace(".",sep).concat(".java");
+        //System.out.println("+++++"+query);
+        return findFile(cp, query);
+    }//}}}
+
+    public static String findFile(String cp, String query) {//{{{
+        String sep = System.getProperty("file.separator");
+        File f = new File(cp);
+        File [] files = f.listFiles();
+        for(int i = 0; i < files.length; i++) {
+            //System.out.println(sep+(cp.equals(".") ? "\\\\" : "")+cp+sep);
+            //////////////////////////////////////
+            //Hardcoding that sep is / and cp is .
+            //////////////////////////////////////
+            //System.out.println(query);
+            if(files[i].isDirectory()) {
+                String a = findFile(files[i].getAbsolutePath(), query);
+                if(!a.equals(""))
+                    return a;
+            }
+            else if(files[i].getAbsolutePath().replaceAll("/\\./",sep).endsWith(query))
+                return files[i].getAbsolutePath();
+        }
+        return "";
+    }//}}}
+
+    public void visit(Node n)//{{{
     {
         int counter = 1;
         if(n.hasProperty("parent0")) {
@@ -68,7 +112,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
         }
     }
-
+//}}}
 
     public void visitClassDeclaration(GNode n){
         //n.getString(0) is the Modifiers node
@@ -93,7 +137,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
         }
 
-        curBub.setParentBubble(ob); 
+        curBub.setParentBubble(ob);
 
         visit(n);
 
@@ -246,6 +290,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //int a = 5;
             //Bubble b = new Bubble(param1, param2, param3)
             //THIS IS A BIG TODO
+            //Answer = they go in a static block,
+            //or are put in the constructors for the object
+            //still a big TODO- check out javap for how java does it.
 
         }
     }
@@ -275,6 +322,18 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curPub = new Pubble();
         visit(n);
         pubbleList.add(curPub);
+
+        //Check if any bubbles haven't been built (we have not parsed their AST yet)
+        for(Bubble b : bubbleList){
+            if (!(b.isBuilt())){
+                String fileName = findFile(b.getName());
+                File f = new File(fileName);
+                FileInputStream fi = new FileInputStream(f);
+                Reader in = new BufferedReader(new InputStreamReader(fi));
+                Node leNode=  t.parse(in, f);
+               this.dispatch(leNode);
+            }
+        }
     }
 
     public void visitQualifiedIdentifier(GNode n){

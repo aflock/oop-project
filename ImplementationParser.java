@@ -21,6 +21,11 @@ import xtc.lang.JavaFiveParser;
 //OUR IMPORTS
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.regex.*;
 
 import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
@@ -32,16 +37,54 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public static ArrayList<Bubble> bubbleList;
     public static ArrayList<Pubble> pubbleList;
     public static ArrayList<Mubble> mubbleList;
+    public static ArrayList<Mubble> langList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
 
-    public ImplementationParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
+    public NewTranslator t; //used for the parse method
+
+    public ImplementationParser(NewTranslator t, ArrayList<Pubble> pubbleList, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList)
     {
         this.pubbleList = pubbleList;
         this.mubbleList = mubbleList;
         this.bubbleList = bubbleList;
+        this.langList   = langList;
         this.parsed     = parsed;
+        this.t = t;
     }
 
+
+    public static String findFile(String query) {//{{{
+
+        String sep = System.getProperty("file.separator");
+        String cp = System.getProperty("java.class.path");
+        //Hardcoded as the working directory, otherwise real classpath
+        cp = ".";
+
+        query = query.replace(".",sep).concat(".java");
+        //System.out.println("+++++"+query);
+        return findFile(cp, query);
+    }//}}}
+
+    public static String findFile(String cp, String query) {//{{{
+        String sep = System.getProperty("file.separator");
+        File f = new File(cp);
+        File [] files = f.listFiles();
+        for(int i = 0; i < files.length; i++) {
+            //System.out.println(sep+(cp.equals(".") ? "\\\\" : "")+cp+sep);
+            //////////////////////////////////////
+            //Hardcoding that sep is / and cp is .
+            //////////////////////////////////////
+            //System.out.println(query);
+            if(files[i].isDirectory()) {
+                String a = findFile(files[i].getAbsolutePath(), query);
+                if(!a.equals(""))
+                    return a;
+            }
+            else if(files[i].getAbsolutePath().replaceAll("/\\./",sep).endsWith(query))
+                return files[i].getAbsolutePath();
+        }
+        return "";
+    }//}}}
 
     public void visit(Node n)//{{{
     {
@@ -185,18 +228,19 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             if(b.getName().equals(classname)) // b's package is curMub's package
             {
                 if(b.getPackageName().equals(""))
-                    curMub.setPackageName("DefaultPackage");
+                    curMub.getPackage().setName("DefaultPackage");
                 else
-                    curMub.setPackageName(b.getPackageName());
+                    curMub.getPackage().setName(b.getPackageName());
             }
         }
-        //Adding curMub to the right pNode
-        for(PNode p : packageTree)
+        /*Adding curMub to the right pNode
+        for(Pubble p : pubbleList)
         {
             if(p.getName().equals(curMub.getPackageName()))
                 p.addMubble(curMub);
         }
         //==============================================================//
+        */
 
 
 
@@ -237,20 +281,22 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             if(b.getName().equals(classname)) // b's package is curMub's package
             {
                 if(b.getPackageName().equals(""))
-                    curMub.setPackageName("DefaultPackage");
+                    curMub.getPackage().setName("DefaultPackage");
                 else
-                    curMub.setPackageName(b.getPackageName());
+                    curMub.getPackage().setName(b.getPackageName());
             }
         }
 
         //Adding curMub to the right pNode
-        for(PNode p : packageTree)
+        /*FYI taking this out since we can access all the mubbles thru Bubble
+        for(Pubble p : pubbleList)
         {
 
             if(p.getName().equals(curMub.getPackageName()))
                 p.addMubble(curMub);
         }
         //==============================================================//
+        */
     }
     String mName;
     public void visitCallExpression(GNode n) {
@@ -412,6 +458,22 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitFormalParameter(GNode n) {
 
         visit(n);
+    }
+
+    public void visitCompilationUnit(GNode n){
+        visit(n);
+
+        //Check if any bubbles haven't been filled (we have not parsed their AST yet)
+        for(Bubble b : bubbleList){
+            if (!(b.isBuilt())){
+                String fileName = findFile(b.getName());
+                File f = new File(fileName);
+                FileInputStream fi = new FileInputStream(f);
+                Reader in = new BufferedReader(new InputStreamReader(fi));
+                Node leNode = t.parse(in, f);
+               this.dispatch(leNode);
+            }
+        }
     }
 
     public String outputFormat(String s) {
@@ -777,7 +839,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 if ((m.getClassName().equals(type) || type.equals("")) &&
                         m.getName().equals(mName)) {
-                    mSign = m.getHeader();
+                    mSign = m.forward();
                         }
             }
 
@@ -785,7 +847,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 if (m.getClassName().equals(type) &&
                         m.getName().equals(mName)) {
-                    mSign = m.getHeader();
+                    mSign = m.forward();
                         }
             }
 
