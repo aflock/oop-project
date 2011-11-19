@@ -31,15 +31,15 @@ public class Mubble {
     String code;
 
     public Mubble(String methodName) { // constructor with a method name
-        this.parameters = new ArrayList<Field>();
-        this.paraType = new ArrayList<String>();
-        this.paraName = new ArrayList<String>();
-        this.paraMod = new ArrayList<String>();
+        parameters = new ArrayList<Field>();
+        paraType = new ArrayList<String>();
+        paraName = new ArrayList<String>();
+        paraMod = new ArrayList<String>();
         constructor = false;
         main = false;
         staticMethod = false;
         this.methodName = methodName;
-        this.code = "";
+        code = "";
     }
 
     public void addCode(String code){
@@ -58,13 +58,41 @@ public class Mubble {
 
     /* generates header for .cc files */
     public String ccHeader() {
-        return "";
+	StringBuilder s = new StringBuilder("");
+	if (staticMethod) {
+	    // working?
+	    s.append(returnType).append(" _").append(className).
+		append("::").append(methodName).append("(");
+	    for (int i = 0; i < paraType.size(); i++) {
+		if (i != 0) {
+		    s.append(", ").append(paraType.get(i));
+		}
+		else {
+		    s.append(paraType.get(i));
+		}
+	    }
+	    s.append(")");		
+	}
+	else {
+	    s.append(returnType).append(" _").append(className).
+		append("::").append(methodName).append("(").
+		append(getClassName()).append(" __this");
+	    for (String para : paraType) {
+		s.append(", ").append(para);
+	    }
+	    s.append(")");
+	}
+        return s.toString();
     }
 
     public String forward() {
+	if (staticMethod) {
+	    System.out.println(methodName + " is a static method.");
+	    return "FIX THIS SHIT. forward() in Mubble";
+	}
         StringBuilder s = new StringBuilder();
         s.append(returnType).append(" ").append(methodName).append("(").
-            append(className.getName());
+            append(getClassName());
         for (String para : paraType) {
             s.append(", ").append(para);
         }
@@ -201,7 +229,7 @@ public class Mubble {
         s.append(returnType).append(" (*");
         s.append(methodName).append(")(");
         if (!isStatic()) {
-            s.append(className.getName());
+            s.append(getClassName());
             for (String para : paraType) {
                 s.append(", ").append(para);
             }
@@ -230,7 +258,7 @@ public class Mubble {
         StringBuilder type = new StringBuilder();
         if (from == INHERITED) {
             type.append("(").append(returnType).append("(*)");
-            type.append(className.getName());
+            type.append(getClassName());
             for (String para : paraType) {
                 type.append(",").append(para);
             }
@@ -245,14 +273,15 @@ public class Mubble {
 
         if (from == INHERITED) { // this line is not quite right
 	    s.append("(").append(returnType).append("(*)(");
-	    s.append(className.getName());
+	    s.append(getClassName());
 	    for (String para : paraType) {
 		s.append(",").append(para);
 	    }
-	    s.append(")").append("&_").append(className.getParentBubble().getName());
+	    s.append(")").append("&_").
+		append(className.getParentBubble().getName());
         }
         else {
-            s.append("&_").append(className.getName());
+            s.append("&_").append(getClassName());
         }
         s.append("::").append(methodName);
 
