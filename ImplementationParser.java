@@ -448,11 +448,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitClassDeclaration(GNode n){
-    
+
         String className = n.getString(1);
 
         visit(n);
-        
+
         //at this point all the mubbles of bubble have been filled
         for(Bubble b : bubbleList){
             if(b.getName().equals(className)) {
@@ -476,12 +476,14 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //Check if any bubbles haven't been filled (we have not parsed their AST yet)
         for(Bubble b : bubbleList){
             if (!(b.isBuilt())){
-                String fileName = findFile(b.getName());
-                File f = new File(fileName);
-                FileInputStream fi = new FileInputStream(f);
-                Reader in = new BufferedReader(new InputStreamReader(fi));
-                Node leNode = t.parse(in, f);
-               this.dispatch(leNode);
+                try{
+                    String fileName = findFile(b.getName());
+                    File f = new File(fileName);
+                    FileInputStream fi = new FileInputStream(f);
+                    Reader in = new BufferedReader(new InputStreamReader(fi));
+                    Node leNode = t.parse(in, f);
+                    this.dispatch(leNode);
+                }catch(Exception e){System.out.println(e); }
             }
         }
     }

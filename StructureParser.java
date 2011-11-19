@@ -144,7 +144,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
         curBub.setIsBuilt(true);
-        
+
         bubbleList.add(curBub);
         curPub.addBubble(curBub);
     }
@@ -329,12 +329,14 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //Check if any bubbles haven't been built (we have not parsed their AST yet)
         for(Bubble b : bubbleList){
             if (!(b.isBuilt())){
-                String fileName = findFile(b.getName());
-                File f = new File(fileName);
-                FileInputStream fi = new FileInputStream(f);
-                Reader in = new BufferedReader(new InputStreamReader(fi));
-                Node leNode=  t.parse(in, f);
-               this.dispatch(leNode);
+                try{
+                    String fileName = findFile(b.getName());
+                    File f = new File(fileName);
+                    FileInputStream fi = new FileInputStream(f);
+                    Reader in = new BufferedReader(new InputStreamReader(fi));
+                    Node leNode=  t.parse(in, f);
+                    this.dispatch(leNode);
+                }catch(Exception e){System.out.println(e); }
             }
         }
     }
@@ -425,8 +427,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 String type = n.getString(0);
                 curField.setType(type);
             }
-            
-            
+
+
         }
 
     public void visitImportDeclaration(GNode n){
