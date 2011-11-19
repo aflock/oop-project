@@ -5,3 +5,9 @@ public class TestSameDirectory {
 	System.out.println("method main in class TestSameDirectory");
     }
 }
+
+class B {
+    public void m() {
+	System.out.println("method m in class B in file TestSameDirectory.java");
+    }
+}
