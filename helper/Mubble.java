@@ -60,10 +60,21 @@ public class Mubble {
     public String ccHeader() {
 	StringBuilder s = new StringBuilder("");
 	if (staticMethod) {
-	    // need fixing
+	    // working?
+	    s.append(returnType).append(" _").append(className).
+		append("::").append(methodName).append("(");
+	    for (int i = 0; i < paraType.size(); i++) {
+		if (i != 0) {
+		    s.append(", ").append(paraType.get(i));
+		}
+		else {
+		    s.append(paraType.get(i));
+		}
+	    }
+	    s.append(")");		
 	}
 	else {
-	    s.append(returnType).append(" _").append(getClassName()).
+	    s.append(returnType).append(" _").append(className).
 		append("::").append(methodName).append("(").
 		append(getClassName()).append(" __this");
 	    for (String para : paraType) {
