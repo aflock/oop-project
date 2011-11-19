@@ -1,6 +1,6 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
-
+ 
 //import helper.Pubble;
 //import helper.Bubble;
 //import helper.Field;
@@ -28,23 +28,23 @@ public class Mubble {
 
     ArrayList<Field> parameters;
 
-	String code;
+    String code;
 
     public Mubble(String methodName) { // constructor with a method name
-		this.parameters = new ArrayList<Field>();
-		this.paraType = new ArrayList<String>();
-		this.paraName = new ArrayList<String>();
-		this.paraMod = new ArrayList<String>();
+        this.parameters = new ArrayList<Field>();
+        this.paraType = new ArrayList<String>();
+        this.paraName = new ArrayList<String>();
+        this.paraMod = new ArrayList<String>();
         constructor = false;
         main = false;
         staticMethod = false;
         this.methodName = methodName;
-		this.code = "";
+        this.code = "";
     }
 
-	public void addCode(String code){
-		this.code += code;
-	}
+    public void addCode(String code){
+        this.code += code;
+    }
 
     public void addParameter(Field parameter){
         //adds a parameter to both paraName and paraType lists
@@ -77,9 +77,9 @@ public class Mubble {
         return from;
     }
 
-	public String getClassName(){
-		return className.getName();
-	}
+    public String getClassName(){
+        return className.getName();
+    }
     public Bubble getBubble() {
         return className;
     }
@@ -101,15 +101,15 @@ public class Mubble {
     }
 
     public ArrayList<String> getParameterNames() {
-	return paraName;
+        return paraName;
     }
 
     public ArrayList<String> getParameterModifier() {
-	return paraMod;
+        return paraMod;
     }
 
     public ArrayList<String> getParameterTypes() {
-	return paraType;
+        return paraType;
     }
 
     public ArrayList<Field> getParameters() {
@@ -169,20 +169,20 @@ public class Mubble {
     }
 
     public Mubble setParameters() {
-	for (Field f : parameters) {
-	    paraName.add(f.name);
-	    paraType.add(f.type);
-	    if (f.modifiers.size() == 1) {
-		paraMod.add(f.modifiers.get(0));
-	    }
-	    else if (f.modifiers.size() == 0) {
-		paraMod.add("");
-	    }
-	    else {
-		System.out.println("Error size cannot be bigger than 2");
-	    }
-	}
-	    return this;
+        for (Field f : parameters) {
+            paraName.add(f.name);
+            paraType.add(f.type);
+            if (f.modifiers.size() == 1) {
+                paraMod.add(f.modifiers.get(0));
+            }
+            else if (f.modifiers.size() == 0) {
+                paraMod.add("");
+            }
+            else {
+                System.out.println("Error size cannot be bigger than 2");
+            }
+        }
+        return this;
     }
 
     public Mubble setParameterNames(ArrayList<String> paraName) {
@@ -244,7 +244,12 @@ public class Mubble {
         }
 
         if (from == INHERITED) { // this line is not quite right
-            s.append("&_").append(className.getParentBubble().getName());
+	    s.append("(").append(returnType).append("(*)(");
+	    s.append(className.getName());
+	    for (String para : paraType) {
+		s.append(",").append(para);
+	    }
+	    s.append(")").append("&_").append(className.getParentBubble().getName());
         }
         else {
             s.append("&_").append(className.getName());
