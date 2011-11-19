@@ -41,16 +41,16 @@ public class Mubble {
         parameters.add(parameter);
     }
 
-    String code() {
+    public String code() {
         return "";
     }
 
     /* generates header for .cc files */
-    String ccHeader() {
+    public String ccHeader() {
         return "";
     }
 
-    String forward() {
+    public String forward() {
         StringBuilder s = new StringBuilder();
         s.append(returnType).append(" ").append(methodName).append("(").
             append(className.getName());
@@ -62,99 +62,99 @@ public class Mubble {
         return s.toString();
     }
 
-    char from() {
+    public char from() {
         return from;
     }
 
-    Bubble getBubble() {
+    public Bubble getBubble() {
         return className;
     }
 
-    Pubble getPackage() {
+    public Pubble getPackage() {
         return packageName;
     }
 
-    String getName() {
+    public String getName() {
         return methodName;
     }
 
-    String getReturnType() {
+    public String getReturnType() {
         return returnType;
     }
 
-    String getVisibility() {
+    public String getVisibility() {
         return visibility;
     }
 
-    ArrayList<String> getParameterNames() {
+    public ArrayList<String> getParameterNames() {
 	return paraName;
     }
 
-    ArrayList<String> getParameterModifier() {
+    public ArrayList<String> getParameterModifier() {
 	return paraMod;
     }
 
-    ArrayList<String> getParameterTypes() {
+    public ArrayList<String> getParameterTypes() {
 	return paraType;
     }
 
-    ArrayList<Field> getParameters() {
+    public ArrayList<Field> getParameters() {
         return parameters;
     }
 
-    boolean isConstructor() { // returns true if this is constructor
+    public boolean isConstructor() { // returns true if this is constructor
         return constructor;
     }
 
-    boolean isMain() { // returns ture if this is main method
+    public boolean isMain() { // returns ture if this is main method
         return main;
     }
 
-    boolean isStatic() { // returns true if this is static method
+    public boolean isStatic() { // returns true if this is static method
         return staticMethod;
     }
 
-    Mubble setBubble(Bubble className) {
+    public Mubble setBubble(Bubble className) {
         this.className = className;
         return this;
     }
 
-    Mubble setConstructor(boolean constructor) {
+    public Mubble setConstructor(boolean constructor) {
         this.constructor = constructor;
         return this;
     }
 
-    Mubble setFrom(char from) {
+    public Mubble setFrom(char from) {
         this.from = from;
         return this;
     }
 
-    Mubble setMain(boolean main) {
+    public Mubble setMain(boolean main) {
         this.main = main;
         return this;
     }
 
-    Mubble setPackage(Pubble packageName) {
+    public Mubble setPackage(Pubble packageName) {
         this.packageName = packageName;
         return this;
     }
 
-    Mubble setReturnType(String returnType) {
+    public Mubble setReturnType(String returnType) {
         this.returnType = returnType;
         return this;
     }
 
-    Mubble setStatic(boolean staticMethod) {
+    public Mubble setStatic(boolean staticMethod) {
         this.staticMethod = staticMethod;
         return this;
     }
 
-    Mubble setVisibility(String visibility) {
+    public Mubble setVisibility(String visibility) {
         this.visibility = visibility;
         return this;
     }
 
-    Mubble setParameters() {
+    public Mubble setParameters() {
 	for (Field f : parameters) {
 	    paraName.add(f.name);
 	    paraType.add(f.type);
@@ -168,20 +168,21 @@ public class Mubble {
 		System.out.println("Error size cannot be bigger than 2");
 	    }
 	}
+	return this;
     }
     
-    Mubble setParameterNames(ArrayList<String> paraName) {
+    public Mubble setParameterNames(ArrayList<String> paraName) {
         this.paraName = paraName;
         return this;
     }
 
-    Mubble setParameterTypes(ArrayList<String> paraType) {
+    public Mubble setParameterTypes(ArrayList<String> paraType) {
         this.paraType = paraType;
         return this;
     }    
 
     /* generates entry for vtable1 */
-    String vTable1() {
+    public String vTable1() {
         StringBuilder s = new StringBuilder();
         s.append(returnType).append(" (*");
         s.append(methodName).append(")(");
@@ -211,7 +212,7 @@ public class Mubble {
      * needs fixing. proper casting is needed.
      * TODO @DK now that we are using a unified parameter instead of two this will be slightly different. TNX
      */
-    String vTable2() {
+    public String vTable2() {
         StringBuilder type = new StringBuilder();
         if (from == INHERITED) {
             type.append("(").append(returnType).append("(*)");
