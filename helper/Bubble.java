@@ -9,7 +9,7 @@ public class Bubble{
     Bubble parentBubble; //This Bubble's parent Bubble
     Pubble parentPubble; //This class' package (reference)
     boolean isBuilt = false; //determine whether a bubble has been completely filled in (excluding code)
-    boolean isFilled = false; //determine whether a bubble's code has been filled in
+    boolean isFilled = false; //determine whether all the code portions of this bubble's mubbles has been filled in
     //Removed Constructor arraylist because mubbles have a flag for that
     
     /* DO WE NEED THIS?:

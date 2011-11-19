@@ -78,6 +78,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         for(Bubble b : bubbleList){
             if(b.getName().equals(className)) {
                 curBub = b;
+                found = true;
             }
         }
         if (!found){
@@ -98,6 +99,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
 
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
+        curBub.setIsBuilt(true);
+        
         bubbleList.add(curBub);
         curPub.addBubble(curBub);
     }

@@ -402,7 +402,17 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitClassDeclaration(GNode n){
+    
+        String className = n.getString(1);
+
         visit(n);
+        
+        //at this point all the mubbles of bubble have been filled
+        for(Bubble b : bubbleList){
+            if(b.getName().equals(className)) {
+                b.setIsFilled(true);
+            }
+        }
     }
 
     public void visitFormalParameters(GNode n){
