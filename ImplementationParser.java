@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.util.regex.*;
 
 import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
-import xtc.oop.helper.Mubble;
+import xtc.oop.helper.Moutubble;
 import xtc.oop.helper.Pubble;
 
 public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
@@ -500,11 +500,45 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         //turn systemoutprints into printf
         //TODO @ALott can you handle turning this to std::cout?
-        s = s.replaceAll("System->out->__vptr->println\\(System->out,\\s?","printf(");
+        //s = s.replaceAll("System->out->__vptr->println\\(System->out,\\s?","printf(");
+        s = s.replaceSystemPrintln(s);
+
 
         //turn mains into right format
         //s = s.replaceAll("void\\s[\\w$_]*::main\\([\\w$_]*\\s__this,","int main(");
         return s;
+    }
+    
+    //replaces System.out.println's with cout
+    public static String replaceSystemPrintln(String s)
+    {
+        String ret = "";
+
+        if (s.contains("System->out->_vptr->println"))
+        {
+            //get everything to be printed
+            String toPrint = getStringBetween(s, "println(System->out,", ");");
+            toPrint = toPrint.replace("+", "<<");
+            
+            ret += "std::cout << " + toPrint + " << std::endl;";
+        }
+        
+        return ret;
+            
+    }
+    
+    //getStringBetween("-hi*", "-" , "*") returns hi
+    public static String getStringBetween(String src, String start, String end)
+    {
+        int lnStart;
+        int lnEnd;
+        String ret = "";
+        lnStart = src.indexOf(start);
+        lnEnd = src.indexOf(end);
+        if(lnStart != -1 && lnEnd != -1)
+            ret = src.substring(lnStart + start.length(), lnEnd);
+	
+	    return ret;
     }
 
     public String inNameSpace(String obj) {
