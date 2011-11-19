@@ -35,7 +35,7 @@ public class Mubble {
         this.methodName = methodName;
     }
 
-    public void addParamter(Field parameter){
+    public void addParameter(Field parameter){
         //adds a parameter to both paraName and paraType lists
         //JK just gonna have a helper object param
         parameters.add(parameter);
