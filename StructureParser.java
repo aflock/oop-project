@@ -31,7 +31,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 {
 
     public static ArrayList<Bubble> bubbleList;
-    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Pubble> packageTree;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
     public Pubble curPub;
@@ -123,7 +123,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //count dimensions
             int count = 0;
             for(Object o : n){
-                if(o.instanceof(String) && ((String)o).equals("[")){
+                if(o instanceof String && ((String)o).equals("[")){
                     count++;
                 }
             }
@@ -138,7 +138,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitConstructorDeclaration(GNode n){
         String name = n.getString(2);
-        freshMubble = new Mubble(name);
+        Mubble freshMubble = new Mubble(name);
         freshMubble.setConstructor(true);
 
         curMub = freshMubble;
@@ -210,7 +210,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             String modifier = n.getString(0);
             curField.addModifier(modifier);
         }
-    }
 
      }
 

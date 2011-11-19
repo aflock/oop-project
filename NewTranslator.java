@@ -35,7 +35,7 @@ import java.util.regex.*;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-public class NewTranslator extends xtc.util.tool{
+public class NewTranslator extends xtc.util.Tool{
 
     //What is not needed? What is also needed?//
     public static ArrayList<Bubble> bubbleList;
@@ -126,9 +126,8 @@ public class NewTranslator extends xtc.util.tool{
          * new ImplParser   //was Impl
          */
 
-        prepStructures();
-
         NewTranslator t = new NewTranslator();
+        t.prepStructures();
         t.init();
         t.prepare();
         for(int i = 0; i< args.length; i++){
@@ -138,12 +137,30 @@ public class NewTranslator extends xtc.util.tool{
         }
 
         //At this point, pubbleList contains all the packages but they aren't linked together
-        constructPackageTree();
+        t.constructPackageTree();
         
         //at this point, shit should be ready to print
+        //before printing, call setParameters on each Bubble so that DK's previous printing methods work
 
     }
+    
+    //**********************TO IMPLEMENT***************************//
 
+    //putting all of java_lang methods into the langList
+    public void populateLangList()
+    {
+        //to implement with new mubble structure
+        //see Decl line 716 for old implementation
+    }
+    
+    //constructs package tree from pubblelist
+    public void constructPackageTree()
+    {
+        //to do
+    }
+    
+    //*************************************************************//
+    
     //helper methods
     public void prepStructures(){
 
@@ -155,32 +172,34 @@ public class NewTranslator extends xtc.util.tool{
          *
          * create Object and String and Array (exception too!) Bubbles
          */
-        populateLangList();//putting all of java_lang methods into the langList
+        this.populateLangList();//putting all of java_lang methods into the langList
 
         pubbleList.add(new Pubble("DefaultPackage", null)); //parent is null
         //pre-load Object Bubble
-        Bubble object = new Bubble("Object", null);
+        Bubble object = new Bubble("Object");
         
         /*DO WE NEED THIS? HOW ARE WE CONSTRUCTING A VTABLE NOW? */
         //Creating Object's Vtable
-        object.add2Vtable("Class __isa;");
+        //NEED TO IMPLEMENT IN NEW FASHION
+        /*object.add2Vtable("Class __isa;");
         object.add2Vtable("int32_t (*hashCode)(Object);");
         object.add2Vtable("bool (*equals)(Object, Object);");
         object.add2Vtable("Class (*getClass)(Object);");
-        object.add2Vtable("String (*toString)(Object);");
+        object.add2Vtable("String (*toString)(Object);"); */
         bubbleList.add(object);
 
 
         //pre-load String Bubble
-        Bubble string = new Bubble("String", null);
+        Bubble string = new Bubble("String");
         //Creating Object's Vtable
+        /*
         string.add2Vtable("Class __isa;");
         string.add2Vtable("int32_t (*hashCode)(String);");
         string.add2Vtable("bool (*equals)(String, Object);");
         string.add2Vtable("Class (*getClass)(String);");
         string.add2Vtable("String (*toString)(String);");
         string.add2Vtable("int32_t (*length)(String);");
-        string.add2Vtable("char (*charAt)(String, int_32_t);");
+        string.add2Vtable("char (*charAt)(String, int_32_t);"); */
         bubbleList.add(string);
     }
 }

@@ -30,7 +30,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 {
 
     public static ArrayList<Bubble> bubbleList;
-    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Pubble> packageTree;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
 
