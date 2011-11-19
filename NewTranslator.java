@@ -37,32 +37,11 @@ import java.io.BufferedWriter;
 
 public class NewTranslator extends xtc.util.tool{
 
-    //What is not needed? What is also needed?//
-    public static ArrayList<Bubble> bubbleList;
-    public static ArrayList<Pubble> pubbleList;
-    public static ArrayList<Mubble> mubbleList;
-    public static ArrayList<Mubble> langList;
-    public static ArrayList<String> parsed;//keeps track of what ASTs have been parsed
-    /*
-     * all the shit from Decl
-     */
-    public NewTranslator()//{{{
-    {
-        // Nothing to do.
-    }
 
-    public String getName()
-    {
-        return "Epic Java to C++ translator";
-    }
+    public static ArrayList<Bubble> bubbleList; //Classes
+    public static ArrayList<Pubble> pubbleList;	//Packages
+    public static ArrayList<Mubble> mubbleList; //Methods
 
-    public String getCopy()
-    {
-        return "Ninja assassins: dk, calvin, Andrew*2";
-    }
-
-    public void init()
-    {
         super.init();
     }
 
@@ -139,7 +118,7 @@ public class NewTranslator extends xtc.util.tool{
 
         //At this point, pubbleList contains all the packages but they aren't linked together
         constructPackageTree();
-        
+
         //at this point, shit should be ready to print
 
     }
@@ -160,7 +139,7 @@ public class NewTranslator extends xtc.util.tool{
         pubbleList.add(new Pubble("DefaultPackage", null)); //parent is null
         //pre-load Object Bubble
         Bubble object = new Bubble("Object", null);
-        
+
         /*DO WE NEED THIS? HOW ARE WE CONSTRUCTING A VTABLE NOW? */
         //Creating Object's Vtable
         object.add2Vtable("Class __isa;");

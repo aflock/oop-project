@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.FileReader;
 
-import java.util.*; //ut oh, is Grimm going to be mad?
+import java.util.*; //ut oh, is Grimm going to be mad? Yes. TODO import only what we need
 
 import xtc.parser.ParseException;
 import xtc.parser.Result;
@@ -30,18 +30,40 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 {
 
     public static ArrayList<Bubble> bubbleList;
-    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Pubble> pubbleList;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
 
     public ImplementationParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
     {
-        this.packageTree = packageTree;
+        this.pubbleList = pubbleList;
         this.mubbleList = mubbleList;
         this.bubbleList = bubbleList;
-        this.parsed = parsed;
+        this.parsed     = parsed;
     }
 
+
+    public void visit(Node n)//{{{
+    {
+        int counter = 1;
+        if(n.hasProperty("parent0")) {
+            Node temp = (Node)n.getProperty("parent0");
+
+            while(temp != null) {
+                n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                temp = (Node)temp.getProperty("parent0");
+            }
+        }
+
+        for (Object o : n){
+            if (o instanceof Node){
+                ((Node)o).setProperty("parent_name", n.getName() );
+                ((Node)o).setProperty("parent0", n );
+                dispatch((Node)o);
+            }
+        }
+    }
+//}}}
 
     public void visitFieldDeclaration(GNode n){
         visit(n);
