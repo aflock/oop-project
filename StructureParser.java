@@ -122,7 +122,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             //count dimensions
             int count = 0;
-            for(Object o: n){
+            for(Object o : n){
                 if(o.instanceof(String) && ((String)o).equals("[")){
                     count++;
                 }
