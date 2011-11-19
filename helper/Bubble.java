@@ -82,6 +82,18 @@ public class Bubble{
     public void setParentPubble(Pubble p) {
 	this.parentPubble = p;
     }
+    
+    public Bubble setIsBuilt(boolean bool)
+    {
+        isBuilt = bool;
+        return this;
+    }
+    
+    public Bubble setIsFilled(boolean bool)
+    {
+        isFilled = bool;
+        return this;
+    }
 
 
     /* Setter for visibility    
@@ -94,6 +106,14 @@ public class Bubble{
     /////////////
     /* GETTERS */
     /////////////
+    
+    public boolean isBuilt(){
+        return isBuilt;
+    }
+    
+    public boolean isFilled(){
+        return isFilled;
+    }
 
     //Returns ArrayList of child Bubbles
     public ArrayList<Bubble> getBubbles() {
