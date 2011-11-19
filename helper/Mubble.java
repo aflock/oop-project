@@ -46,7 +46,7 @@ public class Mubble {
 		this.code += code;
 	}
 
-    public void addParamter(Field parameter){
+    public void addParameter(Field parameter){
         //adds a parameter to both paraName and paraType lists
         //JK just gonna have a helper object param
         parameters.add(parameter);
@@ -182,7 +182,7 @@ public class Mubble {
 		System.out.println("Error size cannot be bigger than 2");
 	    }
 	}
-	return this;
+	    return this;
     }
 
     public Mubble setParameterNames(ArrayList<String> paraName) {

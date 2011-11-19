@@ -31,7 +31,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 {
 
     public static ArrayList<Bubble> bubbleList;
-    public static ArrayList<PNode> packageTree;
+    public static ArrayList<Pubble> pubbleList;
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
     public Pubble curPub;
@@ -42,7 +42,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public StructureParser(ArrayList<Pubble> packageTree, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<String> parsed)
     {
-        this.packageTree = packageTree;
+        this.pubbleList = packageTree;
         this.mubbleList = mubbleList;
         this.bubbleList = bubbleList;
         this.parsed = parsed;
@@ -123,7 +123,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //count dimensions
             int count = 0;
             for(Object o : n){
-                if(o.instanceof(String) && ((String)o).equals("[")){
+                if(o instanceof String && ((String)o).equals("[")){
                     count++;
                 }
             }
@@ -138,15 +138,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitConstructorDeclaration(GNode n){
         String name = n.getString(2);
-        freshMubble = new Mubble(name);
+        Mubble freshMubble = new Mubble(name);
         freshMubble.setConstructor(true);
 
         curMub = freshMubble;
 
         visit(n);
 
-        curMub.setClassName(curBub);
-        curMub.setPackageName(curPub);
+        curMub.setBubble(curBub);
+        curMub.setPackage(curPub);
 
         mubbleList.add(curMub);
         curBub.addMubble(curMub);
@@ -180,8 +180,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         visit(n);
 
-        curMub.setClassName(curBub);
-        curMub.setPackageName(curPub);
+        curMub.setBubble(curBub);
+        curMub.setPackage(curPub);
 
         mubbleList.add(curMub);
 
@@ -210,7 +210,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             String modifier = n.getString(0);
             curField.addModifier(modifier);
         }
-    }
 
      }
 
@@ -230,7 +229,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         if ((parent1.hasName("FieldDeclaration")) &&
         (parent2.hasName("ClassDeclaration"))){
             curField.setHasAssignment(true);
-            curField.setAssignmentNode(n); //save the node so we can re-parse it later
+            curField.setAssignment(n); //save the node so we can re-parse it later
         }
     }
 
@@ -287,10 +286,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //finding inheritance
         if ((parent1.hasName("Extension")) &&
         (parent2.hasName("ClassDeclaration"))){
-            String name = n.getString(0);
+            String parentName = n.getString(0);
 
             boolean parentFound = false;
-            Bubble parent;
+            Bubble parent = new Bubble();
             for(Bubble b : bubbleList){
                 if(b.hasName(parentName)){             //if the parent is already in bubbleList
                     parent = b;
@@ -304,7 +303,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
 
             parent.addBubble(curBub);  //add myself as my parent's child
-            curBub.addParentBubble(parent); //set my parent
+            curBub.setParentBubble(parent); //set my parent
         }
 
         //finding the package curBub belongs to
@@ -315,7 +314,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
               "oop",
               "helper"
             )*/
-            String name, packageName;
+            String name;
+            String packageName = "";
             for(int i=0; i<n.size(); i++){
                 name = n.getString(i);
                 packageName += " " + name;

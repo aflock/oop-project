@@ -33,7 +33,19 @@ public class Bubble{
 	    this.dataFields = new ArrayList<Field>();
 	    this.mubbles = new ArrayList<Mubble>();
     }
-
+    
+    
+    ////////////////
+    /* Other Meth */
+    ////////////////
+    public boolean hasName(String name)
+    {
+        if (this.name.equals(name))
+            return true;
+        else
+            return false;
+    }
+    
     /////////////
     /* SETTERS */
     /////////////
