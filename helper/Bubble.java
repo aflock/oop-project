@@ -147,6 +147,10 @@ public class Bubble{
 	return this.parentPubble;
     }
 
+	public String getPackageName(){
+		return this.parentPubble.getName();
+	}
+
 
     /* Getter for visibility
     //Returns the visibility of this class (public, private, etc.)
