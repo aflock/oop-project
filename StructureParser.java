@@ -363,6 +363,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 String type = n.getString(0);
                 curField.setType(type);
             }
+            
+            
         }
 
     public void visitImportDeclaration(GNode n){

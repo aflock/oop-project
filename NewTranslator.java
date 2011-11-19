@@ -123,6 +123,7 @@ public class NewTranslator extends xtc.util.Tool{
 
     }
 
+
     //**********************TO IMPLEMENT***************************//
 
     //putting all of java_lang methods into the langList
