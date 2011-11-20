@@ -197,7 +197,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitMethodDeclaration(GNode n)
     {
-        System.out.println("1");
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -207,7 +206,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //setting global class name
         cName = classname;
         String methodname = n.getString(3);
-        System.out.println("2");
         for(Mubble m : mubbleList){
             if(m.getClassName() == null || m.getName() == null || methodname == null || classname == null)
                 System.out.println("****************YOURE FUCKED**************");
@@ -217,7 +215,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
 
         }
-        System.out.println("3");
+
         //visit
         visit(n);
 
@@ -251,29 +249,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         visit(n);
 
-        //==============Assigning Package to CurMub===================//
-        //Assuming curMub has code
-        for(Bubble b: bubbleList)
-        {
-            if(b.getName().equals(classname)) // b's package is curMub's package
-            {
-                if(b.getPackageName().equals(""))
-                    curMub.getPackage().setName("DefaultPackage");
-                else
-                    curMub.getPackage().setName(b.getPackageName());
-            }
-        }
-
-        //Adding curMub to the right pNode
-        /*FYI taking this out since we can access all the mubbles thru Bubble
-        for(Pubble p : pubbleList)
-        {
-
-            if(p.getName().equals(curMub.getPackageName()))
-                p.addMubble(curMub);
-        }
-        //==============================================================//
-        */
     }
     String mName;
     public void visitCallExpression(GNode n) {
@@ -478,7 +453,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //turn systemoutprints into printf
         //TODO @ALott can you handle turning this to std::cout?
         //s = s.replaceAll("System->out->__vptr->println\\(System->out,\\s?","printf(");
-        s = replaceSystemPrintln(s);
+        //s = replaceSystemPrintln(s);
 
 
         //turn mains into right format
@@ -489,23 +464,24 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     //replaces System.out.println's with cout
     public String replaceSystemPrintln(String s)
     {
-        String ret = "";
 
-        if (s.contains("System->out->_vptr->println"))
+        if (s.contains("vptr->println"))
         {
+                        System.out.println("s1");
             //get everything to be printed
             String toPrint = getStringBetween(s, "println(System->out,", ");");
+                        System.out.println("s2");
             toPrint = toPrint.replace("+", "<<");
-
-            ret += "std::cout << " + toPrint + " << std::endl;";
+                        System.out.println("s3");
+            return "std::cout << " + toPrint + " << std::endl;";
         }
-
-        return ret;
+        else
+            return s;
 
     }
 
     //getStringBetween("-hi*", "-" , "*") returns hi
-    public static String getStringBetween(String src, String start, String end)
+    public String getStringBetween(String src, String start, String end)
     {
         int lnStart;
         int lnEnd;
@@ -720,7 +696,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
             visit(n);
             onMeth = false;
+
             curMub.addCode(outputFormat(methodString));
+
             methodString = "";
             table = null;
                 }
