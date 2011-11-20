@@ -202,7 +202,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitMethodDeclaration(GNode n){
-        visit(n);
 
         /*
          * get method name
@@ -239,21 +238,33 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public void visitModifier(GNode n){
         visit(n);
 
+        System.out.println("about to parent");
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
         Node parent2 = (Node)n.getProperty("parent2");
         Node parent3 = (Node)n.getProperty("parent3");
 
-        if ((parent1.hasName("MethodDeclaration")) &&
+        //System.out.println("parented");
+
+
+        if  (parent1 != null && parent2 != null &&
+                (parent1.hasName("MethodDeclaration")) &&
                 (parent2.hasName("ClassBody")))
         {
+            System.out.println("in first");
+            System.out.println(n.getName());
+            //for(Object o : n)
+                //System.out.println(o);
+            //String visibility = "haha fake";
             String visibility = n.getString(0);
             curMub.setVisibility(visibility);
         }
 
-        if ((parent1.hasName("FormalParameter")) &&
+        if (parent1 != null && parent3 != null &&
+                (parent1.hasName("FormalParameter")) &&
                 (parent3.hasName("MethodDeclaration")))
         {
+            System.out.println("in second");
             String modifier = n.getString(0);
             curField.addModifier(modifier);
         }

@@ -128,8 +128,11 @@ public class NewTranslator extends xtc.util.Tool{
         }
 
         //At this point, pubbleList contains all the packages but they aren't linked together
-        t.constructPackageTree();
+        //t.constructPackageTree();
 
+		for(Bubble b :bubbleList){
+			//System.out.println(b);
+		}
         //at this point, shit should be ready to print
         //before printing, call setParameters on each Bubble so that DK's previous printing methods work
 
@@ -148,7 +151,7 @@ public class NewTranslator extends xtc.util.Tool{
     //constructs package tree from pubblelist
     public void constructPackageTree()
     {
-        //to do
+        //TODO
     }
 
     //*************************************************************//
@@ -157,19 +160,25 @@ public class NewTranslator extends xtc.util.Tool{
     public void prepStructures(){
 
         /*
-         * create root packageNode
+         * create root Pubble
          * create empty BubbleList
          * create empty MubbleList
          * create langList(?)
          *
          * create Object and String and Array (exception too!) Bubbles
          */
+		pubbleList = new ArrayList<Pubble>();
+		bubbleList = new ArrayList<Bubble>();
+		mubbleList = new ArrayList<Mubble>();
         this.populateLangList();//putting all of java_lang methods into the langList
 
-        pubbleList.add(new Pubble("DefaultPackage", null)); //parent is null
+
+        pubbleList.add(new Pubble("DefaultPackage", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object");
 
+		object.setIsFilled(true);
+		object.setIsBuilt(true);
         /*DO WE NEED THIS? HOW ARE WE CONSTRUCTING A VTABLE NOW? */
         //Creating Object's Vtable
         //NEED TO IMPLEMENT IN NEW FASHION
@@ -183,6 +192,8 @@ public class NewTranslator extends xtc.util.Tool{
 
         //pre-load String Bubble
         Bubble string = new Bubble("String");
+		string.setIsFilled(true);
+		string.setIsBuilt(true);
         //Creating Object's Vtable
         /*
         string.add2Vtable("Class __isa;");
