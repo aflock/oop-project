@@ -330,14 +330,14 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitCompilationUnit(GNode n){
-        curPub = new Pubble();
+        curPub = new Pubble(); //may change down the line if the Pubble already exists
         visit(n);
         pubbleList.add(curPub);
 
         //Check if any bubbles haven't been built (we have not parsed their AST yet)
         for(Bubble b : bubbleList){
             if (!(b.isBuilt())){
-                try{
+                try{ // r u serious, java?
                     String fileName = findFile(b.getName());
                     File f = new File(fileName);
                     FileInputStream fi = new FileInputStream(f);
@@ -385,7 +385,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
               "xtc",
               "oop",
               "helper"
-            )*/
+            )
+            -want the package name in this case to be "helper" , not xtc oop helper... right?
+            */
             String name;
             String packageName = "";
             for(int i=0; i<n.size(); i++){
@@ -395,6 +397,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             curPub.setName(packageName);
 
+            /* what we DO need is to create the parent nodes if they don't exits
+             * TODO for xtc oop helper,
+             *          create xtc oop helper with parent xtc oop
+             *          create xtc oop with parent xtc
+             *          create xtc with parent default package, or ""(not null)
             /* ===============DON'T THINK WE NEED THIS=======================
             //check to see if this package is already in pubbleList
             Pubble packPub;

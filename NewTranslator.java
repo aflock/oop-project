@@ -51,8 +51,9 @@ public class NewTranslator extends xtc.util.Tool{
     public String getCopy()
     {
 
-        return "Ninja assassins: dk, Calvin, Andrew*2";
+        return "Ninja assassins: DK, Calvin, Andrew*2";
     }
+
 	public void init(){
         super.init();
     }
@@ -144,12 +145,13 @@ public class NewTranslator extends xtc.util.Tool{
 		        {
 		            System.out.println("\t\tMethod: " + m.getName());
 		            System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
-		            
+
 		        }
 		    }
 		}
-        //at this point, shit should be ready to print
-        //before printing, call setParameters on each Bubble so that DK's previous printing methods work
+        //-at this point, shit should be ready to print
+        //-before printing, call setParameters on each Bubble so that DK's
+        //  previous printing methods work
 
     }
 
@@ -166,7 +168,13 @@ public class NewTranslator extends xtc.util.Tool{
     //constructs package tree from pubblelist
     public void constructPackageTree()
     {
+        //for all pubbles, link children to it. (search on parent name)
         //TODO
+        /*
+        for(Pubble p : pubbleList){
+
+        }
+        */
     }
 
     //*************************************************************//

@@ -1,33 +1,22 @@
+#
+LSD
+Language
+Switching
+Device
+
+DAYS TILL DUE: bout 30.
+
 To Do:
-For Nov. 1st Meeting:
--Ask grimm how overloaded methods are handled in java's vtable
--Get rid of all REGEX and string parsing
--Put specific fields for Mubbles and Bubbles
--Rename shit? (get rid of cursing??)
--Method chainging will be in test cases
--Do it in order
-    PNode (Packages) have Bubbles (Classes) which have Mubbles (Methods) which have all the properties of a method like
-        -Classname
-        -Methodname
-        -parameters
-        -return type
-        -visibility
-        -code
--Clean code into helper methods
 -Use xtc.tree.printer
--For testing:
-    -specific files for each case (ImportTest.java, ForLoopTest.java)
-    -write a script to diff output
--Nested arrays
--Trouble class for exception handling
--special case string as an object
--Exception handling
+
+-Trouble class for exception handling?
+-special case string as an object?
+-Exception handling?
 -Use hashmap to map java primative types to c++ types
 -Shouldn't have to deal with $ in java
--Method overloading WILL mangle names
--getName() == BLA to -hasName("BLA")
+
+-getName() == BLA to -hasName("BLA")?
 -printing strings and variable types in c++ is different
--there can be many main methods in java, 1 per class, but the only one that is called is the main of the class that is called
 
 Timeline:
 Week 1:
@@ -45,24 +34,19 @@ Week 3:
 Week 4:
 
 
-
-#
-LSD
-language
-switching
-device
-
-
-PNode (namespaces, packages)
-Bubble (classes)
-Mubble (methods)
-
-
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 -Need to deal with static blocks in class declarations.
+-Package list has a "null" node ?
+-how to use xtc.util.symbol table to our advantage?
+-method overloading
+-system.out.println -> std::cout
+-package naming/ linking
 
 
-=================================PRE-MIDTERM===================================
+===============================================================================
+===X=X=X=X=====X=X=X=X=X=X=======PRE-MIDTERM===X=X=X=X=X===X=X=X==X=X=X========
+===============================================================================
+
 -Deal with for(o:N) type loops in C++
 -Final methods == const?
 -change printStringDescendants to visitor methods
@@ -142,14 +126,6 @@ For each Bubble:
 
 -Once AST is done being processes:
     -Add each Mubble to its respective PNode. (for correct printing with namespace)
-
-
-
-
-####TODO FOR moNDAY####
-
--make sure boolean -> bool in .h :P
-
 
 
 
