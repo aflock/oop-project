@@ -104,7 +104,9 @@ public class NewTranslator extends xtc.util.Tool{
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
 
-        ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList);
+        //Not sure if we need this:
+        ArrayList<String> parsed = new ArrayList<String>();
+        ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
         i.dispatch(node);
 
 
@@ -130,8 +132,21 @@ public class NewTranslator extends xtc.util.Tool{
         //At this point, pubbleList contains all the packages but they aren't linked together
         //t.constructPackageTree();
 
-		for(Bubble b :bubbleList){
-			//System.out.println(b);
+
+        //Printing Contents of Everything
+		for(Pubble p : pubbleList)
+		{
+		    System.out.println("Package: " + p.getName());
+		    for(Bubble b : p.getBubbles())
+		    {
+		        System.out.println("\tClass: " + b.getName());
+		        for(Mubble m : b.getMubbles())
+		        {
+		            System.out.println("\t\tMethod: " + m.getName());
+		            System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+		            
+		        }
+		    }
 		}
         //at this point, shit should be ready to print
         //before printing, call setParameters on each Bubble so that DK's previous printing methods work
@@ -170,6 +185,7 @@ public class NewTranslator extends xtc.util.Tool{
 		pubbleList = new ArrayList<Pubble>();
 		bubbleList = new ArrayList<Bubble>();
 		mubbleList = new ArrayList<Mubble>();
+		langList = new ArrayList<Mubble>();
         this.populateLangList();//putting all of java_lang methods into the langList
 
 

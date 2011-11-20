@@ -52,8 +52,8 @@ public class Mubble {
         parameters.add(parameter);
     }
 
-    public String code() {
-        return "";
+    public String getCode() {
+        return this.code;
     }
 
     /* generates header for .cc files */

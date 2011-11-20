@@ -42,7 +42,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public NewTranslator t; //used for the parse method
 
-    public ImplementationParser(NewTranslator t, ArrayList<Pubble> pubbleList, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList)
+    public ImplementationParser(NewTranslator t, ArrayList<Pubble> pubbleList, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList, ArrayList<String> parsed)
     {
         this.pubbleList = pubbleList;
         this.mubbleList = mubbleList;
@@ -197,7 +197,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitMethodDeclaration(GNode n)
     {
-
+        System.out.println("1");
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -207,7 +207,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //setting global class name
         cName = classname;
         String methodname = n.getString(3);
-
+        System.out.println("2");
         for(Mubble m : mubbleList){
             if(m.getClassName() == null || m.getName() == null || methodname == null || classname == null)
                 System.out.println("****************YOURE FUCKED**************");
@@ -217,32 +217,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
 
         }
-
+        System.out.println("3");
         //visit
         visit(n);
-
-        //==============Assigning Package to CurMub===================//
-        //Assuming curMub has code
-        for(Bubble b: bubbleList)
-        {
-            if(b.getName().equals(classname)) // b's package is curMub's package
-            {
-                if(b.getPackageName().equals(""))
-                    curMub.getPackage().setName("DefaultPackage");
-                else
-                    curMub.getPackage().setName(b.getPackageName());
-            }
-        }
-        /*Adding curMub to the right pNode
-        for(Pubble p : pubbleList)
-        {
-            if(p.getName().equals(curMub.getPackageName()))
-                p.addMubble(curMub);
-        }
-        //==============================================================//
-        */
-
-
 
     }
 
@@ -567,6 +544,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitQualifiedIdentifier(GNode n){
+
         if (onMeth) {
             Node parent0 = (Node)n.getProperty("parent0");
             Node parent1 = (Node)parent0.getProperty("parent0");
@@ -598,15 +576,16 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             if(!inArray)
                 methodString += n.getString(0);
         }
-        visit(n);
 
+        visit(n);
+        
         boolean inList = false;
         for(String s : parsed){
             if(s.equals(n.getString(n.size()-1))){
                 inList = true;
             }
-            //System.out.println(b);
         }
+
         parsed.add(n.getString(n.size()-1));
 
         if(!inList && !n.getString(n.size()-1).equals("String")){
@@ -627,6 +606,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 } catch (Exception e) {System.out.println(e);}
             }
         }
+
     }
 
     public void visitNewClassExpression(GNode n) {
@@ -866,6 +846,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     //String key;
     public void visitArguments(GNode n) {
+
         if (onMeth) {
             String key = "";
             dispatchBitch(n);
@@ -896,8 +877,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     mSign = m.forward();
                         }
             }
-
-                     Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
+            Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
             String p = "";
 
             while(m.find()){
@@ -950,6 +930,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         else {
             visit(n);
         }
+
     }
 
     public void visitSelectionExpression(GNode n) {

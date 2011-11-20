@@ -55,7 +55,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         this.mubbleList = mubbleList;
         this.langList = langList;
         this.bubbleList = bubbleList;
-        this.parsed = parsed;
+        //this.parsed = parsed;
     }
 
 
@@ -238,7 +238,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public void visitModifier(GNode n){
         visit(n);
 
-        System.out.println("about to parent");
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
         Node parent2 = (Node)n.getProperty("parent2");
@@ -251,8 +250,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 (parent1.hasName("MethodDeclaration")) &&
                 (parent2.hasName("ClassBody")))
         {
-            System.out.println("in first");
-            System.out.println(n.getName());
             //for(Object o : n)
                 //System.out.println(o);
             //String visibility = "haha fake";
