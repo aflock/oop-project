@@ -399,9 +399,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             /* what we DO need is to create the parent nodes if they don't exits
              * TODO for xtc oop helper,
-             *          create xtc oop helper with parent xtc oop
-             *          create xtc oop with parent xtc
-             *          create xtc with parent default package, or ""(not null)
+             *          create or find xtc oop helper with parent xtc oop
+             *          create or find xtc oop with parent xtc
+             *          create or find xtc with parent default package, or ""(not null)
             /* ===============DON'T THINK WE NEED THIS=======================
             //check to see if this package is already in pubbleList
             Pubble packPub;
