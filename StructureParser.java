@@ -401,7 +401,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
              *          create or find xtc oop helper with parent xtc oop
              *          create or find xtc oop with parent xtc
              *          create or find xtc with parent default package, or ""(not null)
-            /* ===============DON'T THINK WE NEED THIS=======================
+             *
             //check to see if this package is already in pubbleList
             //we can assume this step happens only at the beginning of an AST-
             //I.E. it is safe to throw away the current pubble, and replace it

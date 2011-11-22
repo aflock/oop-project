@@ -1,5 +1,7 @@
-//Using Decl in a non-hacky way
-//
+/*
+ * Conventions:
+ *  -the root package name is "Default Package", not "" as before
+ */
 
 package xtc.oop;
 
@@ -168,18 +170,70 @@ public class NewTranslator extends xtc.util.Tool{
     //constructs package tree from pubblelist
     public void constructPackageTree()
     {
-        //for all pubbles, link children to it. (search on parent name)
-        //TODO
-        /*
+        boolean rootFound = false;
+        Pubble root = new Pubble();
+        //set root to Default Package
         for(Pubble p : pubbleList){
-
+            if(p.getName().equals("Default Package")){
+                root = p;
+                rootFound = true;
+            }
         }
-        */
+        if(!rootFound){ //this should never happen... just in case, create it
+            root = new Pubble("Default Package", null);
+        }
+
+
+        //for all pubbles, link children to it. (search on parent name)
+        //also, if your parent doesn't exist, create it
+        for(Pubble p : pubbleList){
+            String name = p.getName();
+            if(p.getParent()==null || p.getParent().equals("")){
+                //get lineage
+                String[] lineage = name.split(" ");
+
+                //remove " " (~_~;)
+                int scount = 0;
+                for(String s : lineage){
+                    if(s.equals(" "))
+                        scount++;
+                }
+                String[] nlineage = new String[lineage.length - scount];
+                int ind = 0;
+                for(int i = 0; i< lineage.length; i ++){
+                    if(!(lineage[i].equals(" "))){
+                        nlineage[ind] = lineage[i];
+                        ind++;
+                    }
+                }
+                //" " are now removed ^_^
+
+                if(nlineage.length == 1){
+                    p.setParent(root);
+                    root.addChild(p);
+                }
+                else{
+                    //find parent, if not found, create. recursively.
+                    //still TODO @AFlock will handle
+                    System.out.println("still todo ^_^");
+                }
+            }
+        }
     }
 
     //*************************************************************//
 
     //helper methods
+    public Pubble findParent(String[] lineage){
+        /* Say we are given:
+         * xtc oop helper
+         * And want to find/create the parent, then return it.
+         */
+        //still TODO @AFlock will handle
+        Pubble p = new Pubble();
+        return p;
+    }
+
     public void prepStructures(){
 
         /*
