@@ -330,9 +330,51 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitCompilationUnit(GNode n){
+        /*
+         * Finding the Pubble that this bad boy should go in.
+         * If it doesn't exist, curPub is simply added to the list
+         * If it does exits, curPub is set to the correct pubble in visitPackageDecl
+         */
+
         curPub = new Pubble(); //may change down the line if the Pubble already exists
+        boolean DP = false;
+        if(n.getNode(0) == null){//no package explicitly declared, DP
+            for(Pubble p : pubbleList){
+                if(p.getName().equals("Default Package")){
+                    curPub = p;
+                    DP = true;
+                }
+            }
+        }
         visit(n);
-        pubbleList.add(curPub);
+
+        /*//{{{
+        if(curPub.getName()==null){
+            System.out.println("God dammit who's adding this bullshit null pubble");
+            System.out.println("V_V_V_ inspect null package _V_V_V_V");
+            for(Bubble b : curPub.getBubbles())
+            {
+                System.out.println("\tClass: " + b.getName());
+                for(Mubble m : b.getMubbles())
+                {
+                    System.out.println("\t\tMethod: " + m.getName());
+                    System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+
+                }
+            }
+
+            curPub.setName("Default Package");
+        }
+        *///}}}
+
+        //now add the pubble if it's not already in the list
+        boolean inList = false;
+        for(Pubble p : pubbleList){
+            if(p == curPub)
+                inList = true;
+        }
+        if(!inList)
+            pubbleList.add(curPub);
 
         //Check if any bubbles haven't been built (we have not parsed their AST yet)
         for(Bubble b : bubbleList){
@@ -394,7 +436,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 packageName += " " + name;
             }
 
-            //curPub.setName(packageName);
+            curPub.setName(packageName);
 
             /* what we DO need is to create the parent nodes if they don't exits
              * TODO for xtc oop helper,

@@ -133,7 +133,7 @@ public class NewTranslator extends xtc.util.Tool{
         }
 
         //At this point, pubbleList contains all the packages but they aren't linked together
-        //t.constructPackageTree();
+        t.constructPackageTree();
 
 
         //Printing Contents of Everything
@@ -151,6 +151,8 @@ public class NewTranslator extends xtc.util.Tool{
 		        }
 		    }
 		}
+
+        //Construct package tree
         //-at this point, shit should be ready to print
         //-before printing, call setParameters on each Bubble so that DK's
         //  previous printing methods work
@@ -167,13 +169,33 @@ public class NewTranslator extends xtc.util.Tool{
         //see Decl line 716 for old implementation
     }
 
-    //constructs package tree from pubblelist
+    //************************HELPER METHODS***********************//
     public void constructPackageTree()
+    //constructs package tree from pubblelist
     {
         boolean rootFound = false;
         Pubble root = new Pubble();
         //set root to Default Package
         for(Pubble p : pubbleList){
+            if(p == null){
+                 System.out.println("null package... why?");
+            }
+            System.out.println(p.getName());
+            if(p.getName().equals(null)){
+                //what is this strange animal
+                System.out.println("V_V_V_ inspect null package _V_V_V_V");
+                for(Bubble b : p.getBubbles())
+                {
+                    System.out.println("\tClass: " + b.getName());
+                    for(Mubble m : b.getMubbles())
+                    {
+                        System.out.println("\t\tMethod: " + m.getName());
+                        System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+
+                    }
+                }
+
+            }
             if(p.getName().equals("Default Package")){
                 root = p;
                 rootFound = true;
@@ -181,14 +203,18 @@ public class NewTranslator extends xtc.util.Tool{
         }
         if(!rootFound){ //this should never happen... just in case, create it
             root = new Pubble("Default Package", null);
+            pubbleList.add(root);
         }
 
 
         //for all pubbles, link children to it. (search on parent name)
         //also, if your parent doesn't exist, create it
-        for(Pubble p : pubbleList){
+        //we create a copy of the list to iterate through to avoid concurrentModError
+        ArrayList<Pubble> pubbleListCopy = new ArrayList<Pubble>(pubbleList);
+        for(Pubble p : pubbleListCopy){
             String name = p.getName();
-            if(p.getParent()==null || p.getParent().equals("")){
+            if((p.getParent()==null || p.getParent().equals(""))
+                    && !name.equals("Default Package")){
                 //get lineage
                 String[] lineage = name.split(" ");
 
@@ -213,25 +239,60 @@ public class NewTranslator extends xtc.util.Tool{
                     root.addChild(p);
                 }
                 else{
-                    //find parent, if not found, create. recursively.
-                    //still TODO @AFlock will handle
-                    System.out.println("still todo ^_^");
+                    Pubble parent = findParent(lineage);
+                    parent.addChild(p);
                 }
             }
         }
     }
 
-    //*************************************************************//
 
-    //helper methods
     public Pubble findParent(String[] lineage){
         /* Say we are given:
          * xtc oop helper
          * And want to find/create the parent, then return it.
+         * Special case for "Default Package"
          */
-        //still TODO @AFlock will handle
-        Pubble p = new Pubble();
-        return p;
+        //find root
+        Pubble root = new Pubble();
+        boolean rootFound = false;
+        //set root to Default Package
+        for(Pubble p : pubbleList){
+            if(p.getName().equals("Default Package")){
+                root = p;
+                rootFound = true;
+            }
+        }
+        if(!rootFound)//serious problem
+            System.out.println("Watch out buddy, we don't have a root package");
+
+        String parentName = "";
+        for(int i = 0; i < lineage.length-1; i++){
+            parentName += lineage[i];
+        }
+        boolean parentFound = false;
+        Pubble parent = new Pubble();
+        for(Pubble p : pubbleList){
+            if(p.getName().trim().equals(parentName)) {
+                parent = p;
+                parentFound = true;
+            }
+        }
+
+        if(!parentFound){//create it
+            String[] parentLineage = parentName.split(" ");
+            if(parentLineage.length==1){
+                parent = new Pubble(parentName, root);
+                root.addChild(parent);
+            }
+            else{
+                Pubble gparent = findParent(parentLineage);
+                parent = new Pubble(parentName, gparent);
+                gparent.addChild(parent);
+            }
+        }
+        pubbleList.add(parent);
+        return parent;
     }
 
     public void prepStructures(){
@@ -251,7 +312,7 @@ public class NewTranslator extends xtc.util.Tool{
         this.populateLangList();//putting all of java_lang methods into the langList
 
 
-        pubbleList.add(new Pubble("DefaultPackage", null));
+        pubbleList.add(new Pubble("Default Package", null));
         //pre-load Object Bubble
         Bubble object = new Bubble("Object");
 

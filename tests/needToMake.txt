@@ -33,3 +33,4 @@ Other:
     x Setting specific values in arrays/2 dimenstional arrays (array[1][2] = 3)
     x testing weird datafield declarations
     - check that final, const, private, protected get handled correctly
+    - two files with the same package are added to the same pubble
