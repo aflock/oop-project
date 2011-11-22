@@ -386,7 +386,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
               "oop",
               "helper"
             )
-            -want the package name in this case to be "helper" , not xtc oop helper... right?
             */
             String name;
             String packageName = "";
@@ -395,7 +394,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 packageName += " " + name;
             }
 
-            curPub.setName(packageName);
+            //curPub.setName(packageName);
 
             /* what we DO need is to create the parent nodes if they don't exits
              * TODO for xtc oop helper,
@@ -404,7 +403,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
              *          create or find xtc with parent default package, or ""(not null)
             /* ===============DON'T THINK WE NEED THIS=======================
             //check to see if this package is already in pubbleList
-            Pubble packPub;
+            //we can assume this step happens only at the beginning of an AST-
+            //I.E. it is safe to throw away the current pubble, and replace it
+            //with the "correct" one;
+            */
+            Pubble packPub = new Pubble();//will be overwritten but compiler is scared it won't
             Boolean inPubbleList = false;
             for(Pubble p : pubbleList)
             {
@@ -424,7 +427,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             packPub.addBubble(curBub);
             curBub.setParentPubble(packPub);
-            */
+            curPub = packPub; //necessary?
         }
 
             //get return type for methods

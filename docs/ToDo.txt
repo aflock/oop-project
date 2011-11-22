@@ -41,6 +41,8 @@ _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 -method overloading
 -system.out.println -> std::cout
 -package naming/ linking
+-memset?
+-memory management (smart pointers)?
 
 
 ===============================================================================
