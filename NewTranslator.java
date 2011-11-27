@@ -134,38 +134,45 @@ public class NewTranslator extends xtc.util.Tool{
 
         //At this point, pubbleList contains all the packages but they aren't linked together
         t.constructPackageTree();
-        for(Pubble p : pubbleList){
-            System.out.println("^||^||^||^||^||^||^||^||^||^||^");
-            System.out.println("Package: " + p.getName());
-            if(p.getParent() == null)
-                System.out.println("No parent");
-            else
-                System.out.println("Parent: " + p.getParent().getName());
-            System.out.println("Children: ");
-		    for(Pubble c : p.getChildren()){
-		        System.out.println("\t-" + c.getName());
+
+
+        //Print structure <- use for testing dependencies, inheritance
+        if(true)
+            for(Pubble p : pubbleList){
+                System.out.println("^||^||^||^||^||^||^||^||^||^||^");
+                System.out.println("Package: " + p.getName());
+                if(p.getParent() == null)
+                    System.out.println("No parent");
+                else
+                    System.out.println("Parent: " + p.getParent().getName());
+                System.out.println("Children: ");
+                for(Pubble c : p.getChildren()){
+                    System.out.println("\t-" + c.getName());
+                }
+                System.out.println("Classes: ");
+                for(Bubble b : p.getBubbles()){
+                    System.out.println("\t- " + b.getName());
+
+                }
             }
-        }
 
 
-        /*
         //Printing Contents of Everything
-        System.out.println("V_V_V_V_V_V_V_V_V_V_V_ This is everything VVVVVVVVVVVVVV");
-		for(Pubble p : pubbleList)
-		{
-		    System.out.println("Package: " + p.getName());
-		    for(Bubble b : p.getBubbles())
-		    {
-		        System.out.println("\tClass: " + b.getName());
-		        for(Mubble m : b.getMubbles())
-		        {
-		            System.out.println("\t\tMethod: " + m.getName());
-		            System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+        if(false)
+            for(Pubble p : pubbleList)
+            {
+                System.out.println("Package: " + p.getName());
+                for(Bubble b : p.getBubbles())
+                {
+                    System.out.println("\tClass: " + b.getName());
+                    for(Mubble m : b.getMubbles())
+                    {
+                        System.out.println("\t\tMethod: " + m.getName());
+                        System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
 
-		        }
-		    }
-		}
-        */
+                    }
+                }
+            }
 
         //Construct package tree
         //-at this point, shit should be ready to print
