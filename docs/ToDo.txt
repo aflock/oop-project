@@ -4,7 +4,7 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 28.
+DAYS TILL DUE: bout 22.
 
 To Do:
 -Use xtc.tree.printer
@@ -17,6 +17,18 @@ To Do:
 
 -getName() == BLA to -hasName("BLA")?
 -printing strings and variable types in c++ is different
+
+
+
+_V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
+- Need to deal with static blocks in class declarations.
+- how to use xtc.util.symbol table to our advantage?
+- method overloading
+- system.out.println -> std::cout
+- memset?
+- memory management (smart pointers)?
+- chaining -> use temp variables (method chaining, assignment chaining)
+
 
 Timeline:
 Week 1:
@@ -32,18 +44,6 @@ Week 3:
 -Exceptions
 
 Week 4:
-
-
-_V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
-- Need to deal with static blocks in class declarations.
-x Package list has a "null" node ?  //lame naming mistake. fixed -af
-- how to use xtc.util.symbol table to our advantage?
-- method overloading
-- system.out.println -> std::cout
-x package naming/ linking //works like a charm
-- memset?
-- memory management (smart pointers)?
-
 
 
 
