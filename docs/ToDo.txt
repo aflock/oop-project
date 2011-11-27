@@ -40,7 +40,7 @@ x Package list has a "null" node ?  //lame naming mistake. fixed -af
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
 - system.out.println -> std::cout
-x package naming/ linking
+x package naming/ linking //works like a charm
 - memset?
 - memory management (smart pointers)?
 

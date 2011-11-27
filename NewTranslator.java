@@ -134,9 +134,23 @@ public class NewTranslator extends xtc.util.Tool{
 
         //At this point, pubbleList contains all the packages but they aren't linked together
         t.constructPackageTree();
+        for(Pubble p : pubbleList){
+            System.out.println("^||^||^||^||^||^||^||^||^||^||^");
+            System.out.println("Package: " + p.getName());
+            if(p.getParent() == null)
+                System.out.println("No parent");
+            else
+                System.out.println("Parent: " + p.getParent().getName());
+            System.out.println("Children: ");
+		    for(Pubble c : p.getChildren()){
+		        System.out.println("\t-" + c.getName());
+            }
+        }
 
 
+        /*
         //Printing Contents of Everything
+        System.out.println("V_V_V_V_V_V_V_V_V_V_V_ This is everything VVVVVVVVVVVVVV");
 		for(Pubble p : pubbleList)
 		{
 		    System.out.println("Package: " + p.getName());
@@ -151,6 +165,7 @@ public class NewTranslator extends xtc.util.Tool{
 		        }
 		    }
 		}
+        */
 
         //Construct package tree
         //-at this point, shit should be ready to print
@@ -176,12 +191,10 @@ public class NewTranslator extends xtc.util.Tool{
         boolean rootFound = false;
         Pubble root = new Pubble();
         //set root to Default Package
+
         for(Pubble p : pubbleList){
-            if(p == null){
-                 System.out.println("null package... why?");
-            }
-            System.out.println(p.getName());
-            if(p.getName().equals(null)){
+            //System.out.println(p.getName());
+            if(p.getName().equals(null)){//{{{
                 //what is this strange animal
                 System.out.println("V_V_V_ inspect null package _V_V_V_V");
                 for(Bubble b : p.getBubbles())
@@ -195,7 +208,7 @@ public class NewTranslator extends xtc.util.Tool{
                     }
                 }
 
-            }
+            }//}}}
             if(p.getName().equals("Default Package")){
                 root = p;
                 rootFound = true;
@@ -268,8 +281,9 @@ public class NewTranslator extends xtc.util.Tool{
 
         String parentName = "";
         for(int i = 0; i < lineage.length-1; i++){
-            parentName += lineage[i];
+            parentName += lineage[i] + " ";
         }
+        parentName = parentName.trim();
         boolean parentFound = false;
         Pubble parent = new Pubble();
         for(Pubble p : pubbleList){

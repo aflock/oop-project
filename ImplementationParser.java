@@ -528,16 +528,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 tan += n.getString(0) + " ";
             }
 
-            if(parent1.getName().equals("FieldDeclaration"))
-            {
-                for(Object o : parent0)
-                {
-                    if (o instanceof Node )
-                    {
+            if(parent1.getName().equals("FieldDeclaration")){
+                for(Object o : parent0){
+                    if (o instanceof Node ){
                         if(((Node)o).getName().equals("Dimensions"))
                             inArray = true;
                     }
-
                 }
             }
 
@@ -554,7 +550,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
 
         visit(n);
-        
+
         boolean inList = false;
         for(String s : parsed){
             if(s.equals(n.getString(n.size()-1))){
@@ -571,18 +567,17 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 path+="."+n.getString(i);
             }
 
-            System.out.println("IMPLSabout to call findFile on: " + path.substring(1));
+            System.out.println("IMPL is about to call findFile on: " + path.substring(1));
+            path = findFile(path);
 
-            path = Decl.findFile(path);
-
+            //TODO @ALott - this is infinilooping on the current package.. need a check for curBub?
             if(!path.equals("")){
                 System.out.println(path);
                 try{
-                    Decl.Q.process(path);
+                    t.process(path);
                 } catch (Exception e) {System.out.println(e);}
             }
         }
-
     }
 
     public void visitNewClassExpression(GNode n) {

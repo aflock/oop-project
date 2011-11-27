@@ -420,7 +420,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curBub.setParentBubble(parent); //set my parent
         }
 
-        //finding the package curBub belongs to
+        //finding the package we are in -> set curPub correctly
+        //NOTE: there is no curBub at this point, so we must set curBub to the
+        //right pakcage in class Decl.
         if (parent0.getName().equals("PackageDeclaration")){
             //looping through something like...
             /*QualifiedIdentifier(
@@ -438,17 +440,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             curPub.setName(packageName);
 
-            /* what we DO need is to create the parent nodes if they don't exits
-             * TODO for xtc oop helper,
-             *          create or find xtc oop helper with parent xtc oop
-             *          create or find xtc oop with parent xtc
-             *          create or find xtc with parent default package, or ""(not null)
-             *
             //check to see if this package is already in pubbleList
             //we can assume this step happens only at the beginning of an AST-
             //I.E. it is safe to throw away the current pubble, and replace it
             //with the "correct" one;
-            */
+
             Pubble packPub = new Pubble();//will be overwritten but compiler is scared it won't
             Boolean inPubbleList = false;
             for(Pubble p : pubbleList)
@@ -466,12 +462,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 packPub = new Pubble(packageName);
                 pubbleList.add(packPub);
             }
-
-            packPub.addBubble(curBub);
-            curBub.setParentPubble(packPub);
-            curPub = packPub; //necessary?
+            curPub = packPub; //necessary? *doesn't seem to hurt at least*
         }
-
             //get return type for methods
             if ((parent0.hasName("Type")) &&
                     (parent1.hasName("MethodDeclaration")))
