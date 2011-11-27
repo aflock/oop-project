@@ -551,6 +551,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         visit(n);
 
+        //Find out if we need to find/parse the AST for the class mentioned
         boolean filled = false;
         for(Bubble b : bubbleList){
             if(b.getName().equals(n.getString(n.size()-1))) {
@@ -560,16 +561,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 b.setIsFilled(true);
             }
         }
-
-        /*
-        for(String s : parsed){
-            if(s.equals(n.getString(n.size()-1))){
-                inList = true;
-            }
-        }
-
-        parsed.add(n.getString(n.size()-1));
-        */
 
         if(!filled && !n.getString(n.size()-1).equals("String")){
 
@@ -581,8 +572,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             System.out.println("IMPL is about to call findFile on: " + path.substring(1));
             path = findFile(path);
 
-            //TODO - this is infinilooping on the current package..
-            //turns out we DO need a parsed list
             if(!path.equals("")){
                 System.out.println(path);
                 try{
