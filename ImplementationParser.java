@@ -551,7 +551,17 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         visit(n);
 
-        boolean inList = false;
+        boolean filled = false;
+        for(Bubble b : bubbleList){
+            if(b.getName().equals(n.getString(n.size()-1))) {
+                if(b.isFilled()){
+                    filled = true;
+                }
+                b.setIsFilled(true);
+            }
+        }
+
+        /*
         for(String s : parsed){
             if(s.equals(n.getString(n.size()-1))){
                 inList = true;
@@ -559,8 +569,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
 
         parsed.add(n.getString(n.size()-1));
+        */
 
-        if(!inList && !n.getString(n.size()-1).equals("String")){
+        if(!filled && !n.getString(n.size()-1).equals("String")){
 
             String path = "";
             for(int i = 0; i < n.size(); i++) {
