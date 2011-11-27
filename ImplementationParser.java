@@ -570,7 +570,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             System.out.println("IMPL is about to call findFile on: " + path.substring(1));
             path = findFile(path);
 
-            //TODO @ALott - this is infinilooping on the current package.. need a check for curBub?
+            //TODO - this is infinilooping on the current package..
+            //turns out we DO need a parsed list
             if(!path.equals("")){
                 System.out.println(path);
                 try{
