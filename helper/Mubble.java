@@ -260,20 +260,22 @@ public class Mubble {
      */
     public String vTable2() {
         StringBuilder type = new StringBuilder();
+	/*
         if (from == INHERITED) {
-            type.append("(").append(returnType).append("(*)");
+	    type.append("(").append(returnType).append("(*)");
             type.append(getClassName());
             for (String para : paraType) {
                 type.append(",").append(para);
             }
             type.append(")");
         }
+	*/
 
         StringBuilder s = new StringBuilder();
         s.append(methodName).append("(");
-        if (type != null) {
-            s.append(type.toString()).append(")");
-        }
+        //if (type != null) {
+        //    s.append(type.toString()).append(")");
+        //}
 
         if (from == INHERITED) { // this line is not quite right
 	    s.append("(").append(returnType).append("(*)(");
@@ -281,8 +283,28 @@ public class Mubble {
 	    for (String para : paraType) {
 		s.append(",").append(para);
 	    }
-	    s.append(")").append("&_").
-		append(className.getParentBubble().getName());
+	    s.append(")").append("&_");
+	    
+	    Bubble ancestor = className.getParentBubble();
+	    String inheritedfrom = "Object";
+	    boolean found = true;
+	    while (ancestor != null && found) {
+		ArrayList<Mubble> mubbles = ancestor.getMubbles();
+		for (Mubble mub : mubbles) {
+		    if (mub.getName().equals(methodName) && mub.from() != INHERITED) {
+			inheritedfrom = ancestor.getName();
+			found = false;
+		    }			
+		}
+		ancestor = ancestor.getParentBubble();
+	    }
+	    if (inheritedfrom.equals("Object") || inheritedfrom.equals("String") || 
+		inheritedfrom.equals("Class")) {
+		s.append("_").append(inheritedfrom);
+	    }
+	    else {
+		s.append(inheritedfrom);
+	    }
         }
         else {
             s.append("&_").append(getClassName());
