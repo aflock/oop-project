@@ -172,7 +172,6 @@ public class NewTranslator extends xtc.util.Tool{
                 }
             }
         }
-<<<<<<< HEAD
         /*
         String doth = root.getH();
         System.out.println(doth);
@@ -180,8 +179,6 @@ public class NewTranslator extends xtc.util.Tool{
         */
         String dotc = root.getCC();
         System.out.println(dotc);
-=======
->>>>>>> ebd4b8a5d70c3157ea9e59a43b8110fc39f0a4c6
 
 
     /* Lets Print a .H!!! */
