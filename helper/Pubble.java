@@ -65,7 +65,11 @@ public class Pubble{
     //lines will be delimited by \n but will not be correctly indented
     public String getH()
     {
-        String ret = "";
+        //a bit of hardcoding
+        String ret = "#include \"java_lang.h\"\n\n";
+        ret += "typedef java::lang::Class Class;\n";
+        ret += "typedef java::lang::Object Object;\n";
+        ret += "typedef java::lang::String String;\n\n";
         ret += getForwardDecl();
         ret += getVTables();
         return ret;
@@ -83,7 +87,7 @@ public class Pubble{
     public String getForwardDecl()
     {
         String ret = "";
-        if(!(name.equals("default package")))
+        if(!(name.equals("Default Package")))
             ret += "namespace " + name + " {\n";
         for(Bubble b : bubbles){
             ret += b.getFDeclStruct();

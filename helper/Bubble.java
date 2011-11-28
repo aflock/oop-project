@@ -218,7 +218,7 @@ public class Bubble{
 		ret += "struct _"+this.name+"_VT {\n";
 		//indent
 		//Hardcoding class
-		ret += "Class __isa;";
+		ret += "Class __isa;\n";
 		for(Mubble m : mubbles) {
 			ret += m.vTable1()+"\n";
 		}
@@ -238,6 +238,6 @@ public class Bubble{
 
     public String getC() {
         //returns an
-
+        return "todo: getC method in Bubble";
     }
 }//}}}
