@@ -1,6 +1,6 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
- 
+
 //import helper.Pubble;
 //import helper.Bubble;
 //import helper.Field;
@@ -58,25 +58,25 @@ public class Mubble {
 
     /* generates header for .cc files */
     public String ccHeader() {
-	StringBuilder s = new StringBuilder("");
-	if (staticMethod) {
-	    // working?
-	    s.append(returnType).append(" _").append(className).
-		append("::").append(methodName).append("(");
-	    for (int i = 0; i < paraType.size(); i++) {
-		if (i != 0) {
-		    s.append(", ").append(paraType.get(i));
-		}
-		else {
-		    s.append(paraType.get(i));
-		}
-	    }
-	    s.append(")");		
-	}
-	else {
-	    s.append(returnType).append(" _").append(className).
-		append("::").append(methodName).append("(").
-		append(getClassName()).append(" __this");
+        StringBuilder s = new StringBuilder("");
+        if (staticMethod) {
+            // working?
+            s.append(returnType).append(" _").append(className).
+                append("::").append(methodName).append("(");
+            for (int i = 0; i < paraType.size(); i++) {
+                if (i != 0) {
+                    s.append(", ").append(paraType.get(i));
+                }
+                else {
+                    s.append(paraType.get(i));
+                }
+            }
+            s.append(")");
+        }
+        else {
+            s.append(returnType).append(" _").append(className).
+                append("::").append(methodName).append("(").
+                append(getClassName()).append(" __this");
 	    for (String para : paraType) {
 		s.append(", ").append(para);
 	    }
@@ -284,7 +284,7 @@ public class Mubble {
 		s.append(",").append(para);
 	    }
 	    s.append(")").append("&_");
-	    
+
 	    Bubble ancestor = className.getParentBubble();
 	    String inheritedfrom = "Object";
 	    boolean found = true;
@@ -294,11 +294,11 @@ public class Mubble {
 		    if (mub.getName().equals(methodName) && mub.from() != INHERITED) {
 			inheritedfrom = ancestor.getName();
 			found = false;
-		    }			
+		    }
 		}
 		ancestor = ancestor.getParentBubble();
 	    }
-	    if (inheritedfrom.equals("Object") || inheritedfrom.equals("String") || 
+	    if (inheritedfrom.equals("Object") || inheritedfrom.equals("String") ||
 		inheritedfrom.equals("Class")) {
 		s.append("_").append(inheritedfrom);
 	    }

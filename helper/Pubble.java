@@ -83,7 +83,7 @@ public class Pubble{
     public String getForwardDecl()
     {
         String ret = "";
-        if(!(name.equals("default package")))
+        if(!(name.equals("Default Package")))
             ret += "namespace " + name + " {\n";
         for(Bubble b : bubbles){
             ret += b.getFDeclStruct();

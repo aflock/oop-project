@@ -177,7 +177,7 @@ public class Bubble{
 			"typedef " + pkgpath + "_"+this.name + " _" + this.name + ";\n";
         */
 
-		return "typedef " + this.name + "* " + this.name + ";\n";
+		return "typedef _" + this.name + "* " + this.name + ";\n";
 	}
 
 	public String getFDeclStruct() {
@@ -237,7 +237,7 @@ public class Bubble{
 
 
     public String getC() {
-        //returns an
+        //returns a complete .cc entry for this class
 
     }
 }//}}}
