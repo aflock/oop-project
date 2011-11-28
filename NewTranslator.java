@@ -171,28 +171,23 @@ public class NewTranslator extends xtc.util.Tool{
                   System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
                 }
             }
+
+
         }
-        /*
+        /* Lets Print a .H!!! */
+        System.out.println("\n=====================  .h  =====================\n");
+        Pubble root = new Pubble();
+        for(Pubble p : pubbleList){
+            if(p.getName().equals("Default Package"))
+                root = p;
+        }
         String doth = root.getH();
         System.out.println(doth);
-
-        */
+        System.out.println("\n================================================\n");
+        System.out.println("\n=====================  .cc  =====================\n");
         String dotc = root.getCC();
         System.out.println(dotc);
-
-
-    /* Lets Print a .H!!! */
-
-    Pubble root = new Pubble();
-    for(Pubble p : pubbleList){
-      if(p.getName().equals("Default Package"))
-        root = p;
-    }
-    String doth = root.getH();
-    System.out.println(doth);
-    String dotc = root.getC();
-    System.out.println(dotc);
-
+        System.out.println("\n=================================================\n");
 
     //-before printing, call setParameters on each Bubble so that DK's
     //  previous printing methods work

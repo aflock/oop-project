@@ -130,7 +130,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             String[] z = tan.trim().split("\\s+");
             // this could be fucked up
             String type = z[0];
-            System.out.println("Z"+tan+"\n");
+            //System.out.println("Z"+tan+"\n");
             for (int i = 1; i < z.length; i++) {
                 table.put(z[i], type);
 
@@ -168,7 +168,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 table.put(z[i], type);
             }
 
-            System.out.println(tan);
+            //System.out.println(tan);
         }
     }
 
@@ -435,7 +435,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     Reader in = new BufferedReader(new InputStreamReader(fi));
                     Node leNode = t.parse(in, f);
                     this.dispatch(leNode);
-                }catch(Exception e){System.out.println(e); }
+                }catch(Exception e){System.out.println("error" + e); }
             }
         }
     }
@@ -573,10 +573,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             path = findFile(path);
 
             if(!path.equals("")){
-                System.out.println(path);
+                //System.out.println(path);
                 try{
                     t.process(path);
-                } catch (Exception e) {System.out.println(e);}
+                } catch (Exception e) {System.out.println("error: " + e);}
             }
         }
     }
@@ -831,7 +831,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     .getNode(0).getName().equals("PrimaryIdentifier")) {
                 key = callex.getNode(0).getString(0);
                 type = table.get(key);
-                System.out.println(key + " " + type);
+                //System.out.println(key + " " + type);
                     }
 
 
@@ -859,9 +859,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
 
             String [] par = p.trim().split("\\s");
+            /* WHY DO WE NEED THIS
             for( String g : par)
                 System.out.println(g);
-
+            */
 
             String s = "";
             //CASTING
