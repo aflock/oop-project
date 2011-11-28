@@ -137,7 +137,7 @@ public class NewTranslator extends xtc.util.Tool{
 
 
         //Print structure <- use for testing dependencies, inheritance
-        if(true)
+        if(false)
             for(Pubble p : pubbleList){
                 System.out.println("^||^||^||^||^||^||^||^||^||^||^");
                 System.out.println("Package: " + p.getName());
@@ -169,13 +169,24 @@ public class NewTranslator extends xtc.util.Tool{
                     {
                         System.out.println("\t\tMethod: " + m.getName());
                         System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
-
                     }
                 }
             }
 
-        //Construct package tree
-        //-at this point, shit should be ready to print
+
+        /* Lets Print a .H!!! */
+
+        Pubble root = new Pubble();
+        for(Pubble p : pubbleList){
+            if(p.getName().equals("Default Package"))
+                root = p;
+        }
+        String doth = root.getH();
+        System.out.println(doth);
+        String dotc = root.getC();
+        System.out.println(dotc);
+
+
         //-before printing, call setParameters on each Bubble so that DK's
         //  previous printing methods work
 

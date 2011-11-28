@@ -172,8 +172,12 @@ public class Bubble{
 			p = p.getParent();
 		}
 		//why do we need two typedefs? one with underscores one without?
+        /* Not sure if this is correct... changing to below -af
 		return "typedef " + pkgpath + this.name + " " + this.name + ";\n" +
 			"typedef " + pkgpath + "_"+this.name + " _" + this.name + ";\n";
+        */
+
+		return "typedef " + this.name + "* " + this.name + ";\n";
 	}
 
 	public String getFDeclStruct() {
@@ -182,52 +186,58 @@ public class Bubble{
 	}
 
 	public String getStruct() {
-		String struct = "struct _" + this.name + " {\n";
+		String ret = "struct _" + this.name + " {\n";
 		//indent
-		struct += "//Data fields\n";
+		ret += "//Data fields\n";
 		//add the VT vptr
-		struct += "_"+this.name+"_VT* __vptr;\n";
+		ret += "_"+this.name+"_VT* __vptr;\n";
 		//iterate through datafields, print them
 		for(int i = 0; i < this.dataFields.size(); i++) {
 			//output data fields
 		}
-		struct+="\n//Constructors\n";
+		ret+="\n//Constructors\n";
 		for(Mubble constructor : mubbles) {
 			if(constructor.isConstructor())
-				struct += "_"+constructor.getName()+"();\n";
+				ret += "_"+constructor.getName()+"();\n";
 		}
-		struct+="\n//Forward declaration of methods\n";
+		ret+="\n//Forward declaration of methods\n";
 		//Hardcoding the vt and class
-		struct += "static Class __class();\n" +
+		ret += "static Class __class();\n" +
 			"static _"+this.name+"_VT __vtable;\n";
 		for(Mubble m : mubbles) {
 			//HARDCODING STATIC, MAY NEED TO CHANGE
-			struct+= "static "+m.forward() + "\n";
+			ret+= "static "+m.forward() + "\n";
 		}
 		//unindent
-		struct += "};\n";
-		return struct;
+		ret += "};\n";
+		return ret;
 	}
 
 	public String getStructVT() {
-		String struct = "// The vtable layout for "+this.name+".\n";
-		struct += "struct _"+this.name+"_VT {\n";
+		String ret = "// The vtable layout for "+this.name+".\n";
+		ret += "struct _"+this.name+"_VT {\n";
 		//indent
 		//Hardcoding class
-		struct += "Class __isa;";
+		ret += "Class __isa;";
 		for(Mubble m : mubbles) {
-			struct += m.vTable1()+"\n";
+			ret += m.vTable1()+"\n";
 		}
 		//Make VT constructor in-line, hardcoding class (indent?)
-		struct+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
+		ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
 		for(Mubble m : mubbles) {
-			struct += ",\n"+m.vTable2();
+			ret += ",\n"+m.vTable2();
 		}
-		struct+=" {\n";
+		ret+=" {\n";
 		//unindent
-		struct+="}\n";
+		ret+="}\n";
 		//unindent
-		struct+="};\n";
-		return struct;
+		ret+="};\n";
+		return ret;
 	}
+
+
+    public String getC() {
+        //returns an
+
+    }
 }//}}}

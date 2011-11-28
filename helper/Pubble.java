@@ -41,6 +41,26 @@ public class Pubble{
     }
 
 
+    public String getC(){
+        String ret = "";
+        if(!(name.equals("default package")))
+            ret += "namespace " + name + " {\n";
+
+
+        for(Bubble b: bubbles){
+            ret += b.getC();
+        }
+
+        //now do it for all children
+        for(Pubble p : children){
+            ret += p.getC();
+        }
+
+        if(!(name.equals("Default Package")))
+            ret += "}";
+        return ret;
+    }
+
     //returns a string with the correct information for a .h file
     //lines will be delimited by \n but will not be correctly indented
     public String getH()
@@ -49,8 +69,6 @@ public class Pubble{
         ret += getForwardDecl();
         ret += getVTables();
         return ret;
-
-
     }
 
     /*prints all forward declarations of data fields, vtables and typedefs for this pnode
@@ -65,7 +83,8 @@ public class Pubble{
     public String getForwardDecl()
     {
         String ret = "";
-        ret += "namespace " + name + " {\n";
+        if(!(name.equals("default package")))
+            ret += "namespace " + name + " {\n";
         for(Bubble b : bubbles){
             ret += b.getFDeclStruct();
         }
@@ -78,7 +97,8 @@ public class Pubble{
         for(Pubble p : children){
             ret += p.getForwardDecl();
         }
-        ret += "}";
+        if(!(name.equals("Default Package")))
+            ret += "}";
         return ret;
     }
 
@@ -87,7 +107,8 @@ public class Pubble{
     public String getVTables()
     {
         String ret = "";
-        ret += "namespace " + name + " {\n";
+        if(!(name.equals("Default Package")))
+            ret += "namespace " + name + " {\n";
         for(Bubble b : bubbles){
             ret += b.getStruct();
             ret += b.getStructVT();
@@ -98,7 +119,8 @@ public class Pubble{
             ret += p.getVTables();
         }
 
-        ret += "}";
+        if(!(name.equals("Default Package")))
+            ret += "}";
         return ret;
     }
 
