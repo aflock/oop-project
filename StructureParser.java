@@ -112,7 +112,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
         }
     }
-//}}}
+    //}}}
 
     public void visitClassDeclaration(GNode n){
         //n.getString(0) is the Modifiers node
@@ -163,19 +163,19 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent2 = (Node)n.getProperty("parent2");
         Node parent3 = (Node)n.getProperty("parent3");
         if ((parent0.hasName("Type")) &&
-                (parent1.hasName("FieldDeclaration")))
-        {
-            curField.setIsArray(true);
+            (parent1.hasName("FieldDeclaration")))
+            {
+                curField.setIsArray(true);
 
-            //count dimensions
-            int count = 0;
-            for(Object o : n){
-                if(o instanceof String && ((String)o).equals("[")){
-                    count++;
+                //count dimensions
+                int count = 0;
+                for(Object o : n){
+                    if(o instanceof String && ((String)o).equals("[")){
+                        count++;
+                    }
                 }
+                curField.setArrayDims(count);
             }
-            curField.setArrayDims(count);
-        }
     }
 
     public void visitModifiers(GNode n){
@@ -247,26 +247,26 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
 
         if  (parent1 != null && parent2 != null &&
-                (parent1.hasName("MethodDeclaration")) &&
-                (parent2.hasName("ClassBody")))
-        {
-            //for(Object o : n)
+             (parent1.hasName("MethodDeclaration")) &&
+             (parent2.hasName("ClassBody")))
+            {
+                //for(Object o : n)
                 //System.out.println(o);
-            //String visibility = "haha fake";
-            String visibility = n.getString(0);
-            curMub.setVisibility(visibility);
-        }
+                //String visibility = "haha fake";
+                String visibility = n.getString(0);
+                curMub.setVisibility(visibility);
+            }
 
         if (parent1 != null && parent3 != null &&
-                (parent1.hasName("FormalParameter")) &&
-                (parent3.hasName("MethodDeclaration")))
-        {
-            System.out.println("in second");
-            String modifier = n.getString(0);
-            curField.addModifier(modifier);
-        }
+            (parent1.hasName("FormalParameter")) &&
+            (parent3.hasName("MethodDeclaration")))
+            {
+                System.out.println("in second");
+                String modifier = n.getString(0);
+                curField.addModifier(modifier);
+            }
 
-     }
+    }
 
 
     public void visitDeclarators(GNode n) {
@@ -282,7 +282,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //if an assignment is being made within a class declaration
         if ((parent1.hasName("FieldDeclaration")) &&
-        (parent2.hasName("ClassDeclaration"))){
+            (parent2.hasName("ClassDeclaration"))){
             curField.setHasAssignment(true);
             curField.setAssignment(n); //save the node so we can re-parse it later
         }
@@ -295,7 +295,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent2 = (Node)n.getProperty("parent2");
 
         if ((parent0.hasName("ConcreteDimensions")) &&
-        (parent2.hasName("ClassDeclaration"))){
+            (parent2.hasName("ClassDeclaration"))){
             //TODO what do we do about full declarations? e.g.
             //String[] SA = new String[4];
             //int a = 5;
@@ -349,22 +349,22 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
 
         /*//{{{
-        if(curPub.getName()==null){
-            System.out.println("God dammit who's adding this bullshit null pubble");
-            System.out.println("V_V_V_ inspect null package _V_V_V_V");
-            for(Bubble b : curPub.getBubbles())
-            {
-                System.out.println("\tClass: " + b.getName());
-                for(Mubble m : b.getMubbles())
-                {
-                    System.out.println("\t\tMethod: " + m.getName());
-                    System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+          if(curPub.getName()==null){
+          System.out.println("God dammit who's adding this bullshit null pubble");
+          System.out.println("V_V_V_ inspect null package _V_V_V_V");
+          for(Bubble b : curPub.getBubbles())
+          {
+          System.out.println("\tClass: " + b.getName());
+          for(Mubble m : b.getMubbles())
+          {
+          System.out.println("\t\tMethod: " + m.getName());
+          System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
 
-                }
-            }
+          }
+          }
 
-            curPub.setName("Default Package");
-        }
+          curPub.setName("Default Package");
+          }
         *///}}}
 
         //now add the pubble if it's not already in the list
@@ -399,7 +399,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //finding inheritance
         if ((parent1.hasName("Extension")) &&
-        (parent2.hasName("ClassDeclaration"))){
+            (parent2.hasName("ClassDeclaration"))){
             String parentName = n.getString(0);
 
             boolean parentFound = false;
@@ -429,7 +429,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
               "xtc",
               "oop",
               "helper"
-            )
+              )
             */
             String name;
             String packageName = "";
@@ -448,40 +448,40 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             Pubble packPub = new Pubble();//will be overwritten but compiler is scared it won't
             Boolean inPubbleList = false;
             for(Pubble p : pubbleList)
-            {
-                if(p.getName().equals(packageName))
                 {
-                    inPubbleList = true;
-                    packPub = p;
+                    if(p.getName().equals(packageName))
+                        {
+                            inPubbleList = true;
+                            packPub = p;
+                        }
                 }
-            }
 
             //if its not in the packageList, create a new Pubble, and add it to pubbleList
             if(!inPubbleList)
-            {
-                packPub = new Pubble(packageName);
-                pubbleList.add(packPub);
-            }
+                {
+                    packPub = new Pubble(packageName);
+                    pubbleList.add(packPub);
+                }
             curPub = packPub; //necessary? *doesn't seem to hurt at least*
         }
-            //get return type for methods
-            if ((parent0.hasName("Type")) &&
-                    (parent1.hasName("MethodDeclaration")))
+        //get return type for methods
+        if ((parent0.hasName("Type")) &&
+            (parent1.hasName("MethodDeclaration")))
             {
                 String type = n.getString(0);
                 curMub.setReturnType(type);
             }
 
-            //get parameter type for methods
-            if ((parent0.hasName("Type")) &&
-                    (parent1.hasName("FormalParameter")))
+        //get parameter type for methods
+        if ((parent0.hasName("Type")) &&
+            (parent1.hasName("FormalParameter")))
             {
                 String type = n.getString(0);
                 curField.setType(type);
             }
 
 
-        }
+    }
 
     public void visitImportDeclaration(GNode n){
         visit(n);
@@ -505,7 +505,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //finding inheritance
         if ((parent0.hasName("Type")) &&
-        (parent1.hasName("FormalParameter"))){
+            (parent1.hasName("FormalParameter"))){
             String type = n.getString(0);
             curField.setType(type);
         }
@@ -523,6 +523,14 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitRelationalExpression(GNode n)
     {
+        visit(n);
+    }
+
+    public void visitVoidType(GNode n) {
+	Node parent0 = (Node)n.getProperty("parent0");
+	if (parent0.hasName("MethodDeclaration")) {
+	    curMub.setReturnType("void");
+	}
         visit(n);
     }
 
