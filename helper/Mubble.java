@@ -310,6 +310,7 @@ public class Mubble {
             s.append("&_").append(getClassName());
         }
         s.append("::").append(methodName);
+        s.append(")");
 
         return s.toString();
     }
