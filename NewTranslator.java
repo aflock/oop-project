@@ -181,13 +181,13 @@ public class NewTranslator extends xtc.util.Tool{
             if(p.getName().equals("Default Package"))
                 root = p;
         }
+        /*
         String doth = root.getH();
         System.out.println(doth);
 
-        /*
-        String dotc = root.getC();
-        System.out.println(dotc);
         */
+        String dotc = root.getCC();
+        System.out.println(dotc);
 
 
         //-before printing, call setParameters on each Bubble so that DK's

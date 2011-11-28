@@ -237,9 +237,14 @@ public class Bubble{
 	}
 
 
-    public String getC() {
+    public String getCC() {
         //returns a complete .cc entry for this class
+        String ret = "";
+        for(Mubble m: mubbles){
+            ret += m.getCC() + "\n\n";
+        }
 
-        return "todo: getC method in Bubble";
+        return ret;
+        //return "todo: getC method in Bubble";
     }
 }//}}}

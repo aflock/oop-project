@@ -56,6 +56,12 @@ public class Mubble {
         return this.code;
     }
 
+    public String getCC(){
+        String ret = ccHeader() + "{\n";
+        ret += getCode() + "\n}";
+        return ret;
+    }
+
     /* generates header for .cc files */
     public String ccHeader() {
         StringBuilder s = new StringBuilder("");

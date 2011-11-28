@@ -41,19 +41,19 @@ public class Pubble{
     }
 
 
-    public String getC(){
+    public String getCC(){
         String ret = "";
-        if(!(name.equals("default package")))
+        if(!(name.equals("Default Package")))
             ret += "namespace " + name + " {\n";
 
 
         for(Bubble b: bubbles){
-            ret += b.getC();
+            ret += b.getCC();
         }
 
         //now do it for all children
         for(Pubble p : children){
-            ret += p.getC();
+            ret += p.getCC();
         }
 
         if(!(name.equals("Default Package")))
@@ -70,8 +70,10 @@ public class Pubble{
         ret += "typedef java::lang::Class Class;\n";
         ret += "typedef java::lang::Object Object;\n";
         ret += "typedef java::lang::String String;\n\n";
+        //TODO and all classes?
         ret += getForwardDecl();
         ret += getVTables();
+
         return ret;
     }
 
