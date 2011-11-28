@@ -171,6 +171,7 @@ public class Bubble{
 			pkgpath = p.getName() + "::" + pkgpath;
 			p = p.getParent();
 		}
+
 		//why do we need two typedefs? one with underscores one without?
         /* Not sure if this is correct... changing to below -af
 		return "typedef " + pkgpath + this.name + " " + this.name + ";\n" +
