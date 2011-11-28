@@ -36,6 +36,10 @@ public class Pubble{
         this.children.add(child);
     }
 
+    public void removeChild(Pubble child){
+        this.children.remove(child);
+    }
+
     public void addBubble(Bubble b){
         this.bubbles.add(b);
     }
@@ -63,6 +67,30 @@ public class Pubble{
 
     //returns a string with the correct information for a .h file
     //lines will be delimited by \n but will not be correctly indented
+    public String typeDef(){
+        //returns absolute typedefs for all package's children's bubbles, recursively
+
+        String ret = "";
+            for(Bubble b : bubbles){
+                //e.g. java::lang::Object
+                String pkgpath = "";
+                if(!(name.equals("Default Package")))
+                    pkgpath = "::" + name.trim().replace(" ", "::") + "::";                /*
+
+                while(x != null && !(x.getName().equals("Default Package"))) {
+                    String[] splitName = p.getName().trim().split(" ");
+                    pkgpath = splitName[splitName.length -1] + "::" + pkgpath;
+                    x = x.getParent();
+                }
+                */
+                ret += "typedef " + pkgpath + "_" + b.getName() + " " + b.getName() + ";\n";
+            }
+        for(Pubble p: children){
+            ret += p.typeDef();
+        }
+        return ret;
+    }
+
     public String getH()
     {
         //a bit of hardcoding
@@ -70,7 +98,11 @@ public class Pubble{
         ret += "typedef java::lang::Class Class;\n";
         ret += "typedef java::lang::Object Object;\n";
         ret += "typedef java::lang::String String;\n\n";
-        //TODO and all classes?
+        //and all classes? YES
+        ret += typeDef();
+
+        ret += "\n";
+
         ret += getForwardDecl();
         ret += getVTables();
 
