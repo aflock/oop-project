@@ -80,7 +80,7 @@ public class Mubble {
             s.append(")");
         }
         else {
-            s.append(returnType).append(" _").append(className).
+            s.append(returnType).append(" _").append(getClassName()).
                 append("::").append(methodName).append("(").
                 append(getClassName()).append(" __this");
 	    for (String para : paraType) {
@@ -287,7 +287,7 @@ public class Mubble {
 	    s.append("(").append(returnType).append("(*)(");
 	    s.append(getClassName());
 	    for (String para : paraType) {
-		s.append(",").append(para);
+		    s.append(",").append(para);
 	    }
 	    s.append(")").append("&_");
 

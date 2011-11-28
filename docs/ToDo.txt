@@ -7,6 +7,19 @@ Device
 DAYS TILL DUE: bout 22.
 
 To Do:
+
+FIX IN .CC:
+1. include .h
+2. include cout stuff
+3. default constructor
+4. doesnt handle main methods
+5. need these:
+Class _testDoWhile::__class() {
+      static Class k = new java::lang::__Class(__rt::literal("java.lang.String"), java::lang::__Object::__class());
+      return k;
+}
+
+_testDoWhile_VT _testDoWhile::__vtable;
 -Use xtc.tree.printer
 
 -Trouble class for exception handling?
