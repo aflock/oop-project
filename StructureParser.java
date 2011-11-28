@@ -386,7 +386,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                     Reader in = new BufferedReader(new InputStreamReader(fi));
                     Node leNode=  t.parse(in, f);
                     this.dispatch(leNode);
-                }catch(Exception e){System.out.println(e); }
+                }catch(Exception e){System.out.println("error: " + e); }
             }
         }
     }
