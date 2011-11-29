@@ -40,8 +40,11 @@ public class Mubble {
         main = false;
         staticMethod = false;
         group = this.methodName = methodName;
+
         if(methodName.equals("main"))
+        {
             main = true;
+        }
         code = "";
     }
 
@@ -61,16 +64,21 @@ public class Mubble {
 
     public String getCC(){
         String ret = ccHeader() + "{\n";
-        ret += getCode() + "\n}";
+        ret += getCode();
+        if(main)
+            ret += "\nreturn 0;"; //necessary for c++ main
+        ret += "\n}";
         return ret;
     }
 
     /* generates header for .cc files */
     public String ccHeader() {
         StringBuilder s = new StringBuilder("");
-        if (staticMethod) {
+        if(main)
+            s.append("int main()"); //does not work if the file we translated takes command line args
+        else if (staticMethod) {
             // working?
-            s.append(returnType).append(" _").append(className).
+            s.append(returnType).append(" _").append(getClassName()).
                 append("::").append(methodName).append("(");
             for (int i = 0; i < paraType.size(); i++) {
                 if (i != 0) {
@@ -83,7 +91,7 @@ public class Mubble {
             s.append(")");
         }
         else {
-            s.append(returnType).append(" _").append(className).
+            s.append(returnType).append(" _").append(getClassName()).
                 append("::").append(methodName).append("(").
                 append(getClassName()).append(" __this");
             for (String para : paraType) {

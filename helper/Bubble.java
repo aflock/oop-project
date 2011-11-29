@@ -242,7 +242,8 @@ public class Bubble{
       "static _"+this.name+"_VT __vtable;\n";
     for(Mubble m : mubbles) {
       //HARDCODING STATIC, MAY NEED TO CHANGE
-      ret+= "static "+m.forward() + "\n";
+      if(!m.isConstructor()) //if its a constructor, don't print it
+        ret+= "static "+m.forward() + "\n";
     }
     //unindent
     ret += "};\n";
@@ -256,12 +257,14 @@ public class Bubble{
     //Hardcoding class
     ret += "Class __isa;\n";
     for(Mubble m : mubbles) {
-      ret += m.vTable1()+"\n";
+      if(!m.isConstructor()) //if its a constructor
+        ret += m.vTable1()+"\n";
     }
     //Make VT constructor in-line, hardcoding class (indent?)
     ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
     for(Mubble m : mubbles) {
-      ret += ",\n"+m.vTable2();
+      if(!m.isConstructor())
+          ret += ",\n"+m.vTable2();
     }
     ret+=" {\n";
     //unindent
