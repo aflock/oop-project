@@ -4,20 +4,22 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 22.
+DAYS TILL DUE: bout 20.
 
 To Do:
 
 FIX IN .CC:
 4. need these:
+
+_test_VT _test::__vtable;
+
 Class _testDoWhile::__class() {
       static Class k = new __Class(__rt::literal("java.lang.String"), __Object::__class());
       return k;
 }
 
-_testDoWhile_VT _testDoWhile::__vtable;
 
--Use xtc.tree.printer
+-Use xtc.tree.printer?
 -For each arg[], we process them but do not print once per arg
 -If the file we are translating takes system args, we need to handle that in the translated file
 -Trouble class for exception handling?
@@ -39,6 +41,7 @@ _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 - memset?
 - memory management (smart pointers)?
 - chaining -> use temp variables (method chaining, assignment chaining)
+- overload '+'
 
 
 Timeline:

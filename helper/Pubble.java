@@ -49,7 +49,7 @@ public class Pubble{
     //this is a helper method that calls the original getCC, we need this method so we only print the include
     //once per file
     public String getCC(String file){
-        String ret = "#include \"" + file + ".h\"\n"; 
+        String ret = "#include \"" + file + ".h\"\n";
         ret += "#include <iostream>\n\n";
         ret += "using namespace std;\n\n";
         ret += this.getCC();
@@ -85,7 +85,15 @@ public class Pubble{
             }
         }
         ret += "return 0;\n";
-        ret += "}";
+        ret += "}\n\n";
+
+        //hard code this
+        for(Bubble b : bubbles){
+            ret += "_" + b.getName() + "_VT _" + b.getName() + "::_vtable;\n\n";
+
+            ret += "Class _" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
+        }
+
         return ret;
     }
 
