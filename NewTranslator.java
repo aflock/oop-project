@@ -188,9 +188,26 @@ public class NewTranslator extends xtc.util.Tool{
             System.out.println(dotc);
             System.out.println("\n=================================================\n");
         }
-        //-before printing, call setParameters on each Bubble so that DK's
-        //  previous printing methods work
 
+        /* Output to File */
+        if(false){
+            Pubble root = new Pubble();
+            for(Pubble p : pubbleList){
+                if(p.getName().equals("Default Package"))
+                    root = p;
+            }
+            String doth = root.getH();
+            String dotc = root.getCC();
+            //Write .h to file
+            String hFile = "test.h";
+            /*
+            try{
+                File out = new File(hFile);
+                FileWriter hstream = new FileWriter(out);
+                BufferedWriter hwrite = new BufferedWriter(hstream);
+            }
+            */
+        }
     }
 
 

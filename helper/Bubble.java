@@ -77,7 +77,7 @@ public class Bubble{
     Mubble mub = null;
     int match = 10000;
     for (Mubble m : mubbles) {
-      if (m.belongToGroup(methodName)) {        
+      if (m.belongToGroup(methodName)) {
         int min = 0;
         ArrayList<String> p = m.getParameterTypes();
         if (p.size() == para.size()) {
@@ -97,9 +97,9 @@ public class Bubble{
             }
           }
           if (min < match) {
-            mub = m;            
+            mub = m;
           }
-        } 
+        }
         else {
           continue;
         }
@@ -242,7 +242,7 @@ public class Bubble{
       "static _"+this.name+"_VT __vtable;\n";
     for(Mubble m : mubbles) {
       //HARDCODING STATIC, MAY NEED TO CHANGE
-      ret+= "static "+m.forward() + "\n";
+      ret+= m.forward() + "\n";
     }
     //unindent
     ret += "};\n";
@@ -261,6 +261,7 @@ public class Bubble{
     //Make VT constructor in-line, hardcoding class (indent?)
     ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
     for(Mubble m : mubbles) {
+        if(!m.isMain())
       ret += ",\n"+m.vTable2();
     }
     ret+=" {\n";

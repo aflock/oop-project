@@ -251,6 +251,29 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     }
     String mName;
+    public String evaluateExpressionForPrint(Node n){
+
+        String ret = "";
+        if(n.getName().endsWith("Literal")){
+            ret += n.getString(0);
+        }else if(n.hasName("AdditiveExpression")){
+            ret += evaluateExpressionForPrint(n.getNode(0));
+            ret += " << ";
+            ret += evaluateExpressionForPrint(n.getNode(2));
+            //TODO - if the additive expression is not supposed to be
+            //handled like this ^^
+        }else if(n.hasName("Arguments")){
+                ret += evaluateExpressionForPrint(n.getNode(0));
+        }else if(n.hasName("NewClassExpression")){
+            //wtf
+        }else if(n.hasName("PrimaryIdentifier")){
+            ret += n.getString(0);
+        }else{
+        System.out.println("errror: :(" + n.getName());
+        }
+        //eval
+        return ret;
+    }
     public void visitCallExpression(GNode n) {
         //visit(n);
         if (onMeth) {
@@ -258,24 +281,38 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             String tmp = "";
 
             dispatchBitch(n);
-            dispatch(n.getNode(0));
+            //Dealing with System.out.print*
+            if(n.getNode(0).hasName("SelectionExpression") &&
+                    n.getNode(0).getNode(0).hasName("PrimaryIdentifier") &&
+                    n.getNode(0).getNode(0).getString(0).equals("System") &&
+                    n.getNode(0).getString(1).equals("out") &&
+                    (n.getString(2).equals("print") ||n.getString(2).equals("println"))
+              ){
+                methodString += "cout << " + evaluateExpressionForPrint(n.getNode(3));
+                if(n.getString(2).equals("println")){
+                    methodString += " << endl";
+                }
+              }
+            else{
+                dispatch(n.getNode(0));
 
 
-            //need to fix casting for first arg
-            if(n.getNode(0) != null) {
-                methodString += "->__vptr->"+n.getString(2);
-                methodString += "(";
-                //should cast self to expected type
-                //not doing now because castify is not a method,
-                //too complicated right now
-                dispatch(n.getNode(0));//adding self
-                //methodString += ", "; //error
+                //need to fix casting for first arg
+                if(n.getNode(0) != null) {
+                    methodString += "->__vptr->"+n.getString(2);
+                    methodString += "(";
+                    //should cast self to expected type
+                    //not doing now because castify is not a method,
+                    //too complicated right now
+                    dispatch(n.getNode(0));//adding self
+                    //methodString += ", "; //error
+                }
+                else {
+                    methodString += n.getString(2) + "(";
+
+                }
+                dispatch(n.getNode(3));
             }
-            else {
-                methodString += n.getString(2) + "(";
-
-            }
-            dispatch(n.getNode(3));
         }
         else {
             visit(n);
@@ -821,7 +858,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     //String key;
     public void visitArguments(GNode n) {
-        
+
         if (onMeth) {
             String key = "";
             dispatchBitch(n);
@@ -866,7 +903,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             */
 
             String s = "";
-            
+
             //CASTING
             if (n.size() > 0) {
                 s = inNameSpace(par[0]);
@@ -890,7 +927,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 }
 
             }
-            
+
             for(int i = 1; i < n.size(); i++) {
                 //DONT KNOW WHY WE NEED THIS
                 //if(!par[i].trim().equals("")) {
@@ -904,9 +941,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     dispatch(n.getNode(i));
                 //}
             }
-            
+
             methodString += ")";
-            
+
         }
         else {
             visit(n);

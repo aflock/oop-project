@@ -63,7 +63,19 @@ public class Pubble{
         }
 
         if(!(name.equals("Default Package")))
-            ret += "}";
+            ret += "}\n\n";
+
+        //now put the main
+        ret += "int main(void) {\n";
+        for(Bubble b : bubbles){
+            for(Mubble m : b.getMubbles()) {
+                if(m.isMain()) {
+                    ret += m.getCode();
+                }
+            }
+        }
+        ret += "return 0;\n";
+        ret += "}";
         return ret;
     }
 
