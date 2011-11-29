@@ -107,7 +107,9 @@ public class Mubble {
             s.append(")");
         }
         else {
-            s.append(returnType).append(" _").append(getClassName()).
+            if(!this.isConstructor())
+                s.append(returnType);
+            s.append(" _").append(getClassName()).
                 append("::").append(methodName).append("(").
                 append(getClassName()).append(" __this");
             for (String para : paraType) {
@@ -115,19 +117,7 @@ public class Mubble {
             }
             s.append(")");
         }
-      }
-      s.append(")");
-    }
-    else {
-      s.append(returnType).append(" _").append(className).
-        append("::").append(methodName).append("(").
-        append(getClassName()).append(" __this");
-      for (String para : paraType) {
-        s.append(", ").append(para);
-      }
-      s.append(")");
-    }
-    return s.toString();
+        return s.toString();
   }
 
   public String forward() {
