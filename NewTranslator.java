@@ -39,76 +39,15 @@ import java.io.BufferedWriter;
 
 public class NewTranslator extends xtc.util.Tool{
 
-
-<<<<<<< HEAD
-  public static ArrayList<Bubble> bubbleList; // Classes
-  public static ArrayList<Pubble> pubbleList; // Packages
-  public static ArrayList<Mubble> mubbleList; // Methods
-  public static ArrayList<Mubble> langList;   // java_lang Methods (don't want to print them)
-  public static ArrayList<String> fileNames;  // parsed file name for each argument to be used in the .cc and .h
-
-  public String getName()
-  {
-    return "LSD: Language Switching Device";
-  }
-
-  public String getCopy()
-  {
-
-    return "Ninja assassins: DK, Calvin, Andrew*2";
-  }
-
-  public void init(){
-    super.init();
-  }
-
-  public Node parse(Reader in, File file) throws IOException, ParseException
-  {
-    JavaFiveParser parser = new JavaFiveParser(in, file.toString(), (int)file.length());
-    Result result = parser.pCompilationUnit(0);
-
-    return (Node)parser.value(result);
-  }
-
-  public static String findFile(String query) {//{{{
-
-    String sep = System.getProperty("file.separator");
-    String cp = System.getProperty("java.class.path");
-    //Hardcoded as the working directory, otherwise real classpath
-    cp = ".";
-
-    query = query.replace(".",sep).concat(".java");
-    //System.out.println("+++++"+query);
-    return findFile(cp, query);
-  }//}}}
-
-  public static String findFile(String cp, String query) {//{{{
-    String sep = System.getProperty("file.separator");
-    File f = new File(cp);
-    File [] files = f.listFiles();
-    for(int i = 0; i < files.length; i++) {
-      //System.out.println(sep+(cp.equals(".") ? "\\\\" : "")+cp+sep);
-      //////////////////////////////////////
-      //Hardcoding that sep is / and cp is .
-      //////////////////////////////////////
-      //System.out.println(query);
-      if(files[i].isDirectory()) {
-        String a = findFile(files[i].getAbsolutePath(), query);
-        if(!a.equals(""))
-          return a;
-      }
-      else if(files[i].getAbsolutePath().replaceAll("/\\./",sep).endsWith(query))
-        return files[i].getAbsolutePath();
-=======
     public static ArrayList<Bubble> bubbleList; // Classes
     public static ArrayList<Pubble> pubbleList; // Packages
     public static ArrayList<Mubble> mubbleList; // Methods
     public static ArrayList<Mubble> langList;   // java_lang Methods (don't want to print them)
+    public static ArrayList<String> fileNames; //names of files passed as args into NewTranslator
 
     public String getName()
     {
         return "LSD: Language Switching Device";
->>>>>>> b9b0d2ad32f4cec438174a9c8442967d0c42bfb5
     }
 
     public String getCopy()
@@ -172,20 +111,6 @@ public class NewTranslator extends xtc.util.Tool{
         ArrayList<String> parsed = new ArrayList<String>();
         ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
         i.dispatch(node);
-
-
-<<<<<<< HEAD
-    NewTranslator t = new NewTranslator();
-    t.prepStructures();
-    t.init();
-    t.prepare();
-    for(int i = 0; i< args.length; i++){
-      try{ //TODO put in flag to not system exit also maybe change to run
-        t.process(args[i]);
-        fileNames.add(parseFileName(args[i]));
-      } catch (Exception e) {System.out.println(e);}
-=======
->>>>>>> b9b0d2ad32f4cec438174a9c8442967d0c42bfb5
     }
 
     public static void main (String [] args)
@@ -202,6 +127,7 @@ public class NewTranslator extends xtc.util.Tool{
         for(int i = 0; i< args.length; i++){
             try{ //TODO put in flag to not system exit also maybe change to run
                 t.process(args[i]);
+                fileNames.add(parseFileName(args[i]));
             } catch (Exception e) {System.out.println(e);}
         }
 
@@ -246,69 +172,10 @@ public class NewTranslator extends xtc.util.Tool{
             }
 
         /* Lets Print a .H!!! */
-<<<<<<< HEAD
-        System.out.println("==========================================================");
-        System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
-        Pubble root = new Pubble();
-        for(Pubble p : pubbleList){
-            if(p.getName().equals("Default Package"))
-                root = p;
-        }
-        String doth = root.getH();
-        System.out.println(doth);
-        System.out.println("===========================================================");
-        System.out.println("=====================  " + fileNames.get(0) + ".cc  =====================");
-        String dotc = root.getCC(fileNames.get(0)); //passing the name of the input file as a parameter
-        System.out.println(dotc);
-        System.out.println("===========================================================");
-     
-    //-before printing, call setParameters on each Bubble so that DK's
-    //  previous printing methods work
 
-  }
-
-
-  //**********************TO IMPLEMENT***************************//
-
-  //putting all of java_lang methods into the langList
-  public void populateLangList()
-  {
-    //to implement with new mubble structure
-    //see Decl line 716 for old implementation
-  }
-
-  //************************HELPER METHODS***********************//
-  public void constructPackageTree()
-  //constructs package tree from pubblelist
-  {
-    boolean rootFound = false;
-    Pubble root = new Pubble();
-    //set root to Default Package
-
-    for(Pubble p : pubbleList){
-      //System.out.println(p.getName());
-      if(p.getName().equals(null)){//{{{
-        //what is this strange animal
-        System.out.println("V_V_V_ inspect null package _V_V_V_V");
-        for(Bubble b : p.getBubbles())
-          {
-            System.out.println("\tClass: " + b.getName());
-            for(Mubble m : b.getMubbles())
-              {
-                System.out.println("\t\tMethod: " + m.getName());
-                System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
-
-              }
-          }
-
-      }//}}}
-      if(p.getName().equals("Default Package")){
-        root = p;
-        rootFound = true;
-      }
-=======
         if(true){
-            System.out.println("\n=====================  .h  =====================\n");
+            System.out.println("==========================================================");
+            System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
             for(Pubble p : pubbleList){
                 if(p.getName().equals("Default Package"))
@@ -316,16 +183,15 @@ public class NewTranslator extends xtc.util.Tool{
             }
             String doth = root.getH();
             System.out.println(doth);
-            System.out.println("\n================================================\n");
-            System.out.println("\n=====================  .cc  =====================\n");
-            String dotc = root.getCC();
+            System.out.println("===========================================================");
+            System.out.println("=====================  " + fileNames.get(0) + ".cc  =====================");
+            String dotc = root.getCC(fileNames.get(0)); //passing the name of the input file as a parameter
             System.out.println(dotc);
-            System.out.println("\n=================================================\n");
+            System.out.println("===========================================================");
         }
         //-before printing, call setParameters on each Bubble so that DK's
         //  previous printing methods work
 
->>>>>>> b9b0d2ad32f4cec438174a9c8442967d0c42bfb5
     }
 
 
@@ -408,44 +274,21 @@ public class NewTranslator extends xtc.util.Tool{
                 pubbleList.remove(p);
             }
         }
-<<<<<<< HEAD
-      }
-    }
-  }
-
-  // Parses the filename from the arg given to the compiler
-  //ex. ../oop-project/tests/testFor.java ====> testFor
-  public static String parseFileName(String arg)
-  {
-       int index = arg.lastIndexOf("/");
-       String file = arg.substring(index + 1);
-       //System.out.println("******    " + file);
-       index = file.lastIndexOf(".");
-       file = file.substring(0, index);
-       //System.out.println("******    " + file);
-       return file;
-  }
-
-  public Pubble findParent(String[] lineage){
-    /* Say we are given:
-     * xtc oop helper
-     * And want to find/create the parent, then return it.
-     * Special case for "Default Package"
-     */
-    //find root
-    Pubble root = new Pubble();
-    boolean rootFound = false;
-    //set root to Default Package
-    for(Pubble p : pubbleList){
-      if(p.getName().equals("Default Package")){
-        root = p;
-        rootFound = true;
-      }
-=======
->>>>>>> b9b0d2ad32f4cec438174a9c8442967d0c42bfb5
     }
 
-
+      // Parses the filename from the arg given to the compiler
+      //ex. ../oop-project/tests/testFor.java ====> testFor
+      public static String parseFileName(String arg)
+      {
+           int index = arg.lastIndexOf("/");
+           String file = arg.substring(index + 1);
+           //System.out.println("******    " + file);
+           index = file.lastIndexOf(".");
+           file = file.substring(0, index);
+           //System.out.println("******    " + file);
+           return file;
+      }
+      
     public Pubble findParent(String[] lineage){
         /* Say we are given:
          * xtc oop helper
