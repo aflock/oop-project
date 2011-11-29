@@ -68,24 +68,16 @@ public class Mubble {
 
     /* generates header for .cc files */
     public String ccHeader() {
-        StringBuilder s = new StringBuilder("");
-        if(main) //main method
-        {
-            s.append("int main()");
-        }
-        else if (staticMethod) {
-            // working?
-            s.append(returnType).append(" _").append(className).
-                append("::").append(methodName).append("(");
-            for (int i = 0; i < paraType.size(); i++) {
-                if (i != 0) {
-                    s.append(", ").append(paraType.get(i));
-                }
-                else {
-                    s.append(paraType.get(i));
-                }
-            }
-            s.append(")");
+    StringBuilder s = new StringBuilder("");
+    if(main)
+        s.append("int main()"); //does not handle command line arguments passed by translated file
+    else if (staticMethod) {
+      // working?
+      s.append(returnType).append(" _").append(className).
+        append("::").append(methodName).append("(");
+      for (int i = 0; i < paraType.size(); i++) {
+        if (i != 0) {
+          s.append(", ").append(paraType.get(i));
         }
         else {
           s.append(paraType.get(i));
