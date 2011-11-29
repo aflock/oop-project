@@ -269,7 +269,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //not doing now because castify is not a method,
                 //too complicated right now
                 dispatch(n.getNode(0));//adding self
-                methodString += ", ";
+                //methodString += ", "; //error
             }
             else {
                 methodString += n.getString(2) + "(";
@@ -694,6 +694,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             onMeth = false;
 
             curMub.addCode(outputFormat(methodString));
+            //System.out.println("method string:" + methodString);
 
             methodString = "";
             table = null;
@@ -820,7 +821,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     //String key;
     public void visitArguments(GNode n) {
-
+        
         if (onMeth) {
             String key = "";
             dispatchBitch(n);
@@ -865,6 +866,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             */
 
             String s = "";
+            
             //CASTING
             if (n.size() > 0) {
                 s = inNameSpace(par[0]);
@@ -883,24 +885,28 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     methodString += ")";
                 }
                 else {
+                    methodString += ", ";
                     dispatch(n.getNode(0));
                 }
 
             }
-
+            
             for(int i = 1; i < n.size(); i++) {
-                if(!par[i].trim().equals("")) {
-                    methodString += ", (("+(par.length > i ? par[i] : "")
-                        +") ";
+                //DONT KNOW WHY WE NEED THIS
+                //if(!par[i].trim().equals("")) {
+                //    methodString += ", (("+(par.length > i ? par[i] : "")
+                //        +") ";
+                //    dispatch(n.getNode(i));
+                 //   methodString += ")";
+                //}
+                //else{
+                    methodString += ", ";
                     dispatch(n.getNode(i));
-                    methodString += ")";
-                }
-                else{
-                    dispatch(n.getNode(i));
-                }
+                //}
             }
-
+            
             methodString += ")";
+            
         }
         else {
             visit(n);
