@@ -9,7 +9,6 @@ DAYS TILL DUE: bout 22.
 To Do:
 
 FIX IN .CC:
-1. include cout stuff
 4. need these:
 Class _testDoWhile::__class() {
       static Class k = new __Class(__rt::literal("java.lang.String"), __Object::__class());
