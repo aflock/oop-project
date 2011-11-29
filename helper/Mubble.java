@@ -80,9 +80,12 @@ public class Mubble {
 
     public String getCC(){
         String ret = ccHeader() + "{\n";
+        //System.out.println("1");
         ret += getCode();
+                //System.out.println("2");
         if(main)
             ret += "\nreturn 0;"; //necessary for c++ main
+                //System.out.println("3");
         ret += "\n}";
         return ret;
     }

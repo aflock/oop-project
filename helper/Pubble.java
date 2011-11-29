@@ -49,7 +49,9 @@ public class Pubble{
     //this is a helper method that calls the original getCC, we need this method so we only print the include
     //once per file
     public String getCC(String file){
-        String ret = "#include \"" + file + ".h\"\n\n"; 
+        String ret = "#include \"" + file + ".h\"\n"; 
+        ret += "#include <iostream>\n\n";
+        ret += "using namespace std;\n\n";
         ret += this.getCC();
         return ret;
     }

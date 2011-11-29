@@ -278,10 +278,23 @@ public class Bubble{
   public String getCC() {
     //returns a complete .cc entry for this class
     String ret = "";
+    
+    //loop through methods once to see if there are any constructors
+    //if not create a default one
+    boolean encounteredConstructor = false;
+    for(Mubble m: mubbles){
+        if(m.isConstructor())
+            encounteredConstructor = true;
+    }
+    if(!encounteredConstructor) //if there was no constructor in the java file, create default one
+    {
+        ret += "_" + name + "::" + name + "(" + name + " __this){} \n\n";
+    }
     for(Mubble m: mubbles){
       ret += m.getCC() + "\n\n";
     }
 
+    
     return ret;
     //return "todo: getC method in Bubble";
   }
