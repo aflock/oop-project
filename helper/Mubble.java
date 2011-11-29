@@ -58,14 +58,21 @@ public class Mubble {
 
     public String getCC(){
         String ret = ccHeader() + "{\n";
-        ret += getCode() + "\n}";
+        ret += getCode();
+        if(main)
+            ret += "return 0;";
+        ret += "\n}";
         return ret;
     }
 
     /* generates header for .cc files */
     public String ccHeader() {
         StringBuilder s = new StringBuilder("");
-        if (staticMethod) {
+        if(main) //main method
+        {
+            s.append("int main()");
+        }
+        else if (staticMethod) {
             // working?
             s.append(returnType).append(" _").append(className).
                 append("::").append(methodName).append("(");

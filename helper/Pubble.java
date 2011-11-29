@@ -40,7 +40,15 @@ public class Pubble{
         this.bubbles.add(b);
     }
 
-
+    //is originally called on root pubble, recursively goes and gets the contents of the .cc file
+    //parameter is the name of the file being written to, so that we can include the .h file at the top
+    //this is a helper method that calls the original getCC, we need this method so we only print the include
+    //once per file
+    public String getCC(String file){
+        String ret = "#include \"" + file + ".h\"\n\n"; 
+        ret += this.getCC();
+        return ret;
+    }
     public String getCC(){
         String ret = "";
         if(!(name.equals("Default Package")))
