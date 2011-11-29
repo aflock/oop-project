@@ -9,19 +9,18 @@ DAYS TILL DUE: bout 22.
 To Do:
 
 FIX IN .CC:
-1. include .h
-2. include cout stuff
-3. default constructor
-4. doesnt handle main methods
-5. need these:
+1. include cout stuff
+4. need these:
 Class _testDoWhile::__class() {
-      static Class k = new java::lang::__Class(__rt::literal("java.lang.String"), java::lang::__Object::__class());
+      static Class k = new __Class(__rt::literal("java.lang.String"), __Object::__class());
       return k;
 }
 
 _testDoWhile_VT _testDoWhile::__vtable;
--Use xtc.tree.printer
 
+-Use xtc.tree.printer
+-For each arg[], we process them but do not print once per arg
+-If the file we are translating takes system args, we need to handle that in the translated file
 -Trouble class for exception handling?
 -special case string as an object?
 -Exception handling?

@@ -39,11 +39,11 @@ import java.io.BufferedWriter;
 
 public class NewTranslator extends xtc.util.Tool{
 
-
     public static ArrayList<Bubble> bubbleList; // Classes
     public static ArrayList<Pubble> pubbleList; // Packages
     public static ArrayList<Mubble> mubbleList; // Methods
     public static ArrayList<Mubble> langList;   // java_lang Methods (don't want to print them)
+    public static ArrayList<String> fileNames; //names of files passed as args into NewTranslator
 
     public String getName()
     {
@@ -111,8 +111,6 @@ public class NewTranslator extends xtc.util.Tool{
         ArrayList<String> parsed = new ArrayList<String>();
         ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
         i.dispatch(node);
-
-
     }
 
     public static void main (String [] args)
@@ -129,6 +127,7 @@ public class NewTranslator extends xtc.util.Tool{
         for(int i = 0; i< args.length; i++){
             try{ //TODO put in flag to not system exit also maybe change to run
                 t.process(args[i]);
+                fileNames.add(parseFileName(args[i]));
             } catch (Exception e) {System.out.println(e);}
         }
 
@@ -173,8 +172,10 @@ public class NewTranslator extends xtc.util.Tool{
             }
 
         /* Lets Print a .H!!! */
+
         if(true){
-            System.out.println("\n=====================  .h  =====================\n");
+            System.out.println("==========================================================");
+            System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
             for(Pubble p : pubbleList){
                 if(p.getName().equals("Default Package"))
@@ -182,11 +183,11 @@ public class NewTranslator extends xtc.util.Tool{
             }
             String doth = root.getH();
             System.out.println(doth);
-            System.out.println("\n================================================\n");
-            System.out.println("\n=====================  .cc  =====================\n");
-            String dotc = root.getCC();
+            System.out.println("===========================================================");
+            System.out.println("=====================  " + fileNames.get(0) + ".cc  =====================");
+            String dotc = root.getCC(fileNames.get(0)); //passing the name of the input file as a parameter
             System.out.println(dotc);
-            System.out.println("\n=================================================\n");
+            System.out.println("===========================================================");
         }
 
         /* Output to File */
@@ -292,7 +293,19 @@ public class NewTranslator extends xtc.util.Tool{
         }
     }
 
-
+      // Parses the filename from the arg given to the compiler
+      //ex. ../oop-project/tests/testFor.java ====> testFor
+      public static String parseFileName(String arg)
+      {
+           int index = arg.lastIndexOf("/");
+           String file = arg.substring(index + 1);
+           //System.out.println("******    " + file);
+           index = file.lastIndexOf(".");
+           file = file.substring(0, index);
+           //System.out.println("******    " + file);
+           return file;
+      }
+      
     public Pubble findParent(String[] lineage){
         /* Say we are given:
          * xtc oop helper
@@ -356,6 +369,7 @@ public class NewTranslator extends xtc.util.Tool{
         bubbleList = new ArrayList<Bubble>();
         mubbleList = new ArrayList<Mubble>();
         langList = new ArrayList<Mubble>();
+        fileNames = new ArrayList<String>();
         this.populateLangList();//putting all of java_lang methods into the langList
 
 

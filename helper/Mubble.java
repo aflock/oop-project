@@ -40,8 +40,9 @@ public class Mubble {
         main = false;
         staticMethod = false;
         group = this.methodName = methodName;
-        if(methodName.equals("main"))
+        if(methodName.equals("main")){
             main = true;
+        }
         code = "";
     }
 
@@ -104,9 +105,11 @@ public class Mubble {
             s.append(")");
         }
         else {
-            s.append(returnType).append(" _").append(getClassName()).
-                append("::").append(methodName).append("(").
-                append(getClassName()).append(" __this");
+            if(!this.isConstructor())
+                s.append(returnType);
+            s.append(" _").append(getClassName()).
+            append("::").append(methodName).append("(").
+            append(getClassName()).append(" __this");
             for (String para : paraType) {
                 s.append(", ").append(para);
             }

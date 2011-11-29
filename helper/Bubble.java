@@ -242,7 +242,8 @@ public class Bubble{
       "static _"+this.name+"_VT __vtable;\n";
     for(Mubble m : mubbles) {
       //HARDCODING STATIC, MAY NEED TO CHANGE
-      ret+= m.forward() + "\n";
+      if(!m.isConstructor()) //if its a constructor, don't print it
+        ret += m.forward() + "\n";
     }
     //unindent
     ret += "};\n";
@@ -256,13 +257,14 @@ public class Bubble{
     //Hardcoding class
     ret += "Class __isa;\n";
     for(Mubble m : mubbles) {
-      ret += m.vTable1()+"\n";
+      if(!m.isConstructor()) //if its a constructor
+        ret += m.vTable1()+"\n";
     }
     //Make VT constructor in-line, hardcoding class (indent?)
     ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
     for(Mubble m : mubbles) {
-        if(!m.isMain())
-      ret += ",\n"+m.vTable2();
+      if(!m.isConstructor() && !m.isMain())
+          ret += ",\n"+m.vTable2();
     }
     ret+=" {\n";
     //unindent
@@ -276,9 +278,22 @@ public class Bubble{
   public String getCC() {
     //returns a complete .cc entry for this class
     String ret = "";
+
+    //loop through methods once to see if there are any constructors
+    //if not create a default one
+    boolean encounteredConstructor = false;
+    for(Mubble m: mubbles){
+        if(m.isConstructor())
+            encounteredConstructor = true;
+    }
+    if(!encounteredConstructor) //if there was no constructor in the java file, create default one
+    {
+        ret += "_" + name + "::" + name + "(" + name + " __this){} \n\n";
+    }
     for(Mubble m: mubbles){
       ret += m.getCC() + "\n\n";
     }
+
 
     return ret;
     //return "todo: getC method in Bubble";
