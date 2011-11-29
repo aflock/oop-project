@@ -47,6 +47,8 @@ public class Pubble{
 
     public String getCC(){
         String ret = "";
+
+
         if(!(name.equals("Default Package")))
             ret += "namespace " + name + " {\n";
 
@@ -65,8 +67,6 @@ public class Pubble{
         return ret;
     }
 
-    //returns a string with the correct information for a .h file
-    //lines will be delimited by \n but will not be correctly indented
     public String typeDef(){
         //returns absolute typedefs for all package's children's bubbles, recursively
 
@@ -83,7 +83,7 @@ public class Pubble{
                     x = x.getParent();
                 }
                 */
-                ret += "typedef " + pkgpath + "_" + b.getName() + " " + b.getName() + ";\n";
+                ret += "typedef " + pkgpath + "_" + b.getName() + "* " + b.getName() + ";\n";
             }
         for(Pubble p: children){
             ret += p.typeDef();
@@ -91,6 +91,8 @@ public class Pubble{
         return ret;
     }
 
+    //returns a string with the correct information for a .h file
+    //lines will be delimited by \n but will not be correctly indented
     public String getH()
     {
         //a bit of hardcoding
@@ -98,12 +100,11 @@ public class Pubble{
         ret += "typedef java::lang::Class Class;\n";
         ret += "typedef java::lang::Object Object;\n";
         ret += "typedef java::lang::String String;\n\n";
-        //and all classes? YES
-        ret += typeDef();
-
-        ret += "\n";
-
         ret += getForwardDecl();
+        ret += "\n\n";
+        ret += "//Absolute typedefs to make below code more readable\n";
+        ret += typeDef();
+        ret += "\n";
         ret += getVTables();
 
         return ret;
@@ -127,9 +128,11 @@ public class Pubble{
             ret += b.getFDeclStruct();
         }
 
+        /*
         for(Bubble b: bubbles){
             ret += b.getTypeDef();
         }
+        */
 
         //now do it for all children
         for(Pubble p : children){

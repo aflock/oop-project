@@ -137,7 +137,7 @@ public class NewTranslator extends xtc.util.Tool{
 
 
         //Print structure <- use for testing dependencies, inheritance
-        if(true)
+        if(false)
             for(Pubble p : pubbleList){
                 System.out.println("^||^||^||^||^||^||^||^||^||^||^");
                 System.out.println("Package: ////" + p.getName() + "////");
@@ -152,7 +152,6 @@ public class NewTranslator extends xtc.util.Tool{
                 System.out.println("Classes: ");
                 for(Bubble b : p.getBubbles()){
                     System.out.println("\t- " + b.getName());
-
                 }
             }
 
@@ -171,11 +170,10 @@ public class NewTranslator extends xtc.util.Tool{
                         System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
                     }
                 }
-
-
             }
+
         /* Lets Print a .H!!! */
-        if(false){
+        if(true){
             System.out.println("\n=====================  .h  =====================\n");
             Pubble root = new Pubble();
             for(Pubble p : pubbleList){

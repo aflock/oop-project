@@ -83,19 +83,19 @@ public class Mubble {
             s.append(returnType).append(" _").append(className).
                 append("::").append(methodName).append("(").
                 append(getClassName()).append(" __this");
-	    for (String para : paraType) {
-		s.append(", ").append(para);
-	    }
-	    s.append(")");
-	}
+            for (String para : paraType) {
+                s.append(", ").append(para);
+            }
+            s.append(")");
+        }
         return s.toString();
     }
 
     public String forward() {
-	if (staticMethod) {
-	    System.out.println(methodName + " is a static method.");
-	    return "FIX THIS SHIT. forward() in Mubble";
-	}
+        if (staticMethod) {
+            System.out.println(methodName + " is a static method.");
+            return "FIX THIS SHIT. forward() in Mubble";
+        }
         StringBuilder s = new StringBuilder();
         s.append(returnType).append(" ").append(methodName).append("(").
             append(getClassName());
@@ -266,16 +266,16 @@ public class Mubble {
      */
     public String vTable2() {
         StringBuilder type = new StringBuilder();
-	/*
-        if (from == INHERITED) {
-	    type.append("(").append(returnType).append("(*)");
-            type.append(getClassName());
-            for (String para : paraType) {
-                type.append(",").append(para);
-            }
-            type.append(")");
-        }
-	*/
+        /*
+           if (from == INHERITED) {
+           type.append("(").append(returnType).append("(*)");
+           type.append(getClassName());
+           for (String para : paraType) {
+           type.append(",").append(para);
+           }
+           type.append(")");
+           }
+           */
 
         StringBuilder s = new StringBuilder();
         s.append(methodName).append("(");
@@ -284,33 +284,33 @@ public class Mubble {
         //}
 
         if (from == INHERITED) { // this line is not quite right
-	    s.append("(").append(returnType).append("(*)(");
-	    s.append(getClassName());
-	    for (String para : paraType) {
-		s.append(",").append(para);
-	    }
-	    s.append(")").append("&_");
+            s.append("(").append(returnType).append("(*)(");
+            s.append(getClassName());
+            for (String para : paraType) {
+                s.append(",").append(para);
+            }
+            s.append(")").append("&_");
 
-	    Bubble ancestor = className.getParentBubble();
-	    String inheritedfrom = "Object";
-	    boolean found = true;
-	    while (ancestor != null && found) {
-		ArrayList<Mubble> mubbles = ancestor.getMubbles();
-		for (Mubble mub : mubbles) {
-		    if (mub.getName().equals(methodName) && mub.from() != INHERITED) {
-			inheritedfrom = ancestor.getName();
-			found = false;
-		    }
-		}
-		ancestor = ancestor.getParentBubble();
-	    }
-	    if (inheritedfrom.equals("Object") || inheritedfrom.equals("String") ||
-		inheritedfrom.equals("Class")) {
-		s.append("_").append(inheritedfrom);
-	    }
-	    else {
-		s.append(inheritedfrom);
-	    }
+            Bubble ancestor = className.getParentBubble();
+            String inheritedfrom = "Object";
+            boolean found = true;
+            while (ancestor != null && found) {
+                ArrayList<Mubble> mubbles = ancestor.getMubbles();
+                for (Mubble mub : mubbles) {
+                    if (mub.getName().equals(methodName) && mub.from() != INHERITED) {
+                        inheritedfrom = ancestor.getName();
+                        found = false;
+                    }
+                }
+                ancestor = ancestor.getParentBubble();
+            }
+            if (inheritedfrom.equals("Object") || inheritedfrom.equals("String") ||
+                    inheritedfrom.equals("Class")) {
+                s.append("_").append(inheritedfrom);
+                    }
+            else {
+                s.append(inheritedfrom);
+            }
         }
         else {
             s.append("&_").append(getClassName());
