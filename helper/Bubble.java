@@ -232,9 +232,23 @@ public class Bubble{
       //output data fields
     }
     ret+="\n//Constructors\n";
-    for(Mubble constructor : mubbles) {
-      if(constructor.isConstructor())
-        ret += "_"+constructor.getName()+"();\n";
+    //loop through methods once to see if there are any constructors
+    //if not create a default one
+    boolean encounteredConstructor = false;
+    for(Mubble m: mubbles){
+        if(m.isConstructor())
+            encounteredConstructor = true;
+    }
+    if(!encounteredConstructor) //if there was no constructor in the java file, create default one
+    {
+        ret += "_" + name + "(); \n\n";
+    }
+    else
+    {
+        for(Mubble constructor : mubbles) {
+          if(constructor.isConstructor())
+            ret += "_"+constructor.getName()+"();\n";
+        }
     }
     ret+="\n//Forward declaration of methods\n";
     //Hardcoding the vt and class
