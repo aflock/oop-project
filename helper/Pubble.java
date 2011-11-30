@@ -7,7 +7,7 @@ public class Pubble{
     ArrayList<Bubble> bubbles; //All the classes within this package
     Pubble parent; //The parent package
 
-//=========Constructors=======//
+    //=========Constructors=======//
     public Pubble()
     {
         this.children = new ArrayList<Pubble>();
@@ -29,7 +29,7 @@ public class Pubble{
 
 
 
-//=========NON-GETTER/SETTER METHODS=======//
+    //=========NON-GETTER/SETTER METHODS=======//
 
     //Adds a new package to this Pubble's packageChildren
     public void addChild(Pubble child){
@@ -75,25 +75,31 @@ public class Pubble{
         if(!(name.equals("Default Package")))
             ret += "}\n\n";
 
-        //now put the main
-        ret += "int main(void) {\n";
+        //now put the main, but only once
+
         for(Bubble b : bubbles){
             for(Mubble m : b.getMubbles()) {
                 if(m.isMain()) {
+                    ret += "int main(void) {\n";
                     ret += m.getCode();
+                    ret += "return 0;\n";
+                    ret += "}\n\n";
                 }
             }
         }
-        ret += "return 0;\n";
-        ret += "}\n\n";
 
         //hard code this
+        if(!(name.equals("Default Package")))
+            ret += "namespace " + name + " {\n";
+
         for(Bubble b : bubbles){
             ret += "_" + b.getName() + "_VT _" + b.getName() + "::__vtable;\n\n";
 
-            ret += "Class _" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
+            ret += "Class" + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName() + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
         }
 
+        if(!(name.equals("Default Package")))
+            ret += "}\n\n";
         return ret;
     }
 
@@ -101,20 +107,20 @@ public class Pubble{
         //returns absolute typedefs for all package's children's bubbles, recursively
 
         String ret = "";
-            for(Bubble b : bubbles){
-                //e.g. java::lang::Object
-                String pkgpath = "";
-                if(!(name.equals("Default Package")))
-                    pkgpath = "::" + name.trim().replace(" ", "::") + "::";                /*
+        for(Bubble b : bubbles){
+            //e.g. java::lang::Object
+            String pkgpath = "";
+            if(!(name.equals("Default Package")))
+                pkgpath = "::" + name.trim().replace(" ", "::") + "::";                /*
 
-                while(x != null && !(x.getName().equals("Default Package"))) {
-                    String[] splitName = p.getName().trim().split(" ");
-                    pkgpath = splitName[splitName.length -1] + "::" + pkgpath;
-                    x = x.getParent();
-                }
-                */
-                ret += "typedef " + pkgpath + "_" + b.getName() + "* " + b.getName() + ";\n";
-            }
+                                                                                          while(x != null && !(x.getName().equals("Default Package"))) {
+                                                                                          String[] splitName = p.getName().trim().split(" ");
+                                                                                          pkgpath = splitName[splitName.length -1] + "::" + pkgpath;
+                                                                                          x = x.getParent();
+                                                                                          }
+                                                                                          */
+            ret += "typedef " + pkgpath + "_" + b.getName() + "* " + b.getName() + ";\n";
+        }
         for(Pubble p: children){
             ret += p.typeDef();
         }
@@ -127,9 +133,9 @@ public class Pubble{
     {
         //a bit of hardcoding
         String ret = "#include \"java_lang.h\"\n\n";
-        ret += "typedef java::lang::Class Class;\n";
-        ret += "typedef java::lang::Object Object;\n";
-        ret += "typedef java::lang::String String;\n\n";
+        ret += "typedef java::lang::__Class* Class;\n";
+        ret += "typedef java::lang::__Object* Object;\n";
+        ret += "typedef java::lang::__String* String;\n\n";
         ret += getForwardDecl();
         ret += "\n\n";
         ret += "//Absolute typedefs to make below code more readable\n";
@@ -141,14 +147,14 @@ public class Pubble{
     }
 
     /*prints all forward declarations of data fields, vtables and typedefs for this pnode
-    Ex.
-    namespace lang {
-        struct __Object;
-        struct __Object_VT;
+      Ex.
+      namespace lang {
+      struct __Object;
+      struct __Object_VT;
 
-        typedef __Object* Object;
-     }
-    */
+      typedef __Object* Object;
+      }
+      */
     public String getForwardDecl()
     {
         String ret = "";
@@ -159,10 +165,10 @@ public class Pubble{
         }
 
         /*
-        for(Bubble b: bubbles){
-            ret += b.getTypeDef();
-        }
-        */
+           for(Bubble b: bubbles){
+           ret += b.getTypeDef();
+           }
+           */
 
         //now do it for all children
         for(Pubble p : children){
@@ -195,7 +201,7 @@ public class Pubble{
         return ret;
     }
 
-//=========GETTER/SETTER METHODS=======//
+    //=========GETTER/SETTER METHODS=======//
 
     public String getName(){
         return this.name;

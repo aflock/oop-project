@@ -35,3 +35,4 @@ Other:
     - check that final, const, private, protected get handled correctly
     - two files with the same package are added to the same pubble
         - packages
+    -a fuck ton of nested arrays

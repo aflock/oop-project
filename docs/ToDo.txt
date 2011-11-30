@@ -31,9 +31,15 @@ _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
 - memset?
-- memory management (smart pointers)?
+- memory management (smart pointers)? to support, we need to change . . .  typedefs! AND
 - chaining -> use temp variables (method chaining, assignment chaining)
 - overload '+'
+- each class needs a delete method -> add to vtable
+- how are we renaming *ubbles?
+- populate lang list
+- deal with arrays in parameters
+- arrays of arrays templates
+
 
 
 Timeline:
