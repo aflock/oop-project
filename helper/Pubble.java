@@ -90,7 +90,7 @@ public class Pubble{
 
         //hard code this
         for(Bubble b : bubbles){
-            ret += "_" + b.getName() + "_VT _" + b.getName() + "::_vtable;\n\n";
+            ret += "_" + b.getName() + "_VT _" + b.getName() + "::__vtable;\n\n";
 
             ret += "Class" + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName() + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
         }
