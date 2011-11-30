@@ -33,9 +33,9 @@ import xtc.oop.helper.Field;
 import xtc.oop.StructureParser;
 import xtc.oop.ImplementationParser;
 //
-import java.util.regex.*;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
+import java.util.regex.*; //ut oh...Grimm's gonna be pissed
+import java.io.FileWriter; //until we use xtc's printer
+import java.io.BufferedWriter; //or better yet unix does it for us
 
 public class NewTranslator extends xtc.util.Tool{
 
@@ -191,23 +191,39 @@ public class NewTranslator extends xtc.util.Tool{
         }
 
         /* Output to File */
-        if(false){
+        if(true){
             Pubble root = new Pubble();
             for(Pubble p : pubbleList){
                 if(p.getName().equals("Default Package"))
                     root = p;
             }
             String doth = root.getH();
-            String dotc = root.getCC();
+            String dotc = root.getCC(fileNames.get(0));
             //Write .h to file
-            String hFile = "test.h";
-            /*
+            String hFile = "../oop-project/tests/translated/" + fileNames.get(0) + ".h";
+            String cFile = "../oop-project/tests/translated/" + fileNames.get(0) + ".cc";
+            
             try{
+                //writing .h
+                System.out.println("writing .h to " + hFile);
                 File out = new File(hFile);
                 FileWriter hstream = new FileWriter(out);
                 BufferedWriter hwrite = new BufferedWriter(hstream);
+                hwrite.write(doth);
+                hwrite.close();
+                
+                //writing. cc
+                System.out.println("writing .h to " + hFile);
+                out = new File(cFile);
+                FileWriter cstream = new FileWriter(out);
+                BufferedWriter cwrite = new BufferedWriter(cstream);
+                cwrite.write(dotc);
+                cwrite.close();
             }
-            */
+            catch (IOException e) {
+                // Print out the exception that occurred
+                System.out.println("Unable to create "+ fileNames.get(0) + ": "+e.getMessage());
+            }
         }
     }
 
