@@ -145,6 +145,15 @@ namespace java {
       out << s->data;
       return out;
     }
+    
+    String operator+(String left, String right){
+
+        std::string tempStr = left->__vptr->toString(left)->data;
+        tempStr = tempStr.append(right->__vptr->toString(right)->data);
+        
+        String temp  = __rt::literal(&(tempStr)[0]);
+        return temp;
+    }
 
     // =======================================================================
 
