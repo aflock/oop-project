@@ -424,7 +424,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //finding the package we are in -> set curPub correctly
         //NOTE: there is no curBub at this point, so we must set curBub to the
         //right pakcage in class Decl.
-        if (parent0.getName().equals("PackageDeclaration")){
+        if (parent0.hasName("PackageDeclaration")){
             //looping through something like...
             /*QualifiedIdentifier(
               "xtc",
