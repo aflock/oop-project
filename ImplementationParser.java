@@ -330,7 +330,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             dispatchBitch(n);
             Node parent = (Node)n.getProperty("parent0");
-            if (parent.getName().equals("ConditionalStatement")) {
+            if (parent.hasName("ConditionalStatement")) {
                 methodString += "\n}\nelse ";
             }
             methodString += "if (";
@@ -352,7 +352,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                    */
                 dispatch(n.getNode(n.size()-1));
             }
-            if (!parent.getName().equals("ConditionalStatement")) {
+            if (!parent.hasName("ConditionalStatement")) {
                 methodString += "\n}\n";
             }
             //methodString += "}\n";
@@ -426,7 +426,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitIntegerLiteral(GNode n) {
         Node parent0 = (Node)n.getProperty("parent0");
         if (onMeth && !inArray) {
-            if(!parent0.getName().equals("SubscriptExpression"))
+            if(!parent0.hasName("SubscriptExpression"))
                 methodString += n.getString(0);
         }
         visit(n);
@@ -561,14 +561,14 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             Node parent0 = (Node)n.getProperty("parent0");
             Node parent1 = (Node)parent0.getProperty("parent0");
-            if(parent1.getName().equals("FieldDeclaration")) {
+            if(parent1.hasName("FieldDeclaration")) {
                 tan += n.getString(0) + " ";
             }
 
-            if(parent1.getName().equals("FieldDeclaration")){
+            if(parent1.hasName("FieldDeclaration")){
                 for(Object o : parent0){
                     if (o instanceof Node ){
-                        if(((Node)o).getName().equals("Dimensions"))
+                        if(((Node)o).hasName("Dimensions"))
                             inArray = true;
                     }
                 }
@@ -754,7 +754,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitPrimaryIdentifier(GNode n) {
         Node parent0 = (Node)n.getProperty("parent0");
         if (onMeth) {
-            if(!parent0.getName().equals("SubscriptExpression"))
+            if(!parent0.hasName("SubscriptExpression"))
                 methodString += n.getString(0);
             //key = n.getString(0);
         }
@@ -767,13 +767,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
 
-        if(parent1.getName().equals("FieldDeclaration"))
+        if(parent1.hasName("FieldDeclaration"))
         {
             for(Object o : parent0)
             {
                 if (o instanceof Node )
                 {
-                    if(((Node)o).getName().equals("Dimensions"))
+                    if(((Node)o).hasName("Dimensions"))
                         inArray = true;
                 }
 
@@ -864,9 +864,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             dispatchBitch(n);
             String type = "";
             Node callex = (Node)n.getProperty("parent0");
-            if (callex.getName().equals("CallExpression") &&
+            if (callex.hasName("CallExpression") &&
                     callex.getNode(0) != null && callex
-                    .getNode(0).getName().equals("PrimaryIdentifier")) {
+                    .getNode(0).hasName("PrimaryIdentifier")) {
                 key = callex.getNode(0).getString(0);
                 type = table.get(key);
                 //System.out.println(key + " " + type);
