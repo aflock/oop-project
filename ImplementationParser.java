@@ -788,8 +788,21 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitStringLiteral(GNode n) {
         if (onMeth) {
-            methodString += n.getString(0);
-        }
+	    Node parent0 = (Node)n.getProperty("parent0");
+	    Node parent1 = (Node)n.getProperty("parent1");
+	    Node parent2 = (Node)n.getProperty("parent2");
+	    if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
+		&& parent2.hasName("Type")) {
+		if (parent2.getNode(0).hasName("QualifiedIdentifier") &&
+		    parent2.getNode(0).getString(0).equals("String")) {
+		    methodString += "__rt::literal(\"" + n.getString(0) + "\")";
+		}
+	    }
+	}
+	else {
+	    methodString += n.getString(0);
+	}	
+    
         visit(n);
     }
 
