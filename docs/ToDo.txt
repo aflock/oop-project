@@ -8,15 +8,11 @@ DAYS TILL DUE: bout 20.
 
 To Do:
 
-FIX IN .CC:
-4. need these:
 
-_test_VT _test::__vtable;
-
-Class _testDoWhile::__class() {
-      static Class k = new __Class(__rt::literal("java.lang.String"), __Object::__class());
-      return k;
-}
+Strings:
+1. If java: String temp = "bla";
+   C++:     String temp = __rt::literal("bla");
+2. String accessing needs to be like     cout << test->__vptr->toString(test)->data << endl; if test is the string
 
 
 -Use xtc.tree.printer?
@@ -24,11 +20,8 @@ Class _testDoWhile::__class() {
 -If the file we are translating takes system args, we need to handle that in the translated file
 -Trouble class for exception handling?
 -special case string as an object?
--Exception handling?
 -Use hashmap to map java primative types to c++ types
 -Shouldn't have to deal with $ in java
-
--getName() == BLA to -hasName("BLA")?
 -printing strings and variable types in c++ is different
 
 
@@ -37,7 +30,6 @@ _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 - Need to deal with static blocks in class declarations.
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
-- system.out.println -> std::cout
 - memset?
 - memory management (smart pointers)? to support, we need to change . . .  typedefs! AND
 - chaining -> use temp variables (method chaining, assignment chaining)
