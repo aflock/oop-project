@@ -1,8 +1,8 @@
 #include "java_lang.h"
 
-typedef java::lang::__Class* Class;
-typedef java::lang::__Object* Object;
-typedef java::lang::__String* String;
+typedef java::lang::Class Class;
+typedef java::lang::Object Object;
+typedef java::lang::String String;
 
 struct _testFor;
 struct _testFor_VT;
@@ -12,24 +12,24 @@ struct _testFor_VT;
 typedef _testFor* testFor;
 
 struct _testFor {
-  //Data fields
-  _testFor_VT* __vptr;
+//Data fields
+_testFor_VT* __vptr;
 
-  //Constructors
-  _testFor();
+//Constructors
+_testFor(); 
 
 
-  //Forward declaration of methods
-  static Class __class();
-  static _testFor_VT __vtable;
+//Forward declaration of methods
+static Class __class();
+static _testFor_VT __vtable;
 
 };
 // The vtable layout for testFor.
 struct _testFor_VT {
-  java::lang::__Class* __isa;
+Class __isa;
 
 
-  _testFor_VT()
-  : __isa(_testFor::__class()) {
-  }
+_testFor_VT()
+: __isa(_testFor::__class()) {
+}
 };

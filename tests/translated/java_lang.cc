@@ -145,6 +145,10 @@ namespace java {
       out << s->data;
       return out;
     }
+    
+    String operator+(String left, String right){
+        String temp  = __rt::literal("temp");
+    }
 
     // =======================================================================
 
