@@ -14,7 +14,7 @@ Strings:
    C++:     String temp = __rt::literal("bla");
 2. String accessing needs to be like     cout << test->__vptr->toString(test)->data << endl; if test is the string
 
-
+-YOU CAN "using namespace" on multiple namespaces in the same file and it works!
 -Use xtc.tree.printer?
 -For each arg[], we process them but do not print once per arg
 -If the file we are translating takes system args, we need to handle that in the translated file

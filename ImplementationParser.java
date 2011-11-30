@@ -532,10 +532,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public String inNameSpace(String obj) {
+	if (obj.equals("Object") || obj.equals("String") || obj.equals("Class")) {
+	    return "java lang";   
+	}
+       
         String ns1 = "";
         String ns2 = "";
-        //System.out.println("COMPARING "+obj+" and "+cName);
+        System.out.println("COMPARING "+obj+" and "+cName);	
         for( Bubble b : bubbleList) {
+	    //System.out.println(b.getName() + ":" + b.getPackageName());
             //doesn't account for multiple classes of the same name
             if (b.getName().equals(obj)) {
                 ns1 = b.getPackageName();
@@ -544,11 +549,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 ns2 = b.getPackageName();
             }
         }
-
-        if(ns1 == null) {
-            return "java lang";
-        }
-        else if(ns1.equals(ns2)) {
+	//System.out.println("hello");
+	
+        //if(ns1 == null) {
+        //    return "java lang";
+        //}
+        //else if(ns1.equals(ns2)) {
+	if (ns1.equals(ns2)) {
             return null;
         }
         else {
@@ -573,11 +580,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                 }
             }
-
+	    
             String s = inNameSpace(n.getString(0));
             if (s != null && !inArray) {
                 //using absolute namespace
-
+		System.out.println("4");
                 //check to see if Bubble is found by inNameSpace
                 methodString += "::"+s.trim().replaceAll("\\s+", "::")
                     +"::";
@@ -792,10 +799,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 	    Node parent1 = (Node)n.getProperty("parent1");
 	    Node parent2 = (Node)n.getProperty("parent2");
 	    if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
-		&& parent2.hasName("Type")) {
-		if (parent2.getNode(0).hasName("QualifiedIdentifier") &&
-		    parent2.getNode(0).getString(0).equals("String")) {
-		    methodString += "__rt::literal(\"" + n.getString(0) + "\")";
+		&& parent2.hasName("FieldDeclaration")) {
+		Node tt = parent2.getNode(1);		
+		if (tt.hasName("Type")) {
+		    if (tt.getNode(0).hasName("QualifiedIdentifier") &&
+			tt.getNode(0).getString(0).equals("String")) {
+			methodString += "__rt::literal(" + n.getString(0) + ")";
+		    }
 		}
 	    }
 	}
