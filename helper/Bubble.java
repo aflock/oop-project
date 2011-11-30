@@ -302,7 +302,7 @@ public class Bubble{
     }
     if(!encounteredConstructor) //if there was no constructor in the java file, create default one
     {
-        ret += "_" + name + "::" + name + "(): __vptr(&__vtable){} \n\n";
+        ret += "_" + name + "::_" + name + "(): __vptr(&__vtable){} \n\n";
     }
     for(Mubble m: mubbles){
       ret += m.getCC() + "\n\n";
