@@ -133,9 +133,9 @@ public class Pubble{
     {
         //a bit of hardcoding
         String ret = "#include \"java_lang.h\"\n\n";
-        ret += "typedef __rt::Ptr<__Object> Object;\n";
-        ret += "typedef __rt::Ptr<__Class> Class;\n";
-        ret += "typedef __rt::Ptr<__String> String;\n\n";
+        ret += "typedef __rt::Ptr<java::lang::__Object> Object;\n";
+        ret += "typedef __rt::Ptr<java::lang::__Class> Class;\n";
+        ret += "typedef __rt::Ptr<java::lang::__String> String;\n\n";
         ret += getForwardDecl();
         ret += "\n\n";
         ret += "//Absolute typedefs to make below code more readable\n";
