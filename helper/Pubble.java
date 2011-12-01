@@ -95,7 +95,7 @@ public class Pubble{
         for(Bubble b : bubbles){
             ret += "_" + b.getName() + "_VT _" + b.getName() + "::__vtable;\n\n";
 
-            ret += "Class" + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName() + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
+            ret += "Class " + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName() + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
         }
 
         if(!(name.equals("Default Package")))
@@ -119,7 +119,7 @@ public class Pubble{
                                                                                           x = x.getParent();
                                                                                           }
                                                                                           */
-            ret += "typedef " + pkgpath + "_" + b.getName() + "* " + b.getName() + ";\n";
+            ret += "typedef " + "__rt::Ptr< " + pkgpath + "_" + b.getName() + "> " + b.getName() + ";\n";
         }
         for(Pubble p: children){
             ret += p.typeDef();
