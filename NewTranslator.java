@@ -406,20 +406,20 @@ public class NewTranslator extends xtc.util.Tool{
 
         //TODO : do single "this" parameters get added? /aflock
         Mubble m1 = new Mubble("__isa");
-        m1.setReturnType("Class")
+        m1.setReturnType("Class");
         Mubble m2 = new Mubble("hashCode");
-        m2.setReturnType("int32_t")
+        m2.setReturnType("int32_t");
         Mubble m3 = new Mubble("equals");
-        m3.setReturnType("bool")
+        m3.setReturnType("bool");
         Mubble m4 = new Mubble("getClass");
-        m4.setReturnType("Class")
+        m4.setReturnType("Class");
         Mubble m5 = new Mubble("toString");
-        m5.setReturnType("String")
-        object.add(m1)
-        object.add(m2)
-        object.add(m3)
-        object.add(m4)
-        object.add(m5)
+        m5.setReturnType("String");
+        object.add(m1);
+        object.add(m2);
+        object.add(m3);
+        object.add(m4);
+        object.add(m5);
         bubbleList.add(object);
 
 
@@ -436,6 +436,27 @@ public class NewTranslator extends xtc.util.Tool{
            string.add2Vtable("String (*toString)(String);");
            string.add2Vtable("int32_t (*length)(String);");
            string.add2Vtable("char (*charAt)(String, int_32_t);"); */
+        Mubble n1 = new Mubble("__isa");
+        m1.setReturnType("Class");
+        Mubble n2 = new Mubble("hashCode");
+        m2.setReturnType("int32_t");
+        Mubble n3 = new Mubble("equals");
+        m3.setReturnType("bool");
+        Mubble n4 = new Mubble("getClass");
+        m4.setReturnType("Class");
+        Mubble n5 = new Mubble("toString");
+        m5.setReturnType("String");
+        Mubble n6 = new Mubble("length");
+        m6.setReturnType("int32_t");
+        Mubble n7 = new Mubble("length");
+        m7.setReturnType("char");
+        string.add(n1);
+        string.add(n2);
+        string.add(n3);
+        string.add(n4);
+        string.add(n5);
+        string.add(n6);
+        string.add(n7);
         bubbleList.add(string);
     }
 }
