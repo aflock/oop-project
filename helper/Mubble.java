@@ -294,8 +294,6 @@ public class Mubble {
     }
 
     /* generates entry for vtable.
-     * needs fixing. proper casting is needed.
-     * TODO @DK now that we are using a unified parameter instead of two this will be slightly different. TNX
      */
     public String vTable2() {
         if(main){
