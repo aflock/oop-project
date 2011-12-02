@@ -143,6 +143,7 @@ namespace java {
     };
 
     std::ostream& operator<<(std::ostream& out, String);
+    String operator+(String left, String right);
 
     // The vtable layout for java.lang.String.
     struct __String_VT {

@@ -147,7 +147,12 @@ namespace java {
     }
     
     String operator+(String left, String right){
-        String temp  = __rt::literal("temp");
+
+        std::string tempStr = left->__vptr->toString(left)->data;
+        tempStr = tempStr.append(right->__vptr->toString(right)->data);
+        
+        String temp  = __rt::literal(&(tempStr)[0]);
+        return temp;
     }
 
     // =======================================================================
