@@ -358,7 +358,9 @@ public class Bubble{
             ret += "_" + name + "::_" + name + "(): __vptr(&__vtable){} \n\n";
         }
         for(Mubble m: mubbles){
-            ret += m.getCC() + "\n\n";
+            //if the method is not inherited
+            if(m.getFlag() != 'i')
+                ret += m.getCC() + "\n\n";
         }
 
 

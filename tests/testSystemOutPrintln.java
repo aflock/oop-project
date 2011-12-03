@@ -4,7 +4,7 @@ public class testSystemOutPrintln
     {
         String var = "variable";
         System.out.println("test" + " whoa plus " + var);
-        System.out.println(replaceSys("System.out.println(\"test\" + \" whoa plus \" + \"variable\");"));
+        System.out.println(replaceSystemPrintln("System.out.println(\"test\" + \" whoa plus \" + \"variable\");"));
     }
     
     public static String replaceSystemPrintln(String s)

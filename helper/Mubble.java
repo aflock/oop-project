@@ -339,8 +339,9 @@ public class Mubble {
             else
             */
 
-            s.append(")").append("&_");
+            s.append("))").append("&");
             Bubble ancestor = className.getParentBubble();
+	    Bubble anc = null;
             String inheritedfrom = "Object";
             boolean found = true;
             while (ancestor != null && found) {
@@ -348,6 +349,7 @@ public class Mubble {
                 for (Mubble mub : mubbles) {
                     if (mub.getName().equals(methodName) && mub.getFlag() != INHERITED) {
                         inheritedfrom = ancestor.getName();
+			anc = ancestor;
                         found = false;
                     }
                 }
@@ -355,10 +357,12 @@ public class Mubble {
             }
             if (inheritedfrom.equals("Object") || inheritedfrom.equals("String") ||
                     inheritedfrom.equals("Class")) {
-                s.append("_").append(inheritedfrom);
+                s.append("java::lang::__").append(inheritedfrom);
                     }
             else {
-                s.append(inheritedfrom);
+		String pack = anc.getPackageName().trim().replace(" ", "::");
+		
+                s.append("_").append(inheritedfrom);
             }
         }
         else {
