@@ -216,7 +216,6 @@ public class Mubble {
     public Mubble setFlag(char flag) {
         this.flag = flag;
         if (flag == NEW) {
-            System.out.println(methodName);
             originallyFrom = className.getName();
         }
         return this;
@@ -301,9 +300,6 @@ public class Mubble {
 
         s.append(");");
 
-        System.out.println("^_^_^_^_^_^_^_^_^_^_^");
-        System.out.println(s.toString());
-        System.out.println("^_^_^_^_^_^_^_^_^_^_^");
         return s.toString();
     }
 
@@ -331,7 +327,6 @@ public class Mubble {
         //    s.append(type.toString()).append(")");
         //}
 
-        System.out.println("flag is for " + methodName + " :: " + flag);
         if (flag == INHERITED) { // this line is not quite right
             s.append("(").append(returnType).append("(*)(");
             s.append(getClassName());

@@ -299,14 +299,11 @@ public class Bubble{
         //Hardcoding the vt and class
         ret += "static Class __class();\n" +
             "static _"+this.name+"_VT __vtable;\n";
-        System.out.println("All Mubble names : ");
         for(Mubble m : mubbles) {
             //HARDCODING STATIC, MAY NEED TO CHANGE
-            System.out.println(m.getName());
             if(!m.isConstructor()) //if its a constructor, don't print it
                 ret += m.forward() + "\n";
         }
-        System.out.println("V_V_V_V_V_VV_V_V_V_V_");
         //unindent
         ret += "};\n";
         return ret;
