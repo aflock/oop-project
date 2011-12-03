@@ -1,6 +1,9 @@
 //SHOULD OUTPUT 1-10, each on a new line
 
 public class testDoWhile{
+
+    public testDoWhile(){
+    }
  
     public static void main (String [] args)
     {

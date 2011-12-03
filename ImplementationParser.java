@@ -251,6 +251,29 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     }
     String mName;
+    public String evaluateExpressionForPrint(Node n){
+
+        String ret = "";
+        if(n.getName().endsWith("Literal")){
+            ret += n.getString(0);
+        }else if(n.hasName("AdditiveExpression")){
+            ret += evaluateExpressionForPrint(n.getNode(0));
+            ret += " << ";
+            ret += evaluateExpressionForPrint(n.getNode(2));
+            //TODO - if the additive expression is not supposed to be
+            //handled like this ^^
+        }else if(n.hasName("Arguments")){
+                ret += evaluateExpressionForPrint(n.getNode(0));
+        }else if(n.hasName("NewClassExpression")){
+            //wtf
+        }else if(n.hasName("PrimaryIdentifier")){
+            ret += n.getString(0);
+        }else{
+        System.out.println("errror: :(" + n.getName());
+        }
+        //eval
+        return ret;
+    }
     public void visitCallExpression(GNode n) {
         //visit(n);
         if (onMeth) {
@@ -258,24 +281,38 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             String tmp = "";
 
             dispatchBitch(n);
-            dispatch(n.getNode(0));
+            //Dealing with System.out.print*
+            if(n.getNode(0).hasName("SelectionExpression") &&
+                    n.getNode(0).getNode(0).hasName("PrimaryIdentifier") &&
+                    n.getNode(0).getNode(0).getString(0).equals("System") &&
+                    n.getNode(0).getString(1).equals("out") &&
+                    (n.getString(2).equals("print") ||n.getString(2).equals("println"))
+              ){
+                methodString += "cout << " + evaluateExpressionForPrint(n.getNode(3));
+                if(n.getString(2).equals("println")){
+                    methodString += " << endl";
+                }
+              }
+            else{
+                dispatch(n.getNode(0));
 
 
-            //need to fix casting for first arg
-            if(n.getNode(0) != null) {
-                methodString += "->__vptr->"+n.getString(2);
-                methodString += "(";
-                //should cast self to expected type
-                //not doing now because castify is not a method,
-                //too complicated right now
-                dispatch(n.getNode(0));//adding self
-                methodString += ", ";
+                //need to fix casting for first arg
+                if(n.getNode(0) != null) {
+                    methodString += "->__vptr->"+n.getString(2);
+                    methodString += "(";
+                    //should cast self to expected type
+                    //not doing now because castify is not a method,
+                    //too complicated right now
+                    dispatch(n.getNode(0));//adding self
+                    //methodString += ", "; //error
+                }
+                else {
+                    methodString += n.getString(2) + "(";
+
+                }
+                dispatch(n.getNode(3));
             }
-            else {
-                methodString += n.getString(2) + "(";
-
-            }
-            dispatch(n.getNode(3));
         }
         else {
             visit(n);
@@ -293,7 +330,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             dispatchBitch(n);
             Node parent = (Node)n.getProperty("parent0");
-            if (parent.getName().equals("ConditionalStatement")) {
+            if (parent.hasName("ConditionalStatement")) {
                 methodString += "\n}\nelse ";
             }
             methodString += "if (";
@@ -315,7 +352,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                    */
                 dispatch(n.getNode(n.size()-1));
             }
-            if (!parent.getName().equals("ConditionalStatement")) {
+            if (!parent.hasName("ConditionalStatement")) {
                 methodString += "\n}\n";
             }
             //methodString += "}\n";
@@ -389,7 +426,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitIntegerLiteral(GNode n) {
         Node parent0 = (Node)n.getProperty("parent0");
         if (onMeth && !inArray) {
-            if(!parent0.getName().equals("SubscriptExpression"))
+            if(!parent0.hasName("SubscriptExpression"))
                 methodString += n.getString(0);
         }
         visit(n);
@@ -495,10 +532,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public String inNameSpace(String obj) {
+	if (obj.equals("Object") || obj.equals("String") || obj.equals("Class")) {
+	    return "java lang";   
+	}
+       
         String ns1 = "";
         String ns2 = "";
-        //System.out.println("COMPARING "+obj+" and "+cName);
+        System.out.println("COMPARING "+obj+" and "+cName);	
         for( Bubble b : bubbleList) {
+	    //System.out.println(b.getName() + ":" + b.getPackageName());
             //doesn't account for multiple classes of the same name
             if (b.getName().equals(obj)) {
                 ns1 = b.getPackageName();
@@ -507,11 +549,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 ns2 = b.getPackageName();
             }
         }
-
-        if(ns1 == null) {
-            return "java lang";
-        }
-        else if(ns1.equals(ns2)) {
+	//System.out.println("hello");
+	
+        //if(ns1 == null) {
+        //    return "java lang";
+        //}
+        //else if(ns1.equals(ns2)) {
+	if (ns1.equals(ns2)) {
             return null;
         }
         else {
@@ -524,23 +568,23 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             Node parent0 = (Node)n.getProperty("parent0");
             Node parent1 = (Node)parent0.getProperty("parent0");
-            if(parent1.getName().equals("FieldDeclaration")) {
+            if(parent1.hasName("FieldDeclaration")) {
                 tan += n.getString(0) + " ";
             }
 
-            if(parent1.getName().equals("FieldDeclaration")){
+            if(parent1.hasName("FieldDeclaration")){
                 for(Object o : parent0){
                     if (o instanceof Node ){
-                        if(((Node)o).getName().equals("Dimensions"))
+                        if(((Node)o).hasName("Dimensions"))
                             inArray = true;
                     }
                 }
             }
-
+	    
             String s = inNameSpace(n.getString(0));
             if (s != null && !inArray) {
                 //using absolute namespace
-
+		System.out.println("4");
                 //check to see if Bubble is found by inNameSpace
                 methodString += "::"+s.trim().replaceAll("\\s+", "::")
                     +"::";
@@ -694,6 +738,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             onMeth = false;
 
             curMub.addCode(outputFormat(methodString));
+            //System.out.println("method string:" + methodString);
 
             methodString = "";
             table = null;
@@ -716,7 +761,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitPrimaryIdentifier(GNode n) {
         Node parent0 = (Node)n.getProperty("parent0");
         if (onMeth) {
-            if(!parent0.getName().equals("SubscriptExpression"))
+            if(!parent0.hasName("SubscriptExpression"))
                 methodString += n.getString(0);
             //key = n.getString(0);
         }
@@ -729,13 +774,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
 
-        if(parent1.getName().equals("FieldDeclaration"))
+        if(parent1.hasName("FieldDeclaration"))
         {
             for(Object o : parent0)
             {
                 if (o instanceof Node )
                 {
-                    if(((Node)o).getName().equals("Dimensions"))
+                    if(((Node)o).hasName("Dimensions"))
                         inArray = true;
                 }
 
@@ -750,8 +795,25 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitStringLiteral(GNode n) {
         if (onMeth) {
-            methodString += n.getString(0);
-        }
+	    /*
+	    Node parent0 = (Node)n.getProperty("parent0");
+	    Node parent1 = (Node)n.getProperty("parent1");
+	    Node parent2 = (Node)n.getProperty("parent2");
+	    if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
+	    	&& parent2.hasName("FieldDeclaration")) {
+		Node tt = parent2.getNode(1);		
+		if (tt.hasName("Type")) {
+		    if (tt.getNode(0).hasName("QualifiedIdentifier") &&
+			tt.getNode(0).getString(0).equals("String")) {
+			methodString += "__rt::literal(" + n.getString(0) + ")";
+		    }
+		}
+	    }
+	    */	
+	
+	    methodString += "__rt::literal(" + n.getString(0) + ")";
+	}	
+    
         visit(n);
     }
 
@@ -826,9 +888,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             dispatchBitch(n);
             String type = "";
             Node callex = (Node)n.getProperty("parent0");
-            if (callex.getName().equals("CallExpression") &&
+            if (callex.hasName("CallExpression") &&
                     callex.getNode(0) != null && callex
-                    .getNode(0).getName().equals("PrimaryIdentifier")) {
+                    .getNode(0).hasName("PrimaryIdentifier")) {
                 key = callex.getNode(0).getString(0);
                 type = table.get(key);
                 //System.out.println(key + " " + type);
@@ -865,6 +927,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             */
 
             String s = "";
+
             //CASTING
             if (n.size() > 0) {
                 s = inNameSpace(par[0]);
@@ -883,24 +946,28 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     methodString += ")";
                 }
                 else {
+                    methodString += ", ";
                     dispatch(n.getNode(0));
                 }
 
             }
 
             for(int i = 1; i < n.size(); i++) {
-                if(!par[i].trim().equals("")) {
-                    methodString += ", (("+(par.length > i ? par[i] : "")
-                        +") ";
+                //DONT KNOW WHY WE NEED THIS
+                //if(!par[i].trim().equals("")) {
+                //    methodString += ", (("+(par.length > i ? par[i] : "")
+                //        +") ";
+                //    dispatch(n.getNode(i));
+                 //   methodString += ")";
+                //}
+                //else{
+                    methodString += ", ";
                     dispatch(n.getNode(i));
-                    methodString += ")";
-                }
-                else{
-                    dispatch(n.getNode(i));
-                }
+                //}
             }
 
             methodString += ")";
+
         }
         else {
             visit(n);

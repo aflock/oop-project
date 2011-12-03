@@ -34,3 +34,6 @@ Other:
     x testing weird datafield declarations
     - check that final, const, private, protected get handled correctly
     - two files with the same package are added to the same pubble
+        - packages
+    - a fuck ton of nested arrays
+    - short + short = int //how to test??

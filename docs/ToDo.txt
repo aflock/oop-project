@@ -4,30 +4,42 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 22.
+DAYS TILL DUE: bout 18.
 
 To Do:
--Use xtc.tree.printer
 
+
+Strings:
+1. If java: String temp = "bla";
+   C++:     String temp = __rt::literal("bla");
+2. String accessing needs to be like     cout << test->__vptr->toString(test)->data << endl; if test is the string
+
+-YOU CAN "using namespace" on multiple namespaces in the same file and it works!
+-Use xtc.tree.printer?
+-For each arg[], we process them but do not print once per arg
+-If the file we are translating takes system args, we need to handle that in the translated file
 -Trouble class for exception handling?
 -special case string as an object?
--Exception handling?
 -Use hashmap to map java primative types to c++ types
 -Shouldn't have to deal with $ in java
-
--getName() == BLA to -hasName("BLA")?
 -printing strings and variable types in c++ is different
 
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
+- how are we renaming *ubbles?
 - Need to deal with static blocks in class declarations.
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
-- system.out.println -> std::cout
 - memset?
-- memory management (smart pointers)?
+- memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
 - chaining -> use temp variables (method chaining, assignment chaining)
+- overload '+'
+- each class needs a delete method -> add to vtable
+- populate lang list*
+- deal with arrays in parameters
+- arrays of arrays templates
+
 
 
 Timeline:
