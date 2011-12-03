@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <cstring>
 
 #include "ptr.h"
@@ -143,7 +144,17 @@ namespace java {
     };
 
     std::ostream& operator<<(std::ostream& out, String);
-    String operator+(String left, String right);
+    String operator+(Object left, Object right);
+    String operator+(Object left, int right);
+    String operator+(int left, Object right);
+    String operator+(float left, Object right);
+    String operator+(Object left, float right);
+    String operator+(double left, Object right);
+    String operator+(Object left, double right);
+    String operator+(char left, Object right);
+    String operator+(Object left, char right);
+    String operator+(bool left, Object right);
+    String operator+(Object left, bool right);
 
     // The vtable layout for java.lang.String.
     struct __String_VT {
