@@ -146,14 +146,7 @@ namespace java {
       return out;
     }
     
-    String operator+(String left, String right){
-
-        std::string tempStr = left->__vptr->toString(left)->data;
-        tempStr = tempStr.append(right->__vptr->toString(right)->data);
-        
-        String temp  = __rt::literal(&(tempStr)[0]);
-        return temp;
-    }
+    
 
     // =======================================================================
 
@@ -238,7 +231,103 @@ namespace java {
       return k;
     }
 
+ //========================= Operator Oveloading ======================================//
+  String operator+(Object left, Object right){
+
+        std::string tempStr = left->__vptr->toString(left)->data;
+        tempStr = tempStr.append(right->__vptr->toString(right)->data);
+        
+        return __rt::literal(&(tempStr)[0]);
   }
+  String operator+(Object left, int right){
+        std::stringstream ss;
+        ss << left->__vptr->toString(left)->data;
+        ss << right; 
+       
+        String temp  = __rt::literal(&(ss.str())[0]);
+        return temp;
+  }
+  String operator+(int left, Object right){
+        std::stringstream ss;
+        //ss<< "int + called";
+        ss << left;
+        ss << right->__vptr->toString(right)->data;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(float left, Object right){
+        std::stringstream ss;
+        //ss << "float + called";
+        ss << left;
+        ss << right->__vptr->toString(right)->data;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(Object left, float right){
+        std::stringstream ss;
+        //ss << "float + called";
+        ss << left->__vptr->toString(left)->data;
+        ss << right;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(double left, Object right){
+        std::stringstream ss;
+        //ss << "double + called";
+        ss << left;
+        ss << right->__vptr->toString(right)->data;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(Object left, double right){
+        std::stringstream ss;
+        //ss << "double + called";
+        ss << left->__vptr->toString(left)->data;
+        ss << right;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(Object left, char right){
+        std::stringstream ss;
+        //ss << "double + called";
+        ss << left->__vptr->toString(left)->data;
+        ss << right;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(char left, Object right){
+        std::stringstream ss;
+        //ss << "double + called";
+        ss << left;
+        ss << right->__vptr->toString(right)->data;
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(Object left, bool right){
+        std::stringstream ss;
+        //ss << "double + called";
+        ss << left->__vptr->toString(left)->data;
+        if(right == 1)
+            ss<< "true";
+        else
+            ss<< "false";
+        
+        return __rt::literal(&(ss.str())[0]);
+  }
+  String operator+(bool left, Object right){
+        std::stringstream ss;
+        //ss << "double + called";
+        if(left == 1)
+            ss<< "true";
+        else
+            ss<< "false";
+
+        ss << right->__vptr->toString(right)->data;
+        
+        return __rt::literal(&(ss.str())[0]);
+  } 
+  //==================== End Operator Overloading ===================================//
+  } //end java::lang
 }
 
 // ===========================================================================
@@ -286,5 +375,6 @@ namespace __rt {
                               java::lang::__String::__class());
     return k;
   }
+  
 
 }
