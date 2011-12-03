@@ -3,5 +3,6 @@
 *.swp
 #*#
 \#*\#
-
 ./tests/translated/
+*.class
+
