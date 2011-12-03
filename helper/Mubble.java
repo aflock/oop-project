@@ -6,6 +6,7 @@ import java.util.ArrayList;
 //import helper.Field;
 
 public class Mubble {
+    //possible values for flag
     private final char INHERITED = 'i';
     private final char NEW = 'n';
     private final char OVERLOADED = 'l';
@@ -14,7 +15,7 @@ public class Mubble {
     boolean constructor;
     boolean main;
     boolean staticMethod;
-    char from;
+    char flag;
 
     Bubble className;
     Pubble packageName;
@@ -45,6 +46,7 @@ public class Mubble {
             main = true;
         }
         code = "";
+        flag = '@';
     }
 
     public void addCode(String code){
@@ -142,8 +144,8 @@ public class Mubble {
         return s.toString();
     }
 
-    public char from() {
-        return from;
+    public char getFlag() {
+        return flag;
     }
 
     public String getClassName(){
@@ -211,11 +213,12 @@ public class Mubble {
         return this;
     }
 
-    public Mubble setFrom(char from) {
-        this.from = from;
-	if (from == NEW) {
-	    originallyFrom = className.getName();
-	}
+    public Mubble setFlag(char flag) {
+        this.flag = flag;
+        if (flag == NEW) {
+            System.out.println(methodName);
+            originallyFrom = className.getName();
+        }
         return this;
     }
 
@@ -298,6 +301,9 @@ public class Mubble {
 
         s.append(");");
 
+        System.out.println("^_^_^_^_^_^_^_^_^_^_^");
+        System.out.println(s.toString());
+        System.out.println("^_^_^_^_^_^_^_^_^_^_^");
         return s.toString();
     }
 
@@ -325,21 +331,26 @@ public class Mubble {
         //    s.append(type.toString()).append(")");
         //}
 
-        if (from == INHERITED) { // this line is not quite right
+        if (flag == INHERITED) { // this line is not quite right
             s.append("(").append(returnType).append("(*)(");
             s.append(getClassName());
             for (String para : paraType) {
                 s.append(",").append(para);
             }
-            s.append(")").append("&_");
+            /*
+            if(className.getName().equals("String") || className.getName().equals("Object") )
+                s.append(")").append("&__");
+            else
+            */
 
+            s.append(")").append("&_");
             Bubble ancestor = className.getParentBubble();
             String inheritedfrom = "Object";
             boolean found = true;
             while (ancestor != null && found) {
                 ArrayList<Mubble> mubbles = ancestor.getMubbles();
                 for (Mubble mub : mubbles) {
-                    if (mub.getName().equals(methodName) && mub.from() != INHERITED) {
+                    if (mub.getName().equals(methodName) && mub.getFlag() != INHERITED) {
                         inheritedfrom = ancestor.getName();
                         found = false;
                     }
