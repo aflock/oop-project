@@ -22,7 +22,6 @@
 #include <stdint.h>
 #include <string>
 #include <iostream>
-#include <sstream>
 #include <cstring>
 
 #include "ptr.h"
@@ -127,7 +126,7 @@ namespace java {
 
       // The destructor.
       static void __delete(__String*);
-      
+
       // The methods implemented by java.lang.String.
       static int32_t hashCode(String);
       static bool equals(String, Object);
@@ -144,17 +143,6 @@ namespace java {
     };
 
     std::ostream& operator<<(std::ostream& out, String);
-    String operator+(Object left, Object right);
-    String operator+(Object left, int right);
-    String operator+(int left, Object right);
-    String operator+(float left, Object right);
-    String operator+(Object left, float right);
-    String operator+(double left, Object right);
-    String operator+(Object left, double right);
-    String operator+(char left, Object right);
-    String operator+(Object left, char right);
-    String operator+(bool left, Object right);
-    String operator+(Object left, bool right);
 
     // The vtable layout for java.lang.String.
     struct __String_VT {
@@ -166,7 +154,7 @@ namespace java {
       String (*toString)(String);
       int32_t (*length)(String);
       char (*charAt)(String, int32_t);
-      
+
       __String_VT()
       : __isa(__String::__class()),
         __delete(__String::__delete),
@@ -288,7 +276,7 @@ namespace java {
 
     class ArrayIndexOutOfBoundsException : public IndexOutOfBoundsException {
     };
-    
+
   }
 }
 
@@ -355,7 +343,7 @@ namespace __rt {
     bool (*equals)(Reference, java::lang::Object);
     java::lang::Class (*getClass)(Reference);
     java::lang::String (*toString)(Reference);
-    
+
     Array_VT()
     : __isa(Array<T>::__class()),
       __delete(&Array<T>::__delete),
@@ -422,3 +410,4 @@ namespace __rt {
   }
 
 }
+
