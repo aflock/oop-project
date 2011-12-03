@@ -3,6 +3,7 @@
 *.swp
 #*#
 \#*\#
-./tests/translated/
 *.class
-
+./tests/translated/
+./tests/cppoutput/
+./tests/javaoutput/
