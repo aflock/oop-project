@@ -533,12 +533,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public String inNameSpace(String obj) {
 	if (obj.equals("Object") || obj.equals("String") || obj.equals("Class")) {
-	    return "java lang";   
+	    return "java lang";
 	}
-       
+
         String ns1 = "";
         String ns2 = "";
-        System.out.println("COMPARING "+obj+" and "+cName);	
+        System.out.println("COMPARING "+obj+" and "+cName);
         for( Bubble b : bubbleList) {
 	    //System.out.println(b.getName() + ":" + b.getPackageName());
             //doesn't account for multiple classes of the same name
@@ -550,7 +550,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
         }
 	//System.out.println("hello");
-	
+
         //if(ns1 == null) {
         //    return "java lang";
         //}
@@ -580,7 +580,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                 }
             }
-	    
+
             String s = inNameSpace(n.getString(0));
             if (s != null && !inArray) {
                 //using absolute namespace
@@ -801,7 +801,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 	    Node parent2 = (Node)n.getProperty("parent2");
 	    if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
 	    	&& parent2.hasName("FieldDeclaration")) {
-		Node tt = parent2.getNode(1);		
+		Node tt = parent2.getNode(1);
 		if (tt.hasName("Type")) {
 		    if (tt.getNode(0).hasName("QualifiedIdentifier") &&
 			tt.getNode(0).getString(0).equals("String")) {
@@ -809,11 +809,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 		    }
 		}
 	    }
-	    */	
-	
+	    */
+
 	    methodString += "__rt::literal(" + n.getString(0) + ")";
-	}	
-    
+	}
+
         visit(n);
     }
 

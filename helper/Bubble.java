@@ -297,7 +297,7 @@ public class Bubble{
         }
         //static void __delete(__Object*);
         ret += "\n//The destructor\n";
-        ret += "static void __delete(_" + this.name + "*);";
+        ret += "static void __delete(_" + this.name + "*);\n";
 
         ret+="\n//Forward declaration of methods\n";
         //Hardcoding the vt and class
@@ -314,7 +314,7 @@ public class Bubble{
     }
 
     public String getStructVT() {
-        String ret = "// The vtable layout for "+this.name+".\n";
+        String ret = "\n// The vtable layout for "+this.name+".\n";
         ret += "struct _"+this.name+"_VT {\n";
         //indent
         //Hardcoding class
