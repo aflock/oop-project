@@ -23,6 +23,7 @@ public class Mubble {
     String group;
     String returnType; //if none and not a constructor -->> void
     String visibility;
+    String originallyFrom;
     ArrayList<String> paraName;
     ArrayList<String> paraType;
     ArrayList<String> paraMod;
@@ -77,6 +78,10 @@ public class Mubble {
 
     public String getCode() {
         return this.code;
+    }
+
+    public String findBirthPlace() {
+	return originallyFrom;
     }
 
     public String getCC(){
@@ -208,6 +213,9 @@ public class Mubble {
 
     public Mubble setFrom(char from) {
         this.from = from;
+	if (from == NEW) {
+	    originallyFrom = className.getName();
+	}
         return this;
     }
 
