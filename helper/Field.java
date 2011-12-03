@@ -28,6 +28,15 @@ public class Field{
         modifiers.add(modifier);
     }
 
+    public Field(String name, String type){
+        this.name           = name;
+        this.type           = type;
+        this.isArray        = false;
+        this.arrayDims      = 0;
+        this.hasAssignment  = false;
+        this.assignmentNode = null;
+    }
+
     public Field(String name, String type, ArrayList<String> modifiers){
         this.name           = name;
         this.type           = type;
