@@ -218,6 +218,15 @@ public class Bubble{
     public void inheritMethods(){
         //takes parents methods for vtable.
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(parentBubble.getMubbles());
+        for(int i = 0; i < newMethodsList.size(); i++){
+            Mubble m = newMethodsList.get(i);
+            if(m.isMain() || m.isStatic() || m.isConstructor())
+                newMethodsList.remove(i--);
+        }
+        for(Mubble m : newMethodsList){
+            m.setFlag('i');
+            m.setBubble(this);
+        }
         //kick out overwritten old methods
         for(int i = 0; i < newMethodsList.size(); i ++){
             Mubble m = newMethodsList.get(i);

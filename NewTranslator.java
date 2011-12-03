@@ -137,12 +137,8 @@ public class NewTranslator extends xtc.util.Tool{
         //Pass methods down the inheritance tree
         for(Bubble b: bubbleList){
             if(!(b.getName().equals("String") || b.getName().equals("Object"))){
-                System.out.println("Passing methods for " + b.getName());
                 b.inheritMethods();
             }
-            System.out.println("final mubbles");
-            for(Mubble m : b.getMubbles())
-                System.out.println(m.getName());
         }
 
 

@@ -331,6 +331,7 @@ public class Mubble {
         //    s.append(type.toString()).append(")");
         //}
 
+        System.out.println("flag is for " + methodName + " :: " + flag);
         if (flag == INHERITED) { // this line is not quite right
             s.append("(").append(returnType).append("(*)(");
             s.append(getClassName());
