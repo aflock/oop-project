@@ -1,6 +1,7 @@
 #Test for compilation
 echo "Compiling test code."
 javac *.java
+#run the java files too
 if [ "$?" = "0" ]; then
     rm *.class
     echo "Test code successfully compiles."
@@ -26,6 +27,7 @@ if [ "$?" = "0" ]; then
 	pushd ../../xtc/src/xtc/oop > /dev/null
         #call the translator
 	#java xtc.oop.NewTranslator $i
+	#diff -y (or -q) the outputs
 	popd > /dev/null
     done
     echo "Successful testing! Let's diff the outputs!"
