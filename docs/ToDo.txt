@@ -4,7 +4,7 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 20.
+DAYS TILL DUE: bout 18.
 
 To Do:
 
@@ -27,16 +27,16 @@ Strings:
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
+- how are we renaming *ubbles?
 - Need to deal with static blocks in class declarations.
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
 - memset?
-- memory management (smart pointers)? to support, we need to change . . .  typedefs! AND
+- memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
 - chaining -> use temp variables (method chaining, assignment chaining)
 - overload '+'
 - each class needs a delete method -> add to vtable
-- how are we renaming *ubbles?
-- populate lang list
+- populate lang list*
 - deal with arrays in parameters
 - arrays of arrays templates
 

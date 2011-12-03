@@ -202,7 +202,7 @@ public class NewTranslator extends xtc.util.Tool{
             //Write .h to file
             String hFile = "../oop-project/tests/translated/" + fileNames.get(0) + ".h";
             String cFile = "../oop-project/tests/translated/" + fileNames.get(0) + ".cc";
-            
+
             try{
                 //writing .h
                 System.out.println("writing .h to " + hFile);
@@ -211,7 +211,7 @@ public class NewTranslator extends xtc.util.Tool{
                 BufferedWriter hwrite = new BufferedWriter(hstream);
                 hwrite.write(doth);
                 hwrite.close();
-                
+
                 //writing. cc
                 System.out.println("writing .h to " + hFile);
                 out = new File(cFile);
@@ -321,7 +321,7 @@ public class NewTranslator extends xtc.util.Tool{
            //System.out.println("******    " + file);
            return file;
       }
-      
+
     public Pubble findParent(String[] lineage){
         /* Say we are given:
          * xtc oop helper
@@ -395,14 +395,31 @@ public class NewTranslator extends xtc.util.Tool{
 
         object.setIsFilled(true);
         object.setIsBuilt(true);
-        /*DO WE NEED THIS? HOW ARE WE CONSTRUCTING A VTABLE NOW? */
         //Creating Object's Vtable
         //NEED TO IMPLEMENT IN NEW FASHION
+        //      Each of these will get a mubble, which is added to the Bubble
         /*object.add2Vtable("Class __isa;");
           object.add2Vtable("int32_t (*hashCode)(Object);");
           object.add2Vtable("bool (*equals)(Object, Object);");
           object.add2Vtable("Class (*getClass)(Object);");
           object.add2Vtable("String (*toString)(Object);"); */
+
+        //TODO : do single "this" parameters get added? /aflock
+        Mubble m1 = new Mubble("__isa");
+        m1.setReturnType("Class");
+        Mubble m2 = new Mubble("hashCode");
+        m2.setReturnType("int32_t");
+        Mubble m3 = new Mubble("equals");
+        m3.setReturnType("bool");
+        Mubble m4 = new Mubble("getClass");
+        m4.setReturnType("Class");
+        Mubble m5 = new Mubble("toString");
+        m5.setReturnType("String");
+        object.add(m1);
+        object.add(m2);
+        object.add(m3);
+        object.add(m4);
+        object.add(m5);
         bubbleList.add(object);
 
 
@@ -419,6 +436,27 @@ public class NewTranslator extends xtc.util.Tool{
            string.add2Vtable("String (*toString)(String);");
            string.add2Vtable("int32_t (*length)(String);");
            string.add2Vtable("char (*charAt)(String, int_32_t);"); */
+        Mubble n1 = new Mubble("__isa");
+        m1.setReturnType("Class");
+        Mubble n2 = new Mubble("hashCode");
+        m2.setReturnType("int32_t");
+        Mubble n3 = new Mubble("equals");
+        m3.setReturnType("bool");
+        Mubble n4 = new Mubble("getClass");
+        m4.setReturnType("Class");
+        Mubble n5 = new Mubble("toString");
+        m5.setReturnType("String");
+        Mubble n6 = new Mubble("length");
+        m6.setReturnType("int32_t");
+        Mubble n7 = new Mubble("length");
+        m7.setReturnType("char");
+        string.add(n1);
+        string.add(n2);
+        string.add(n3);
+        string.add(n4);
+        string.add(n5);
+        string.add(n6);
+        string.add(n7);
         bubbleList.add(string);
     }
 }

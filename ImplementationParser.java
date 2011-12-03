@@ -795,11 +795,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitStringLiteral(GNode n) {
         if (onMeth) {
+	    /*
 	    Node parent0 = (Node)n.getProperty("parent0");
 	    Node parent1 = (Node)n.getProperty("parent1");
 	    Node parent2 = (Node)n.getProperty("parent2");
 	    if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
-		&& parent2.hasName("FieldDeclaration")) {
+	    	&& parent2.hasName("FieldDeclaration")) {
 		Node tt = parent2.getNode(1);		
 		if (tt.hasName("Type")) {
 		    if (tt.getNode(0).hasName("QualifiedIdentifier") &&
@@ -808,9 +809,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 		    }
 		}
 	    }
-	}
-	else {
-	    methodString += n.getString(0);
+	    */	
+	
+	    methodString += "__rt::literal(" + n.getString(0) + ")";
 	}	
     
         visit(n);
