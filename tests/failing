@@ -7,7 +7,7 @@ _V_V_V_V_V_V_V_V_V_V_V_V_
 testAssChains:
     -"int32_t a b c" << missing commas
     +ImplementationParser
-    
+
 
 testBasicClass:
     - Missing first underscore (here)testBasicClass na = new _testBasicClass();
@@ -16,13 +16,16 @@ testBasicClass:
 testDoWhile:
     - testDoWhile.h:47:29: error: cannot convert ‘void (_testDoWhile::*)(testDoWhile)’ to ‘void (*)(testDoWhile)’ in initialization
     - Line 47: doloop(&_testDoWhile::doloop) {
-    
+
 testInheritance:
     - possibly the same problem as above?
     - testInheritance.h:55:33: error: ‘getStats’ is not a member of ‘java::lang::__Object
     - getClass((Class(*)(Inherited))&java::lang::__Object::getClass),
     -                                 ^should be something like _testInheritance?
 
-    
+testPrinting:
+    - numbers not being added, just fed to cout
+    + see EvaluatePrintstatement in ImplementationParse
+
 
 

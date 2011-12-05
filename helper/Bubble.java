@@ -319,16 +319,14 @@ public class Bubble{
         //indent
         //Hardcoding class
         ret += "Class __isa;\n";
-        //void (*__delete)(__Object*);
-        ret +=  "void (*__delete)(_" + this.name + "*);\n";
+        //ret +=  "void (*__delete)(_" + this.name + "*);\n";
         for(Mubble m : mubbles) {
             if(!m.isConstructor()) //if its a constructor
                 ret += m.vTable1()+"\n";
         }
         //Make VT constructor in-line, hardcoding class
         ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class()),";
-        ret += "__delete(&_" + this.name + "::__delete)";
-        //__delete(&__Object::__delete),
+        //ret += "__delete(&_" + this.name + "::__delete)";
         for(Mubble m : mubbles) {
             if(!m.isConstructor() && !m.isMain())
                 ret += ",\n"+m.vTable2();
