@@ -498,6 +498,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
     }
 
+    
+    boolean debugPrimitiveType = false;
     public void visitPrimitiveType(GNode n) {
         visit(n);
         Node parent0 = (Node)n.getProperty("parent0");
@@ -509,6 +511,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             (parent1.hasName("FormalParameter"))){
             String type = n.getString(0);
             curField.setType(type);
+        }
+        
+        if ((parent0.hasName("Type")) && //if the return type for a method is a primitive type
+            (parent1.hasName("MethodDeclaration"))){
+                String type = n.getString(0);
+                if(debugPrimitiveType) System.out.println("visitPrimativeType, type: " + type);
+                curMub.setReturnType(type);
         }
     }
 
