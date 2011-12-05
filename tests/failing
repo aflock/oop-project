@@ -25,6 +25,7 @@ testInheritance:
 
 testPrinting:
     - numbers not being added, just fed to cout
+    - Object . tostring not being called
     + see EvaluatePrintstatement in ImplementationParse
 
 
