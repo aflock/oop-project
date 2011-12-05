@@ -37,3 +37,7 @@ Other:
         - packages
     - a fuck ton of nested arrays
     x short + short = int //how to test??
+    - memory management test?
+
+
+? Some comprehensive goldilocks-esque file to make sure all of this works in tandem?
