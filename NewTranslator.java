@@ -375,9 +375,8 @@ public class NewTranslator extends xtc.util.Tool{
          * create root Pubble
          * create empty BubbleList
          * create empty MubbleList
-         * create langList(?)
          *
-         * create Object and String and Array (exception too!) Bubbles
+         * create Object and String and Array(?)  Bubbles
          */
         pubbleList = new ArrayList<Pubble>();
         bubbleList = new ArrayList<Bubble>();
@@ -393,9 +392,9 @@ public class NewTranslator extends xtc.util.Tool{
         object.setIsFilled(true);
         object.setIsBuilt(true);
         //Creating Object's Vtable
-        //NEED TO IMPLEMENT IN NEW FASHION
         //      Each of these will get a mubble, which is added to the Bubble
         /*object.add2Vtable("Class __isa;");
+          delete
           object.add2Vtable("int32_t (*hashCode)(Object);");
           object.add2Vtable("bool (*equals)(Object, Object);");
           object.add2Vtable("Class (*getClass)(Object);");
@@ -433,6 +432,7 @@ public class NewTranslator extends xtc.util.Tool{
         //Creating Object's Vtable
         /*
            string.add2Vtable("Class __isa;");
+           delete
            string.add2Vtable("int32_t (*hashCode)(String);");
            string.add2Vtable("bool (*equals)(String, Object);");
            string.add2Vtable("Class (*getClass)(String);");
