@@ -244,8 +244,8 @@ namespace java {
         ss << left->__vptr->toString(left)->data;
         ss << right; 
        
-        String temp  = __rt::literal(&(ss.str())[0]);
-        return temp;
+        return __rt::literal(&(ss.str())[0]);
+
   }
   String operator+(int left, Object right){
         std::stringstream ss;

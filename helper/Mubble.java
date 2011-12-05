@@ -113,14 +113,20 @@ public class Mubble {
         }
         else {
             if(!this.isConstructor())
+            {
                 s.append(returnType);
-            s.append(" _").append(getClassName()).
-            append("::").append(methodName).append("(").
-            append(getClassName()).append(" __this");
-            for (String para : paraType) {
-                s.append(", ").append(para);
+                s.append(" _").append(getClassName()).
+                append("::").append(methodName).append("(").
+                append(getClassName()).append(" __this");
+                for (String para : paraType) {
+                    s.append(", ").append(para);
+                }
+                s.append(")");
             }
-            s.append(")");
+            else //it IS a constructor
+            {
+                s.append("_" + className.getName() + "::_" + className.getName() + "(): __vptr(&__vtable)");
+            }
         }
         return s.toString();
     }

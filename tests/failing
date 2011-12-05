@@ -12,3 +12,4 @@ testAssChains:
 testBasicClass:
     - Missing first underscore (here)testBasicClass na = new _testBasicClass();
     - method call .name() is missing in cout
+    
