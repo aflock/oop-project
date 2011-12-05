@@ -12,3 +12,17 @@ testAssChains:
 testBasicClass:
     - Missing first underscore (here)testBasicClass na = new _testBasicClass();
     - method call .name() is missing in cout
+
+testDoWhile:
+    - testDoWhile.h:47:29: error: cannot convert ‘void (_testDoWhile::*)(testDoWhile)’ to ‘void (*)(testDoWhile)’ in initialization
+    - Line 47: doloop(&_testDoWhile::doloop) {
+    
+testInheritance:
+    - possibly the same problem as above?
+    - testInheritance.h:55:33: error: ‘getStats’ is not a member of ‘java::lang::__Object
+    - getClass((Class(*)(Inherited))&java::lang::__Object::getClass),
+    -                                 ^should be something like _testInheritance?
+
+    
+
+

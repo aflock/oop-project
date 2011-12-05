@@ -250,7 +250,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         visit(n);
 
     }
+    //error in this:
+    // java: System.out.println("while loop i: " + i++); 
+    //gets translated to: cout << "while loop i: " << [MISSING i++] << endl;
     String mName;
+    boolean debugEvaluateExpression = false;
     public String evaluateExpressionForPrint(Node n){
 
         String ret = "";
@@ -268,12 +272,19 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             //wtf
         }else if(n.hasName("PrimaryIdentifier")){
             ret += n.getString(0);
-        }else{
+        }else if(n.hasName("PostfixExpression")){
+            Node primaryIdentifier = (Node)n.get(0);
+            if(debugEvaluateExpression) System.out.println(primaryIdentifier.getString(0) + n.getString(1));
+            ret += primaryIdentifier.getString(0) + n.getString(1); //PostfixExpression(PrimaryIdentifier("i"), "++" )
+        }
+        else{
         System.out.println("errror: :(" + n.getName());
         }
         //eval
         return ret;
     }
+    
+    boolean debugCallExpression = false;
     public void visitCallExpression(GNode n) {
         //visit(n);
         if (onMeth) {
@@ -288,6 +299,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     n.getNode(0).getString(1).equals("out") &&
                     (n.getString(2).equals("print") ||n.getString(2).equals("println"))
               ){
+                if(debugCallExpression) System.out.println("Call Expression n.getNode(3): " + n.getNode(3) );
                 methodString += "cout << " + evaluateExpressionForPrint(n.getNode(3));
                 if(n.getString(2).equals("println")){
                     methodString += " << endl";

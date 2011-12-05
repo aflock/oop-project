@@ -220,7 +220,7 @@ public class NewTranslator extends xtc.util.Tool{
                 hwrite.close();
 
                 //writing. cc
-                System.out.println("writing .h to " + hFile);
+                System.out.println("writing .cc to " + cFile);
                 out = new File(cFile);
                 FileWriter cstream = new FileWriter(out);
                 BufferedWriter cwrite = new BufferedWriter(cstream);
