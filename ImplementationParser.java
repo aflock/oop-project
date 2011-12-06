@@ -251,12 +251,14 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     }
     //error in this:
-    // java: System.out.println("while loop i: " + i++); 
+    // java: System.out.println("while loop i: " + i++);
     //gets translated to: cout << "while loop i: " << [MISSING i++] << endl;
     String mName;
     boolean debugEvaluateExpression = false;
     public String evaluateExpressionForPrint(Node n){
 
+        //TODO adding numbers
+        //TODO newClassExpression
         String ret = "";
         if(n.getName().endsWith("Literal")){
             ret += n.getString(0);
@@ -270,6 +272,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 ret += evaluateExpressionForPrint(n.getNode(0));
         }else if(n.hasName("NewClassExpression")){
             //wtf
+            //probably need to create the class before any of this cout business...right?
         }else if(n.hasName("PrimaryIdentifier")){
             ret += n.getString(0);
         }else if(n.hasName("PostfixExpression")){
@@ -283,7 +286,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //eval
         return ret;
     }
-    
+
     boolean debugCallExpression = false;
     public void visitCallExpression(GNode n) {
         //visit(n);
