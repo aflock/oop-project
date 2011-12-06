@@ -290,6 +290,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     boolean debugCallExpression = false;
     public void visitCallExpression(GNode n) {
         //visit(n);
+        boolean hasVisited = false;
         if (onMeth) {
             mName = n.getString(2);
             String tmp = "";
@@ -303,7 +304,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     (n.getString(2).equals("print") ||n.getString(2).equals("println"))
               ){
                 if(debugCallExpression) System.out.println("Call Expression n.getNode(3): " + n.getNode(3) );
-                methodString += "cout << " + evaluateExpressionForPrint(n.getNode(3));
+                methodString += "cout << ({"; //+ evaluateExpressionForPrint(n.getNode(3));
+
+                visit(n);
+                hasVisited = true;
+
+                methodString += "})"
                 if(n.getString(2).equals("println")){
                     methodString += " << endl";
                 }
@@ -330,7 +336,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
         }
         else {
-            visit(n);
+            if(!hasVisited)
+                visit(n);
         }
     }
 
@@ -777,7 +784,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         Node parent0 = (Node)n.getProperty("parent0");
         if (onMeth) {
             if(!parent0.hasName("SubscriptExpression"))
-                methodString += n.getString(0);
+                if(!(n.getString(0).equals("System") && parent0.getString(1).equals("out")))
+                    methodString += n.getString(0);
             //key = n.getString(0);
         }
         visit(n);
@@ -994,7 +1002,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             visit(n);
             if (n.get(1) != null) {
-                methodString += "->" + n.getString(1);
+                if(!(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")))
+                    methodString += "->" + n.getString(1);
             }
         }
         else {

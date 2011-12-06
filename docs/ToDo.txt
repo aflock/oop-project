@@ -27,7 +27,7 @@ Strings:
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
-- how are we renaming *ubbles?
+- Delete needs to be rewritten for each class, not ever inherited
 - Need to deal with static blocks in class declarations.
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
