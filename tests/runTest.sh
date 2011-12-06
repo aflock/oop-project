@@ -71,8 +71,8 @@ echo "Successful testing! Let's diff the outputs!"
 
 #if you wanna indent with AF vimscript hack
 #for i in ./translated/*.cc; do
-    #vim -s indentme.scr $i
+    #vim -u -s indentme.scr $i
 #done
 #for i in ./translated/*.h; do
-    #vim -s indentme.scr $i
+    #vim -u -s indentme.scr $i
 #done
