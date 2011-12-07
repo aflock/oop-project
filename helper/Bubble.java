@@ -305,7 +305,7 @@ public class Bubble{
             "static _"+this.name+"_VT __vtable;\n";
         for(Mubble m : mubbles) {
             //HARDCODING STATIC, MAY NEED TO CHANGE
-            if(!m.isConstructor()) //if its a constructor, don't print it
+            if(!m.isConstructor() && m.getFlag() != 'i' && !m.isDelete()) //if its a constructor, inherited method, or delete, don't print it
                 ret += m.forward() + "\n";
         }
         //unindent
