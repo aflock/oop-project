@@ -288,6 +288,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     boolean debugCallExpression = false;
+    boolean inPrintStatement = false;
     public void visitCallExpression(GNode n) {
         //visit(n);
         boolean hasVisited = false;
@@ -305,15 +306,16 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
               ){
                 if(debugCallExpression) System.out.println("Call Expression n.getNode(3): " + n.getNode(3) );
                 methodString += "cout << ({"; //+ evaluateExpressionForPrint(n.getNode(3));
-
+                inPrintStatement = true;
                 visit(n);
+                inPrintStatement = false;
                 hasVisited = true;
 
-                methodString += "})"
+                methodString += "})";
                 if(n.getString(2).equals("println")){
                     methodString += " << endl";
                 }
-              }
+            }
             else{
                 dispatch(n.getNode(0));
 
@@ -964,12 +966,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                     }
                     //System.out.println(par[0]);
-                    methodString += par[0]+") ";
+                    methodString += par[0]+") "; 
                     dispatch(n.getNode(0));
                     methodString += ")";
                 }
                 else {
-                    methodString += ", ";
+                    if(!inPrintStatement)
+                        methodString += ", ";
                     dispatch(n.getNode(0));
                 }
 
@@ -985,11 +988,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //}
                 //else{
                     methodString += ", ";
+
                     dispatch(n.getNode(i));
                 //}
             }
 
-            methodString += ")";
+            if(!inPrintStatement)
+                methodString += ")";
 
         }
         else {
