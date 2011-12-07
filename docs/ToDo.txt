@@ -34,8 +34,8 @@ _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 - memset?
 - memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
 - chaining -> use temp variables (method chaining, assignment chaining)
-- overload '+'
-- each class needs a delete method -> add to vtable
+x overload '+'
+- each class needs a delete method x> add to vtable
 - populate lang list*
 - deal with arrays in parameters
 - arrays of arrays templates

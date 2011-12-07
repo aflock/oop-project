@@ -309,7 +309,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 visit(n);
                 hasVisited = true;
 
-                methodString += "})"
+                methodString += ";})";//will this "go wrong" when dealing with method chaining?
+                                    //solution = abide by "inPrintStatement" rules for last ';'
                 if(n.getString(2).equals("println")){
                     methodString += " << endl";
                 }

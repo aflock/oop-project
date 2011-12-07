@@ -325,7 +325,7 @@ public class Bubble{
                 ret += m.vTable1()+"\n";
         }
         //Make VT constructor in-line, hardcoding class
-        ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class()),";
+        ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
         //ret += "__delete(&_" + this.name + "::__delete)";
         for(Mubble m : mubbles) {
             if(!m.isConstructor() && !m.isMain())
