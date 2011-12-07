@@ -754,7 +754,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitBlock(GNode n) {
         if(((Node)n.getProperty("parent0")).getName()
-                .equals("MethodDeclaration")) {
+                .equals("MethodDeclaration") ||
+                ((Node)n.getProperty("parent0")).getName().equals("ConstructorDeclaration")) {
             onMeth = true;
             table = new HashMap<String, String>();
 
