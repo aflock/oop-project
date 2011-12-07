@@ -1,5 +1,6 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
+import xtc.util.SymbolTable;
 
 public class Bubble{
     ArrayList<Bubble> bubbles; //ArrayList of the children of this Bubble
@@ -10,7 +11,8 @@ public class Bubble{
     Pubble parentPubble; //This class' package (reference)
     boolean isBuilt = false; //determine whether a bubble has been completely filled in (excluding code)
     boolean isFilled = false; //determine whether all the code portions of this bubble's mubbles has been filled in
-    //Removed Constructor arraylist because mubbles have a flag for that
+
+    SymbolTable symTable;
 
     /* DO WE NEED THIS?:
        String visibility; //The visibility for this class
@@ -28,12 +30,14 @@ public class Bubble{
         this.bubbles = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
         this.mubbles = new ArrayList<Mubble>();
+        this.symTable = new SymbolTable();
     }
 
     public Bubble(){
         this.bubbles = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
         this.mubbles = new ArrayList<Mubble>();
+        this.symTable = new SymbolTable();
     }
 
 
@@ -143,6 +147,10 @@ public class Bubble{
     /* GETTERS */
     /////////////
 
+    public SymbolTable getSymboltable(){
+        return this.symTable;
+    }
+
     public boolean isBuilt(){
         return isBuilt;
     }
@@ -220,7 +228,8 @@ public class Bubble{
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(parentBubble.getMubbles());
         for(int i = 0; i < newMethodsList.size(); i++){
             Mubble m = newMethodsList.get(i);
-            if(m.isMain() || m.isStatic() || m.isConstructor())
+            if(m.isMain() || m.isStatic() ||
+                        m.isConstructor() || m.getVisibility().equals("private"))
                 newMethodsList.remove(i--);
         }
         for(Mubble m : newMethodsList){

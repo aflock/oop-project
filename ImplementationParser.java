@@ -268,7 +268,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             //TODO - if the additive expression is not supposed to be
             //handled like this ^^
         }else if(n.hasName("Arguments")){
-                ret += evaluateExpressionForPrint(n.getNode(0));
+            ret += evaluateExpressionForPrint(n.getNode(0));
         }else if(n.hasName("NewClassExpression")){
             //wtf
             //probably need to create the class before any of this cout business...right?
@@ -280,7 +280,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             ret += primaryIdentifier.getString(0) + n.getString(1); //PostfixExpression(PrimaryIdentifier("i"), "++" )
         }
         else{
-        System.out.println("errror: :(" + n.getName());
+            System.out.println("errror: :(" + n.getName());
         }
         //eval
         return ret;
@@ -311,11 +311,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 hasVisited = true;
 
                 methodString += ";})";//will this "go wrong" when dealing with method chaining?
-                                    //solution = abide by "inPrintStatement" rules for last ';'
+                //solution = abide by "inPrintStatement" rules for last ';'
                 if(n.getString(2).equals("println")){
                     methodString += " << endl";
                 }
-            }
+              }
             else{
                 dispatch(n.getNode(0));
 
@@ -528,12 +528,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         if (s.contains("vptr->println"))
         {
-                        System.out.println("s1");
+            System.out.println("s1");
             //get everything to be printed
             String toPrint = getStringBetween(s, "println(System->out,", ");");
-                        System.out.println("s2");
+            System.out.println("s2");
             toPrint = toPrint.replace("+", "<<");
-                        System.out.println("s3");
+            System.out.println("s3");
             return "std::cout << " + toPrint + " << std::endl;";
         }
         else
@@ -552,19 +552,19 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if(lnStart != -1 && lnEnd != -1)
             ret = src.substring(lnStart + start.length(), lnEnd);
 
-	    return ret;
+        return ret;
     }
 
     public String inNameSpace(String obj) {
-	if (obj.equals("Object") || obj.equals("String") || obj.equals("Class")) {
-	    return "java lang";
-	}
+        if (obj.equals("Object") || obj.equals("String") || obj.equals("Class")) {
+            return "java lang";
+        }
 
         String ns1 = "";
         String ns2 = "";
         //System.out.println("COMPARING "+obj+" and "+cName);
         for( Bubble b : bubbleList) {
-	    //System.out.println(b.getName() + ":" + b.getPackageName());
+            //System.out.println(b.getName() + ":" + b.getPackageName());
             //doesn't account for multiple classes of the same name
             if (b.getName().equals(obj)) {
                 ns1 = b.getPackageName();
@@ -573,19 +573,19 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 ns2 = b.getPackageName();
             }
         }
-	//System.out.println("hello");
+        //System.out.println("hello");
 
         //if(ns1 == null) {
         //    return "java lang";
         //}
         //else if(ns1.equals(ns2)) {
-	if (ns1.equals(ns2)) {
+        if (ns1.equals(ns2)) {
             return null;
         }
         else {
             return ns1;
         }
-    }
+        }
 
     public void visitQualifiedIdentifier(GNode n){
 
@@ -608,7 +608,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             String s = inNameSpace(n.getString(0));
             if (s != null && !inArray) {
                 //using absolute namespace
-		System.out.println("4");
+                System.out.println("4");
                 //check to see if Bubble is found by inNameSpace
                 methodString += "::"+s.trim().replaceAll("\\s+", "::")
                     +"::";
@@ -754,7 +754,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitBlock(GNode n) {
         if(((Node)n.getProperty("parent0")).getName()
-                .equals("MethodDeclaration")) {
+                .equals("MethodDeclaration") ||
+                ((Node)n.getProperty("parent0")).getName().equals("ConstructorDeclaration")) {
             onMeth = true;
             table = new HashMap<String, String>();
 
@@ -820,24 +821,24 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitStringLiteral(GNode n) {
         if (onMeth) {
-	    /*
-	    Node parent0 = (Node)n.getProperty("parent0");
-	    Node parent1 = (Node)n.getProperty("parent1");
-	    Node parent2 = (Node)n.getProperty("parent2");
-	    if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
-	    	&& parent2.hasName("FieldDeclaration")) {
-		Node tt = parent2.getNode(1);
-		if (tt.hasName("Type")) {
-		    if (tt.getNode(0).hasName("QualifiedIdentifier") &&
-			tt.getNode(0).getString(0).equals("String")) {
-			methodString += "__rt::literal(" + n.getString(0) + ")";
-		    }
-		}
-	    }
-	    */
+            /*
+               Node parent0 = (Node)n.getProperty("parent0");
+               Node parent1 = (Node)n.getProperty("parent1");
+               Node parent2 = (Node)n.getProperty("parent2");
+               if (parent0.hasName("Declarator") && parent1.hasName("Declarators")
+               && parent2.hasName("FieldDeclaration")) {
+               Node tt = parent2.getNode(1);
+               if (tt.hasName("Type")) {
+               if (tt.getNode(0).hasName("QualifiedIdentifier") &&
+               tt.getNode(0).getString(0).equals("String")) {
+               methodString += "__rt::literal(" + n.getString(0) + ")";
+               }
+               }
+               }
+               */
 
-	    methodString += "__rt::literal(" + n.getString(0) + ")";
-	}
+            methodString += "__rt::literal(" + n.getString(0) + ")";
+        }
 
         visit(n);
     }
@@ -947,9 +948,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
             String [] par = p.trim().split("\\s");
             /* WHY DO WE NEED THIS
-            for( String g : par)
-                System.out.println(g);
-            */
+               for( String g : par)
+               System.out.println(g);
+               */
 
             String s = "";
 
@@ -984,12 +985,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //    methodString += ", (("+(par.length > i ? par[i] : "")
                 //        +") ";
                 //    dispatch(n.getNode(i));
-                 //   methodString += ")";
+                //   methodString += ")";
                 //}
                 //else{
-                    methodString += ", ";
+                methodString += ", ";
 
-                    dispatch(n.getNode(i));
+                dispatch(n.getNode(i));
                 //}
             }
 
@@ -1216,9 +1217,5 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //dispatch((Node)o);
             }
         }
-
     }
-
-
-
-}
+    }
