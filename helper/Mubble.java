@@ -300,7 +300,11 @@ public class Mubble {
         s.append(returnType).append(" (*");
         s.append(methodName).append(")(");
         if (!isStatic()) {
+            if(this.isDelete())
+                s.append("_");
             s.append(getClassName());
+            if(this.isDelete())
+                s.append("*");
             for (String para : paraType) {
                 s.append(", ").append(para);
             }
