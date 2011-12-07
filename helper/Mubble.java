@@ -117,7 +117,10 @@ public class Mubble {
                 s.append(returnType);
                 s.append(" _").append(getClassName()).
                 append("::").append(methodName).append("(").
-                append(getClassName()).append(" __this");
+                append(getClassName());
+                if(this.isDelete())
+                    s.append("*");
+                s.append(" __this");
                 for (String para : paraType) {
                     s.append(", ").append(para);
                 }
@@ -201,6 +204,9 @@ public class Mubble {
         return constructor;
     }
 
+    public boolean isDelete(){ //returns true if this is the delete method
+        return this.methodName.equals("__delete");
+    }
     public boolean isMain() { // returns ture if this is main method
         return main;
     }
@@ -367,7 +373,7 @@ public class Mubble {
                     }
             else {
 		String pack = anc.getPackageName().trim().replace(" ", "::");
-		
+
                 s.append("_").append(inheritedfrom);
             }
         }
