@@ -1,3 +1,4 @@
+_V_V_V_V_V_V_V_V_V_V_V_V_
 TestFailed:
     -Reason
     +Possible solution or location of problem
@@ -5,8 +6,8 @@ TestFailed:
 _V_V_V_V_V_V_V_V_V_V_V_V_
 
 testAssChains:
-    -"int32_t a b c" << missing commas
-    +ImplementationParser
+    - "int32_t a b c" << missing commas
+    + ImplementationParser
 
 
 testBasicClass:
@@ -24,8 +25,8 @@ testInheritance:
     -                                 ^should be something like _testInheritance?
 
 testPrinting:
-    - numbers not being added, just fed to cout
     - Object . tostring not being called
+    - method chaining
     + see EvaluatePrintstatement in ImplementationParse
 
 
