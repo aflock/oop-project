@@ -144,10 +144,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //add in the delete method (note it needs code as well)
         Mubble n1 = new Mubble("__delete");
-        curBub.addMubble(n1);
         n1.setReturnType("void");
         n1.setFlag('w');
         n1.addCode("delete __this;");
+        curBub.addMubble(n1);
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
         curBub.setIsBuilt(true);
 

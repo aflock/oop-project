@@ -180,7 +180,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         /* Lets Print a .H!!! */
 
-        if(true){
+        if(!false){
             System.out.println("==========================================================");
             System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
@@ -440,7 +440,7 @@ public class NewTranslator extends xtc.util.Tool{
            string.add2Vtable("int32_t (*length)(String);");
            string.add2Vtable("char (*charAt)(String, int_32_t);"); */
         Mubble n1 = new Mubble("__delete");
-        object.addMubble(n1);
+        string.addMubble(n1);
         n1.setReturnType("void");
         n1.setFlag('w');
         Mubble n2 = new Mubble("hashCode");
