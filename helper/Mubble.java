@@ -116,8 +116,10 @@ public class Mubble {
             {
                 s.append(returnType);
                 s.append(" _").append(getClassName()).
-                append("::").append(methodName).append("(").
-                append(getClassName());
+                append("::").append(methodName).append("(");
+                if(this.isDelete())
+                    s.append("_");
+                s.append(getClassName());
                 if(this.isDelete())
                     s.append("*");
                 s.append(" __this");
@@ -143,8 +145,12 @@ public class Mubble {
             return "FIX THIS SHIT. forward() in Mubble";
         }
         StringBuilder s = new StringBuilder();
-        s.append(returnType).append(" ").append(methodName).append("(").
-            append(getClassName());
+        s.append(returnType).append(" ").append(methodName).append("(");
+        if(this.isDelete())
+            s.append("_");
+        s.append(getClassName());
+        if(this.isDelete())
+            s.append("*");
         for (String para : paraType) {
             s.append(", ").append(para);
         }
