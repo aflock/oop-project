@@ -4,7 +4,7 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 18.
+DAYS TILL DUE: bout 13.
 
 To Do:
 
@@ -27,18 +27,15 @@ Strings:
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
-- Delete needs to be rewritten for each class, not ever inherited
 - Need to deal with static blocks in class declarations.
 - how to use xtc.util.symbol table to our advantage?
 - method overloading
 - memset?
-- memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
+x ? think its done.. how to check?memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
 - chaining -> use temp variables (method chaining, assignment chaining)
-x overload '+'
-- each class needs a delete method x> add to vtable
-- populate lang list*
 - deal with arrays in parameters
 - arrays of arrays templates
+- wtf does thomas keep complaining about with templates..?
 
 
 
