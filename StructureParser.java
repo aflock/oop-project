@@ -157,8 +157,24 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
 
 
+    boolean dataField = false;
     public void visitFieldDeclaration(GNode n){
+        Node parent0 = (Node)n.getProperty("parent0");
+
+        if(parent0.hasName("ClassBody")) //then this is a datafield
+        {
+            curField = new Field();
+            dataField = true;
+        }
         visit(n);
+        
+        if(dataField)
+        {
+            dataField = false;
+            curBub.addField(curField);
+        }
+        
+        if(false) System.out.println("curField.name: " + curField.name);
     }
 
     public void visitDimensions(GNode n) {
@@ -293,6 +309,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curField.setHasAssignment(true);
             curField.setAssignment(n); //save the node so we can re-parse it later
         }
+        
+        if(dataField) //if this is a dataField
+            curField.name = n.getString(0);
     }
 
     public void visitIntegerLiteral(GNode n) {
@@ -426,6 +445,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             parent.addBubble(curBub);  //add myself as my parent's child
             curBub.setParentBubble(parent); //set my parent
         }
+        
+        if(dataField) // if this is a dataField
+            curField.setType(n.getString(0)); 
 
         //finding the package we are in -> set curPub correctly
         //NOTE: there is no curBub at this point, so we must set curBub to the

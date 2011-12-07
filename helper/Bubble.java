@@ -273,8 +273,9 @@ public class Bubble{
         //add the VT vptr
         ret += "_"+this.name+"_VT* __vptr;\n";
         //iterate through datafields, print them
-        for(int i = 0; i < this.dataFields.size(); i++) {
-            //output data fields
+        for(Field f : dataFields) {
+            //DO I NEED MORE THAN TYPE AND NAME???
+            ret += f.type + " " + f.name + ";\n";
         }
         ret+="\n//Constructors\n";
         //loop through methods once to see if there are any constructors

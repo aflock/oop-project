@@ -562,7 +562,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         String ns1 = "";
         String ns2 = "";
-        System.out.println("COMPARING "+obj+" and "+cName);
+        //System.out.println("COMPARING "+obj+" and "+cName);
         for( Bubble b : bubbleList) {
 	    //System.out.println(b.getName() + ":" + b.getPackageName());
             //doesn't account for multiple classes of the same name

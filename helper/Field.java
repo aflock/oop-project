@@ -7,8 +7,8 @@ public class Field{
      * For holding info about parameters and data fields
      */
 
-    String name;
-    String type;
+    public String name;
+    public String type;
     boolean isArray;
     int arrayDims;
     boolean hasAssignment;
@@ -16,7 +16,9 @@ public class Field{
     ArrayList<Integer> concreteDims = new ArrayList<Integer>();
     ArrayList<String> modifiers = new ArrayList<String>();
 
-    public Field(){};
+    public Field(){
+        this.name = "NOT-A-REAL-NAME-TROLLOLOL";
+    };
 
     public Field(String name, String type, String modifier){
         this.name           = name;

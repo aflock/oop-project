@@ -180,7 +180,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         /* Lets Print a .H!!! */
 
-        if(!false){
+        if(true){
             System.out.println("==========================================================");
             System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
@@ -195,6 +195,11 @@ public class NewTranslator extends xtc.util.Tool{
             String dotc = root.getCC(fileNames.get(0)); //passing the name of the input file as a parameter
             System.out.println(dotc);
             System.out.println("===========================================================");
+        }
+        for(Bubble b : bubbleList){
+            for(Mubble m : b.getMubbles())
+                if(m.isConstructor())
+                    System.out.println("CODE: " + m.getCode());
         }
 
         /* Output to File */
