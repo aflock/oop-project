@@ -142,6 +142,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         visit(n);
 
+        //add in the delete method (note it needs code as well)
+        Mubble n1 = new Mubble("__delete");
+        curBub.addMubble(n1);
+        n1.setReturnType("void");
+        n1.setFlag('w');
+        n1.addCode("delete __this;");
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
         curBub.setIsBuilt(true);
 
@@ -498,7 +504,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
     }
 
-    
+
     boolean debugPrimitiveType = false;
     public void visitPrimitiveType(GNode n) {
         visit(n);
@@ -512,7 +518,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             String type = n.getString(0);
             curField.setType(type);
         }
-        
+
         if ((parent0.hasName("Type")) && //if the return type for a method is a primitive type
             (parent1.hasName("MethodDeclaration"))){
                 String type = n.getString(0);

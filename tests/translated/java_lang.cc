@@ -74,7 +74,7 @@ namespace java {
 
     // java.lang.String(<literal>)
     __String::__String(std::string data)
-      : __vptr(&__vtable), 
+      : __vptr(&__vtable),
         data(data) {
     }
 
@@ -145,8 +145,8 @@ namespace java {
       out << s->data;
       return out;
     }
-    
-    
+
+
 
     // =======================================================================
 
@@ -213,7 +213,7 @@ namespace java {
 
     // Internal accessor for java.lang.Class' class.
     Class __Class::__class() {
-      static Class k = 
+      static Class k =
         new __Class(__rt::literal("java.lang.Class"), __Object::__class());
       return k;
     }
@@ -236,14 +236,14 @@ namespace java {
 
         std::string tempStr = left->__vptr->toString(left)->data;
         tempStr = tempStr.append(right->__vptr->toString(right)->data);
-        
+
         return __rt::literal(&(tempStr)[0]);
   }
   String operator+(Object left, int right){
         std::stringstream ss;
         ss << left->__vptr->toString(left)->data;
-        ss << right; 
-       
+        ss << right;
+
         return __rt::literal(&(ss.str())[0]);
 
   }
@@ -252,7 +252,7 @@ namespace java {
         //ss<< "int + called";
         ss << left;
         ss << right->__vptr->toString(right)->data;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(float left, Object right){
@@ -260,7 +260,7 @@ namespace java {
         //ss << "float + called";
         ss << left;
         ss << right->__vptr->toString(right)->data;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(Object left, float right){
@@ -268,7 +268,7 @@ namespace java {
         //ss << "float + called";
         ss << left->__vptr->toString(left)->data;
         ss << right;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(double left, Object right){
@@ -276,7 +276,7 @@ namespace java {
         //ss << "double + called";
         ss << left;
         ss << right->__vptr->toString(right)->data;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(Object left, double right){
@@ -284,7 +284,7 @@ namespace java {
         //ss << "double + called";
         ss << left->__vptr->toString(left)->data;
         ss << right;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(Object left, char right){
@@ -292,7 +292,7 @@ namespace java {
         //ss << "double + called";
         ss << left->__vptr->toString(left)->data;
         ss << right;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(char left, Object right){
@@ -300,7 +300,7 @@ namespace java {
         //ss << "double + called";
         ss << left;
         ss << right->__vptr->toString(right)->data;
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(Object left, bool right){
@@ -311,7 +311,7 @@ namespace java {
             ss<< "true";
         else
             ss<< "false";
-        
+
         return __rt::literal(&(ss.str())[0]);
   }
   String operator+(bool left, Object right){
@@ -323,9 +323,9 @@ namespace java {
             ss<< "false";
 
         ss << right->__vptr->toString(right)->data;
-        
+
         return __rt::literal(&(ss.str())[0]);
-  } 
+  }
   //==================== End Operator Overloading ===================================//
   } //end java::lang
 }
@@ -375,6 +375,6 @@ namespace __rt {
                               java::lang::__String::__class());
     return k;
   }
-  
+
 
 }

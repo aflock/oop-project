@@ -243,19 +243,18 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 constructorCount++;
                 curMub = m;
             }
-            //System.out.println("Constructor COunt is: "+ constructorCount);
+            //System.out.println("Constructor Count is: "+ constructorCount);
             //System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
         }
 
         visit(n);
 
     }
-    //error in this:
-    // java: System.out.println("while loop i: " + i++);
-    //gets translated to: cout << "while loop i: " << [MISSING i++] << endl;
     String mName;
     boolean debugEvaluateExpression = false;
-    public String evaluateExpressionForPrint(Node n){
+
+    //LOL this is not needed at all VV
+    public String evaluateExpressionForPrint(Node n){//{{{
 
         //TODO adding numbers
         //TODO newClassExpression
@@ -285,7 +284,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
         //eval
         return ret;
-    }
+    }//}}}
 
     boolean debugCallExpression = false;
     boolean inPrintStatement = false;
