@@ -46,15 +46,18 @@ for i in ../oop-project/tests/*.java; do
     java xtc.oop.NewTranslator $i > /dev/null
     if [ "$?" -ne "0" ]; then
 	echo "Translator fails on $name."
-	exit 1
+	#exit 1
+	#write to failing
     else
 	echo "Translation successful."
     fi
 
     name=`echo $name | sed 's/.java//g'`
     cd ../oop-project/tests/translated/
-    g++ testFor.cc java_lang.cc testFor.h java_lang.h
-    g++ testFor.cc java_lang.cc
+    #g++ testFor.cc java_lang.cc testFor.h java_lang.h
+    echo "Compiling and running $name"
+    #g++ testFor.cc java_lang.cc
+    g++ $name".cc" java_lang.cc
     #g++ $name".cc" $name".h" java_lang.cc java_lang.h #shouldn't need .h files
     ./a.out > "../cppoutput/"$name"_C.output"
     cd ../../../xtc
