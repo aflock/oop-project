@@ -86,18 +86,23 @@ public class Bubble{
 
     public Mubble findMethod(String methodName, ArrayList<String> para) {
         Mubble mub = null;
-        int match = 10000;
+        int match = 100000000;
         for (Mubble m : mubbles) {
             if (m.belongToGroup(methodName)) {
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
                 if (p.size() == para.size()) {
+                    boolean match = false;
                     for (int i = 0; i < p.size(); i++) {
-                        if (!p.equals(para)) { // needs fixing
+                        if(p.get(i).equals(para.get(i)))
+                            match = true;
+                        else
+                            match = false;
+                        if (!match) { // needs fixing
                             min++;
                             /*
                                primitive types, objects
-                               e.g. methods       function calls
+                               e.g. methods  function calls
                                m(long)       m(int) -> 1
                                m(long)       m(Long) -> 2??
                                m(long)       m(Shape) -> INF
@@ -107,15 +112,15 @@ public class Bubble{
                                */
                         }
                     }
-                    if (min < match) {
-                        mub = m;
-                    }
+
+
                 }
-                else {
-                    continue;
+                if (min < match) {
+                    mub = m;
                 }
-            }
+            } else { continue;}
         }
+    }
         return mub; //do i want to return string?
     }
 
@@ -220,6 +225,29 @@ public class Bubble{
     ///////////////////
     /* MISC. METHODS */
     ///////////////////
+
+    public int rank(String a, String b){
+        //a is the actual argument, b is the formal argument
+        //a moves. b stays
+        if (a.equals(b))
+            return 0;
+        Bubble aBub = findBubble(a);
+        //walk a's inheritance
+        int count = 0;
+        while (!(aBub.getName().equals(b))) {
+            if (aBub.getName().equals("Object"))
+                break;
+            aBub = aBub.getParentBubble();
+            count++;
+        }
+        if (!aBub.getName().equals("Object"))
+            return 10000;
+        else
+            return count;
+    }
+    public Bubble findBubble(String name){
+
+    }
 
     public String getTypeDef() {
         String pkgpath = "";

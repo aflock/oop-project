@@ -4,7 +4,7 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 13.
+DAYS TILL DUE: bout 9.
 
 To Do:
 1. There is no code added to constructors
@@ -28,8 +28,8 @@ Strings:
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 - Need to deal with static blocks in class declarations.
-- how to use xtc.util.symbol table to our advantage?
-- method overloading
+x how to use xtc.util.symbol table to our advantage?
+~ method overloading
 - memset?
 x ? think its done.. how to check?memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
 - chaining -> use temp variables (method chaining, assignment chaining)
