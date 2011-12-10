@@ -145,6 +145,7 @@ public class Mubble {
             return "FIX THIS SHIT. forward() in Mubble";
         }
         StringBuilder s = new StringBuilder();
+	s.append("static ");
         s.append(returnType).append(" ").append(methodName).append("(");
         if(this.isDelete())
             s.append("_");
