@@ -228,8 +228,8 @@ public class Bubble{
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(parentBubble.getMubbles());
         for(int i = 0; i < newMethodsList.size(); i++){
             Mubble m = newMethodsList.get(i);
-            if(m.isMain() || m.isStatic() ||
-                        m.isConstructor() || m.getVisibility().equals("private")) //todo: xtc.oop.helper.Bubble.inheritMethods(Bubble.java:231)
+
+            if(m.isMain() || m.isStatic() || m.isConstructor() || (m.getVisibility() != null && m.getVisibility().equals("private"))) //todo: xtc.oop.helper.Bubble.inheritMethods(Bubble.java:231)
                 newMethodsList.remove(i--);
         }
         for(Mubble m : newMethodsList){

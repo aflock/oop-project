@@ -1008,7 +1008,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             visit(n);
             if (n.get(1) != null) {
-                if(((Node)n.get(0)).getString(0) != null) //VISITING NULL EXPRESSION HERE
+                if(n.getNode(0) != null && n.getNode(0).getString(0) != null) //VISITING NULL EXPRESSION HERE
                     if(!(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")))
                         methodString += "->" + n.getString(1);
             }
