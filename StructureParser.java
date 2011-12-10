@@ -26,6 +26,8 @@ import java.io.Reader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
+import xtc.util.SymbolTable;
+
 
 import xtc.oop.helper.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
@@ -43,6 +45,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public Pubble curPub;
     public Bubble curBub;
     public Mubble curMub;
+    //public varTable SymbolTable;
+    //public funcTable SymbolTable;
+    public SymbolTable table;
 
     public Field curField;
 
@@ -122,12 +127,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         for(Bubble b : bubbleList){
             if(b.getName().equals(className)) {
                 curBub = b;
-                found = true;
+		found = true;
             }
         }
         if (!found){
-            curBub = new Bubble(className);
+            curBub = new Bubble(className);	    
         }
+	table = curBub.getTable();
         curBub.setParentPubble(curPub); //curBub's package is curPub
 
         //find Object bubble and set curBub's parent to object (it will get overwritten if it needs to)
@@ -141,6 +147,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curBub.setParentBubble(ob);
 
         visit(n);
+	table = null;
 
         //add in the delete method (note it needs code as well)
         Mubble n1 = new Mubble("__delete");
@@ -212,6 +219,17 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         curMub = freshMubble;
 
+	SymbolTable.Scope current = table.current();
+	String name2 = name;
+	while (current.isDefined(name2)) {
+	    name2 = "_" + name;	    
+	}
+	current.define(name2, "constructor");
+	if (!name2.equals(name)) {
+	    curMub.mangleName(name2);
+	}
+	
+
         visit(n);
 
         curMub.setBubble(curBub);
@@ -245,7 +263,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             freshMubble = new Mubble(name);
         }
         curMub = freshMubble;
-
+	SymbolTable.Scope current = table.current();
+	String name2 = name;
+	while (current.isDefined(name2)) {
+	    name2 = "_" + name;	    
+	}
+	current.define(name2, "method");
+	if (!name2.equals(name)) {
+	    curMub.mangleName(name2);
+	}
+	
         visit(n);
 
         curMub.setBubble(curBub);
@@ -292,7 +319,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
 
-    public void visitDeclarators(GNode n) {
+    public void visitDeclarators(GNode n) { 
+	SymbolTable.Scope current = table.current();
+	// assuming Declarators' parent is always FieldDeclaration
+	Node parent0 = (Node)n.getProperty("parent0");
+	String type = parent0.getNode(1).getNode(0).getString(0);
+	for (Object o : n) {
+	    Node ch = (Node)o; // does not check already defined name
+	    current.define(ch.getString(0), type); 
+	}
+	
         visit(n);
     }
 
@@ -339,7 +375,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitFormalParameters(GNode n){
+	Node parent0 = (Node)n.getProperty("parent0");
+	if (parent0.hasName("ConstructorDeclaration")) {
+	    table.enter(parent0.getString(2));
+	}
+	else { // MethodDeclaration
+	    table.enter(parent0.getString(3));
+	}	    
         visit(n);
+	table.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -518,7 +562,64 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitForStatement(GNode n)
     {
+	//varTable.enter("for");
+	//funcTable.enter("for");
+	table.enter("for");
         visit(n);
+	//varTable.exit();
+	//funcTable.exit();
+	table.exit();
+    }
+
+    public void visitWhileStatement(GNode n) {
+        visit(n);
+    }
+
+    public void visitDoWhileStatement(GNode n) {
+        visit(n);
+    }
+
+    public void visitSwitchStatement(GNode n) {
+        visit(n);
+    }
+
+    public void visitBlock(GNode n) {
+	Node parent0 = (Node)n.getProperty("parent0");
+	if (parent0.hasName("WhileStatement")) {
+	    //varTable.enter("while");
+	    //funcTable.enter("while");
+	    table.enter("while");
+	}
+	if (parent0.hasName("DoWhileStatement")) {
+	    //varTable.enter("dowhile");
+	    //funcTable.enter("dowhile");
+	    table.enter("dowhile");	    
+	}
+	if (parent0.hasName("ConditionalStatement")) {
+	    //varTable.enter("if-else");
+	    //funcTable.enter("if-else");
+	    table.enter("if-else");
+	}
+	if (parent0.hasName("Block")) {
+	    //varTable.enter("block");
+	    //funcTable.enter("block");
+	    table.enter("block");
+	}
+	if (parent0.hasName("SwitchStatement")) {
+	    //varTable.enter("switch");
+	    //funcTable.enter("switch");
+	    table.enter("switch");
+	}	
+	if (parent0.hasName("TryCatchFinallyStatement")) {
+	    table.enter("try-finally");
+	}
+	if (parent0.hasName("CatchClause")) {
+	    table.enter("catch");
+	}	
+        visit(n);
+	//varTable.exit();
+	//funcTable.exit();
+	table.exit();
     }
 
     public void visitBasicForControl(GNode n)

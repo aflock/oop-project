@@ -12,7 +12,9 @@ public class Bubble{
     boolean isBuilt = false; //determine whether a bubble has been completely filled in (excluding code)
     boolean isFilled = false; //determine whether all the code portions of this bubble's mubbles has been filled in
 
-    SymbolTable symTable;
+    SymbolTable varTable;
+    SymbolTable funcTable;
+    SymbolTable table;
 
     /* DO WE NEED THIS?:
        String visibility; //The visibility for this class
@@ -30,14 +32,16 @@ public class Bubble{
         this.bubbles = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
         this.mubbles = new ArrayList<Mubble>();
-        this.symTable = new SymbolTable();
+        this.varTable = new SymbolTable();
+	this.funcTable = new SymbolTable();
     }
 
     public Bubble(){
         this.bubbles = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
         this.mubbles = new ArrayList<Mubble>();
-        this.symTable = new SymbolTable();
+        this.varTable = new SymbolTable();
+	this.funcTable = new SymbolTable();
     }
 
 
@@ -147,8 +151,16 @@ public class Bubble{
     /* GETTERS */
     /////////////
 
-    public SymbolTable getSymboltable(){
-        return this.symTable;
+    public SymbolTable getVarTable(){
+        return this.varTable;
+    }
+
+    public SymbolTable getFuncTable() {
+	return this.funcTable;      
+    }
+
+    public SymbolTable getTable() {
+	return this.table;
     }
 
     public boolean isBuilt(){

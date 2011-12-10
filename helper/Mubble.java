@@ -57,8 +57,8 @@ public class Mubble {
         parameters.add(parameter);
     }
 
-    public void mangleName(String pre) {
-        methodName = pre + methodName;
+    public void mangleName(String name2) {
+        methodName = name2;
     }
 
     public boolean belongToGroup(String g) {
@@ -145,6 +145,7 @@ public class Mubble {
             return "FIX THIS SHIT. forward() in Mubble";
         }
         StringBuilder s = new StringBuilder();
+	s.append("static ");
         s.append(returnType).append(" ").append(methodName).append("(");
         if(this.isDelete())
             s.append("_");
@@ -293,7 +294,7 @@ public class Mubble {
 
     /* generates entry for vtable1 */
     public String vTable1() {
-        if(main){
+        if(main || staticMethod){
             return "";
         }
         StringBuilder s = new StringBuilder();
@@ -328,7 +329,7 @@ public class Mubble {
     /* generates entry for vtable.
      */
     public String vTable2() {
-        if(main){
+        if(main || staticMethod){
             return "";
         }
         StringBuilder type = new StringBuilder();
