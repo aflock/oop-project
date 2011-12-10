@@ -293,7 +293,7 @@ public class Mubble {
 
     /* generates entry for vtable1 */
     public String vTable1() {
-        if(main){
+        if(main || staticMethod){
             return "";
         }
         StringBuilder s = new StringBuilder();
@@ -328,7 +328,7 @@ public class Mubble {
     /* generates entry for vtable.
      */
     public String vTable2() {
-        if(main){
+        if(main || staticMethod){
             return "";
         }
         StringBuilder type = new StringBuilder();
