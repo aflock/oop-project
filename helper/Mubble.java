@@ -57,8 +57,8 @@ public class Mubble {
         parameters.add(parameter);
     }
 
-    public void mangleName(String pre) {
-        methodName = pre + methodName;
+    public void mangleName(String name2) {
+        methodName = name2;
     }
 
     public boolean belongToGroup(String g) {

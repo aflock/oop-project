@@ -219,6 +219,17 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         curMub = freshMubble;
 
+	SymbolTable.Scope current = table.current();
+	String name2 = name;
+	while (current.isDefined(name2)) {
+	    name2 = "_" + name;	    
+	}
+	current.define(name2, "constructor");
+	if (!name2.equals(name)) {
+	    curMub.mangleName(name2);
+	}
+	
+
         visit(n);
 
         curMub.setBubble(curBub);
@@ -252,7 +263,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             freshMubble = new Mubble(name);
         }
         curMub = freshMubble;
-
+	SymbolTable.Scope current = table.current();
+	String name2 = name;
+	while (current.isDefined(name2)) {
+	    name2 = "_" + name;	    
+	}
+	current.define(name2, "method");
+	if (!name2.equals(name)) {
+	    curMub.mangleName(name2);
+	}
+	
         visit(n);
 
         curMub.setBubble(curBub);
@@ -299,7 +319,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
 
-    public void visitDeclarators(GNode n) {
+    public void visitDeclarators(GNode n) { 
+	SymbolTable.Scope current = table.current();
+	// assuming Declarators' parent is always FieldDeclaration
+	Node parent0 = (Node)n.getProperty("parent0");
+	String type = parent0.getNode(1).getNode(0).getString(0);
+	for (Object o : n) {
+	    Node ch = (Node)o; // does not check already defined name
+	    current.define(ch.getString(0), type); 
+	}
+	
         visit(n);
     }
 
