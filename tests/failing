@@ -11,8 +11,8 @@ testAssChains:
 
 
 testBasicClass:
-    - Missing first underscore (here)testBasicClass na = new _testBasicClass();
     - method call .name() is missing in cout
+    - constructor assigns "__this" when it should assign to name field
 
 testDoWhile:
     - testDoWhile.h:47:29: error: cannot convert ‘void (_testDoWhile::*)(testDoWhile)’ to ‘void (*)(testDoWhile)’ in initialization
@@ -27,7 +27,6 @@ testInheritance:
 testPrinting:
     - Object . tostring not being called
     - method chaining
-    + see EvaluatePrintstatement in ImplementationParse
 
 
 

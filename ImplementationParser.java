@@ -229,6 +229,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitConstructorDeclaration(GNode n)
     {
 
+
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -254,6 +255,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     boolean debugEvaluateExpression = false;
 
     //LOL this is not needed at all VV
+    /*
     public String evaluateExpressionForPrint(Node n){//{{{
 
         //TODO adding numbers
@@ -285,6 +287,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //eval
         return ret;
     }//}}}
+    */
 
     boolean debugCallExpression = false;
     boolean inPrintStatement = false;
@@ -297,14 +300,14 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
             dispatchBitch(n);
             //Dealing with System.out.print*
-            if(n.getNode(0).hasName("SelectionExpression") &&
+            if(     (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")) &&//{{{
                     n.getNode(0).getNode(0).hasName("PrimaryIdentifier") &&
                     n.getNode(0).getNode(0).getString(0).equals("System") &&
                     n.getNode(0).getString(1).equals("out") &&
                     (n.getString(2).equals("print") ||n.getString(2).equals("println"))
               ){
                 if(debugCallExpression) System.out.println("Call Expression n.getNode(3): " + n.getNode(3) );
-                methodString += "cout << ({"; //+ evaluateExpressionForPrint(n.getNode(3));
+                methodString += "cout << ({";
                 inPrintStatement = true;
                 visit(n);
                 inPrintStatement = false;
@@ -315,7 +318,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 if(n.getString(2).equals("println")){
                     methodString += " << endl";
                 }
-              }
+              }//}}}
             else{
                 dispatch(n.getNode(0));
 
@@ -1007,11 +1010,32 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitSelectionExpression(GNode n) {
         if (onMeth) {
             visit(n);
+            //this is fucked what are we even trying to do here?
+            //TODO wtf.
             if (n.get(1) != null) {
-                if(n.getNode(0) != null && n.getNode(0).getString(0) != null) //VISITING NULL EXPRESSION HERE
-                    if(!(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")))
-                        methodString += "->" + n.getString(1);
+                //System.out.println("n.get(1) ::" + n.get(1));
+                //this is to prevent System.out.println etc being dealt with like a normal call
+                //needs rewrite? I think its catching too many cases -AF
+                /*
+                if(n.getNode(0) != null && n.getNode(0).getString(0) != null
+                        && !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out"))){
+                */
+                    //System.out.println("n.get(0).getString(0) :: "+((Node)n.get(0)).getString(0) );
+                    //System.out.println("n.getString(1) :: " + n.getString(1));
+                        //first child is null or second string is null or !(sys out)
+                        if(  n.get(0)==null || n.getString(1)==null  || n.getNode(0).get(0) == null || !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")) )
+                        methodString += (checkAncestor(n,"ConstructorDeclaration") ? "" : "->") + n.getString(1);
             }
+
+            //if first child exists && first child is PrimaryIdentifier && it's first string is system
+            //&& second child is not null and is out
+
+            //if System.out- fuck you.
+            //if in constructor - n.getString(1) on methodString
+            //otherwise, -> n.getString(1)
+
+
+
         }
         else {
             visit(n);
@@ -1113,9 +1137,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
     }
 
-    //dunno why second child is null
     public void visitThisExpression(GNode n) {
-        if (onMeth) {
+        if (onMeth && !checkAncestor(n, "ConstructorDeclaration")) {
             methodString += "__this";
         }
         visit(n);
@@ -1190,6 +1213,21 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         //visit(n);
     }
+
+    ///////HELPER METHODS////////
+
+    public boolean checkAncestor(Node n, String name){
+        //this is to check if any of the nodes parents are of type name
+        if (n.hasName(name)){
+            return true;
+        }
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (parent0 == null){
+            return false;
+        }
+        return checkAncestor(parent0, name);
+    }
+
 
     public void dispatchBitch(Node n) {
         int counter = 1;
