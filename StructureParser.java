@@ -127,13 +127,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         for(Bubble b : bubbleList){
             if(b.getName().equals(className)) {
                 curBub = b;
-		found = true;
+                found = true;
             }
         }
         if (!found){
-            curBub = new Bubble(className);	    
+            curBub = new Bubble(className);
         }
-	table = curBub.getTable();
+        table = curBub.getTable();
         curBub.setParentPubble(curPub); //curBub's package is curPub
 
         //find Object bubble and set curBub's parent to object (it will get overwritten if it needs to)
@@ -147,7 +147,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curBub.setParentBubble(ob);
 
         visit(n);
-	table = null;
+        table = null;
 
         //add in the delete method (note it needs code as well)
         Mubble n1 = new Mubble("__delete");
@@ -174,13 +174,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             dataField = true;
         }
         visit(n);
-        
+
         if(dataField)
         {
             dataField = false;
             curBub.addField(curField);
         }
-        
+
         if(false) System.out.println("curField.name: " + curField.name);
     }
 
@@ -192,19 +192,19 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent2 = (Node)n.getProperty("parent2");
         Node parent3 = (Node)n.getProperty("parent3");
         if ((parent0.hasName("Type")) &&
-            (parent1.hasName("FieldDeclaration")))
-            {
-                curField.setIsArray(true);
+                (parent1.hasName("FieldDeclaration")))
+        {
+            curField.setIsArray(true);
 
-                //count dimensions
-                int count = 0;
-                for(Object o : n){
-                    if(o instanceof String && ((String)o).equals("[")){
-                        count++;
-                    }
+            //count dimensions
+            int count = 0;
+            for(Object o : n){
+                if(o instanceof String && ((String)o).equals("[")){
+                    count++;
                 }
-                curField.setArrayDims(count);
             }
+            curField.setArrayDims(count);
+        }
     }
 
     public void visitModifiers(GNode n){
@@ -219,16 +219,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         curMub = freshMubble;
 
-	SymbolTable.Scope current = table.current();
-	String name2 = name;
-	while (current.isDefined(name2)) {
-	    name2 = "_" + name;	    
-	}
-	current.define(name2, "constructor");
-	if (!name2.equals(name)) {
-	    curMub.mangleName(name2);
-	}
-	
+        SymbolTable.Scope current = table.current();
+        String name2 = name;
+        while (current.isDefined(name2)) {
+            name2 = "_" + name;
+        }
+        current.define(name2, "constructor");
+        if (!name2.equals(name)) {
+            curMub.mangleName(name2);
+        }
+
 
         visit(n);
 
@@ -263,16 +263,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             freshMubble = new Mubble(name);
         }
         curMub = freshMubble;
-	SymbolTable.Scope current = table.current();
-	String name2 = name;
-	while (current.isDefined(name2)) {
-	    name2 = "_" + name;	    
-	}
-	current.define(name2, "method");
-	if (!name2.equals(name)) {
-	    curMub.mangleName(name2);
-	}
-	
+        SymbolTable.Scope current = table.current();
+        String name2 = name;
+        while (current.isDefined(name2)) {
+            name2 = "_" + name2;
+        }
+        current.define(name2, "method");
+        if (!name2.equals(name)) {
+            curMub.mangleName(name2);
+        }
+
         visit(n);
 
         curMub.setBubble(curBub);
@@ -297,38 +297,38 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
 
         if  (parent1 != null && parent2 != null &&
-             (parent1.hasName("MethodDeclaration")) &&
-             (parent2.hasName("ClassBody")))
-            {
-                //for(Object o : n)
-                //System.out.println(o);
-                //String visibility = "haha fake";
-                String visibility = n.getString(0);
-                curMub.setVisibility(visibility);
-            }
+                (parent1.hasName("MethodDeclaration")) &&
+                (parent2.hasName("ClassBody")))
+        {
+            //for(Object o : n)
+            //System.out.println(o);
+            //String visibility = "haha fake";
+            String visibility = n.getString(0);
+            curMub.setVisibility(visibility);
+        }
 
         if (parent1 != null && parent3 != null &&
-            (parent1.hasName("FormalParameter")) &&
-            (parent3.hasName("MethodDeclaration")))
-            {
-                System.out.println("in second");
-                String modifier = n.getString(0);
-                curField.addModifier(modifier);
-            }
+                (parent1.hasName("FormalParameter")) &&
+                (parent3.hasName("MethodDeclaration")))
+        {
+            //System.out.println("in second");
+            String modifier = n.getString(0);
+            curField.addModifier(modifier);
+        }
 
     }
 
 
-    public void visitDeclarators(GNode n) { 
-	SymbolTable.Scope current = table.current();
-	// assuming Declarators' parent is always FieldDeclaration
-	Node parent0 = (Node)n.getProperty("parent0");
-	String type = parent0.getNode(1).getNode(0).getString(0);
-	for (Object o : n) {
-	    Node ch = (Node)o; // does not check already defined name
-	    current.define(ch.getString(0), type); 
-	}
-	
+    public void visitDeclarators(GNode n) {
+        SymbolTable.Scope current = table.current();
+        // assuming Declarators' parent is always FieldDeclaration
+        Node parent0 = (Node)n.getProperty("parent0");
+        String type = parent0.getNode(1).getNode(0).getString(0);
+        for (Object o : n) {
+            Node ch = (Node)o; // does not check already defined name
+            current.define(ch.getString(0), type);
+        }
+
         visit(n);
     }
 
@@ -341,11 +341,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //if an assignment is being made within a class declaration
         if ((parent1.hasName("FieldDeclaration")) &&
-            (parent2.hasName("ClassDeclaration"))){
+                (parent2.hasName("ClassDeclaration"))){
             curField.setHasAssignment(true);
             curField.setAssignment(n); //save the node so we can re-parse it later
-        }
-        
+                }
+
         if(dataField) //if this is a dataField
             curField.name = n.getString(0);
     }
@@ -357,7 +357,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent2 = (Node)n.getProperty("parent2");
 
         if ((parent0.hasName("ConcreteDimensions")) &&
-            (parent2.hasName("ClassDeclaration"))){
+                (parent2.hasName("ClassDeclaration"))){
             //TODO what do we do about full declarations? e.g.
             //String[] SA = new String[4];
             //int a = 5;
@@ -367,7 +367,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //or are put in the constructors for the object
             //still a big TODO- check out javap for how java does it.
 
-        }
+                }
     }
 
     public void visitClassBody(GNode n){
@@ -375,15 +375,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitFormalParameters(GNode n){
-	Node parent0 = (Node)n.getProperty("parent0");
-	if (parent0.hasName("ConstructorDeclaration")) {
-	    table.enter(parent0.getString(2));
-	}
-	else { // MethodDeclaration
-	    table.enter(parent0.getString(3));
-	}	    
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (parent0.hasName("ConstructorDeclaration")) {
+            table.enter(parent0.getString(2));
+        }
+        else if (parent0.hasName("MethodDeclaration")) {
+            table.enter(parent0.getString(3));
+        }
         visit(n);
-	table.exit();
+        table.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -435,7 +435,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
           curPub.setName("Default Package");
           }
-        *///}}}
+          *///}}}
 
         //now add the pubble if it's not already in the list
         boolean inList = false;
@@ -469,7 +469,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //finding inheritance
         if ((parent1.hasName("Extension")) &&
-            (parent2.hasName("ClassDeclaration"))){
+                (parent2.hasName("ClassDeclaration"))){
             String parentName = n.getString(0);
 
             boolean parentFound = false;
@@ -488,10 +488,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
             parent.addBubble(curBub);  //add myself as my parent's child
             curBub.setParentBubble(parent); //set my parent
-        }
-        
+                }
+
         if(dataField) // if this is a dataField
-            curField.setType(n.getString(0)); 
+            curField.setType(n.getString(0));
 
         //finding the package we are in -> set curPub correctly
         //NOTE: there is no curBub at this point, so we must set curBub to the
@@ -503,7 +503,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
               "oop",
               "helper"
               )
-            */
+              */
             String name;
             String packageName = "";
             for(int i=0; i<n.size(); i++){
@@ -521,37 +521,37 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             Pubble packPub = new Pubble();//will be overwritten but compiler is scared it won't
             Boolean inPubbleList = false;
             for(Pubble p : pubbleList)
+            {
+                if(p.getName().equals(packageName))
                 {
-                    if(p.getName().equals(packageName))
-                        {
-                            inPubbleList = true;
-                            packPub = p;
-                        }
+                    inPubbleList = true;
+                    packPub = p;
                 }
+            }
 
             //if its not in the packageList, create a new Pubble, and add it to pubbleList
             if(!inPubbleList)
-                {
-                    packPub = new Pubble(packageName);
-                    pubbleList.add(packPub);
-                }
+            {
+                packPub = new Pubble(packageName);
+                pubbleList.add(packPub);
+            }
             curPub = packPub; //necessary? *doesn't seem to hurt at least*
         }
         //get return type for methods
         if ((parent0.hasName("Type")) &&
-            (parent1.hasName("MethodDeclaration")))
-            {
-                String type = n.getString(0);
-                curMub.setReturnType(type);
-            }
+                (parent1.hasName("MethodDeclaration")))
+        {
+            String type = n.getString(0);
+            curMub.setReturnType(type);
+        }
 
         //get parameter type for methods
         if ((parent0.hasName("Type")) &&
-            (parent1.hasName("FormalParameter")))
-            {
-                String type = n.getString(0);
-                curField.setType(type);
-            }
+                (parent1.hasName("FormalParameter")))
+        {
+            String type = n.getString(0);
+            curField.setType(type);
+        }
 
 
     }
@@ -562,13 +562,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitForStatement(GNode n)
     {
-	//varTable.enter("for");
-	//funcTable.enter("for");
-	table.enter("for");
+        //varTable.enter("for");
+        //funcTable.enter("for");
+        table.enter("for");
         visit(n);
-	//varTable.exit();
-	//funcTable.exit();
-	table.exit();
+        //varTable.exit();
+        //funcTable.exit();
+        table.exit();
     }
 
     public void visitWhileStatement(GNode n) {
@@ -584,42 +584,52 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitBlock(GNode n) {
-	Node parent0 = (Node)n.getProperty("parent0");
-	if (parent0.hasName("WhileStatement")) {
-	    //varTable.enter("while");
-	    //funcTable.enter("while");
-	    table.enter("while");
-	}
-	if (parent0.hasName("DoWhileStatement")) {
-	    //varTable.enter("dowhile");
-	    //funcTable.enter("dowhile");
-	    table.enter("dowhile");	    
-	}
-	if (parent0.hasName("ConditionalStatement")) {
-	    //varTable.enter("if-else");
-	    //funcTable.enter("if-else");
-	    table.enter("if-else");
-	}
-	if (parent0.hasName("Block")) {
-	    //varTable.enter("block");
-	    //funcTable.enter("block");
-	    table.enter("block");
-	}
-	if (parent0.hasName("SwitchStatement")) {
-	    //varTable.enter("switch");
-	    //funcTable.enter("switch");
-	    table.enter("switch");
-	}	
-	if (parent0.hasName("TryCatchFinallyStatement")) {
-	    table.enter("try-finally");
-	}
-	if (parent0.hasName("CatchClause")) {
-	    table.enter("catch");
-	}	
+        Node parent0 = (Node)n.getProperty("parent0");
+        boolean hasEntered = false;
+        if (parent0.hasName("WhileStatement")) {
+            //varTable.enter("while");
+            //funcTable.enter("while");
+            table.enter("while");
+            hasEntered = true;
+        }
+        if (parent0.hasName("DoWhileStatement")) {
+            //varTable.enter("dowhile");
+            //funcTable.enter("dowhile");
+            table.enter("dowhile");
+            hasEntered = true;
+        }
+        if (parent0.hasName("ConditionalStatement")) {
+            //varTable.enter("if-else");
+            //funcTable.enter("if-else");
+            table.enter("if-else");
+            hasEntered = true;
+        }
+        if (parent0.hasName("Block")) {
+            //varTable.enter("block");
+            //funcTable.enter("block");
+            table.enter("block");
+            hasEntered = true;
+        }
+        if (parent0.hasName("SwitchStatement")) {
+            //varTable.enter("switch");
+            //funcTable.enter("switch");
+            table.enter("switch");
+            hasEntered = true;
+        }
+        if (parent0.hasName("TryCatchFinallyStatement")) {
+            table.enter("try-finally");
+            hasEntered = true;
+        }
+        if (parent0.hasName("CatchClause")) {
+            table.enter("catch");
+            hasEntered = true;
+        }
         visit(n);
-	//varTable.exit();
-	//funcTable.exit();
-	table.exit();
+        //varTable.exit();
+        //funcTable.exit();
+
+        if(hasEntered)
+            table.exit();
     }
 
     public void visitBasicForControl(GNode n)
@@ -637,17 +647,17 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //finding inheritance
         if ((parent0.hasName("Type")) &&
-            (parent1.hasName("FormalParameter"))){
+                (parent1.hasName("FormalParameter"))){
             String type = n.getString(0);
             curField.setType(type);
-        }
+                }
 
         if ((parent0.hasName("Type")) && //if the return type for a method is a primitive type
-            (parent1.hasName("MethodDeclaration"))){
-                String type = n.getString(0);
-                if(debugPrimitiveType) System.out.println("visitPrimativeType, type: " + type);
-                curMub.setReturnType(type);
-        }
+                (parent1.hasName("MethodDeclaration"))){
+            String type = n.getString(0);
+            if(debugPrimitiveType) System.out.println("visitPrimativeType, type: " + type);
+            curMub.setReturnType(type);
+                }
     }
 
     public void visitType(GNode n)
@@ -666,10 +676,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitVoidType(GNode n) {
-	Node parent0 = (Node)n.getProperty("parent0");
-	if (parent0.hasName("MethodDeclaration")) {
-	    curMub.setReturnType("void");
-	}
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (parent0.hasName("MethodDeclaration")) {
+            curMub.setReturnType("void");
+        }
         visit(n);
     }
 

@@ -33,7 +33,8 @@ public class Bubble{
         this.dataFields = new ArrayList<Field>();
         this.mubbles = new ArrayList<Mubble>();
         this.varTable = new SymbolTable();
-	this.funcTable = new SymbolTable();
+        this.funcTable = new SymbolTable();
+        this.table = new SymbolTable();
     }
 
     public Bubble(){
@@ -41,7 +42,8 @@ public class Bubble{
         this.dataFields = new ArrayList<Field>();
         this.mubbles = new ArrayList<Mubble>();
         this.varTable = new SymbolTable();
-	this.funcTable = new SymbolTable();
+        this.funcTable = new SymbolTable();
+        this.table = new SymbolTable();
     }
 
 
@@ -156,11 +158,11 @@ public class Bubble{
     }
 
     public SymbolTable getFuncTable() {
-	return this.funcTable;      
+        return this.funcTable;
     }
 
     public SymbolTable getTable() {
-	return this.table;
+        return this.table;
     }
 
     public boolean isBuilt(){
