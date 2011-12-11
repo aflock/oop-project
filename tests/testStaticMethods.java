@@ -1,6 +1,6 @@
 public class testStaticMethods{
     public static int getNum(){
-        return (4 + (4*12));
+        return (4 + 4) * 12;
     }
 
     public static void main (String [] args)

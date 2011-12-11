@@ -305,8 +305,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //for(Object o : n)
             //System.out.println(o);
             //String visibility = "haha fake";
+
             String visibility = n.getString(0);
-            curMub.setVisibility(visibility);
+            if(visibility.equals("static"))
+                curMub.setStatic(true);
+            else
+                curMub.setVisibility(visibility);
         }
 
         if (parent1 != null && parent3 != null &&

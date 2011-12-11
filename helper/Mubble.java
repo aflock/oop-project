@@ -98,8 +98,8 @@ public class Mubble {
     public String ccHeader() {
         StringBuilder s = new StringBuilder("");
         if (staticMethod) {
-            // working?
-            s.append(returnType).append(" _").append(className).
+            // working? yeah
+            s.append(returnType).append(" _").append(getClassName()).
                 append("::").append(methodName).append("(");
             for (int i = 0; i < paraType.size(); i++) {
                 if (i != 0) {
@@ -150,11 +150,17 @@ public class Mubble {
         if(main){
             return "";
         }
-        if (staticMethod) {
-            System.out.println(methodName + " is a static method.");
-            return "FIX THIS SHIT. forward() in Mubble";
-        }
         StringBuilder s = new StringBuilder();
+        if(staticMethod) {
+            s.append("static ");
+            s.append(returnType).append(" ").append(methodName).append("(");
+            for (String para : paraType) {
+                s.append(", ").append(para);
+            }
+            s.append(");");
+
+            return s.toString();
+        }
 	s.append("static ");
         s.append(returnType).append(" ").append(methodName).append("(");
         if(this.isDelete())

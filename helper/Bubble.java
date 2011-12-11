@@ -397,7 +397,7 @@ public class Bubble{
         ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
         //ret += "__delete(&_" + this.name + "::__delete)";
         for(Mubble m : mubbles) {
-            if(!m.isConstructor() && !m.isMain())
+            if(!m.isConstructor() && !m.isMain() && !m.isStatic())
                 ret += ",\n"+m.vTable2();
         }
         ret+=" {\n";
