@@ -347,14 +347,16 @@ public class Bubble{
                 ret += "__rt::Array<" + f.type + ">* " + f.name + ";\n";
             else
                 ret += f.type + " " + f.name + ";\n";
+
         }
         ret+="\n//Constructors\n";
         //loop through methods once to see if there are any constructors
         //if not create a default one
         boolean encounteredConstructor = false;
         for(Mubble m: mubbles){
-            if(m.isConstructor())
+            if(m.isConstructor()){
                 encounteredConstructor = true;
+            }
         }
         if(!encounteredConstructor) //if there was no constructor in the java file, create default one
         {
@@ -363,8 +365,18 @@ public class Bubble{
         else
         {
             for(Mubble constructor : mubbles) {
-                if(constructor.isConstructor())
-                    ret += "_"+constructor.getName()+"();\n";
+                if(constructor.isConstructor()){
+                    ret += "_"+constructor.getName()+"(";
+                    boolean isFirst = true;
+                    for(Field f : constructor.getParameters()){
+                        if(!isFirst)
+                            ret+= ", ";
+                        if(isFirst)
+                            isFirst = false;
+                        ret += f.type + " " + f.name;
+                    }
+                    ret += ");\n";
+                }
             }
         }
         //static void __delete(__Object*);

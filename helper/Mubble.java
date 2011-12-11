@@ -130,7 +130,17 @@ public class Mubble {
             }
             else //it IS a constructor
             {
-                s.append("_" + className.getName() + "::_" + className.getName() + "(): __vptr(&__vtable)");
+                s.append("_" + className.getName() + "::_" + className.getName() + "(");
+                boolean isFirst = true;
+                for(Field f : this.getParameters()){
+                    if(!isFirst)
+                        s.append(", ");
+                    if(isFirst)
+                        isFirst = false;
+                    s.append(f.type + " " + f.name);
+                }
+
+                s.append("): __vptr(&__vtable)");
             }
         }
         return s.toString();
