@@ -178,9 +178,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         if(dataField)
         {
             dataField = false;
-            System.out.println("V_V_V_V_V_V_V_V_V_V");
-            System.out.println(curField.name + " ;: " + curField.type);
-            System.out.println("V_V_V_V_V_V_V_V_V_V");
             curBub.addField(curField);
         }
 

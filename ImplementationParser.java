@@ -642,7 +642,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
     }
 
+    boolean inNewClassExpression = false;
     public void visitNewClassExpression(GNode n) {
+        inNewClassExpression = true;
         if (onMeth) {
             dispatchBitch(n);
             methodString += "new ";
@@ -664,6 +666,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         else {
             visit(n);
         }
+        inNewClassExpression = false;
     }
 
     public void visitImportDeclaration(GNode n){
@@ -965,7 +968,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     methodString += ")";
                 }
                 else {
-                    if(!inPrintStatement)
+                    if(!inPrintStatement && !inNewClassExpression)
                         methodString += ", ";
                     dispatch(n.getNode(0));
                 }
