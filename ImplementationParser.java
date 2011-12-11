@@ -120,27 +120,17 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     boolean inArrayExpress = false;
 
     public void visitFieldDeclaration(GNode n){
-        if (onMeth) {
-            tan = "";
-        }
+        if (onMeth) { tan = ""; }
 
         visit(n);
 
         if (onMeth) {
             String[] z = tan.trim().split("\\s+");
-            // this could be fucked up
             String type = z[0];
-            //System.out.println("Z"+tan+"\n");
             for (int i = 1; i < z.length; i++) {
                 table.put(z[i], type);
-
             }
-        }
-
-
-        if (onMeth) {
-            if(inArray)
-            {
+            if(inArray){
                 //getting type
                 String arrType = n.getNode(1).getNode(0).getString(0);
                 if(arrType.equals("int"))
@@ -151,25 +141,25 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 String arrName = n.getNode(2).getNode(0).getString(0);
                 methodString += "__rt::Array<" + arrType + ">* " + arrName;
                 table.put(arrName, "__rt::Array<" + arrType + ">* ");
-                if(inArrayExpress)
-                {
+                if(inArrayExpress){
                     String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
                     methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
                     inArrayExpress = false;
                 }
                 methodString += ";\n";
-
                 inArray = false;
             }
-            String[] z = tan.split("\\s+");
-            // this could be fucked up
-            String type = z[0];
-            for (int i = 1; i < z.length; i++) {
-                table.put(z[i], type);
-            }
-
-            //System.out.println(tan);
         }
+        /*//{{{
+          if (onMeth) {
+          String[] z = tan.split("\\s+");
+        // this could be fucked up
+        String type = z[0];
+        for (int i = 1; i < z.length; i++) {
+        table.put(z[i], type);
+        }
+          }
+        *///}}}
     }
 
     public void visitNewArrayExpression(GNode n)
