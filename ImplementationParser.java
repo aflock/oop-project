@@ -256,38 +256,38 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     //LOL this is not needed at all VV
     /*
-    public String evaluateExpressionForPrint(Node n){//{{{
+       public String evaluateExpressionForPrint(Node n){//{{{
 
-        //TODO adding numbers
-        //TODO newClassExpression
-        String ret = "";
-        if(n.getName().endsWith("Literal")){
-            ret += n.getString(0);
-        }else if(n.hasName("AdditiveExpression")){
-            ret += evaluateExpressionForPrint(n.getNode(0));
-            ret += " << ";
-            ret += evaluateExpressionForPrint(n.getNode(2));
-            //TODO - if the additive expression is not supposed to be
-            //handled like this ^^
-        }else if(n.hasName("Arguments")){
-            ret += evaluateExpressionForPrint(n.getNode(0));
-        }else if(n.hasName("NewClassExpression")){
-            //wtf
-            //probably need to create the class before any of this cout business...right?
-        }else if(n.hasName("PrimaryIdentifier")){
-            ret += n.getString(0);
-        }else if(n.hasName("PostfixExpression")){
-            Node primaryIdentifier = (Node)n.get(0);
-            if(debugEvaluateExpression) System.out.println(primaryIdentifier.getString(0) + n.getString(1));
-            ret += primaryIdentifier.getString(0) + n.getString(1); //PostfixExpression(PrimaryIdentifier("i"), "++" )
-        }
-        else{
-            System.out.println("errror: :(" + n.getName());
-        }
-        //eval
-        return ret;
-    }//}}}
-    */
+    //TODO adding numbers
+    //TODO newClassExpression
+    String ret = "";
+    if(n.getName().endsWith("Literal")){
+    ret += n.getString(0);
+    }else if(n.hasName("AdditiveExpression")){
+    ret += evaluateExpressionForPrint(n.getNode(0));
+    ret += " << ";
+    ret += evaluateExpressionForPrint(n.getNode(2));
+    //TODO - if the additive expression is not supposed to be
+    //handled like this ^^
+    }else if(n.hasName("Arguments")){
+    ret += evaluateExpressionForPrint(n.getNode(0));
+    }else if(n.hasName("NewClassExpression")){
+    //wtf
+    //probably need to create the class before any of this cout business...right?
+    }else if(n.hasName("PrimaryIdentifier")){
+    ret += n.getString(0);
+    }else if(n.hasName("PostfixExpression")){
+    Node primaryIdentifier = (Node)n.get(0);
+    if(debugEvaluateExpression) System.out.println(primaryIdentifier.getString(0) + n.getString(1));
+    ret += primaryIdentifier.getString(0) + n.getString(1); //PostfixExpression(PrimaryIdentifier("i"), "++" )
+    }
+    else{
+    System.out.println("errror: :(" + n.getName());
+    }
+    //eval
+    return ret;
+       }//}}}
+       */
 
     boolean debugCallExpression = false;
     boolean inPrintStatement = false;
@@ -1010,251 +1010,237 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitSelectionExpression(GNode n) {
         if (onMeth) {
             visit(n);
-            //this is fucked what are we even trying to do here?
-            //TODO wtf.
+            //EDIT think this is fixed
             if (n.get(1) != null) {
-                //System.out.println("n.get(1) ::" + n.get(1));
-                //this is to prevent System.out.println etc being dealt with like a normal call
-                //needs rewrite? I think its catching too many cases -AF
-                /*
-                if(n.getNode(0) != null && n.getNode(0).getString(0) != null
-                        && !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out"))){
-                */
-                    //System.out.println("n.get(0).getString(0) :: "+((Node)n.get(0)).getString(0) );
-                    //System.out.println("n.getString(1) :: " + n.getString(1));
-                        //first child is null or second string is null or !(sys out)
-                        if(  n.get(0)==null || n.getString(1)==null  || n.getNode(0).get(0) == null || !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")) )
-                        methodString += (checkAncestor(n,"ConstructorDeclaration") ? "" : "->") + n.getString(1);
+                //System.out.println("n.get(0).getString(0) :: "+((Node)n.get(0)).getString(0) );
+                //System.out.println("n.getString(1) :: " + n.getString(1));
+                //first child is null or second string is null or !(sys out)
+                //if first child exists && first child is PrimaryIdentifier && its first string is system
+                //&& second child is not null and is out
+                if(  n.get(0)==null || n.getString(1)==null  || n.getNode(0).get(0) == null ||
+                        !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")))
+
+                    methodString += (checkAncestor(n,"ConstructorDeclaration") ? "" : "->") + n.getString(1);
+                   }
             }
-
-            //if first child exists && first child is PrimaryIdentifier && it's first string is system
-            //&& second child is not null and is out
-
-            //if System.out- fuck you.
-            //if in constructor - n.getString(1) on methodString
-            //otherwise, -> n.getString(1)
-
-
-
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitReturnStatement(GNode n) {
-        if (onMeth) {
-            methodString += "return ";
-        }
-        visit(n);
-        if (onMeth) {
-            methodString += ";\n";
-        }
-    }
-
-    public void visitUnaryExpression(GNode n) {
-        if (onMeth) {
-            methodString += n.getString(0);
-            visit(n);
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitWhileStatement(GNode n) {
-        if (onMeth) {
-            dispatchBitch(n);
-            methodString += "while(";
-            dispatch(n.getNode(0));
-            methodString += ") {\n";
-            for(int i = 1; i < n.size(); i++) {
-                dispatch(n.getNode(i));
-            }
-            methodString += "}\n";
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitFloatingPointLiteral(GNode n) {
-        if (onMeth) {
-            methodString += n.getString(0);
-        }
-        visit(n);
-    }
-
-    public void visitCharacterLiteral(GNode n) {
-        if (onMeth) {
-            methodString += n.getString(0);
-        }
-        visit(n);
-    }
-    //hmm..
-    public void visitNullLiteral(GNode n) {
-        if (onMeth) {
-            methodString += "__rt::null()";
-        }
-        visit(n);
-    }
-
-    public void visitAdditiveExpression(GNode n) {
-        if (onMeth) {
-            dispatchBitch(n);
-            dispatch(n.getNode(0));
-            methodString += " "+n.getString(1)+" ";
-            dispatch(n.getNode(2));
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitMultiplicativeExpression(GNode n) {
-        if (onMeth) {
-            dispatchBitch(n);
-            dispatch(n.getNode(0));
-            methodString += " "+n.getString(1)+" ";
-            dispatch(n.getNode(2));
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitCastExpression(GNode n) {
-        if (onMeth) {
-            dispatchBitch(n);
-            methodString += "((";
-            dispatch(n.getNode(0));
-            methodString += ") ";
-            dispatch(n.getNode(1));
-            methodString += ")";
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitThisExpression(GNode n) {
-        if (onMeth && !checkAncestor(n, "ConstructorDeclaration")) {
-            methodString += "__this";
-        }
-        visit(n);
-    }
-
-    public void visitBasicCastExpression(GNode n) {
-        if (onMeth) {
-            dispatchBitch(n);
-            methodString += "((";
-            dispatch(n.getNode(0));
-            methodString += ") ";
-            //not sure if there can be more children, just in case
-            for(int i = 1; i < n.size(); i++) {
-                dispatch(n.getNode(i));
-            }
-            methodString += ")";
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    //////////////////
-    //need to actually implement instanceof???
-    //////////////////
-    /////////////////
-    ////will getstring always work?
-    ////////////////
-    public void visitInstanceOfExpression(GNode n) {
-        if (onMeth) {
-            dispatchBitch(n);
-            dispatch(n.getNode(0));
-            methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
-            dispatch(n.getNode(1));
-            methodString += ")";
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitLogicalNegationExpression(GNode n) {
-        if(onMeth) {
-            methodString += "!(";
-            visit(n);
-            methodString += ")";
-        }
-        else {
-            visit(n);
-        }
-    }
-
-    public void visitType(GNode n)
-    {
-        visit(n);
-    }
-
-    public void visitExpressionList(GNode n)
-    {
-        visit(n);
-    }
-
-    public void visitRelationalExpression(GNode n)
-    {
-        if (onMeth) {
-            dispatchBitch(n);
-            dispatch(n.getNode(0));
-            methodString += " " + n.getString(1) + " ";
-            dispatch(n.getNode(2));
-            //methodString += ";";
-        }
-
-        //visit(n);
-    }
-
-    ///////HELPER METHODS////////
-
-    public boolean checkAncestor(Node n, String name){
-        //this is to check if any of the nodes parents are of type name
-        if (n.hasName(name)){
-            return true;
-        }
-        Node parent0 = (Node)n.getProperty("parent0");
-        if (parent0 == null){
-            return false;
-        }
-        return checkAncestor(parent0, name);
-    }
-
-
-    public void dispatchBitch(Node n) {
-        int counter = 1;
-        if(n.hasProperty("parent0")) {
-            Node temp = (Node)n.getProperty("parent0");
-
-            while(temp != null) {
-                //System.out.println(temp);
-                //temp = (Node)temp.getProperty("parent0");
-
-                n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
-                temp = (Node)temp.getProperty("parent0");
-                //if(n.getProperty("parent2") == null)
-                //System.out.println(temp);
+            else {
+                visit(n);
             }
         }
-        //don't need this, but not deleting.
-        for (String s : n.properties()) {
-            //System.out.println(n.getProperty(s));
-        }
 
-        for (Object o : n){
-            if (o instanceof Node){
-                ((Node)o).setProperty("parent_name", n.getName() );
-                ((Node)o).setProperty("parent0", n );
-                //dispatch((Node)o);
+        public void visitReturnStatement(GNode n) {
+            if (onMeth) {
+                methodString += "return ";
+            }
+            visit(n);
+            if (onMeth) {
+                methodString += ";\n";
             }
         }
-    }
+
+        public void visitUnaryExpression(GNode n) {
+            if (onMeth) {
+                methodString += n.getString(0);
+                visit(n);
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitWhileStatement(GNode n) {
+            if (onMeth) {
+                dispatchBitch(n);
+                methodString += "while(";
+                dispatch(n.getNode(0));
+                methodString += ") {\n";
+                for(int i = 1; i < n.size(); i++) {
+                    dispatch(n.getNode(i));
+                }
+                methodString += "}\n";
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitFloatingPointLiteral(GNode n) {
+            if (onMeth) {
+                methodString += n.getString(0);
+            }
+            visit(n);
+        }
+
+        public void visitCharacterLiteral(GNode n) {
+            if (onMeth) {
+                methodString += n.getString(0);
+            }
+            visit(n);
+        }
+        //hmm..
+        public void visitNullLiteral(GNode n) {
+            if (onMeth) {
+                methodString += "__rt::null()";
+            }
+            visit(n);
+        }
+
+        public void visitAdditiveExpression(GNode n) {
+            if (onMeth) {
+                dispatchBitch(n);
+                dispatch(n.getNode(0));
+                methodString += " "+n.getString(1)+" ";
+                dispatch(n.getNode(2));
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitMultiplicativeExpression(GNode n) {
+            if (onMeth) {
+                dispatchBitch(n);
+                dispatch(n.getNode(0));
+                methodString += " "+n.getString(1)+" ";
+                dispatch(n.getNode(2));
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitCastExpression(GNode n) {
+            if (onMeth) {
+                dispatchBitch(n);
+                methodString += "((";
+                dispatch(n.getNode(0));
+                methodString += ") ";
+                dispatch(n.getNode(1));
+                methodString += ")";
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitThisExpression(GNode n) {
+            if (onMeth && !checkAncestor(n, "ConstructorDeclaration")) {
+                methodString += "__this";
+            }
+            visit(n);
+        }
+
+        public void visitBasicCastExpression(GNode n) {
+            if (onMeth) {
+                dispatchBitch(n);
+                methodString += "((";
+                dispatch(n.getNode(0));
+                methodString += ") ";
+                //not sure if there can be more children, just in case
+                for(int i = 1; i < n.size(); i++) {
+                    dispatch(n.getNode(i));
+                }
+                methodString += ")";
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        //////////////////
+        //need to actually implement instanceof???
+        //////////////////
+        /////////////////
+        ////will getstring always work?
+        ////////////////
+        public void visitInstanceOfExpression(GNode n) {
+            if (onMeth) {
+                dispatchBitch(n);
+                dispatch(n.getNode(0));
+                methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
+                dispatch(n.getNode(1));
+                methodString += ")";
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitLogicalNegationExpression(GNode n) {
+            if(onMeth) {
+                methodString += "!(";
+                visit(n);
+                methodString += ")";
+            }
+            else {
+                visit(n);
+            }
+        }
+
+        public void visitType(GNode n)
+        {
+            visit(n);
+        }
+
+        public void visitExpressionList(GNode n)
+        {
+            visit(n);
+        }
+
+        public void visitRelationalExpression(GNode n)
+        {
+            if (onMeth) {
+                dispatchBitch(n);
+                dispatch(n.getNode(0));
+                methodString += " " + n.getString(1) + " ";
+                dispatch(n.getNode(2));
+                //methodString += ";";
+            }
+
+            //visit(n);
+        }
+
+        ///////HELPER METHODS////////
+
+        public boolean checkAncestor(Node n, String name){
+            //this is to check if any of the nodes parents are of type name
+            if (n.hasName(name)){
+                return true;
+            }
+            Node parent0 = (Node)n.getProperty("parent0");
+            if (parent0 == null){
+                return false;
+            }
+            return checkAncestor(parent0, name);
+        }
+
+
+        public void dispatchBitch(Node n) {
+            int counter = 1;
+            if(n.hasProperty("parent0")) {
+                Node temp = (Node)n.getProperty("parent0");
+
+                while(temp != null) {
+                    //System.out.println(temp);
+                    //temp = (Node)temp.getProperty("parent0");
+
+                    n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                    temp = (Node)temp.getProperty("parent0");
+                    //if(n.getProperty("parent2") == null)
+                    //System.out.println(temp);
+                }
+            }
+            //don't need this, but not deleting.
+            for (String s : n.properties()) {
+                //System.out.println(n.getProperty(s));
+            }
+
+            for (Object o : n){
+                if (o instanceof Node){
+                    ((Node)o).setProperty("parent_name", n.getName() );
+                    ((Node)o).setProperty("parent0", n );
+                    //dispatch((Node)o);
+                }
+            }
+        }
     }
