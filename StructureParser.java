@@ -178,9 +178,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         if(dataField)
         {
             dataField = false;
-            System.out.println("V_V_V_V_V_V_V_V_V_V");
-            System.out.println(curField.name + " ;: " + curField.type);
-            System.out.println("V_V_V_V_V_V_V_V_V_V");
+            //System.out.println("V_V_V_V_V_V_V_V_V_V");
+            //System.out.println(curField.name + " ;: " + curField.type);
+            //System.out.println("V_V_V_V_V_V_V_V_V_V");
             curBub.addField(curField);
         }
 
@@ -208,6 +208,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
             curField.setArrayDims(count);
         }
+
     }
 
     public void visitModifiers(GNode n){
@@ -298,23 +299,25 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         //System.out.println("parented");
 
-
-        if  (parent1 != null && parent2 != null &&
+        
+        if  (parent1 != null && parent2 != null &&          //if its part of a method
                 (parent1.hasName("MethodDeclaration")) &&
                 (parent2.hasName("ClassBody")))
         {
-            //for(Object o : n)
-            //System.out.println(o);
-            //String visibility = "haha fake";
+            //todo: Don't think collects all the modifiers for a method, just the first
+            //what if it is a public static ....method
             String visibility = n.getString(0);
             curMub.setVisibility(visibility);
         }
-
-        if (parent1 != null && parent3 != null &&
+        else if (parent1 != null && parent3 != null &&      //if its part of the parameters
                 (parent1.hasName("FormalParameter")) &&
                 (parent3.hasName("MethodDeclaration")))
         {
-            //System.out.println("in second");
+            String modifier = n.getString(0);
+            curField.addModifier(modifier);
+        }
+        else if(dataField)                                  //if its a modifier for a dataField
+        {
             String modifier = n.getString(0);
             curField.addModifier(modifier);
         }
@@ -342,15 +345,25 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent1 = (Node)n.getProperty("parent1");
         Node parent2 = (Node)n.getProperty("parent2");
 
-        //if an assignment is being made within a class declaration
-        if ((parent1.hasName("FieldDeclaration")) &&
+        if ((parent1.hasName("FieldDeclaration")) && 
                 (parent2.hasName("ClassDeclaration"))){
-            curField.setHasAssignment(true);
-            curField.setAssignment(n); //save the node so we can re-parse it later
-                }
+            if(!n.getNode(2).equals("null")) //if the 3rd child of Declarator is not null, an assignment has occured    
+            { 
+                curField.setHasAssignment(true);
+                curField.setAssignment(n); //save the node so we can re-parse it later
+            }
+        }
 
         if(dataField) //if this is a dataField
+        {
             curField.name = n.getString(0);
+            if(!n.getNode(2).equals("null")) //if an assignment has occured
+            {
+                curField.setHasAssignment(true);
+                curField.setAssignment(n); //save the node so we can parse it later
+            }
+                
+        }
     }
 
     public void visitIntegerLiteral(GNode n) {
@@ -370,7 +383,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //or are put in the constructors for the object
             //still a big TODO- check out javap for how java does it.
 
-                }
+       }
     }
 
     public void visitClassBody(GNode n){

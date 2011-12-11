@@ -7,6 +7,11 @@ public class testDataFieldDecls{
     int[] e;
     int[][] f = new int[1][2];
     String g = "7";
+    char h = '8';
+    boolean i = false;
+    long j = (8-9);
+    double k = 8.8;
+    //test for rest of primitive types
 
     public testDataFieldDecls()
     {
@@ -30,7 +35,11 @@ public class testDataFieldDecls{
         System.out.println("d    :    " + d);
         System.out.println("e    :    " + e[0]);
         System.out.println("f    :    " + f[0][1]);
-        System.out.println("g    :    " + g);    
+        System.out.println("g    :    " + g);
+        System.out.println("h    :    " + h); 
+        System.out.println("i    :    " + i); 
+        System.out.println("j    :    " + j); 
+        System.out.println("k    :    " + k);     
     }
     
     public int four()

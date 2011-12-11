@@ -9,10 +9,11 @@ public class Field{
 
     public String name;
     public String type;
-    boolean isArray;
+    public boolean isArray;
     int arrayDims;
     boolean hasAssignment;
-    GNode assignmentNode; //for the situations where a
+    GNode assignmentNode; //for the situations where a [someone forgot to finish comment]
+
     ArrayList<Integer> concreteDims = new ArrayList<Integer>();
     ArrayList<String> modifiers = new ArrayList<String>();
 
@@ -53,6 +54,10 @@ public class Field{
         this.name = name;
     }
     public void setType(String type){
+        //TRANSLATE TYPES HERE, do we need to do this for booleans?
+        if(type.equals("int"))
+            type = "int32_t";
+            
         this.type = type;
     }
     public void setIsArray(boolean isArray){
@@ -70,7 +75,21 @@ public class Field{
     public void setHasAssignment(boolean hasAssignment){
         this.hasAssignment = hasAssignment;
     }
+    
     public void setAssignment(GNode assignmentNode){
         this.assignmentNode = assignmentNode;
+    }
+    
+    public ArrayList<String> getModifiers(){
+        return this.modifiers;
+    }
+    
+    public boolean hasAssignment()
+    {   
+        return this.hasAssignment;
+    }
+    
+    public GNode getAssignmentNode(){
+        return this.assignmentNode;
     }
 }
