@@ -178,6 +178,9 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         if(dataField)
         {
             dataField = false;
+            System.out.println("V_V_V_V_V_V_V_V_V_V");
+            System.out.println(curField.name + " ;: " + curField.type);
+            System.out.println("V_V_V_V_V_V_V_V_V_V");
             curBub.addField(curField);
         }
 
@@ -651,6 +654,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             String type = n.getString(0);
             curField.setType(type);
                 }
+
+        if ((parent0.hasName("Type")) &&
+                (parent1.hasName("FieldDeclaration"))){
+                String type = n.getString(0);
+                curField.setType(type);
+                }
+
 
         if ((parent0.hasName("Type")) && //if the return type for a method is a primitive type
                 (parent1.hasName("MethodDeclaration"))){

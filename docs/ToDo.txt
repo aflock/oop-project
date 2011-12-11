@@ -4,7 +4,7 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 9.
+DAYS TILL DUE: bout 8.
 
 To Do:
 1. There is no code added to constructors
@@ -15,18 +15,17 @@ Strings:
    C++:     String temp = __rt::literal("bla");
 2. String accessing needs to be like     cout << test->__vptr->toString(test)->data << endl; if test is the string (dont bleive so.. it is working without that)
 
--YOU CAN "using namespace" on multiple namespaces in the same file and it works! do we need to? -af
--For each arg[], we process them but do not print once per arg
--If the file we are translating takes system args, we need to handle that in the translated file
--Trouble class for exception handling?
--special case string as an object?
--Use hashmap to map java primative types to c++ types
--Shouldn't have to deal with $ in java
--printing strings and variable types in c++ is different
-
+- For each arg[], we process them but do not print once per arg
+- If the file we are translating takes system args, we need to handle that in the translated file
+- Trouble class for exception handling?
+- special case string as an object?
+- Use hashmap to map java primative types to c++ types
+- Shouldn't have to deal with $ in java
+- printing strings and variable types in c++ is different
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
+- Casting
 - Need to deal with static blocks in class declarations.
 x how to use xtc.util.symbol table to our advantage?
 ~ method overloading
@@ -38,25 +37,15 @@ x ? think its done.. how to check?memory management (smart pointers)? to support
 - wtf does thomas keep complaining about with templates..?
 
 
-
 Timeline:
-Week 1:
--Test suite
--High level, detailed program structure and plan
+Sunday:
+    -Get done
 
-Week 2:
--Refactoring
+Monday - Wednesday:
+    -study for final
 
-Week 3:
--Refactoring
--Overloading
--Exceptions
-
-Week 4:
-
-
-
-
+Thursday - Monday :
+    -final editing/cleaning
 
 ===============================================================================
 ===X=X=X=X=====X=X=X=X=X=X=======PRE-MIDTERM===X=X=X=X=X===X=X=X==X=X=X========

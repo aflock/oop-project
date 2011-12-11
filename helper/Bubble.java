@@ -84,7 +84,7 @@ public class Bubble{
         this.name = name;
     }
 
-    public Mubble findMethod(String methodName, ArrayList<String> para) {
+    public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
         Mubble mub = null;
         int matchNum = 100000000;
         for (Mubble m : mubbles) {
@@ -99,7 +99,7 @@ public class Bubble{
                         else
                             match = false;
                         if (!match) { // needs fixing
-                            min++;
+                            min += rank(bubbles, p.get(i), para.get(i));
                             /*
                                primitive types, objects
                                e.g. methods  function calls
@@ -119,7 +119,7 @@ public class Bubble{
                     mub = m;
                 }
             } else { continue;}
-        
+
         } //for end
         return mub; //do i want to return string?
     } //method end
@@ -226,12 +226,12 @@ public class Bubble{
     /* MISC. METHODS */
     ///////////////////
 
-    public int rank(String a, String b){
+    public int rank(ArrayList<Bubble> bubbles, String a, String b){
         //a is the actual argument, b is the formal argument
         //a moves. b stays
         if (a.equals(b))
             return 0;
-        Bubble aBub = findBubble(a);
+        Bubble aBub = findBubble(bubbles, a);
         //walk a's inheritance
         int count = 0;
         while (!(aBub.getName().equals(b))) {
@@ -245,10 +245,15 @@ public class Bubble{
         else
             return count;
     }
-    
+
     //todo: Should we search through parent and children bubbles??
-    public Bubble findBubble(String name){
-        return new Bubble(); //temp fix
+    public Bubble findBubble(ArrayList<Bubble> bubbles, String name){
+        for(Bubble b : bubbles){
+            if (b.getName().equals(name))
+                return b;
+        }
+        System.out.println("HOLY SHIT SOMETHINGS WRONG NO BUBBLE FOUND");
+        return new Bubble(); //should never happen
     }
 
     public String getTypeDef() {
@@ -327,7 +332,8 @@ public class Bubble{
         ret += "_"+this.name+"_VT* __vptr;\n";
         //iterate through datafields, print them
         for(Field f : dataFields) {
-            //DO I NEED MORE THAN TYPE AND NAME???
+            //DO I NEED MORE THAN TYPE AND NAME??? NO!
+            //some types are null (~_~;)
             ret += f.type + " " + f.name + ";\n";
         }
         ret+="\n//Constructors\n";
