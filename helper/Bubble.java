@@ -86,7 +86,7 @@ public class Bubble{
 
     public Mubble findMethod(String methodName, ArrayList<String> para) {
         Mubble mub = null;
-        int match = 100000000;
+        int matchNum = 100000000;
         for (Mubble m : mubbles) {
             if (m.belongToGroup(methodName)) {
                 int min = 0;
@@ -115,14 +115,14 @@ public class Bubble{
 
 
                 }
-                if (min < match) {
+                if (min < matchNum) {
                     mub = m;
                 }
             } else { continue;}
-        }
-    }
+        
+        } //for end
         return mub; //do i want to return string?
-    }
+    } //method end
 
     //Set the parent Bubble of this Bubble
     public void setParentBubble(Bubble b) {
@@ -245,8 +245,10 @@ public class Bubble{
         else
             return count;
     }
+    
+    //todo: Should we search through parent and children bubbles??
     public Bubble findBubble(String name){
-
+        return new Bubble(); //temp fix
     }
 
     public String getTypeDef() {
