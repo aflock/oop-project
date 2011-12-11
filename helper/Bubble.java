@@ -332,7 +332,8 @@ public class Bubble{
         ret += "_"+this.name+"_VT* __vptr;\n";
         //iterate through datafields, print them
         for(Field f : dataFields) {
-            //DO I NEED MORE THAN TYPE AND NAME???
+            //DO I NEED MORE THAN TYPE AND NAME??? NO!
+            //some types are null (~_~;)
             ret += f.type + " " + f.name + ";\n";
         }
         ret+="\n//Constructors\n";
