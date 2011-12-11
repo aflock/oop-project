@@ -111,19 +111,76 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitSubscriptExpression(GNode n)
     {
         visit(n);
-        String arrName = n.getNode(0).getString(0);
-        String index = n.getNode(1).getString(0);
+        
+        /*todo: FIX, only works for one dimensional arrays
+        if(n.getNode(0).hasName(SubscriptExpression) //if it is a multidimensional array
+            visitSubscriptExpression(n.getNode(0))
+        else            
+        String arrName = n.getNode(0).getString(0);//SubscriptExpression(PrimaryIdentifier("e"
+        String index = n.getNode(1).getString(0);//IntegerLiteral("0")
         methodString += arrName + "->__data[" + index + "]";
+        */
+        
+        //f[0] = arrName->data[0]
+        //f[1][0] = arrName->data[0]->data[1]
+        ArrayList<String> arrInfo = resolveArray((GNode)n);
+        methodString += arrInfo.get(0);
+        for(int i=1; i< arrInfo.size(); i++)
+            methodString += "->__data[" + arrInfo.get(i) + "]";
     }
+    
+    //params: the base Subscript expression node as a parameter
+    //return: an arrayList of info about the array
+    //          ArrayList[0] = name of array
+    //          ArrayList[1...] = the actual place in the array wanting to be accessed
+    //ex. f[1][2] would return an ArrayList with Arr[0] = 'f' ,Arr[1] = 1, Arr[2] = 2
+    public ArrayList<String> resolveArray(GNode n)
+    {
+        if(false) //debug
+        {
+            System.out.println("test1: " + n.getNode(0));
+            System.out.println("test2: " + n.getNode(0).hasName("SubscriptExpression"));
+            System.out.println("test3: " + n.getNode(0).hasName("PrimaryIdentifier"));
+            System.out.println("test4: " + n.getNode(1).hasName("IntegerLiteral"));
+            System.out.println("test5: " + n.getNode(1).getString(0));
+            System.out.println("test6: " + n.getNode(0).getString(0));
+        }
+        
+        ArrayList<String> info = new ArrayList<String>();
+        //resolving my name and any childarrays
+        if(n.getNode(0).hasName("SubscriptExpression")) //if multidimensional array
+        {
+            //resolve child array
+            ArrayList<String> childArray = resolveArray((GNode)n.getNode(0));
+            //add all the info from my child array
+            for(String s : childArray)
+                info.add(s); 
+        }
+        else if(n.getNode(0).hasName("PrimaryIdentifier")) //single-dimension array
+        {
+            info.add(n.getNode(0).getString(0)); //sets name
+        }
+        else
+            System.out.println("Error Resolving Array for " + n.getName());
+            
+
+        //resolving parent-array's index
+        if(n.getNode(1).hasName("IntegerLiteral"))
+                info.add(n.getNode(1).getString(0));
+        else
+            System.out.println("Error Resolving Array: n.getNode(1) not integer literal" +
+                                "in " + n.getName());
+        return info;
+    }
+
 
     String tan;
     boolean inArrayExpress = false;
-
     public void visitFieldDeclaration(GNode n){
+
         if (onMeth) { tan = ""; }
 
         visit(n);
-
         if (onMeth) {
             String[] z = tan.trim().split("\\s+");
             String type = z[0];
@@ -137,12 +194,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     arrType = "int32_t";
                 if(arrType.equals("boolean"))
                     arrType = "bool";
-
                 String arrName = n.getNode(2).getNode(0).getString(0);
                 methodString += "__rt::Array<" + arrType + ">* " + arrName;
                 table.put(arrName, "__rt::Array<" + arrType + ">* ");
-                if(inArrayExpress){
-                    String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0);
+
+                if(inArrayExpress)
+                {
+                    String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0); //wtf...?
                     methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
                     inArrayExpress = false;
                 }
@@ -164,8 +222,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitNewArrayExpression(GNode n)
     {
-        visit(n);
+        //changed 12-11 by Calvin. inArrayExpress was set to true AFTER VISIT, was giving errors
+        //I assumed it was a mistake, and was meant to be above visit, so
+        //I made it true before and false after, dunno if this causes problems somewhere else
         inArrayExpress = true;
+        visit(n);
+        inArrayExpress = false;
+
     }
 
     public void visitDimensions(GNode n) {

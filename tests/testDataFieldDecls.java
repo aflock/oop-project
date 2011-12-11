@@ -13,7 +13,7 @@ public class testDataFieldDecls{
         a=1;
         e = new int[1];
         e[0] = 5;
-        f[0][0] = 6;
+        f[0][1] = 6;
     }
     
     public static void main(String[] args)
@@ -29,7 +29,7 @@ public class testDataFieldDecls{
         System.out.println("c    :    " + c);
         System.out.println("d    :    " + d);
         System.out.println("e    :    " + e[0]);
-        System.out.println("f    :    " + f[0][0]);
+        System.out.println("f    :    " + f[0][1]);
         System.out.println("g    :    " + g);    
     }
     
