@@ -111,6 +111,9 @@ public class NewTranslator extends xtc.util.Tool{
         ArrayList<String> parsed = new ArrayList<String>();
         ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
         i.dispatch(node);
+        
+        //find assignments for datafields here
+        i.resolveDatafieldAssignments();
     }
 
     public static void main (String [] args)
@@ -196,10 +199,13 @@ public class NewTranslator extends xtc.util.Tool{
             System.out.println(dotc);
             System.out.println("===========================================================");
         }
-        for(Bubble b : bubbleList){
-            for(Mubble m : b.getMubbles())
-                if(m.isConstructor())
-                    System.out.println("CODE: " + m.getCode());
+        
+        if(false){ //print constructors code
+            for(Bubble b : bubbleList){
+                for(Mubble m : b.getMubbles())
+                    if(m.isConstructor())
+                        System.out.println("CODE: " + m.getCode());
+            }
         }
 
         /* Output to File */

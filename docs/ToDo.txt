@@ -6,6 +6,9 @@ Device
 
 DAYS TILL DUE: bout 8.
 
+QUESTIONS FOR GRIMM:
+1. Can we just replace "final" with "const"? (currently doing this in Bubble getStruct() around line 230)
+
 To Do:
 1. There is no code added to constructors
 2. Not sure assignments work in dataFields

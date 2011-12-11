@@ -30,6 +30,7 @@ import java.util.regex.*;
 import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
+import xtc.oop.helper.Field;
 
 public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 {
@@ -86,6 +87,30 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         return "";
     }//}}}
 
+    /* Helper method to resolve assignents that happen in datafields. This adds the code on the right
+    side of a dataField assignment to the first line of the appropriate constructor for that node 
+    NOTE: Should be called after implementation parser is complete
+    */
+    boolean debugDFAssignments = true;
+    public void resolveDatafieldAssignments()
+    {
+        for(Bubble b : bubbleList) //for every class
+        {
+            if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());   
+            for(Field f : b.getDataFields()) //for each of it's dataFields
+            {
+                if(f.hasAssignment()) //if there is an assignment
+                {
+                    if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);   
+                    curMub = new Mubble("Temp Mubble");
+                    visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
+                    if(debugDFAssignments) System.out.println("\tCode: "); 
+                    if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());     
+                }
+            }
+        }
+    }
+    
     public void visit(Node n)//{{{
     {
         int counter = 1;

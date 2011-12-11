@@ -332,7 +332,22 @@ public class Bubble{
         ret += "_"+this.name+"_VT* __vptr;\n";
         //iterate through datafields, print them
         for(Field f : dataFields) {
-            ret += f.type + " " + f.name + ";\n";
+            //DO I NEED MORE THAN TYPE AND NAME??? NO!
+            for(String mod : f.getModifiers())
+            {
+                if(mod.equals("public") || mod.equals("private")){
+                }   //ignore, were not worried about visibility in .h
+                else if(mod.equals("final")) 
+                    ret += "const "; //IS THIS CORRECT? This just replaces final with const"
+                else //its another modifier that is c++ compatible, so just print
+                    ret += mod + " ";
+            }
+            
+            if(f.isArray) //fix to work with multidimension arrays
+                ret += "__rt::Array<" + f.type + ">* " + f.name + ";\n";
+            else
+                ret += f.type + " " + f.name + ";\n";
+
         }
         ret+="\n//Constructors\n";
         //loop through methods once to see if there are any constructors
