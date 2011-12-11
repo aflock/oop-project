@@ -25,6 +25,7 @@ Strings:
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
+- fucking static blocks --->>> check line 360 in structure parser
 - Casting
 - Need to deal with static blocks in class declarations.
 x how to use xtc.util.symbol table to our advantage?

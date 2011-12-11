@@ -237,6 +237,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         mubbleList.add(curMub);
         curBub.addMubble(curMub);
+        if(curMub.isConstructor())
+            System.out.println("there is totally a constructor");
 
 
     }
@@ -388,6 +390,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitFormalParameter(GNode n) {
 
+
         Field tempField = new Field();
         curField = tempField;
 
@@ -395,6 +398,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curField.setName(name);
 
         visit(n);
+        Node parent0 = (Node)n.getProperty("parent0");
+        Node parent1 = (Node)n.getProperty("parent1");
+
+        /*
+        if(parent1.hasName("ConstructorDeclaration")){
+            System.out.println("V_V_V_V_V_V_V_V_V_V_");
+            System.out.println(curField.name + " :: " + curField.type);
+            System.out.println("V_V_V_V_V_V_V_V_V_V_");
+        }
+        */
 
         curMub.addParameter(curField);
     }
