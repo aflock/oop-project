@@ -111,16 +111,16 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitSubscriptExpression(GNode n)
     {
         visit(n);
-        
+
         /*todo: FIX, only works for one dimensional arrays
         if(n.getNode(0).hasName(SubscriptExpression) //if it is a multidimensional array
             visitSubscriptExpression(n.getNode(0))
-        else            
+        else
         String arrName = n.getNode(0).getString(0);//SubscriptExpression(PrimaryIdentifier("e"
         String index = n.getNode(1).getString(0);//IntegerLiteral("0")
         methodString += arrName + "->__data[" + index + "]";
         */
-        
+
         //f[0] = arrName->data[0]
         //f[1][0] = arrName->data[0]->data[1]
         ArrayList<String> arrInfo = resolveArray((GNode)n);
@@ -128,7 +128,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         for(int i=1; i< arrInfo.size(); i++)
             methodString += "->__data[" + arrInfo.get(i) + "]";
     }
-    
+
     //params: the base Subscript expression node as a parameter
     //return: an arrayList of info about the array
     //          ArrayList[0] = name of array
@@ -145,7 +145,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             System.out.println("test5: " + n.getNode(1).getString(0));
             System.out.println("test6: " + n.getNode(0).getString(0));
         }
-        
+
         ArrayList<String> info = new ArrayList<String>();
         //resolving my name and any childarrays
         if(n.getNode(0).hasName("SubscriptExpression")) //if multidimensional array
@@ -154,7 +154,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             ArrayList<String> childArray = resolveArray((GNode)n.getNode(0));
             //add all the info from my child array
             for(String s : childArray)
-                info.add(s); 
+                info.add(s);
         }
         else if(n.getNode(0).hasName("PrimaryIdentifier")) //single-dimension array
         {
@@ -162,7 +162,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
         else
             System.out.println("Error Resolving Array for " + n.getName());
-            
+
 
         //resolving parent-array's index
         if(n.getNode(1).hasName("IntegerLiteral"))
@@ -391,6 +391,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 }
                 dispatch(n.getNode(3));
+                methodString += ")";
             }
         }
         else {
