@@ -388,6 +388,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     boolean debugCallExpression = false;
     boolean inPrintStatement = false;
+    
+    String returns = "";
+    
     public void visitCallExpression(GNode n) {
         //visit(n);
         boolean hasVisited = false;
@@ -404,7 +407,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     (n.getString(2).equals("print") ||n.getString(2).equals("println"))
               ){
                 if(debugCallExpression) System.out.println("Call Expression n.getNode(3): " + n.getNode(3) );
-                methodString += "cout << ({";
+                methodString += "std::cout << ({";
                 inPrintStatement = true;
                 visit(n);
                 inPrintStatement = false;
@@ -417,6 +420,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 }
               }//}}}
             else{
+		/*
                 dispatch(n.getNode(0));
 
 
@@ -435,8 +439,50 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 }
                 dispatch(n.getNode(3));
+
                 if(!resolvingShit)
                     methodString += ")";
+		*/
+		        Node firstChild = n.getNode(0);
+		        String tempString = "";
+		        if (firstChild == null) { // static
+		            tempString += n.getString(2) + "(";
+		            dispatch(n.getNode(3));
+		            tempString += ")";
+		        }
+		        else if (firstChild.hasName("CallExpression")) {
+		            dispatch(n.getNode(0));
+		            tempString += returns + "->__vptr->" + n.getString(2) + 
+			        "(" + returns + ", "; //maybe need a comma
+		            dispatch(n.getNode(3));
+		            tempString += ")";
+		            returns = "";
+		        }
+		        else {
+		            //dispatch(n.getNode(0));
+		            String ob = "";
+		            if (firstChild.hasName("PrimaryIdentifier")) {
+			            ob = firstChild.getString(0);
+		            }
+		            else { // new Object()			
+			            ob = "tmp";
+			            methodString += ob + " = ";
+			            dispatch(n.getNode(0));
+			            methodString += ";\n";
+		            }
+		            tempString += ob + "->__vptr->" + n.getString(2) + 
+			        "(" + ob + ", ";
+		            dispatch(n.getNode(3));		    
+		            tempString += ")";
+		        }		
+		        Node parent0 = (Node)n.getProperty("parent0");
+		        if (parent0.hasName("CallExpression")) {
+		            returns = "tmp";
+		            methodString += returns + " = " + tempString + ";\n";
+		        }		
+		        else {
+		            methodString += tempString +";\n";
+		        }            
             }
         }
         else {
@@ -1100,7 +1146,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //}
             }
 
-            if(!inPrintStatement)
+            if(!inPrintStatement && !resolvingShit)
                 methodString += ")";
 
         }
