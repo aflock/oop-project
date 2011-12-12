@@ -5,7 +5,7 @@ public class testDataFieldDecls{
     private int c = 3;
     int d = four();
     int[] e;
-    int[][] f = new int[1][2];
+    int[][] f = new int[9][2];
     String g = "7";
     char h = '8';
     boolean i = false;

@@ -365,6 +365,20 @@ namespace __rt {
                               java::lang::__Object::__class());
     return k;
   }
+  
+  //Template for specialization of arrays of arrays
+  
+  //todo: FIX, this doesn't work at all
+  template<>
+  java::lang::Class Array<Array<int32_t>*>::__class() {
+    static java::lang::Class k =
+      new java::lang::__Class(literal("[FIX TO CALL T->getClass()"),
+                              java::lang::__Object::__class(),
+                              java::lang::__Object::__class());
+                              
+      return k;                        
+  }
+  
 
   // Template specialization for arrays of strings.
   template<>

@@ -52,6 +52,11 @@ public class Mubble {
     public void addCode(String code){
         this.code += code;
     }
+    
+    //adds code to the beginning of this mubbles code
+    public void prependCode(String ncode){
+        this.code = ncode + this.code;
+    }
 
     public void addParameter(Field parameter){
         parameters.add(parameter);

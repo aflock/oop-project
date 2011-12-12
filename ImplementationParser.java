@@ -105,6 +105,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void resolveDatafieldAssignments()
     {
         resolvingShit = true;
+        String add2Constructor = "";
         for(Bubble b : bubbleList) //for every class
         {
             if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());   
@@ -115,11 +116,33 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     if(debugDFAssignments) System.out.println("\t Visiting: " + f.getAssignmentNode());   
                     curMub = new Mubble("Temp Mubble");
                     onMeth = true; //so that nodes are run correctly
+                    if(f.isArray)
+                        inArray = true;
                     methodString = "";
                     visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
+                    onMeth = false; //resetting
+                    inArray = false; //resetting
                     if(debugDFAssignments) System.out.println("\tCode: "); 
                     if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + methodString);
+                    
+                    if(f.isStatic())
+                    {System.out.println(f.name + " is static");} //todo: where to I put static dataMethods??
+                    else //put them in the top of the constructor
+                    {
+                        if(methodString.endsWith("\n"))
+                            add2Constructor += f.name + " = " + methodString;
+                        else
+                            add2Constructor += f.name + " = " + methodString + ";\n";
+                    }
                         
+                }
+            }
+            for(Mubble m : b.getMubbles())
+            {
+                if(m.isConstructor())
+                {
+                    m.prependCode(add2Constructor + "\n\n");
+                    break; //found constructor
                 }
             }
         }
@@ -245,7 +268,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //removed if(inNewArrayExpression) code and placed into visitNewArrayExpression -Calvin 12-11
                 methodString += ";\n";
                 inArray = false;
+                //System.out.println("inArray = false in visitFieldDecl");
             }
+        }
+        
+        if(inArray) //for arrays in constructors
+        {
+            inArray = false;
+            
+            //System.out.println("inArray = false in visitFieldDecl");
         }
         /*//{{{
           if (onMeth) {
@@ -278,8 +309,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 //ConcreteDimensions.IntegerLiteral.("1")
         String size = n.getNode(1).getNode(0).getString(0);
 
-        arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
-        inNewArrayExpress = false;
+        if(resolvingShit) //if we are resolving dataFields, add it straight to the methodString -Calvin
+            methodString += "new __rt::Array<" + arrType + ">(" + size + ")";
+        else //add it to arrayString, which will be added to methodString at the end of visitFieldDeclaration()
+            arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
+
         
         visit(n);
         inNewArrayExpress = false;
@@ -418,7 +452,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 methodString += ";})";//will this "go wrong" when dealing with method chaining?
                 //solution = abide by "inPrintStatement" rules for last ';'
                 if(n.getString(2).equals("println")){
-                    methodString += " << endl";
+                    methodString += " << std::endl";
                 }
               }//}}}
             else{
@@ -605,6 +639,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             if(!parent0.hasName("SubscriptExpression"))
                 methodString += n.getString(0);
         }
+        else
+            //methodString += "onMeth:" + onMeth + " inArray:" + inArray + " inNewArrayExpress:" + inNewArrayExpress; 
         visit(n);
     }
 
@@ -770,6 +806,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 for(Object o : parent0){
                     if (o instanceof Node ){
                         if(((Node)o).hasName("Dimensions"))
+                            //System.out.println("inArray = true in visitQualifiedIdenifier");
                             inArray = true;
                     }
                 }
@@ -878,13 +915,19 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitExpression(GNode n) {
-        if (onMeth) {
+        if (onMeth && !(n.getNode(2).hasName("NewArrayExpression"))) {
             dispatchBitch(n);
             dispatch(n.getNode(0));
             methodString += " " + n.getString(1) + " ";
             dispatch(n.getNode(2));
 
-        } else {
+        } 
+        else if(onMeth && n.getNode(2).hasName("NewArrayExpression")){
+            dispatch(n.getNode(0));
+            dispatch(n.getNode(2));
+            methodString += arrayString;
+        }        
+        else {
             visit(n);
         }
     }
@@ -1016,6 +1059,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 {
                     if(((Node)o).hasName("Dimensions"))
                         inArray = true;
+                        //System.out.println("inArray = true in visitPrimitiveType");
                 }
 
             }
@@ -1292,31 +1336,33 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         public void visitAdditiveExpression(GNode n) {
             //putting parentheses around everything in an additive expression
-            methodString += "(";
+
             if (onMeth) {
+                methodString += "(";
                 dispatchBitch(n);
                 dispatch(n.getNode(0));
                 methodString += " "+n.getString(1)+" ";
                 dispatch(n.getNode(2));
+                methodString += ")";
             }
             else {
                 visit(n);
             }
-            methodString += ")";
+
         }
 
         public void visitMultiplicativeExpression(GNode n) {
-            methodString += "(";
             if (onMeth) {
+                methodString += "(";
                 dispatchBitch(n);
                 dispatch(n.getNode(0));
                 methodString += " "+n.getString(1)+" ";
                 dispatch(n.getNode(2));
+                methodString += ")";
             }
             else {
                 visit(n);
             }
-            methodString += ")";
         }
 
         public void visitCastExpression(GNode n) {

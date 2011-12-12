@@ -28,5 +28,9 @@ testPrinting:
     - Object . tostring not being called
     - method chaining
 
+testDataFieldDecls:
+    -two dimensional arrays do not work
+    -calling the method four() in constructor doesnt work
+    -static dataFields don't work
 
 

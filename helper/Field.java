@@ -100,4 +100,14 @@ public class Field{
     {
         return this.arrayDims;
     }
+    
+    public boolean isStatic()
+    {
+        for(String s : modifiers)
+        {
+            if(s.equals("static")) 
+                return true;
+        }
+        return false;
+    }
 }
