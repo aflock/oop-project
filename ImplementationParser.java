@@ -32,6 +32,8 @@ import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
 
+import xtc.util.SymbolTable;
+
 public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 {
 
@@ -439,11 +441,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 		}
 		else {
 		    //dispatch(n.getNode(0));
+		    String ob = "";
 		    if (firstChild.hasName("PrimaryIdentifier")) {
-			String ob = fisrtChild.getString(0);
+			ob = firstChild.getString(0);
 		    }
 		    else { // new Object()			
-			String ob = "tmp";
+			ob = "tmp";
 			methodString += ob + " = ";
 			dispatch(n.getNode(0));
 			methodString += ";\n";
@@ -586,11 +589,21 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         visit(n);
     }
 
+    SymbolTable symbolTable;
     public void visitClassDeclaration(GNode n){
-
+	
         String className = n.getString(1);
+	Bubble curBub = null;
+	for (Bubble b : bubbleList) {
+	    if (b.getName().equals(className)) {
+		curBub = b;
+		break;
+	    }
+	}
+	symbolTable = curBub.getTable();
 
         visit(n);
+	symbolTable = null;
 
         //at this point all the mubbles of bubble have been filled
         for(Bubble b : bubbleList){
@@ -601,7 +614,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitFormalParameters(GNode n){
+	Node parent0 = (Node)n.getProperty("parent0");
+	if (parent0.hasName("ConstructorDeclaration")) {
+	    symbolTable.enter(parent0.getString(2));
+	}
+	else if (parent0.hasName("MethodDeclaration")) {
+	    symbolTable.enter(parent0.getString(3));
+	}
         visit(n);
+	symbolTable.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -811,7 +832,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             methodString += "for(";
         }
+	symbolTable.enter("for");
         visit(n);
+	symbolTable.exit();
         if (onMeth) {
             methodString += "}\n";
         }
@@ -882,6 +905,37 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitBlock(GNode n) {
+	Node parent0 = (Node)n.getProperty("parent0");
+	boolean hasEntered = false;
+	if (parent0.hasName("WhileStatement")) {
+	    symbolTable.enter("while");
+	    hasEntered = true;
+	}
+	if (parent0.hasName("DoWhileStatement")) {
+	    symbolTable.enter("dowhile");
+	    hasEntered = true;
+	}
+	if (parent0.hasName("ConditionalStatement")) {
+	    symbolTable.enter("if-else");
+	    hasEntered = true;
+	}
+	if (parent0.hasName("Block")) {
+	    symbolTable.enter("block");
+	    hasEntered = true;
+	}
+	if (parent0.hasName("SwitchStatement")) {
+	    symbolTable.enter("switch");
+	    hasEntered = true;
+	}
+	if (parent0.hasName("TryCatchFinallyStatement")) {
+	    symbolTable.enter("try-finally");
+	    hasEntered = true;
+	}
+	if (parent0.hasName("CatchClause")) {
+	    symbolTable.enter("catch");
+	    hasEntered = true;
+	}
+
         if(((Node)n.getProperty("parent0")).getName()
                 .equals("MethodDeclaration") ||
                 ((Node)n.getProperty("parent0")).getName().equals("ConstructorDeclaration")) {
@@ -900,6 +954,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         else {
             visit(n);
         }
+	if (hasEntered)
+	    symbolTable.exit();
     }
 
     public void visitPostfixExpression(GNode n) {
