@@ -8,7 +8,7 @@ DAYS TILL DUE: bout 8.
 
 QUESTIONS FOR GRIMM:
 1. Can we just replace "final" with "const"? (currently doing this in Bubble getStruct() around line 230)
-
+2. Where does static datafields go in the translated .cc file? Not in the consructor.
 To Do:
 1. There is no code added to constructors
 2. Not sure assignments work in dataFields

@@ -9,7 +9,7 @@ public class testDataFieldDecls{
     String g = "7";
     char h = '8';
     boolean i = false;
-    long j = (8-9);
+    long j = ((8-9)*2);
     double k = 8.8;
     //test for rest of primitive types
 

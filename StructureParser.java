@@ -347,26 +347,20 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent1 = (Node)n.getProperty("parent1");
         Node parent2 = (Node)n.getProperty("parent2");
 
-        System.out.println("got here 1");
         if ((parent1.hasName("FieldDeclaration")) &&
                 (parent2.hasName("ClassDeclaration"))){
-            System.out.println("got here 2");
             if(n.getNode(2) != null) //if the 3rd child of Declarator is not null, an assignment has occured
             {
-            System.out.println("got here 3");
                 curField.setHasAssignment(true);
                 curField.setAssignment(n); //save the node so we can re-parse it later
             }
         }
 
-            System.out.println("got here 4");
         if(dataField) //if this is a dataField
         {
-            System.out.println("got here 5");
             curField.name = n.getString(0);
             if(n.getNode(2) != null) //if an assignment has occured
             {
-            System.out.println("got here 6");
                 curField.setHasAssignment(true);
                 curField.setAssignment(n); //save the node so we can parse it later
             }

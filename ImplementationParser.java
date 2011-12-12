@@ -40,7 +40,14 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public static ArrayList<Mubble> mubbleList;
     public static ArrayList<Mubble> langList;
     public static ArrayList<String> parsed; //keeps track of what ASTs have been parsed
+    boolean onMeth = false;
+    Mubble curMub = null;
+    String tempString = "";
+    String tmpCode = "";
+    String methodString = "";
+    String cName = "";
 
+    HashMap<String, String> table;
     public NewTranslator t; //used for the parse method
 
     public ImplementationParser(NewTranslator t, ArrayList<Pubble> pubbleList, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList, ArrayList<String> parsed)
@@ -92,8 +99,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     NOTE: Should be called after implementation parser is complete
     */
     boolean debugDFAssignments = true;
+    boolean resolvingShit = false;
     public void resolveDatafieldAssignments()
     {
+        resolvingShit = true;
         for(Bubble b : bubbleList) //for every class
         {
             if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());   
@@ -101,14 +110,18 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             {
                 if(f.hasAssignment()) //if there is an assignment
                 {
-                    if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);   
+                    if(debugDFAssignments) System.out.println("\t Visiting: " + f.getAssignmentNode());   
                     curMub = new Mubble("Temp Mubble");
+                    onMeth = true; //so that nodes are run correctly
+                    methodString = "";
                     visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
                     if(debugDFAssignments) System.out.println("\tCode: "); 
-                    if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());     
+                    if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + methodString);
+                        
                 }
             }
         }
+        resolvingShit = false;
     }
     
     public void visit(Node n)//{{{
@@ -200,7 +213,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
 
     String tan;
-    boolean inArrayExpress = false;
+
+    //Calvin: because we are concatinating to one big method string, the code to print 
+    //the an array assignment is in reverse order. To solve this, we will be writting to
+    //arrayString, and adding that at the end of Fiend Decl
+    String arrayString = ""; 
     public void visitFieldDeclaration(GNode n){
 
         if (onMeth) { tan = ""; }
@@ -219,16 +236,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     arrType = "int32_t";
                 if(arrType.equals("boolean"))
                     arrType = "bool";
+                    
                 String arrName = n.getNode(2).getNode(0).getString(0);
-                methodString += "__rt::Array<" + arrType + ">* " + arrName;
+                methodString += "__rt::Array<" + arrType + ">* " + arrName + arrayString;
                 table.put(arrName, "__rt::Array<" + arrType + ">* ");
-
-                if(inArrayExpress)
-                {
-                    String size = n.getNode(2).getNode(0).getNode(2).getNode(1).getNode(0).getString(0); //wtf...?
-                    methodString += "= new __rt::Array<" + arrType + ">(" + size + ")";
-                    inArrayExpress = false;
-                }
+                //removed if(inNewArrayExpression) code and placed into visitNewArrayExpression -Calvin 12-11
                 methodString += ";\n";
                 inArray = false;
             }
@@ -244,15 +256,31 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
           }
         *///}}}
     }
-
+    
+    boolean inNewArrayExpress = false;
     public void visitNewArrayExpression(GNode n)
     {
-        //changed 12-11 by Calvin. inArrayExpress was set to true AFTER VISIT, was giving errors
+        //changed 12-11 by Calvin. inNewArrayExpress was set to true AFTER VISIT, was giving errors
         //I assumed it was a mistake, and was meant to be above visit, so
         //I made it true before and false after, dunno if this causes problems somewhere else
-        inArrayExpress = true;
+        inNewArrayExpress = true;
+        
+                
+        String arrType = n.getNode(0).getString(0); //getNode(0) is either QualifiedIdentifier or Primitive Type
+        if(arrType.equals("int"))
+            arrType = "int32_t";
+        if(arrType.equals("boolean"))
+            arrType = "bool";
+
+        //todo: FIX FOR 2 dimensional arrays...iterate through children of concrete dimensions
+                //ConcreteDimensions.IntegerLiteral.("1")
+        String size = n.getNode(1).getNode(0).getString(0);
+
+        arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
+        inNewArrayExpress = false;
+        
         visit(n);
-        inArrayExpress = false;
+        inNewArrayExpress = false;
 
     }
 
@@ -263,15 +291,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     public void visitModifiers(GNode n){
         visit(n);
     }
-
-    String tempString = "";
-    String tmpCode = "";
-    boolean onMeth = false;
-    Mubble curMub = null;
-    String methodString = "";
-    String cName = "";
-
-    HashMap<String, String> table;
 
     public void visitMethodDeclaration(GNode n)
     {
@@ -416,7 +435,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 }
                 dispatch(n.getNode(3));
-                methodString += ")";
+                if(!resolvingShit)
+                    methodString += ")";
             }
         }
         else {
@@ -530,8 +550,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
 
     public void visitIntegerLiteral(GNode n) {
+        //System.out.println("INSIDE visitIntegerLiteral");
         Node parent0 = (Node)n.getProperty("parent0");
-        if (onMeth && !inArray) {
+        if (onMeth && !inArray && !inNewArrayExpress) {
             if(!parent0.hasName("SubscriptExpression"))
                 methodString += n.getString(0);
         }
@@ -897,7 +918,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
             }
         }
-        if (onMeth && !inArray) {
+        if (onMeth && !inArray & !inNewArrayExpress) { //a little sloppy of a fix
             methodString += n.getString(0);
         }
 
@@ -1168,6 +1189,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
 
         public void visitAdditiveExpression(GNode n) {
+            //putting parentheses around everything in an additive expression
+            methodString += "(";
             if (onMeth) {
                 dispatchBitch(n);
                 dispatch(n.getNode(0));
@@ -1177,9 +1200,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             else {
                 visit(n);
             }
+            methodString += ")";
         }
 
         public void visitMultiplicativeExpression(GNode n) {
+            methodString += "(";
             if (onMeth) {
                 dispatchBitch(n);
                 dispatch(n.getNode(0));
@@ -1189,6 +1214,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             else {
                 visit(n);
             }
+            methodString += ")";
         }
 
         public void visitCastExpression(GNode n) {

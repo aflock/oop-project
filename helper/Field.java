@@ -57,6 +57,8 @@ public class Field{
         //TRANSLATE TYPES HERE, do we need to do this for booleans?
         if(type.equals("int"))
             type = "int32_t";
+        else if(type.equals("boolean"))
+            type = "bool";
             
         this.type = type;
     }
@@ -91,5 +93,11 @@ public class Field{
     
     public GNode getAssignmentNode(){
         return this.assignmentNode;
+    }
+    
+    //for if the field is an array
+    public int getDimensions()
+    {
+        return this.arrayDims;
     }
 }
