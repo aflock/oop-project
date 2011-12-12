@@ -100,7 +100,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     side of a dataField assignment to the first line of the appropriate constructor for that node 
     NOTE: Should be called after implementation parser is complete
     */
-    boolean debugDFAssignments = true;
+    boolean debugDFAssignments = false;
     boolean resolvingShit = false;
     public void resolveDatafieldAssignments()
     {

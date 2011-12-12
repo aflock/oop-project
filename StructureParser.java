@@ -232,14 +232,14 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
 
         visit(n);
-
+        if(true) System.out.println(curMub.getName() + ".setBubble(" + curBub.getName() + ")");
         curMub.setBubble(curBub);
         curMub.setPackage(curPub);
 
         mubbleList.add(curMub);
         curBub.addMubble(curMub);
-        if(curMub.isConstructor())
-            System.out.println("there is totally a constructor");
+        //if(curMub.isConstructor())
+          //  System.out.println("there is totally a constructor");
 
 
     }
@@ -277,7 +277,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
 
         visit(n);
-
+        if(true) System.out.println(curMub.getName() + ".setBubble(" + curBub.getName() + ")");
         curMub.setBubble(curBub);
         curMub.setPackage(curPub);
         curMub.setParameters();
