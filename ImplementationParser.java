@@ -31,6 +31,7 @@ import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
+import xtc.oop.helper.EvalCall;
 
 public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 {
@@ -88,7 +89,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }//}}}
 
     /* Helper method to resolve assignents that happen in datafields. This adds the code on the right
-    side of a dataField assignment to the first line of the appropriate constructor for that node 
+    side of a dataField assignment to the first line of the appropriate constructor for that node
     NOTE: Should be called after implementation parser is complete
     */
     boolean debugDFAssignments = true;
@@ -96,21 +97,21 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     {
         for(Bubble b : bubbleList) //for every class
         {
-            if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());   
+            if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());
             for(Field f : b.getDataFields()) //for each of it's dataFields
             {
                 if(f.hasAssignment()) //if there is an assignment
                 {
-                    if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);   
+                    if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);
                     curMub = new Mubble("Temp Mubble");
                     visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
-                    if(debugDFAssignments) System.out.println("\tCode: "); 
-                    if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());     
+                    if(debugDFAssignments) System.out.println("\tCode: ");
+                    if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());
                 }
             }
         }
     }
-    
+
     public void visit(Node n)//{{{
     {
         int counter = 1;
@@ -301,13 +302,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitModifier(GNode n){
         visit(n);
-
     }
 
     public void visitConstructorDeclaration(GNode n)
     {
-
-
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -376,9 +374,26 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             mName = n.getString(2);
             String tmp = "";
 
+            //want to know if this method is static
+            boolean isStaticMethod = true;
+            String theName = "";
+            if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
+                theName = n.getNode(0).getString(0);
+            }else{
+                theName = curBub.getName();
+            }
+
+            EvalCall e = new EvalCall(curBub, bubbleList, table);
+            String[] params = e.dispatch(n).trim().split(" ");
+            ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
+
+            //TODO VV check this/ finish this shit
+            isStaticMethod = isStatic(table, theName, mName, pList);
+
+
             dispatchBitch(n);
             //Dealing with System.out.print*
-            if(     (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")) &&//{{{
+            if((n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")) &&//{{{
                     n.getNode(0).getNode(0).hasName("PrimaryIdentifier") &&
                     n.getNode(0).getNode(0).getString(0).equals("System") &&
                     n.getNode(0).getString(1).equals("out") &&
@@ -398,25 +413,42 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 }
               }//}}}
             else{
-                dispatch(n.getNode(0));
+                if(!isStaticMethod){
+                    dispatch(n.getNode(0));
+                    //need to fix casting for first arg
+                    if(n.getNode(0) != null) {
+                        methodString += "->__vptr->"+n.getString(2);
+                        methodString += "(";
+                        //should cast self to expected type
+                        //not doing now because castify is not a method,
+                        //too complicated right now
+                        dispatch(n.getNode(0));//adding self
+                        //methodString += ", "; //error
+                    }
+                    else {
+                        methodString += n.getString(2) + "(";
 
-
-                //need to fix casting for first arg
-                if(n.getNode(0) != null) {
-                    methodString += "->__vptr->"+n.getString(2);
+                    }
+                    dispatch(n.getNode(3));
+                    methodString += ")";
+                }
+                else {//is static
+                    methodString += "_";
+                    //need to know which static class we are talking about
+                    String cname = table.lookup(theName);
+                    if (cname == null){//theName must be a reference to a class
+                        cname = theName;
+                    }
+                    Bubble papa = new Bubble();
+                    for(Bubble b : bubbleList){
+                        if(b.getName().equals(cname))
+                            papa = b;
+                    }
+                    methodString += papa.getName() + "::" + n.getString(2);
                     methodString += "(";
-                    //should cast self to expected type
-                    //not doing now because castify is not a method,
-                    //too complicated right now
-                    dispatch(n.getNode(0));//adding self
-                    //methodString += ", "; //error
+                    dispatch(n.getNode(3));
+                    methodString += ")";
                 }
-                else {
-                    methodString += n.getString(2) + "(";
-
-                }
-                dispatch(n.getNode(3));
-                methodString += ")";
             }
         }
         else {
@@ -542,9 +574,14 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         visit(n);
     }
 
+    Bubble curBub;
     public void visitClassDeclaration(GNode n){
 
         String className = n.getString(1);
+        for(Bubble b: bubbleList){
+            if(b.getName().equals(className))
+                curBub = b;
+        }
 
         visit(n);
 
@@ -1283,6 +1320,28 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
 
         ///////HELPER METHODS////////
+
+        public boolean isStatic(SymbolTable a, String vcName, String methName, ArrayList<String> params){
+            //queries whether a given method with a variable is a static method
+            //TODO need to pass parameters
+
+            String cname = table.lookup(vcName);
+            if (cname == null){//theName must be a reference to a class
+                cname = vcName;
+            }
+
+            Bubble papa = new Bubble();
+            for(Bubble b : bubbleList){
+                if(b.getName().equals(cname))
+                    papa = b;
+            }
+
+            //Mubble mama = new Mubble();
+            Mubble mama = papa.findMethod(bubbleList, methName, params);
+            if(mama == null)
+                System.out.println("Problem finding mubble with bub.findMethod");
+            return mama.isStatic();
+        }
 
         public boolean checkAncestor(Node n, String name){
             //this is to check if any of the nodes parents are of type name

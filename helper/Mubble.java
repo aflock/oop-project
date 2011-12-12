@@ -28,7 +28,6 @@ public class Mubble {
     ArrayList<String> paraName;
     ArrayList<String> paraType;
     ArrayList<String> paraMod;
-
     ArrayList<Field> parameters;
 
     String code;
