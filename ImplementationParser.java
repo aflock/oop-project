@@ -427,7 +427,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                     else {
                         methodString += n.getString(2) + "(";
-
                     }
                     dispatch(n.getNode(3));
                     methodString += ")";
