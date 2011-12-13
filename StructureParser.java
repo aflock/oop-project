@@ -232,7 +232,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
 
         visit(n);
-
+        if(true) System.out.println(curMub.getName() + ".setBubble(" + curBub.getName() + ")");
         curMub.setBubble(curBub);
         curMub.setPackage(curPub);
 
@@ -274,7 +274,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
 
         visit(n);
-
+        if(true) System.out.println(curMub.getName() + ".setBubble(" + curBub.getName() + ")");
         curMub.setBubble(curBub);
         curMub.setPackage(curPub);
         curMub.setParameters();

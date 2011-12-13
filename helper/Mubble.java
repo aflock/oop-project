@@ -5,7 +5,7 @@ import java.util.ArrayList;
 //import helper.Bubble;
 //import helper.Field;
 
-public class Mubble {
+public class Mubble{
     //possible values for flag
     private final char INHERITED = 'i';
     private final char NEW = 'n';
@@ -47,9 +47,20 @@ public class Mubble {
         code = "";
         flag = '@';
     }
+    
+    public Mubble(Mubble m){
+        this.code = m.getCode();
+        this.methodName = m.getName();
+    
+    }
 
     public void addCode(String code){
         this.code += code;
+    }
+    
+    //adds code to the beginning of this mubbles code
+    public void prependCode(String ncode){
+        this.code = ncode + this.code;
     }
 
     public void addParameter(Field parameter){
@@ -347,7 +358,7 @@ public class Mubble {
         if(main || staticMethod){
             return "";
         }
-        StringBuilder type = new StringBuilder();
+        //StringBuilder type = new StringBuilder();
         /*
            if (from == INHERITED) {
            type.append("(").append(returnType).append("(*)");

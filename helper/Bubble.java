@@ -1,6 +1,8 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
 import xtc.util.SymbolTable;
+//import java.util.Arrays;
+//import java.util.Collections;
 
 public class Bubble{
     ArrayList<Bubble> bubbles; //ArrayList of the children of this Bubble
@@ -270,7 +272,24 @@ public class Bubble{
 
     public void inheritMethods(){
         //takes parents methods for vtable.
-        ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(parentBubble.getMubbles());
+        /*Object[] temp = Arrays.copyOf(parentBubble.getMubbles().toArray(), parentBubble.getMubbles().size());
+        Mubble[] temp2 = new Mubble[temp.length];
+        for(int i=0; i < temp.length; i++)
+            temp2[i] = (Mubble)temp[i];
+            
+        ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(Arrays.asList(temp2));*/
+        ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>();
+        for(Mubble m : parentBubble.getMubbles())
+        {
+            //FIX FOR DEEP COPPIES
+            newMethodsList.add(m);
+        }
+
+
+        for(Mubble m : newMethodsList)
+        {
+            System.out.println(parentBubble.getMubbles().contains(m));
+        }
         for(int i = 0; i < newMethodsList.size(); i++){
             Mubble m = newMethodsList.get(i);
             //todo: xtc.oop.helper.Bubble.inheritMethods(Bubble.java:231) <<< wtf? -AF
@@ -300,6 +319,11 @@ public class Bubble{
             }
         }
         this.mubbles = newMethodsList;
+        
+        for(Mubble m : mubbles)
+        {
+            System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
+        }
     }
 
     public boolean paramMatch(Mubble one, Mubble two){

@@ -136,11 +136,48 @@ public class NewTranslator extends xtc.util.Tool{
 
         //At this point, pubbleList contains all the packages but they aren't linked together
         t.constructPackageTree();
-
+        
+        if(true) //printing out bubble and methods/method parent
+        {
+            for(Bubble b : bubbleList){
+                if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                    System.out.println("Bubble " + b.getName());
+                    for(Mubble m : b.getMubbles()){
+                        System.out.println("\tMubble: " + m.getName());
+                        System.out.println("\tParent: " + m.getClassName() + "\n");
+                    }
+                }
+            }
+            System.out.println("=======================================================");
+        }
+        
         //Pass methods down the inheritance tree
         for(Bubble b: bubbleList){
             if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                System.out.println("Inheriting Methods: " + b.getName());
                 b.inheritMethods();
+            }
+        }
+        for(Bubble b: bubbleList){
+            if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                System.out.println("Inheriting Methods: " + b.getName());
+                if(b.getName().equals("testStaticMethods"))
+                    b.inheritMethods();
+            }
+            
+        }
+        
+        if(true) //printing out bubble and methods/method parent
+        {
+            System.out.println("=======================================================");
+            for(Bubble b : bubbleList){
+                if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                    System.out.println("Bubble " + b.getName());
+                    for(Mubble m : b.getMubbles()){
+                        System.out.println("\tMubble: " + m.getName());
+                        System.out.println("\tParent: " + m.getClassName() + "\n");
+                    }
+                }
             }
         }
 
