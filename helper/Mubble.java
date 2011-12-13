@@ -47,17 +47,17 @@ public class Mubble{
         code = "";
         flag = '@';
     }
-    
+
     public Mubble(Mubble m){
         this.code = m.getCode();
         this.methodName = m.getName();
-    
+
     }
 
     public void addCode(String code){
         this.code += code;
     }
-    
+
     //adds code to the beginning of this mubbles code
     public void prependCode(String ncode){
         this.code = ncode + this.code;
@@ -195,6 +195,10 @@ public class Mubble{
     }
     public Bubble getBubble() {
         return className;
+    }
+
+    public String getGroup(){
+        return group;
     }
 
     public Pubble getPackage() {

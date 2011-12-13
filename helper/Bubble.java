@@ -89,7 +89,12 @@ public class Bubble{
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
         Mubble mub = null;
         int matchNum = 100000000;
+        System.out.println("findMethod being called SON");
+        System.out.println("Method name is :: " + methodName);
+        System.out.println("my name is :: " + getName());
         for (Mubble m : mubbles) {
+            System.out.println("VIVIVIVIVIVIVIVIVIVI");
+            System.out.println(m.getGroup());
             if (m.belongToGroup(methodName)) {
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
@@ -118,6 +123,7 @@ public class Bubble{
 
                 }
                 if (min < matchNum) {
+                    System.out.println("setting mub");
                     mub = m;
                 }
             } else { continue;}
@@ -276,7 +282,7 @@ public class Bubble{
         Mubble[] temp2 = new Mubble[temp.length];
         for(int i=0; i < temp.length; i++)
             temp2[i] = (Mubble)temp[i];
-            
+
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(Arrays.asList(temp2));*/
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>();
         for(Mubble m : parentBubble.getMubbles())
@@ -288,7 +294,7 @@ public class Bubble{
 
         for(Mubble m : newMethodsList)
         {
-            System.out.println(parentBubble.getMubbles().contains(m));
+            //System.out.println(parentBubble.getMubbles().contains(m));
         }
         for(int i = 0; i < newMethodsList.size(); i++){
             Mubble m = newMethodsList.get(i);
@@ -319,10 +325,10 @@ public class Bubble{
             }
         }
         this.mubbles = newMethodsList;
-        
+
         for(Mubble m : mubbles)
         {
-            System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
+            //System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
         }
     }
 

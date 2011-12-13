@@ -59,7 +59,7 @@ public class Field{
             type = "int32_t";
         else if(type.equals("boolean"))
             type = "bool";
-            
+
         this.type = type;
     }
     public void setIsArray(boolean isArray){
@@ -77,35 +77,35 @@ public class Field{
     public void setHasAssignment(boolean hasAssignment){
         this.hasAssignment = hasAssignment;
     }
-    
+
     public void setAssignment(GNode assignmentNode){
         this.assignmentNode = assignmentNode;
     }
-    
+
     public ArrayList<String> getModifiers(){
         return this.modifiers;
     }
-    
+
     public boolean hasAssignment()
-    {   
+    {
         return this.hasAssignment;
     }
-    
+
     public GNode getAssignmentNode(){
         return this.assignmentNode;
     }
-    
+
     //for if the field is an array
     public int getDimensions()
     {
         return this.arrayDims;
     }
-    
+
     public boolean isStatic()
     {
         for(String s : modifiers)
         {
-            if(s.equals("static")) 
+            if(s.equals("static"))
                 return true;
         }
         return false;

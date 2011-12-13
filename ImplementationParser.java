@@ -437,21 +437,6 @@ NOTE: Should be called after implementation parser is complete
             mName = n.getString(2);
             String tmp = "";
 
-            //want to know if this method is static
-            boolean isStaticMethod = true;
-            String theName = "";
-            if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
-                theName = n.getNode(0).getString(0);
-            }else{
-                theName = curBub.getName();
-            }
-
-            EvalCall e = new EvalCall(curBub, bubbleList, table);
-            String[] params = e.dispatch(n).trim().split(" ");
-            ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
-
-            //TODO VV check this/ finish this shit
-            isStaticMethod = isStatic(table, theName, mName, pList);
 
 
             dispatchBitch(n);
@@ -476,6 +461,22 @@ NOTE: Should be called after implementation parser is complete
                 }
               }//}}}
             else{
+
+                //want to know if this method is static
+                boolean isStaticMethod = true;
+                String theName = "";
+                if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
+                    theName = n.getNode(0).getString(0);
+                }else{
+                    theName = curBub.getName();
+                }
+
+                EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
+                String[] params = ((String)(e.dispatch(n))).trim().split(" ");
+                ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
+
+                //TODO VV check this/ finish this shit
+                isStaticMethod = isStatic(symbolTable, theName, mName, pList);
                 if(!isStaticMethod){
                     dispatch(n.getNode(0));
                     //need to fix casting for first arg
@@ -484,7 +485,7 @@ NOTE: Should be called after implementation parser is complete
                         methodString += "(";
                         //should cast self to expected type
                         //not doing now because castify is not a method,
-                        //too complicated right now
+                        //too complicated right now TODO >???
                         dispatch(n.getNode(0));//adding self
                         //methodString += ", "; //error
                     }
@@ -498,7 +499,7 @@ NOTE: Should be called after implementation parser is complete
                 else {//is static
                     methodString += "_";
                     //need to know which static class we are talking about
-                    String cname = table.lookup(theName);
+                    String cname = (String)symbolTable.lookup(theName);
                     if (cname == null){//theName must be a reference to a class
                         cname = theName;
                     }
@@ -1200,29 +1201,45 @@ NOTE: Should be called after implementation parser is complete
     //String key;
     public void visitArguments(GNode n) {
 
+        System.out.println("got here 1");
         if (onMeth) {
             String key = "";
+            System.out.println("got here 2");
             dispatchBitch(n);
             String type = "";
+            System.out.println("got here 3");
             Node callex = (Node)n.getProperty("parent0");
             if (callex.hasName("CallExpression") &&
                     callex.getNode(0) != null && callex
                     .getNode(0).hasName("PrimaryIdentifier")) {
+                System.out.println("got here 4");
                 key = callex.getNode(0).getString(0);
+                System.out.println("key is ::" + key);
                 type = (String)symbolTable.lookup(key);
+                System.out.println(type);
+                //if type is null here it is a static method, and the Class is what is important
+                //--AF
+                if(type == null || type.equals("constructor"))
+                    type = key;
                 //System.out.println(key + " " + type);
                     }
 
 
             String mSign = "";
+            System.out.println("got here 5");
             for (Mubble m : mubbleList) {
 
+                System.out.println("got here x");
+                System.out.println(m);
+                System.out.println(m.getName());
+                System.out.println(type);
                 if ((m.getClassName().equals(type) || type.equals("")) &&
                         m.getName().equals(mName)) {
                     mSign = m.forward();
                         }
             }
 
+            System.out.println("got here 6");
             for (Mubble m : langList) {
 
                 if (m.getClassName().equals(type) &&
@@ -1230,6 +1247,7 @@ NOTE: Should be called after implementation parser is complete
                     mSign = m.forward();
                         }
             }
+            System.out.println("got here 7");
             Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
             String p = "";
 
@@ -1501,8 +1519,8 @@ NOTE: Should be called after implementation parser is complete
         //queries whether a given method with a variable is a static method
         //TODO need to pass parameters
 
-        String cname = a.lookup(vcName);
-        if (cname == null){//theName must be a reference to a class
+        String cname = (String)a.lookup(vcName);
+        if (cname == null || cname.equals("constructor")){//must reference a class
             cname = vcName;
         }
 
@@ -1513,6 +1531,7 @@ NOTE: Should be called after implementation parser is complete
         }
 
         //Mubble mama = new Mubble();
+        System.out.println("bout to call find method for || " + methName + " || with bubble name :: " + papa.getName());
         Mubble mama = papa.findMethod(bubbleList, methName, params);
         if(mama == null)
             System.out.println("Problem finding mubble with bub.findMethod");

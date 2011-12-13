@@ -111,7 +111,7 @@ public class NewTranslator extends xtc.util.Tool{
         ArrayList<String> parsed = new ArrayList<String>();
         ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
         i.dispatch(node);
-        
+
         //find assignments for datafields here
         i.resolveDatafieldAssignments();
     }
@@ -136,8 +136,8 @@ public class NewTranslator extends xtc.util.Tool{
 
         //At this point, pubbleList contains all the packages but they aren't linked together
         t.constructPackageTree();
-        
-        if(true) //printing out bubble and methods/method parent
+
+        if(false) //printing out bubble and methods/method parent
         {
             for(Bubble b : bubbleList){
                 if(!(b.getName().equals("String") || b.getName().equals("Object"))){
@@ -150,24 +150,24 @@ public class NewTranslator extends xtc.util.Tool{
             }
             System.out.println("=======================================================");
         }
-        
+
         //Pass methods down the inheritance tree
         for(Bubble b: bubbleList){
             if(!(b.getName().equals("String") || b.getName().equals("Object"))){
-                System.out.println("Inheriting Methods: " + b.getName());
+                //System.out.println("Inheriting Methods: " + b.getName());
                 b.inheritMethods();
             }
         }
         for(Bubble b: bubbleList){
             if(!(b.getName().equals("String") || b.getName().equals("Object"))){
-                System.out.println("Inheriting Methods: " + b.getName());
+                //System.out.println("Inheriting Methods: " + b.getName());
                 if(b.getName().equals("testStaticMethods"))
                     b.inheritMethods();
             }
-            
+
         }
-        
-        if(true) //printing out bubble and methods/method parent
+
+        if(false) //printing out bubble and methods/method parent
         {
             System.out.println("=======================================================");
             for(Bubble b : bubbleList){
@@ -236,7 +236,7 @@ public class NewTranslator extends xtc.util.Tool{
             System.out.println(dotc);
             System.out.println("===========================================================");
         }
-        
+
         if(false){ //print constructors code
             for(Bubble b : bubbleList){
                 for(Mubble m : b.getMubbles())

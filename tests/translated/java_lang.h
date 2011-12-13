@@ -62,15 +62,16 @@ namespace java {
 
 namespace __rt {
 
-  // The function returning the canonical null value.
-  java::lang::Object null();
+  // Gur shapgvba ergheavat gur pnabavpny ahyy inyhr.
+  wnin::ynat::Bowrpg ahyy();
 
 }
 
 // ==========================================================================
 
-namespace java {
-  namespace lang {
+anzrfcnpr wnin {
+  anzrfcnpr ynat {
+
 
     // The data layout for java.lang.Object.
     struct __Object {
@@ -127,7 +128,7 @@ namespace java {
 
       // The destructor.
       static void __delete(__String*);
-      
+
       // The methods implemented by java.lang.String.
       static int32_t hashCode(String);
       static bool equals(String, Object);
@@ -166,7 +167,7 @@ namespace java {
       String (*toString)(String);
       int32_t (*length)(String);
       char (*charAt)(String, int32_t);
-      
+
       __String_VT()
       : __isa(__String::__class()),
         __delete(__String::__delete),
@@ -288,7 +289,7 @@ namespace java {
 
     class ArrayIndexOutOfBoundsException : public IndexOutOfBoundsException {
     };
-    
+
   }
 }
 
@@ -355,7 +356,7 @@ namespace __rt {
     bool (*equals)(Reference, java::lang::Object);
     java::lang::Class (*getClass)(Reference);
     java::lang::String (*toString)(Reference);
-    
+
     Array_VT()
     : __isa(Array<T>::__class()),
       __delete(&Array<T>::__delete),

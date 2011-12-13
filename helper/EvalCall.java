@@ -176,19 +176,49 @@ public class EvalCall extends Visitor{
         //evaluate arguments and find correct method based on them
         String arguments  =  visit(n.getNode(3));
         String methodName = n.getString(2);
+        //catch System.out.*
+        if(n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
+            if(n.getNode(0).getNode(0) != null && n.getNode(0).getNode(0).getString(0).equals("System"))
+                return "";
+        }
         String[] splitArgs = arguments.trim().split(" ");
         ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(splitArgs));
         //now find method based on name and parameters
-        Bubble b = new Bubble();
-        Mubble theMub = b.findMethod(bubbleList, methodName, paramsList);
+        //curBub does not work here- it is not ensured that curBub is the class that the method belongs to -AF
+
+        String key = curBub.getName(); //hmm is this the right default option? what about selectionexpression? -AF
+        //will method chaining screw this up as well?> AF
+        if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
+            key = n.getNode(0).getString(0);
+        }
+        table = curBub.getTable();
+        String type = (String)table.lookup(key);
+        if(type == null || type.equals("constructor"))
+            type = key;
+        Bubble papa = new Bubble();
+        System.out.println("looking for a bubble with type ::" + type);
+
+        for(Bubble b: bubbleList){
+            if (b.getName().equals(type))
+                papa = b;
+        }
+
+        System.out.println("bout to call find method for || " + methodName + " || with bubble name :: " + papa.getName());
+        Mubble theMub = papa.findMethod(bubbleList, methodName, paramsList);
+        System.out.println(theMub);
         return theMub.getReturnType();
     }
 
     public String visitArguments(GNode n){
 
-        if(n.size() == 0)
+        System.out.println("enter args");
+        System.out.println(n.size());
+        if(n.size() == 0){
+            System.out.println("size 0");
             return "";
+        }
         else{
+            System.out.println("not size 0");
             String toRet = "";
             for(Object c : n){
                 toRet += visit((Node)c) ;
