@@ -64,21 +64,23 @@ public class Field{
         copy.setArrayDims(this.getArrayDims());
         
         ArrayList<Integer> newDims = new ArrayList<Integer>();
-        for(Integer i : concreteDims)
+        for(Integer i : this.concreteDims)
         {
             newDims.add(new Integer(i.intValue()));
         }
         copy.setConcreteDims(newDims);
         
+        
         ArrayList<String> newModifiers = new ArrayList<String>();
-        for(String s : modifiers)
+        for(String s : this.modifiers)
         {
             newModifiers.add(new String(s));
         }
         copy.setModifiers(newModifiers);
         
         //MIGHT NEED TO BE CHANGED. This doesn not create a DEEP copy of the GNode
-        copy.setAssignment(this.getAssignmentNode());
+        if(this.getAssignmentNode() != null)
+            copy.setAssignment(this.getAssignmentNode());
         
         return copy;
         
