@@ -39,9 +39,12 @@ Strings:
 
 
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
-- fucking static blocks --->>> check line 360 in structure parser
-- Casting
+- data fields for each Bubble (including its parents data fields) need to be added to table at the beginning of Impl parser(as we enter a bubble I believe). the parent's data field names need to be prefixed by a $ if and only if they are overwritten by the child bubble TODO need to talk about how to fix it
+
+-
+- fucking static blocks --->>> check line 360 in structure parser (done?)
 - Need to deal with static blocks in class declarations.
+- Casting
 x how to use xtc.util.symbol table to our advantage?
 ~ method overloading
 - memset?

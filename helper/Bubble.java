@@ -89,7 +89,12 @@ public class Bubble{
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
         Mubble mub = null;
         int matchNum = 100000000;
+        //System.out.println("findMethod being called SON");
+        //System.out.println("Method name is :: " + methodName);
+        //System.out.println("my name is :: " + getName());
         for (Mubble m : mubbles) {
+            //System.out.println("VIVIVIVIVIVIVIVIVIVI");
+            //System.out.println(m.getGroup());
             if (m.belongToGroup(methodName)) {
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
@@ -118,6 +123,7 @@ public class Bubble{
 
                 }
                 if (min < matchNum) {
+                    //System.out.println("setting mub");
                     mub = m;
                 }
             } else { continue;}
@@ -266,17 +272,13 @@ public class Bubble{
             pkgpath = p.getName() + "::" + pkgpath;
             p = p.getParent();
         }
-        /* Not sure if this is correct... changing to below -af
-           return "typedef " + pkgpath + this.name + " " + this.name + ";\n" +
-           "typedef " + pkgpath + "_"+this.name + " _" + this.name + ";\n";
-           */
 
         return "typedef _" + this.name + "* " + this.name + ";\n";
     }
 
     public void inheritMethods(){
         //takes parents methods for vtable.
-            
+
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>();
         for(Mubble m : parentBubble.getMubbles())
         {
@@ -287,12 +289,12 @@ public class Bubble{
 
         for(Mubble m : newMethodsList)
         {
-            System.out.println(parentBubble.getMubbles().contains(m));
+            //System.out.println(parentBubble.getMubbles().contains(m));
         }
         for(int i = 0; i < newMethodsList.size(); i++){
             Mubble m = newMethodsList.get(i);
-
-            if(m.isMain() || m.isStatic() || m.isConstructor() || (m.getVisibility() != null && m.getVisibility().equals("private"))) //todo: xtc.oop.helper.Bubble.inheritMethods(Bubble.java:231)
+            //todo: xtc.oop.helper.Bubble.inheritMethods(Bubble.java:231) <<< wtf? -AF
+            if(m.isMain() || m.isStatic() || m.isConstructor() || (m.getVisibility() != null && m.getVisibility().equals("private")))
                 newMethodsList.remove(i--);
         }
         for(Mubble m : newMethodsList){
@@ -318,10 +320,10 @@ public class Bubble{
             }
         }
         this.mubbles = newMethodsList;
-        
+
         for(Mubble m : mubbles)
         {
-            System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
+            //System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
         }
     }
 
@@ -356,12 +358,12 @@ public class Bubble{
             {
                 if(mod.equals("public") || mod.equals("private")){
                 }   //ignore, were not worried about visibility in .h
-                else if(mod.equals("final")) 
+                else if(mod.equals("final"))
                     ret += "const "; //IS THIS CORRECT? This just replaces final with const"
                 else //its another modifier that is c++ compatible, so just print
                     ret += mod + " ";
             }
-            
+
             if(f.isArray) //fix to work with multidimension arrays
                 ret += "__rt::Array<" + f.type + ">* " + f.name + ";\n";
             else

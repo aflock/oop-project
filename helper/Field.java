@@ -54,14 +54,14 @@ public class Field{
     To be used in inheritMethods() in Bubble
     Creates deep clones of every data member of old Field.
     */
-    public Field deepCopy(Field old)
+    public Field deepCopy()
     {
         
         Field copy = new Field();
-        copy.setName(new String(old.getName()));
-        copy.setType(new String(old.getType()));
-        copy.setIsArray(old.getIsArray());
-        copy.setArrayDims(old.getArrayDims());
+        copy.setName(new String(this.getName()));
+        copy.setType(new String(this.getType()));
+        copy.setIsArray(this.getIsArray());
+        copy.setArrayDims(this.getArrayDims());
         
         ArrayList<Integer> newDims = new ArrayList<Integer>();
         for(Integer i : concreteDims)
@@ -78,7 +78,7 @@ public class Field{
         copy.setModifiers(newModifiers);
         
         //MIGHT NEED TO BE CHANGED. This doesn not create a DEEP copy of the GNode
-        copy.setAssignment(old.getAssignmentNode());
+        copy.setAssignment(this.getAssignmentNode());
         
         return copy;
         
@@ -99,7 +99,7 @@ public class Field{
             type = "int32_t";
         else if(type.equals("boolean"))
             type = "bool";
-            
+
         this.type = type;
     }
     public String getType(){
@@ -137,36 +137,35 @@ public class Field{
     public void setHasAssignment(boolean hasAssignment){
         this.hasAssignment = hasAssignment;
     }
-    
+
     public void setAssignment(GNode assignmentNode){
         this.assignmentNode = assignmentNode;
     }
+
     public GNode getAssignmentNode(){
         return this.assignmentNode;
     }
-    
+
     public ArrayList<String> getModifiers(){
         return this.modifiers;
     }
-    
+
     public boolean hasAssignment()
-    {   
+    {
         return this.hasAssignment;
     }
-    
-    
-    
+
     //for if the field is an array
     public int getDimensions()
     {
         return this.arrayDims;
     }
-    
+
     public boolean isStatic()
     {
         for(String s : modifiers)
         {
-            if(s.equals("static")) 
+            if(s.equals("static"))
                 return true;
         }
         return false;

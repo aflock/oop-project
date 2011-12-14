@@ -31,6 +31,7 @@ import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
+import xtc.oop.helper.EvalCall;
 
 import xtc.util.SymbolTable;
 
@@ -49,7 +50,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     String methodString = "";
     String cName = "";
 
-    HashMap<String, String> table;
+    //HashMap<String, String> table;
     public NewTranslator t; //used for the parse method
 
     public ImplementationParser(NewTranslator t, ArrayList<Pubble> pubbleList, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList, ArrayList<String> parsed)
@@ -97,9 +98,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }//}}}
 
     /* Helper method to resolve assignents that happen in datafields. This adds the code on the right
-    side of a dataField assignment to the first line of the appropriate constructor for that node 
-    NOTE: Should be called after implementation parser is complete
-    */
+       side of a dataField assignment to the first line of the appropriate constructor for that node
+NOTE: Should be called after implementation parser is complete
+*/
     boolean debugDFAssignments = false;
     boolean resolvingShit = false;
     public void resolveDatafieldAssignments()
@@ -108,23 +109,26 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         String add2Constructor = "";
         for(Bubble b : bubbleList) //for every class
         {
-            if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());   
+            if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());
             for(Field f : b.getDataFields()) //for each of it's dataFields
             {
                 if(f.hasAssignment()) //if there is an assignment
                 {
-                    if(debugDFAssignments) System.out.println("\t Visiting: " + f.getAssignmentNode());   
+                    if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);
+                    if(debugDFAssignments) System.out.println("\t Visiting: " + f.getAssignmentNode());
                     curMub = new Mubble("Temp Mubble");
                     onMeth = true; //so that nodes are run correctly
                     if(f.isArray)
                         inArray = true;
                     methodString = "";
                     visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
+                    if(debugDFAssignments) System.out.println("\tCode: ");
+                    if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());
                     onMeth = false; //resetting
                     inArray = false; //resetting
-                    if(debugDFAssignments) System.out.println("\tCode: "); 
+                    if(debugDFAssignments) System.out.println("\tCode: ");
                     if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + methodString);
-                    
+
                     if(f.isStatic())
                     {System.out.println(f.name + " is static");} //todo: where to I put static dataMethods??
                     else //put them in the top of the constructor
@@ -134,7 +138,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         else
                             add2Constructor += f.name + " = " + methodString + ";\n";
                     }
-                        
+
                 }
             }
             for(Mubble m : b.getMubbles())
@@ -148,7 +152,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         }
         resolvingShit = false;
     }
-    
+
     public void visit(Node n)//{{{
     {
         int counter = 1;
@@ -176,13 +180,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         visit(n);
 
         /*todo: FIX, only works for one dimensional arrays
-        if(n.getNode(0).hasName(SubscriptExpression) //if it is a multidimensional array
-            visitSubscriptExpression(n.getNode(0))
-        else
-        String arrName = n.getNode(0).getString(0);//SubscriptExpression(PrimaryIdentifier("e"
-        String index = n.getNode(1).getString(0);//IntegerLiteral("0")
-        methodString += arrName + "->__data[" + index + "]";
-        */
+          if(n.getNode(0).hasName(SubscriptExpression) //if it is a multidimensional array
+          visitSubscriptExpression(n.getNode(0))
+          else
+          String arrName = n.getNode(0).getString(0);//SubscriptExpression(PrimaryIdentifier("e"
+          String index = n.getNode(1).getString(0);//IntegerLiteral("0")
+          methodString += arrName + "->__data[" + index + "]";
+          */
 
         //f[0] = arrName->data[0]
         //f[1][0] = arrName->data[0]->data[1]
@@ -229,20 +233,20 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         //resolving parent-array's index
         if(n.getNode(1).hasName("IntegerLiteral"))
-                info.add(n.getNode(1).getString(0));
+            info.add(n.getNode(1).getString(0));
         else
             System.out.println("Error Resolving Array: n.getNode(1) not integer literal" +
-                                "in " + n.getName());
+                    "in " + n.getName());
         return info;
     }
 
 
     String tan;
 
-    //Calvin: because we are concatinating to one big method string, the code to print 
+    //Calvin: because we are concatinating to one big method string, the code to print
     //the an array assignment is in reverse order. To solve this, we will be writting to
-    //arrayString, and adding that at the end of Fiend Decl
-    String arrayString = ""; 
+    //arrayString, and adding that at the end of Field Decl
+    String arrayString = "";
     public void visitFieldDeclaration(GNode n){
 
         if (onMeth) { tan = ""; }
@@ -251,9 +255,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             String[] z = tan.trim().split("\\s+");
             String type = z[0];
+            /*
             for (int i = 1; i < z.length; i++) {
                 table.put(z[i], type);
             }
+            */
             if(inArray){
                 //getting type
                 String arrType = n.getNode(1).getNode(0).getString(0);
@@ -261,21 +267,21 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     arrType = "int32_t";
                 if(arrType.equals("boolean"))
                     arrType = "bool";
-                    
+
                 String arrName = n.getNode(2).getNode(0).getString(0);
                 methodString += "__rt::Array<" + arrType + ">* " + arrName + arrayString;
-                table.put(arrName, "__rt::Array<" + arrType + ">* ");
+                //table.put(arrName, "__rt::Array<" + arrType + ">* ");
                 //removed if(inNewArrayExpression) code and placed into visitNewArrayExpression -Calvin 12-11
                 methodString += ";\n";
                 inArray = false;
                 //System.out.println("inArray = false in visitFieldDecl");
             }
         }
-        
+
         if(inArray) //for arrays in constructors
         {
             inArray = false;
-            
+
             //System.out.println("inArray = false in visitFieldDecl");
         }
         /*//{{{
@@ -287,9 +293,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         table.put(z[i], type);
         }
           }
-        *///}}}
+          *///}}}
     }
-    
+
     boolean inNewArrayExpress = false;
     public void visitNewArrayExpression(GNode n)
     {
@@ -297,8 +303,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         //I assumed it was a mistake, and was meant to be above visit, so
         //I made it true before and false after, dunno if this causes problems somewhere else
         inNewArrayExpress = true;
-        
-                
+
+
         String arrType = n.getNode(0).getString(0); //getNode(0) is either QualifiedIdentifier or Primitive Type
         if(arrType.equals("int"))
             arrType = "int32_t";
@@ -306,7 +312,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             arrType = "bool";
 
         //todo: FIX FOR 2 dimensional arrays...iterate through children of concrete dimensions
-                //ConcreteDimensions.IntegerLiteral.("1")
+        //ConcreteDimensions.IntegerLiteral.("1")
         String size = n.getNode(1).getNode(0).getString(0);
 
         if(resolvingShit) //if we are resolving dataFields, add it straight to the methodString -Calvin
@@ -314,7 +320,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         else //add it to arrayString, which will be added to methodString at the end of visitFieldDeclaration()
             arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
 
-        
+
         visit(n);
         inNewArrayExpress = false;
 
@@ -356,13 +362,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     public void visitModifier(GNode n){
         visit(n);
-
     }
 
     public void visitConstructorDeclaration(GNode n)
     {
-
-
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
@@ -424,9 +427,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     boolean debugCallExpression = false;
     boolean inPrintStatement = false;
-    
+
     String returns = "";
-    
+
     public void visitCallExpression(GNode n) {
         //visit(n);
         boolean hasVisited = false;
@@ -434,9 +437,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             mName = n.getString(2);
             String tmp = "";
 
+
+
             dispatchBitch(n);
             //Dealing with System.out.print*
-            if(     (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")) &&//{{{
+            if((n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")) &&//{{{
                     n.getNode(0).getNode(0).hasName("PrimaryIdentifier") &&
                     n.getNode(0).getNode(0).getString(0).equals("System") &&
                     n.getNode(0).getString(1).equals("out") &&
@@ -456,70 +461,105 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 }
               }//}}}
             else{
-		/*
-                dispatch(n.getNode(0));
 
+                //want to know if this method is static
+                boolean isStaticMethod = true;
+                String theName = "";
+                if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
+                    theName = n.getNode(0).getString(0);
+                }else{
+                    theName = curBub.getName();
+                }
 
-                //need to fix casting for first arg
-                if(n.getNode(0) != null) {
-                    methodString += "->__vptr->"+n.getString(2);
+                EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
+                String[] params = ((String)(e.dispatch(n))).trim().split(" ");
+                ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
+
+                //TODO VV check this/ finish this shit
+                isStaticMethod = isStatic(symbolTable, theName, mName, pList);
+                if(!isStaticMethod){
+                    dispatch(n.getNode(0));
+                    //need to fix casting for first arg
+                    if(n.getNode(0) != null) {
+                        methodString += "->__vptr->"+n.getString(2);
+                        methodString += "(";
+                        //should cast self to expected type
+                        //not doing now because castify is not a method,
+                        //too complicated right now TODO >???
+                        dispatch(n.getNode(0));//adding self
+                        //methodString += ", "; //error
+                    }
+                    else {
+                        methodString += n.getString(2) + "(";
+                    }
+                    dispatch(n.getNode(3));
+                    methodString += ")";
+
+                }
+                else {//is static
+                    methodString += "_";
+                    //need to know which static class we are talking about
+                    String cname = (String)symbolTable.lookup(theName);
+                    if (cname == null){//theName must be a reference to a class
+                        cname = theName;
+                    }
+                    Bubble papa = new Bubble();
+                    for(Bubble b : bubbleList){
+                        if(b.getName().equals(cname))
+                            papa = b;
+                    }
+                    methodString += papa.getName() + "::" + n.getString(2);
                     methodString += "(";
-                    //should cast self to expected type
-                    //not doing now because castify is not a method,
-                    //too complicated right now
-                    dispatch(n.getNode(0));//adding self
-                    //methodString += ", "; //error
+                    dispatch(n.getNode(3));
+                    methodString += ")";
+                }
+                /*
+                   dispatch(n.getNode(3));
+
+                   if(!resolvingShit)
+                   methodString += ")";
+                   */
+
+                Node firstChild = n.getNode(0);
+                String tempString = "";
+                if (firstChild == null) { // static
+                    tempString += n.getString(2) + "(";
+                    dispatch(n.getNode(3));
+                    tempString += ")";
+                }
+                else if (firstChild.hasName("CallExpression")) {
+                    dispatch(n.getNode(0));
+                    tempString += returns + "->__vptr->" + n.getString(2) +
+                        "(" + returns + ", "; //maybe need a comma
+                    dispatch(n.getNode(3));
+                    tempString += ")";
+                    returns = "";
                 }
                 else {
-                    methodString += n.getString(2) + "(";
-
+                    //dispatch(n.getNode(0));
+                    String ob = "";
+                    if (firstChild.hasName("PrimaryIdentifier")) {
+                        ob = firstChild.getString(0);
+                    }
+                    else { // new Object()
+                        ob = "tmp";
+                        methodString += ob + " = ";
+                        dispatch(n.getNode(0));
+                        methodString += ";\n";
+                    }
+                    tempString += ob + "->__vptr->" + n.getString(2) +
+                        "(" + ob + ", ";
+                    dispatch(n.getNode(3));
+                    tempString += ")";
                 }
-                dispatch(n.getNode(3));
-
-                if(!resolvingShit)
-                    methodString += ")";
-		*/
-
-		        Node firstChild = n.getNode(0);
-		        String tempString = "";
-		        if (firstChild == null) { // static
-		            tempString += n.getString(2) + "(";
-		            dispatch(n.getNode(3));
-		            tempString += ")";
-		        }
-		        else if (firstChild.hasName("CallExpression")) {
-		            dispatch(n.getNode(0));
-		            tempString += returns + "->__vptr->" + n.getString(2) + 
-			        "(" + returns + ", "; //maybe need a comma
-		            dispatch(n.getNode(3));
-		            tempString += ")";
-		            returns = "";
-		        }
-		        else {
-		            //dispatch(n.getNode(0));
-		            String ob = "";
-		            if (firstChild.hasName("PrimaryIdentifier")) {
-			            ob = firstChild.getString(0);
-		            }
-		            else { // new Object()			
-			            ob = "tmp";
-			            methodString += ob + " = ";
-			            dispatch(n.getNode(0));
-			            methodString += ";\n";
-		            }
-		            tempString += ob + "->__vptr->" + n.getString(2) + 
-			        "(" + ob + ", ";
-		            dispatch(n.getNode(3));		    
-		            tempString += ")";
-		        }		
-		        Node parent0 = (Node)n.getProperty("parent0");
-		        if (parent0.hasName("CallExpression")) {
-		            returns = "tmp";
-		            methodString += returns + " = " + tempString + ";\n";
-		        }		
-		        else {
-		            methodString += tempString +";\n";
-		        }            
+                Node parent0 = (Node)n.getProperty("parent0");
+                if (parent0.hasName("CallExpression")) {
+                    returns = "tmp";
+                    methodString += returns + " = " + tempString + ";\n";
+                }
+                else {
+                    methodString += tempString +";\n";
+                }
             }
         }
         else {
@@ -640,29 +680,29 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 methodString += n.getString(0);
         }
         else
-            //methodString += "onMeth:" + onMeth + " inArray:" + inArray + " inNewArrayExpress:" + inNewArrayExpress; 
-        visit(n);
+            //methodString += "onMeth:" + onMeth + " inArray:" + inArray + " inNewArrayExpress:" + inNewArrayExpress;
+            visit(n);
     }
 
     public void visitClassBody(GNode n){
         visit(n);
     }
 
+    Bubble curBub;
     SymbolTable symbolTable;
     public void visitClassDeclaration(GNode n){
-	
+
         String className = n.getString(1);
-	Bubble curBub = null;
-	for (Bubble b : bubbleList) {
-	    if (b.getName().equals(className)) {
-		curBub = b;
-		break;
-	    }
-	}
-	symbolTable = curBub.getTable();
+        for (Bubble b : bubbleList) {
+            if (b.getName().equals(className)) {
+                curBub = b;
+                break;
+            }
+        }
+        symbolTable = curBub.getTable();
 
         visit(n);
-	symbolTable = null;
+        symbolTable = null;
 
         //at this point all the mubbles of bubble have been filled
         for(Bubble b : bubbleList){
@@ -673,15 +713,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitFormalParameters(GNode n){
-	Node parent0 = (Node)n.getProperty("parent0");
-	if (parent0.hasName("ConstructorDeclaration")) {
-	    symbolTable.enter(parent0.getString(2));
-	}
-	else if (parent0.hasName("MethodDeclaration")) {
-	    symbolTable.enter(parent0.getString(3));
-	}
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (parent0.hasName("ConstructorDeclaration")) {
+            symbolTable.enter(parent0.getString(2));
+        }
+        else if (parent0.hasName("MethodDeclaration")) {
+            symbolTable.enter(parent0.getString(3));
+        }
         visit(n);
-	symbolTable.exit();
+        symbolTable.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -892,9 +932,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         if (onMeth) {
             methodString += "for(";
         }
-	symbolTable.enter("for");
+        symbolTable.enter("for");
         visit(n);
-	symbolTable.exit();
+        symbolTable.exit();
         if (onMeth) {
             methodString += "}\n";
         }
@@ -921,12 +961,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             methodString += " " + n.getString(1) + " ";
             dispatch(n.getNode(2));
 
-        } 
+        }
         else if(onMeth && n.getNode(2).hasName("NewArrayExpression")){
             dispatch(n.getNode(0));
             dispatch(n.getNode(2));
             methodString += arrayString;
-        }        
+        }
         else {
             visit(n);
         }
@@ -971,42 +1011,42 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }
 
     public void visitBlock(GNode n) {
-	Node parent0 = (Node)n.getProperty("parent0");
-	boolean hasEntered = false;
-	if (parent0.hasName("WhileStatement")) {
-	    symbolTable.enter("while");
-	    hasEntered = true;
-	}
-	if (parent0.hasName("DoWhileStatement")) {
-	    symbolTable.enter("dowhile");
-	    hasEntered = true;
-	}
-	if (parent0.hasName("ConditionalStatement")) {
-	    symbolTable.enter("if-else");
-	    hasEntered = true;
-	}
-	if (parent0.hasName("Block")) {
-	    symbolTable.enter("block");
-	    hasEntered = true;
-	}
-	if (parent0.hasName("SwitchStatement")) {
-	    symbolTable.enter("switch");
-	    hasEntered = true;
-	}
-	if (parent0.hasName("TryCatchFinallyStatement")) {
-	    symbolTable.enter("try-finally");
-	    hasEntered = true;
-	}
-	if (parent0.hasName("CatchClause")) {
-	    symbolTable.enter("catch");
-	    hasEntered = true;
-	}
+        Node parent0 = (Node)n.getProperty("parent0");
+        boolean hasEntered = false;
+        if (parent0.hasName("WhileStatement")) {
+            symbolTable.enter("while");
+            hasEntered = true;
+        }
+        if (parent0.hasName("DoWhileStatement")) {
+            symbolTable.enter("dowhile");
+            hasEntered = true;
+        }
+        if (parent0.hasName("ConditionalStatement")) {
+            symbolTable.enter("if-else");
+            hasEntered = true;
+        }
+        if (parent0.hasName("Block")) {
+            symbolTable.enter("block");
+            hasEntered = true;
+        }
+        if (parent0.hasName("SwitchStatement")) {
+            symbolTable.enter("switch");
+            hasEntered = true;
+        }
+        if (parent0.hasName("TryCatchFinallyStatement")) {
+            symbolTable.enter("try-finally");
+            hasEntered = true;
+        }
+        if (parent0.hasName("CatchClause")) {
+            symbolTable.enter("catch");
+            hasEntered = true;
+        }
 
         if(((Node)n.getProperty("parent0")).getName()
                 .equals("MethodDeclaration") ||
                 ((Node)n.getProperty("parent0")).getName().equals("ConstructorDeclaration")) {
             onMeth = true;
-            table = new HashMap<String, String>();
+            //table = new HashMap<String, String>();
 
             visit(n);
             onMeth = false;
@@ -1015,13 +1055,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             //System.out.println("method string:" + methodString);
 
             methodString = "";
-            table = null;
+            //table = null;
                 }
         else {
             visit(n);
         }
-	if (hasEntered)
-	    symbolTable.exit();
+        if (hasEntered)
+            symbolTable.exit();
     }
 
     public void visitPostfixExpression(GNode n) {
@@ -1059,7 +1099,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 {
                     if(((Node)o).hasName("Dimensions"))
                         inArray = true;
-                        //System.out.println("inArray = true in visitPrimitiveType");
+                    //System.out.println("inArray = true in visitPrimitiveType");
                 }
 
             }
@@ -1161,29 +1201,45 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     //String key;
     public void visitArguments(GNode n) {
 
+        System.out.println("got here 1");
         if (onMeth) {
             String key = "";
+            System.out.println("got here 2");
             dispatchBitch(n);
             String type = "";
+            System.out.println("got here 3");
             Node callex = (Node)n.getProperty("parent0");
             if (callex.hasName("CallExpression") &&
                     callex.getNode(0) != null && callex
                     .getNode(0).hasName("PrimaryIdentifier")) {
+                System.out.println("got here 4");
                 key = callex.getNode(0).getString(0);
-                type = table.get(key);
+                System.out.println("key is ::" + key);
+                type = (String)symbolTable.lookup(key);
+                System.out.println(type);
+                //if type is null here it is a static method, and the Class is what is important
+                //--AF
+                if(type == null || type.equals("constructor"))
+                    type = key;
                 //System.out.println(key + " " + type);
                     }
 
 
             String mSign = "";
+            System.out.println("got here 5");
             for (Mubble m : mubbleList) {
 
+                System.out.println("got here x");
+                System.out.println(m);
+                System.out.println(m.getName());
+                System.out.println(type);
                 if ((m.getClassName().equals(type) || type.equals("")) &&
                         m.getName().equals(mName)) {
                     mSign = m.forward();
                         }
             }
 
+            System.out.println("got here 6");
             for (Mubble m : langList) {
 
                 if (m.getClassName().equals(type) &&
@@ -1191,6 +1247,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     mSign = m.forward();
                         }
             }
+            System.out.println("got here 7");
             Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
             String p = "";
 
@@ -1270,233 +1327,256 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")))
 
                     methodString += (checkAncestor(n,"ConstructorDeclaration") ? "" : "->") + n.getString(1);
-                   }
-            }
-            else {
-                visit(n);
             }
         }
-
-        public void visitReturnStatement(GNode n) {
-            if (onMeth) {
-                methodString += "return ";
-            }
-            visit(n);
-            if (onMeth) {
-                methodString += ";\n";
-            }
-        }
-
-        public void visitUnaryExpression(GNode n) {
-            if (onMeth) {
-                methodString += n.getString(0);
-                visit(n);
-            }
-            else {
-                visit(n);
-            }
-        }
-
-        public void visitWhileStatement(GNode n) {
-            if (onMeth) {
-                dispatchBitch(n);
-                methodString += "while(";
-                dispatch(n.getNode(0));
-                methodString += ") {\n";
-                for(int i = 1; i < n.size(); i++) {
-                    dispatch(n.getNode(i));
-                }
-                methodString += "}\n";
-            }
-            else {
-                visit(n);
-            }
-        }
-
-        public void visitFloatingPointLiteral(GNode n) {
-            if (onMeth) {
-                methodString += n.getString(0);
-            }
+        else {
             visit(n);
         }
+    }
 
-        public void visitCharacterLiteral(GNode n) {
-            if (onMeth) {
-                methodString += n.getString(0);
-            }
+    public void visitReturnStatement(GNode n) {
+        if (onMeth) {
+            methodString += "return ";
+        }
+        visit(n);
+        if (onMeth) {
+            methodString += ";\n";
+        }
+    }
+
+    public void visitUnaryExpression(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
             visit(n);
         }
-        //hmm..
-        public void visitNullLiteral(GNode n) {
-            if (onMeth) {
-                methodString += "__rt::null()";
-            }
+        else {
             visit(n);
         }
+    }
 
-        public void visitAdditiveExpression(GNode n) {
-            //putting parentheses around everything in an additive expression
-
-            if (onMeth) {
-                methodString += "(";
-                dispatchBitch(n);
-                dispatch(n.getNode(0));
-                methodString += " "+n.getString(1)+" ";
-                dispatch(n.getNode(2));
-                methodString += ")";
+    public void visitWhileStatement(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "while(";
+            dispatch(n.getNode(0));
+            methodString += ") {\n";
+            for(int i = 1; i < n.size(); i++) {
+                dispatch(n.getNode(i));
             }
-            else {
-                visit(n);
-            }
-
+            methodString += "}\n";
         }
-
-        public void visitMultiplicativeExpression(GNode n) {
-            if (onMeth) {
-                methodString += "(";
-                dispatchBitch(n);
-                dispatch(n.getNode(0));
-                methodString += " "+n.getString(1)+" ";
-                dispatch(n.getNode(2));
-                methodString += ")";
-            }
-            else {
-                visit(n);
-            }
+        else {
+            visit(n);
         }
+    }
 
-        public void visitCastExpression(GNode n) {
-            if (onMeth) {
-                dispatchBitch(n);
-                methodString += "((";
-                dispatch(n.getNode(0));
-                methodString += ") ";
-                dispatch(n.getNode(1));
-                methodString += ")";
-            }
-            else {
-                visit(n);
-            }
+    public void visitFloatingPointLiteral(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
         }
+        visit(n);
+    }
 
-        public void visitThisExpression(GNode n) {
-            if (onMeth && !checkAncestor(n, "ConstructorDeclaration")) {
-                methodString += "__this";
-            }
+    public void visitCharacterLiteral(GNode n) {
+        if (onMeth) {
+            methodString += n.getString(0);
+        }
+        visit(n);
+    }
+    //hmm..
+    public void visitNullLiteral(GNode n) {
+        if (onMeth) {
+            methodString += "__rt::null()";
+        }
+        visit(n);
+    }
+
+    public void visitAdditiveExpression(GNode n) {
+        //putting parentheses around everything in an additive expression
+
+        if (onMeth) {
+            methodString += "(";
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " "+n.getString(1)+" ";
+            dispatch(n.getNode(2));
+            methodString += ")";
+        }
+        else {
             visit(n);
         }
 
-        public void visitBasicCastExpression(GNode n) {
-            if (onMeth) {
-                dispatchBitch(n);
-                methodString += "((";
-                dispatch(n.getNode(0));
-                methodString += ") ";
-                //not sure if there can be more children, just in case
-                for(int i = 1; i < n.size(); i++) {
-                    dispatch(n.getNode(i));
-                }
-                methodString += ")";
-            }
-            else {
-                visit(n);
-            }
-        }
+    }
 
-        //////////////////
-        //need to actually implement instanceof???
-        //////////////////
-        /////////////////
-        ////will getstring always work?
-        ////////////////
-        public void visitInstanceOfExpression(GNode n) {
-            if (onMeth) {
-                dispatchBitch(n);
-                dispatch(n.getNode(0));
-                methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
-                dispatch(n.getNode(1));
-                methodString += ")";
-            }
-            else {
-                visit(n);
-            }
+    public void visitMultiplicativeExpression(GNode n) {
+        if (onMeth) {
+            methodString += "(";
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " "+n.getString(1)+" ";
+            dispatch(n.getNode(2));
+            methodString += ")";
         }
-
-        public void visitLogicalNegationExpression(GNode n) {
-            if(onMeth) {
-                methodString += "!(";
-                visit(n);
-                methodString += ")";
-            }
-            else {
-                visit(n);
-            }
-        }
-
-        public void visitType(GNode n)
-        {
+        else {
             visit(n);
         }
+    }
 
-        public void visitExpressionList(GNode n)
-        {
+    public void visitCastExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "((";
+            dispatch(n.getNode(0));
+            methodString += ") ";
+            dispatch(n.getNode(1));
+            methodString += ")";
+        }
+        else {
             visit(n);
         }
+    }
 
-        public void visitRelationalExpression(GNode n)
-        {
-            if (onMeth) {
-                dispatchBitch(n);
-                dispatch(n.getNode(0));
-                methodString += " " + n.getString(1) + " ";
-                dispatch(n.getNode(2));
-                //methodString += ";";
+    public void visitThisExpression(GNode n) {
+        if (onMeth && !checkAncestor(n, "ConstructorDeclaration")) {
+            methodString += "__this";
+        }
+        visit(n);
+    }
+
+    public void visitBasicCastExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            methodString += "((";
+            dispatch(n.getNode(0));
+            methodString += ") ";
+            //not sure if there can be more children, just in case
+            for(int i = 1; i < n.size(); i++) {
+                dispatch(n.getNode(i));
             }
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
 
-            //visit(n);
+    //////////////////
+    //need to actually implement instanceof???
+    //////////////////
+    /////////////////
+    ////will getstring always work?
+    ////////////////
+    public void visitInstanceOfExpression(GNode n) {
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
+            dispatch(n.getNode(1));
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitLogicalNegationExpression(GNode n) {
+        if(onMeth) {
+            methodString += "!(";
+            visit(n);
+            methodString += ")";
+        }
+        else {
+            visit(n);
+        }
+    }
+
+    public void visitType(GNode n)
+    {
+        visit(n);
+    }
+
+    public void visitExpressionList(GNode n)
+    {
+        visit(n);
+    }
+
+    public void visitRelationalExpression(GNode n)
+    {
+        if (onMeth) {
+            dispatchBitch(n);
+            dispatch(n.getNode(0));
+            methodString += " " + n.getString(1) + " ";
+            dispatch(n.getNode(2));
+            //methodString += ";";
         }
 
-        ///////HELPER METHODS////////
+        //visit(n);
+    }
 
-        public boolean checkAncestor(Node n, String name){
-            //this is to check if any of the nodes parents are of type name
-            if (n.hasName(name)){
-                return true;
-            }
-            Node parent0 = (Node)n.getProperty("parent0");
-            if (parent0 == null){
-                return false;
-            }
-            return checkAncestor(parent0, name);
+    ///////HELPER METHODS////////
+
+    public boolean isStatic(SymbolTable a, String vcName, String methName, ArrayList<String> params){
+        //queries whether a given method with a variable is a static method
+        //TODO need to pass parameters
+
+        String cname = (String)a.lookup(vcName);
+        if (cname == null || cname.equals("constructor")){//must reference a class
+            cname = vcName;
         }
 
+        Bubble papa = new Bubble();
+        for(Bubble b : bubbleList){
+            if(b.getName().equals(cname))
+                papa = b;
+        }
 
-        public void dispatchBitch(Node n) {
-            int counter = 1;
-            if(n.hasProperty("parent0")) {
-                Node temp = (Node)n.getProperty("parent0");
+        //Mubble mama = new Mubble();
+        //System.out.println("bout to call find method for || " + methName + " || with bubble name :: " + papa.getName());
+        Mubble mama = papa.findMethod(bubbleList, methName, params);
+        if(mama == null)
+            System.out.println("Problem finding mubble with bub.findMethod");
+        return mama.isStatic();
+    }
 
-                while(temp != null) {
-                    //System.out.println(temp);
-                    //temp = (Node)temp.getProperty("parent0");
+    public boolean checkAncestor(Node n, String name){
+        //this is to check if any of the nodes parents are of type name
+        if (n.hasName(name)){
+            return true;
+        }
+        Node parent0 = (Node)n.getProperty("parent0");
+        if (parent0 == null){
+            return false;
+        }
+        return checkAncestor(parent0, name);
+    }
 
-                    n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
-                    temp = (Node)temp.getProperty("parent0");
-                    //if(n.getProperty("parent2") == null)
-                    //System.out.println(temp);
-                }
-            }
-            //don't need this, but not deleting.
-            for (String s : n.properties()) {
-                //System.out.println(n.getProperty(s));
-            }
 
-            for (Object o : n){
-                if (o instanceof Node){
-                    ((Node)o).setProperty("parent_name", n.getName() );
-                    ((Node)o).setProperty("parent0", n );
-                    //dispatch((Node)o);
-                }
+    public void dispatchBitch(Node n) {
+        int counter = 1;
+        if(n.hasProperty("parent0")) {
+            Node temp = (Node)n.getProperty("parent0");
+
+            while(temp != null) {
+                //System.out.println(temp);
+                //temp = (Node)temp.getProperty("parent0");
+
+                n.setProperty("parent"+(counter++), temp.getProperty("parent0"));
+                temp = (Node)temp.getProperty("parent0");
+                //if(n.getProperty("parent2") == null)
+                //System.out.println(temp);
             }
         }
+        //don't need this, but not deleting.
+        for (String s : n.properties()) {
+            //System.out.println(n.getProperty(s));
+        }
+
+        for (Object o : n){
+            if (o instanceof Node){
+                ((Node)o).setProperty("parent_name", n.getName() );
+                ((Node)o).setProperty("parent0", n );
+                //dispatch((Node)o);
+            }
+        }
+    }
     }

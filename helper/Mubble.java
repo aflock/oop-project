@@ -28,7 +28,6 @@ public class Mubble{
     ArrayList<String> paraName;
     ArrayList<String> paraType;
     ArrayList<String> paraMod;
-
     ArrayList<Field> parameters;
 
     String code;
@@ -48,17 +47,17 @@ public class Mubble{
         code = "";
         flag = '@';
     }
-    
+
     public Mubble(Mubble m){
         this.code = m.getCode();
         this.methodName = m.getName();
-    
+
     }
 
     public void addCode(String code){
         this.code += code;
     }
-    
+
     //adds code to the beginning of this mubbles code
     public void prependCode(String ncode){
         this.code = ncode + this.code;
@@ -196,6 +195,10 @@ public class Mubble{
     }
     public Bubble getBubble() {
         return className;
+    }
+
+    public String getGroup(){
+        return group;
     }
 
     public Pubble getPackage() {
@@ -422,6 +425,33 @@ public class Mubble{
         s.append(")");
 
         return s.toString();
+    }
+
+    public Mubble copy(Mubble m) {
+	Mubble clone = new Mubble(m.methodName);
+	clone.setConstructor(m.isConstructor());
+	clone.setMain(m.isMain());
+	clone.setStatic(m.isStatic());
+	clone.setFlag(m.getFlag());
+	clone.setBubble(m.getBubble());
+	clone.setPackage(m.getPackage());
+	
+	//methodname set by constructor
+	//group set by constructor
+	clone.setReturnType(m.getReturnType());
+	clone.setVisibility(m.getVisibility());
+	
+	//String originallyFrom?????????
+	
+	for(Field f : m.getParameters()) {
+	    clone.addParameter(f.deepCopy());
+	}
+	clone.setParameters(); //does paraName, paraType, paraMod
+	//ArrayList<String> paraName
+	//ArrayList<String> paraType
+	//ArrayList<String> paraMod
+	//ArrayList<Field> parameters
+	return clone;
     }
 }
 
