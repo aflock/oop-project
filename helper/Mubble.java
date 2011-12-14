@@ -426,5 +426,31 @@ public class Mubble{
 
         return s.toString();
     }
+
+    public Mubble copy() {
+	Mubble clone = new Mubble(this.getName());
+	clone.setConstructor(this.isConstructor());
+	clone.setMain(this.isMain());
+	clone.setStatic(this.isStatic());
+	clone.setBubble(this.getBubble());
+	clone.setPackage(this.getPackage());
+	clone.setFlag(this.getFlag());
+	//methodname set by constructor
+	//group set by constructor
+	clone.setReturnType(this.getReturnType());
+	clone.setVisibility(this.getVisibility());
+	
+	//String originallyFrom?????????
+	
+	for(Field f : this.getParameters()) {
+	    clone.addParameter(f.deepCopy());
+	}
+	clone.setParameters(); //does paraName, paraType, paraMod
+	//ArrayList<String> paraName
+	//ArrayList<String> paraType
+	//ArrayList<String> paraMod
+	//ArrayList<Field> parameters
+	return clone;
+    }
 }
 
