@@ -276,17 +276,12 @@ public class Bubble{
 
     public void inheritMethods(){
         //takes parents methods for vtable.
-        /*Object[] temp = Arrays.copyOf(parentBubble.getMubbles().toArray(), parentBubble.getMubbles().size());
-        Mubble[] temp2 = new Mubble[temp.length];
-        for(int i=0; i < temp.length; i++)
-            temp2[i] = (Mubble)temp[i];
             
-        ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>(Arrays.asList(temp2));*/
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>();
         for(Mubble m : parentBubble.getMubbles())
         {
             //FIX FOR DEEP COPPIES
-            newMethodsList.add(m);
+            newMethodsList.add(m.copy());
         }
 
 

@@ -18,7 +18,7 @@ public class Field{
     ArrayList<String> modifiers = new ArrayList<String>();
 
     public Field(){
-        this.name = "NOT-A-REAL-NAME-TROLLOLOL";
+        //used to create Deep Copies of Fields
     };
 
     public Field(String name, String type, String modifier){
@@ -49,10 +49,50 @@ public class Field{
         this.assignmentNode = null;
         modifiers.addAll(modifiers);
     }
+    
+    /* @return: returns a deep clone of the Field old
+    To be used in inheritMethods() in Bubble
+    Creates deep clones of every data member of old Field.
+    */
+    public Field deepCopy(Field old)
+    {
+        
+        Field copy = new Field();
+        copy.setName(new String(old.getName()));
+        copy.setType(new String(old.getType()));
+        copy.setIsArray(old.getIsArray());
+        copy.setArrayDims(old.getArrayDims());
+        
+        ArrayList<Integer> newDims = new ArrayList<Integer>();
+        for(Integer i : concreteDims)
+        {
+            newDims.add(new Integer(i.intValue()));
+        }
+        copy.setConcreteDims(newDims);
+        
+        ArrayList<String> newModifiers = new ArrayList<String>();
+        for(String s : modifiers)
+        {
+            newModifiers.add(new String(s));
+        }
+        copy.setModifiers(newModifiers);
+        
+        //MIGHT NEED TO BE CHANGED. This doesn not create a DEEP copy of the GNode
+        copy.setAssignment(old.getAssignmentNode());
+        
+        return copy;
+        
+        
+        
+    }
 
     public void setName(String name){
         this.name = name;
     }
+    public String getName(){
+        return this.name;
+    }
+    
     public void setType(String type){
         //TRANSLATE TYPES HERE, do we need to do this for booleans?
         if(type.equals("int"))
@@ -62,12 +102,32 @@ public class Field{
             
         this.type = type;
     }
+    public String getType(){
+        return this.type;
+    }
+    
     public void setIsArray(boolean isArray){
         this.isArray = isArray;
     }
+    public boolean getIsArray(){
+        return this.isArray;
+    }
+    
     public void setArrayDims(int arrayDims){
         this.arrayDims = arrayDims;
     }
+    public int getArrayDims(){
+        return this.arrayDims;
+    }
+    
+    public void setConcreteDims(ArrayList<Integer> dims){
+        this.concreteDims = dims;
+    }
+    
+    public void setModifiers(ArrayList<String> mods){
+        this.modifiers = mods;
+    }   
+     
     public void addModifier(String modifier){
         modifiers.add(modifier);
     }
@@ -81,6 +141,9 @@ public class Field{
     public void setAssignment(GNode assignmentNode){
         this.assignmentNode = assignmentNode;
     }
+    public GNode getAssignmentNode(){
+        return this.assignmentNode;
+    }
     
     public ArrayList<String> getModifiers(){
         return this.modifiers;
@@ -91,9 +154,7 @@ public class Field{
         return this.hasAssignment;
     }
     
-    public GNode getAssignmentNode(){
-        return this.assignmentNode;
-    }
+    
     
     //for if the field is an array
     public int getDimensions()
