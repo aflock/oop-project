@@ -245,7 +245,7 @@ NOTE: Should be called after implementation parser is complete
 
     //Calvin: because we are concatinating to one big method string, the code to print
     //the an array assignment is in reverse order. To solve this, we will be writting to
-    //arrayString, and adding that at the end of Fiend Decl
+    //arrayString, and adding that at the end of Field Decl
     String arrayString = "";
     public void visitFieldDeclaration(GNode n){
 
@@ -1531,7 +1531,7 @@ NOTE: Should be called after implementation parser is complete
         }
 
         //Mubble mama = new Mubble();
-        System.out.println("bout to call find method for || " + methName + " || with bubble name :: " + papa.getName());
+        //System.out.println("bout to call find method for || " + methName + " || with bubble name :: " + papa.getName());
         Mubble mama = papa.findMethod(bubbleList, methName, params);
         if(mama == null)
             System.out.println("Problem finding mubble with bub.findMethod");

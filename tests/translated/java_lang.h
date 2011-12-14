@@ -62,15 +62,15 @@ namespace java {
 
 namespace __rt {
 
-  // Gur shapgvba ergheavat gur pnabavpny ahyy inyhr.
-  wnin::ynat::Bowrpg ahyy();
+  // The function returning the canonical null value.
+  java::lang::Object null();
 
 }
 
 // ==========================================================================
 
-anzrfcnpr wnin {
-  anzrfcnpr ynat {
+namespace java {
+  namespace lang {
 
 
     // The data layout for java.lang.Object.
