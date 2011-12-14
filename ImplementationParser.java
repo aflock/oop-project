@@ -463,8 +463,17 @@ NOTE: Should be called after implementation parser is complete
             else{
 
                 //want to know if this method is static
+                //TODO deal with SelectionExpression or New Class Expression
                 boolean isStaticMethod = true;
                 String theName = "";
+
+                if (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
+                    //Non trivial examine later re: chained linking
+                    theName = n.getNode(0).getString(0);
+                }
+                if (n.getNode(0) != null && n.getNode(0).hasName("NewClassExpression")){
+                    theName = n.getNode(0).getNode(2).getString(0);
+                }
                 if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
                     theName = n.getNode(0).getString(0);
                 }else{
@@ -473,6 +482,11 @@ NOTE: Should be called after implementation parser is complete
 
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
                 String[] params = ((String)(e.dispatch(n))).trim().split(" ");
+                System.out.println("params ISDFKLJSDFLKJSDFLKSDJF");
+                for(int i = 0; i < params.length; i++)
+                    System.out.println(params[i]);
+                System.out.println("end params ISDFKLJSDFLKJSDFLKSDJF");
+
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
 
                 //TODO VV check this/ finish this shit
@@ -497,18 +511,25 @@ NOTE: Should be called after implementation parser is complete
 
                 }
                 else {//is static
-                    methodString += "_";
-                    //need to know which static class we are talking about
-                    String cname = (String)symbolTable.lookup(theName);
-                    if (cname == null){//theName must be a reference to a class
-                        cname = theName;
+                    if(n.getNode(0) != null){
+                        methodString += "_";
+                        //need to know which static class we are talking about
+                        String cname = (String)symbolTable.lookup(theName);
+                        if (cname == null){//theName must be a reference to a class
+                            cname = theName;
+                        }
+                        System.out.println();
+                        System.out.println("");
+                        Bubble papa = new Bubble();
+                        for(Bubble b : bubbleList){
+                            if(b.getName().equals(cname))
+                                papa = b;
+                        }
+                        methodString += papa.getName() + "::" + n.getString(2);
                     }
-                    Bubble papa = new Bubble();
-                    for(Bubble b : bubbleList){
-                        if(b.getName().equals(cname))
-                            papa = b;
+                    else{
+                        methodString += n.getString(2);
                     }
-                    methodString += papa.getName() + "::" + n.getString(2);
                     methodString += "(";
                     dispatch(n.getNode(3));
                     methodString += ")";
@@ -520,6 +541,7 @@ NOTE: Should be called after implementation parser is complete
                    methodString += ")";
                    */
 
+                /* METHOD CHAINING FIX LATER
                 Node firstChild = n.getNode(0);
                 String tempString = "";
                 if (firstChild == null) { // static
@@ -560,6 +582,7 @@ NOTE: Should be called after implementation parser is complete
                 else {
                     methodString += tempString +";\n";
                 }
+                */
             }
         }
         else {
@@ -916,6 +939,8 @@ NOTE: Should be called after implementation parser is complete
             methodString += "(";
             dispatch(n.getNode(3));
             dispatch(n.getNode(4));
+            methodString += ")";
+
         }
         else {
             visit(n);
@@ -1101,7 +1126,6 @@ NOTE: Should be called after implementation parser is complete
                         inArray = true;
                     //System.out.println("inArray = true in visitPrimitiveType");
                 }
-
             }
         }
         if (onMeth && !inArray & !inNewArrayExpress) { //a little sloppy of a fix
@@ -1226,10 +1250,8 @@ NOTE: Should be called after implementation parser is complete
 
 
             String mSign = "";
-            System.out.println("got here 5");
             for (Mubble m : mubbleList) {
 
-                System.out.println("got here x");
                 System.out.println(m);
                 System.out.println(m.getName());
                 System.out.println(type);
@@ -1239,7 +1261,6 @@ NOTE: Should be called after implementation parser is complete
                         }
             }
 
-            System.out.println("got here 6");
             for (Mubble m : langList) {
 
                 if (m.getClassName().equals(type) &&
@@ -1247,7 +1268,6 @@ NOTE: Should be called after implementation parser is complete
                     mSign = m.forward();
                         }
             }
-            System.out.println("got here 7");
             Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
             String p = "";
 
@@ -1303,8 +1323,11 @@ NOTE: Should be called after implementation parser is complete
                 //}
             }
 
+
+            /*
             if(!inPrintStatement && !resolvingShit)
                 methodString += ")";
+            */
 
         }
         else {

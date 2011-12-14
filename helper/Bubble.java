@@ -30,22 +30,22 @@ public class Bubble{
         //TODO: Make this constructor, what are the params?
         //What's the context it's called from?
 
-        this.name = name;
-        this.bubbles = new ArrayList<Bubble>();
+        this.name       = name;
+        this.bubbles    = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
-        this.mubbles = new ArrayList<Mubble>();
-        this.varTable = new SymbolTable();
-        this.funcTable = new SymbolTable();
-        this.table = new SymbolTable();
+        this.mubbles    = new ArrayList<Mubble>();
+        this.varTable   = new SymbolTable();
+        this.funcTable  = new SymbolTable();
+        this.table      = new SymbolTable();
     }
 
     public Bubble(){
-        this.bubbles = new ArrayList<Bubble>();
+        this.bubbles    = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
-        this.mubbles = new ArrayList<Mubble>();
-        this.varTable = new SymbolTable();
-        this.funcTable = new SymbolTable();
-        this.table = new SymbolTable();
+        this.mubbles    = new ArrayList<Mubble>();
+        this.varTable   = new SymbolTable();
+        this.funcTable  = new SymbolTable();
+        this.table      = new SymbolTable();
     }
 
 
