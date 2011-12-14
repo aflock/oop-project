@@ -432,10 +432,9 @@ public class Mubble{
 	clone.setConstructor(this.isConstructor());
 	clone.setMain(this.isMain());
 	clone.setStatic(this.isStatic());
-	clone.setFlag(this.getFlag());
 	clone.setBubble(this.getBubble());
 	clone.setPackage(this.getPackage());
-	
+	clone.setFlag(this.getFlag());
 	//methodname set by constructor
 	//group set by constructor
 	clone.setReturnType(this.getReturnType());
