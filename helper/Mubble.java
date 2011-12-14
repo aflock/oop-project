@@ -427,23 +427,23 @@ public class Mubble{
         return s.toString();
     }
 
-    public Mubble copy(Mubble m) {
-	Mubble clone = new Mubble(m.methodName);
-	clone.setConstructor(m.isConstructor());
-	clone.setMain(m.isMain());
-	clone.setStatic(m.isStatic());
-	clone.setFlag(m.getFlag());
-	clone.setBubble(m.getBubble());
-	clone.setPackage(m.getPackage());
+    public Mubble copy() {
+	Mubble clone = new Mubble(this.getName());
+	clone.setConstructor(this.isConstructor());
+	clone.setMain(this.isMain());
+	clone.setStatic(this.isStatic());
+	clone.setFlag(this.getFlag());
+	clone.setBubble(this.getBubble());
+	clone.setPackage(this.getPackage());
 	
 	//methodname set by constructor
 	//group set by constructor
-	clone.setReturnType(m.getReturnType());
-	clone.setVisibility(m.getVisibility());
+	clone.setReturnType(this.getReturnType());
+	clone.setVisibility(this.getVisibility());
 	
 	//String originallyFrom?????????
 	
-	for(Field f : m.getParameters()) {
+	for(Field f : this.getParameters()) {
 	    clone.addParameter(f.deepCopy());
 	}
 	clone.setParameters(); //does paraName, paraType, paraMod
