@@ -8,8 +8,14 @@ DAYS TILL DUE: bout 8.
 
 QUESTIONS FOR GRIMM:
 1. Can we just replace "final" with "const"? (currently doing this in Bubble getStruct() around line 230)
+    -ignore? Assuming input is correct
 2. Where does static datafields go in the translated .cc file? Not in the consructor. Are they in the struct of the class?
+    
 3. Why did you specialize the array constructor for an array of ints but not array of strings or objects?
+    -for loop with gcc statement expression({ })
+    -recursion will fix it if we make one for Array< Array <__> >
+4. Overloading and Method chaining, vtable, private/static methods,  ARE #1 priority
+5. Don't put private or static methods in the vtable.
 
 To Do:
 1. There is no code added to constructors
