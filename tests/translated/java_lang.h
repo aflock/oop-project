@@ -144,7 +144,9 @@ namespace java {
       static __String_VT __vtable;
     };
 
+
     std::ostream& operator<<(std::ostream& out, String);
+    std::ostream& operator<<(std::ostream& out, Object);
     String operator+(Object left, Object right);
     String operator+(Object left, int right);
     String operator+(int left, Object right);
