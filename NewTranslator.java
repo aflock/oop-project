@@ -175,6 +175,7 @@ public class NewTranslator extends xtc.util.Tool{
                     System.out.println("Bubble " + b.getName());
                     for(Mubble m : b.getMubbles()){
                         System.out.println("\tMubble: " + m.getName());
+                        System.out.println("\tisPrivate: " + m.isPrivate());
                         System.out.println("\tParent: " + m.getClassName() + "\n");
                     }
                 }
@@ -203,7 +204,7 @@ public class NewTranslator extends xtc.util.Tool{
 
 
         //Printing Contents of Everything
-        if(true)
+        if(false)
             for(Pubble p : pubbleList)
             {
                 System.out.println("Package: " + p.getName());

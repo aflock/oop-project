@@ -381,8 +381,9 @@ public class Bubble{
             {
                 if(mod.equals("public") || mod.equals("private")){
                 }   //ignore, were not worried about visibility in .h
-                else if(mod.equals("final"))
-                    ret += "const "; //IS THIS CORRECT? This just replaces final with const"
+                else if(mod.equals("final")){
+                }//ignore, good java code shouldnt need this
+                 //ret += "const "; //IS THIS CORRECT? This just replaces final with const"
                 else //its another modifier that is c++ compatible, so just print
                     ret += mod + " ";
             }
@@ -433,7 +434,7 @@ public class Bubble{
             "static _"+this.name+"_VT __vtable;\n";
         for(Mubble m : mubbles) {
             //HARDCODING STATIC, MAY NEED TO CHANGE
-            if(!m.isConstructor() && m.getFlag() != 'i' && !m.isDelete() && m.isPrivate()) //if its a constructor, inherited method, or delete, don't print it
+            if(!m.isConstructor() && m.getFlag() != 'i' && !m.isDelete()) //if its a constructor, inherited method, or delete, don't print it
                 ret += m.forward() + "\n";
         }
         //unindent
@@ -449,14 +450,15 @@ public class Bubble{
         ret += "Class __isa;\n";
         //ret +=  "void (*__delete)(_" + this.name + "*);\n";
         for(Mubble m : mubbles) {
-            if(!m.isConstructor()) //if its a constructor
+            //if its a constructor, main, static, or private, it doesnt belong in the vtable
+            if(!m.isConstructor() && !m.isMain() && !m.isStatic() && !m.isPrivate()) 
                 ret += m.vTable1()+"\n";
         }
         //Make VT constructor in-line, hardcoding class
         ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
         //ret += "__delete(&_" + this.name + "::__delete)";
         for(Mubble m : mubbles) {
-            if(!m.isConstructor() && !m.isMain() && !m.isStatic())
+            if(!m.isConstructor() && !m.isMain() && !m.isStatic() && !m.isPrivate())
                 ret += ",\n"+m.vTable2();
         }
         ret+=" {\n";

@@ -347,7 +347,7 @@ NOTE: Should be called after implementation parser is complete
         String methodname = n.getString(3);
         for(Mubble m : mubbleList){
             if(m.getClassName() == null || m.getName() == null || methodname == null || classname == null)
-                System.out.println("****************YOURE FUCKED**************");
+                System.out.println("****************YOURE FUCKED************** BECAUSE SOMETHING DIDNT WORK IN visitMETHODDECL");
             if(m.getClassName().equals(classname) && m.getName().trim().equals(methodname))
             {
                 curMub = m;
@@ -521,7 +521,7 @@ NOTE: Should be called after implementation parser is complete
 
                 }
                 else {//is static
-                    if(n.getNode(0) != null){
+                    if(n.getNode(0) != null){ //if a class is explicitly defined
                         methodString += "_";
                         //need to know which static class we are talking about
                         String cname = (String)symbolTable.lookup(theName);
@@ -535,10 +535,12 @@ NOTE: Should be called after implementation parser is complete
                             if(b.getName().equals(cname))
                                 papa = b;
                         }
+                        System.out.println(papa.getName() + "::" + n.getString(2));
                         methodString += papa.getName() + "::" + n.getString(2);
                     }
-                    else{
-                        methodString += n.getString(2);
+                    else{ //the static method is part of THIS class
+                        System.out.println("_" + curBub.getName() + "::" + n.getString(2));
+                        methodString += "_" + curBub.getName() + "::" + n.getString(2);
                     }
                     methodString += "(";
                     dispatch(n.getNode(3));

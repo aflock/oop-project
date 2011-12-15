@@ -40,6 +40,7 @@ public class Mubble{
         constructor = false;
         main = false;
         staticMethod = false;
+        visibility = "public"; //default
         group = this.methodName = methodName;
         if(methodName.equals("main")){
             main = true;

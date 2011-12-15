@@ -15,7 +15,7 @@ QUESTIONS FOR GRIMM:
     -for loop with gcc statement expression({ })
     -recursion will fix it if we make one for Array< Array <__> >
 4. Overloading and Method chaining, vtable, private/static methods,  ARE #1 priority
-5. Don't put private or static methods in the vtable.
+5. Static datafields are messed up
 
 To Do:
 2. Not sure assignments work in dataFields
