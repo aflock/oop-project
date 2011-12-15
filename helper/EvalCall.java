@@ -191,34 +191,38 @@ public class EvalCall extends Visitor{
         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
             key = n.getNode(0).getString(0);
         }
+		if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
+			key = visit(n.getNode(0));
+		}
         table = curBub.getTable();
         String type = (String)table.lookup(key);
         if(type == null || type.equals("constructor"))
             type = key;
         Bubble papa = new Bubble();
-        System.out.println("looking for a bubble with type ::" + type);
+        //System.out.println("looking for a bubble with type ::" + type);
 
         for(Bubble b: bubbleList){
             if (b.getName().equals(type))
                 papa = b;
         }
 
-        System.out.println("bout to call find method for || " + methodName + " || with bubble name :: " + papa.getName());
+        //System.out.println("bout to call find method for || " + methodName + " || with bubble name :: " + papa.getName());
         Mubble theMub = papa.findMethod(bubbleList, methodName, paramsList);
-        System.out.println(theMub);
+		//System.out.println("do you come here ever");
+        //System.out.println(theMub);
         return theMub.getReturnType();
     }
 
     public String visitArguments(GNode n){
 
-        System.out.println("enter args");
-        System.out.println(n.size());
+        //System.out.println("enter args");
+        //System.out.println(n.size());
         if(n.size() == 0){
-            System.out.println("size 0");
+            //System.out.println("size 0");
             return "";
         }
         else{
-            System.out.println("not size 0");
+            //System.out.println("not size 0");
             String toRet = "";
             for(Object c : n){
                 toRet += visit((Node)c) ;

@@ -30,22 +30,22 @@ public class Bubble{
         //TODO: Make this constructor, what are the params?
         //What's the context it's called from?
 
-        this.name = name;
-        this.bubbles = new ArrayList<Bubble>();
+        this.name       = name;
+        this.bubbles    = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
-        this.mubbles = new ArrayList<Mubble>();
-        this.varTable = new SymbolTable();
-        this.funcTable = new SymbolTable();
-        this.table = new SymbolTable();
+        this.mubbles    = new ArrayList<Mubble>();
+        this.varTable   = new SymbolTable();
+        this.funcTable  = new SymbolTable();
+        this.table      = new SymbolTable();
     }
 
     public Bubble(){
-        this.bubbles = new ArrayList<Bubble>();
+        this.bubbles    = new ArrayList<Bubble>();
         this.dataFields = new ArrayList<Field>();
-        this.mubbles = new ArrayList<Mubble>();
-        this.varTable = new SymbolTable();
-        this.funcTable = new SymbolTable();
-        this.table = new SymbolTable();
+        this.mubbles    = new ArrayList<Mubble>();
+        this.varTable   = new SymbolTable();
+        this.funcTable  = new SymbolTable();
+        this.table      = new SymbolTable();
     }
 
 
@@ -234,9 +234,31 @@ public class Bubble{
     /* MISC. METHODS */
     ///////////////////
 
+    public boolean isPrim(String a){
+        if(a.equals("int32_t") || a.equals("int64_t")
+                ||a.equals("int16_t") ||a.equals("byte") ||a.equals("boolean"))
+            return true;
+        return false;
+    }
     public int rank(ArrayList<Bubble> bubbles, String a, String b){
         //a is the actual argument, b is the formal argument
         //a moves. b stays
+        //TODO deal with primitive types
+        /* add to bubbles
+         * int32_t
+         * long (int64_t)
+         * short(int16_t)
+         * char(int8_t)
+         * double
+         * float
+         * boolean
+         * byte
+         */
+        // byte -> char -> short -> int -> long
+        // float -> double
+
+
+
         if (a.equals(b))
             return 0;
         Bubble aBub = findBubble(bubbles, a);
@@ -256,6 +278,7 @@ public class Bubble{
 
     //todo: Should we search through parent and children bubbles??
     public Bubble findBubble(ArrayList<Bubble> bubbles, String name){
+        //System.out.println("trying to find bubble with name :: " + name);
         for(Bubble b : bubbles){
             if (b.getName().equals(name))
                 return b;
