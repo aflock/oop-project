@@ -53,6 +53,13 @@ public class Mubble{
         this.methodName = m.getName();
 
     }
+    
+    public boolean isPrivate(){
+        if(this.visibility.equals("private"))
+            return true;
+        else
+            return false;
+    }
 
     public void addCode(String code){
         this.code += code;

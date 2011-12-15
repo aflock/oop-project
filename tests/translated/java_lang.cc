@@ -232,6 +232,12 @@ namespace java {
     }
 
  //========================= Operator Oveloading ======================================//
+  std::ostream& operator<<(std::ostream& out, Object o) {
+      out << o->__vptr->toString(o);
+      return out;
+  }
+  
+     
   String operator+(Object left, Object right){
 
         std::string tempStr = left->__vptr->toString(left)->data;
@@ -366,8 +372,9 @@ namespace __rt {
     return k;
   }
   
-  //Template for specialization of arrays of arrays
   
+  
+  //Template for specialization of arrays of arrays
   //todo: FIX, this doesn't work at all
   template<>
   java::lang::Class Array<Array<int32_t>*>::__class() {

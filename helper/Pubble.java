@@ -51,6 +51,7 @@ public class Pubble{
     public String getCC(String file){
         String ret = "#include \"" + file + ".h\"\n";
         ret += "#include <iostream>\n\n";
+        //ret += "using namespace java::lang;"; //not sure if we need this
 	// don't need it
         //ret += "using namespace std;\n\n";
         ret += this.getCC();

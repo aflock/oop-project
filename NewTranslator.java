@@ -203,7 +203,7 @@ public class NewTranslator extends xtc.util.Tool{
 
 
         //Printing Contents of Everything
-        if(false)
+        if(true)
             for(Pubble p : pubbleList)
             {
                 System.out.println("Package: " + p.getName());
@@ -213,6 +213,7 @@ public class NewTranslator extends xtc.util.Tool{
                     for(Mubble m : b.getMubbles())
                     {
                         System.out.println("\t\tMethod: " + m.getName());
+                        System.out.println("\t\tflag: " + m.getFlag());
                         System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
                     }
                 }

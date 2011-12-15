@@ -18,7 +18,6 @@ QUESTIONS FOR GRIMM:
 5. Don't put private or static methods in the vtable.
 
 To Do:
-1. There is no code added to constructors
 2. Not sure assignments work in dataFields
 3. Implement Smart Pointers for Array
 4. Implement specialization for Arrays of booleans, or any other primitive datatypes except ints and strings
