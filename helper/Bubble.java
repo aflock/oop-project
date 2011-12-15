@@ -244,7 +244,7 @@ public class Bubble{
         //a is the actual argument, b is the formal argument
         //a moves. b stays
         //TODO deal with primitive types
-        /* add to bubbles
+        /* add to bubbles ? nah- deal with here- don't want to special case everything
          * int32_t
          * long (int64_t)
          * short(int16_t)
@@ -278,7 +278,8 @@ public class Bubble{
 
     //todo: Should we search through parent and children bubbles??
     public Bubble findBubble(ArrayList<Bubble> bubbles, String name){
-        //System.out.println("trying to find bubble with name :: " + name);
+
+        System.out.println("trying to find bubble with name :: " + name);
         for(Bubble b : bubbles){
             if (b.getName().equals(name))
                 return b;

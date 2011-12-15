@@ -184,9 +184,8 @@ public class EvalCall extends Visitor{
         String[] splitArgs = arguments.trim().split(" ");
         ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(splitArgs));
         //now find method based on name and parameters
-        //curBub does not work here- it is not ensured that curBub is the class that the method belongs to -AF
 
-        String key = curBub.getName(); //hmm is this the right default option? what about selectionexpression? -AF
+        String key = curBub.getName();
         //will method chaining screw this up as well?> AF
         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
             key = n.getNode(0).getString(0);
@@ -199,7 +198,7 @@ public class EvalCall extends Visitor{
         if(type == null || type.equals("constructor"))
             type = key;
         Bubble papa = new Bubble();
-        //System.out.println("looking for a bubble with type ::" + type);
+        System.out.println("looking for a bubble with type ::" + type);
 
         for(Bubble b: bubbleList){
             if (b.getName().equals(type))
