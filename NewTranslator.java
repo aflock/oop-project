@@ -512,7 +512,7 @@ public class NewTranslator extends xtc.util.Tool{
         string.addMubble(n6);
         n6.setReturnType("int32_t");
         n6.setFlag('n');
-        Mubble n7 = new Mubble("length");
+        Mubble n7 = new Mubble("charAt");
         string.addMubble(n7);
         n7.setReturnType("char");
         n7.addParameter(new Field("dummy", "int32_t"));

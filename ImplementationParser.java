@@ -431,6 +431,7 @@ NOTE: Should be called after implementation parser is complete
     String returns = "";
 
     public void visitCallExpression(GNode n) {
+		//System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
         if (onMeth) {
@@ -467,29 +468,38 @@ NOTE: Should be called after implementation parser is complete
                 boolean isStaticMethod = true;
                 String theName = "";
 
-                if (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
+                if (n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
+                    EvalCall j = new EvalCall(curBub, bubbleList, symbolTable);
+                    theName = (String)(j.dispatch(n.getNode(0)));
+                    //System.out.println("evaled chained method and the type of return is || " + theName);
+                }
+                else if (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
                     //Non trivial examine later re: chained linking also could be Call expression
                     theName = n.getNode(0).getString(0);
                 }
-                if (n.getNode(0) != null && n.getNode(0).hasName("NewClassExpression")){
+                else if (n.getNode(0) != null && n.getNode(0).hasName("NewClassExpression")){
                     theName = n.getNode(0).getNode(2).getString(0);
                 }
-                if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
+                else if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
                     theName = n.getNode(0).getString(0);
                 }else{
+                    //System.out.println("last else fall through");
                     theName = curBub.getName();
                 }
 
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
                 String[] params = ((String)(e.dispatch(n))).trim().split(" ");
-                System.out.println("params ISDFKLJSDFLKJSDFLKSDJF");
-                for(int i = 0; i < params.length; i++)
-                    System.out.println(params[i]);
-                System.out.println("end params ISDFKLJSDFLKJSDFLKSDJF");
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
 
                 //TODO VV check this/ finish this shit
+                /*
+                System.out.println("Bout to call isStatic with mName ||" + mName + "|| and theName >> " + theName );
+                if(mName.equals("charAt") && theName.equals("testMethodChaining")){
+                    System.out.println(n);
+                    System.out.println(n.getNode(0).getName());
+                }
+                */
                 isStaticMethod = isStatic(symbolTable, theName, mName, pList);
                 if(!isStaticMethod){
                     dispatch(n.getNode(0));
@@ -1225,22 +1235,22 @@ NOTE: Should be called after implementation parser is complete
     //String key;
     public void visitArguments(GNode n) {
 
-        System.out.println("got here 1");
+        //System.out.println("got here 1");
         if (onMeth) {
             String key = "";
-            System.out.println("got here 2");
+            //System.out.println("got here 2");
             dispatchBitch(n);
             String type = "";
-            System.out.println("got here 3");
+            //System.out.println("got here 3");
             Node callex = (Node)n.getProperty("parent0");
             if (callex.hasName("CallExpression") &&
                     callex.getNode(0) != null && callex
                     .getNode(0).hasName("PrimaryIdentifier")) {
-                System.out.println("got here 4");
+                //System.out.println("got here 4");
                 key = callex.getNode(0).getString(0);
-                System.out.println("key is ::" + key);
+                //System.out.println("key is ::" + key);
                 type = (String)symbolTable.lookup(key);
-                System.out.println(type);
+                //System.out.println(type);
                 //if type is null here it is a static method, and the Class is what is important
                 //--AF
                 if(type == null || type.equals("constructor"))
@@ -1252,9 +1262,9 @@ NOTE: Should be called after implementation parser is complete
             String mSign = "";
             for (Mubble m : mubbleList) {
 
-                System.out.println(m);
-                System.out.println(m.getName());
-                System.out.println(type);
+                //System.out.println(m);
+                //System.out.println(m.getName());
+                //System.out.println(type);
                 if ((m.getClassName().equals(type) || type.equals("")) &&
                         m.getName().equals(mName)) {
                     mSign = m.forward();
@@ -1542,6 +1552,7 @@ NOTE: Should be called after implementation parser is complete
         //queries whether a given method with a variable is a static method
         //TODO need to pass parameters
 
+        //System.out.println("Is static being called with vari/class name || " + vcName + "|| and methName || " + methName);
         String cname = (String)a.lookup(vcName);
         if (cname == null || cname.equals("constructor")){//must reference a class
             cname = vcName;

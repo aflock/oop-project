@@ -89,12 +89,12 @@ public class Bubble{
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
         Mubble mub = null;
         int matchNum = 100000000;
-        System.out.println("findMethod being called SON");
-        System.out.println("Method name is :: " + methodName);
-        System.out.println("my name is :: " + getName());
+        //System.out.println("findMethod being called SON");
+        //System.out.println("Method name is :: " + methodName);
+        //System.out.println("my name is :: " + getName());
         for (Mubble m : mubbles) {
-            System.out.println("VIVIVIVIVIVIVIVIVIVI");
-            System.out.println(m.getGroup());
+            //System.out.println("VIVIVIVIVIVIVIVIVIVI");
+            //System.out.println(m.getGroup());
             if (m.belongToGroup(methodName)) {
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
@@ -123,7 +123,7 @@ public class Bubble{
 
                 }
                 if (min < matchNum) {
-                    System.out.println("setting mub");
+                    //System.out.println("setting mub");
                     mub = m;
                 }
             } else { continue;}
@@ -278,7 +278,7 @@ public class Bubble{
 
     //todo: Should we search through parent and children bubbles??
     public Bubble findBubble(ArrayList<Bubble> bubbles, String name){
-        System.out.println("trying to find bubble with name :: " + name);
+        //System.out.println("trying to find bubble with name :: " + name);
         for(Bubble b : bubbles){
             if (b.getName().equals(name))
                 return b;
