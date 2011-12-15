@@ -468,7 +468,7 @@ NOTE: Should be called after implementation parser is complete
                 String theName = "";
 
                 if (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
-                    //Non trivial examine later re: chained linking
+                    //Non trivial examine later re: chained linking also could be Call expression
                     theName = n.getNode(0).getString(0);
                 }
                 if (n.getNode(0) != null && n.getNode(0).hasName("NewClassExpression")){

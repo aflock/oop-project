@@ -191,6 +191,9 @@ public class EvalCall extends Visitor{
         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
             key = n.getNode(0).getString(0);
         }
+		if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
+			key = visit(n.getNode(0));
+		}
         table = curBub.getTable();
         String type = (String)table.lookup(key);
         if(type == null || type.equals("constructor"))
@@ -205,6 +208,7 @@ public class EvalCall extends Visitor{
 
         System.out.println("bout to call find method for || " + methodName + " || with bubble name :: " + papa.getName());
         Mubble theMub = papa.findMethod(bubbleList, methodName, paramsList);
+		System.out.println("do you come here ever");
         System.out.println(theMub);
         return theMub.getReturnType();
     }
