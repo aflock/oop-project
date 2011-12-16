@@ -53,7 +53,7 @@ public class Mubble{
         this.methodName = m.getName();
 
     }
-    
+
     public boolean isPrivate(){
         if(this.visibility.equals("private"))
             return true;
@@ -446,9 +446,9 @@ public class Mubble{
 	//group set by constructor
 	clone.setReturnType(this.getReturnType());
 	clone.setVisibility(this.getVisibility());
-	
+
 	//String originallyFrom?????????
-	
+
 	for(Field f : this.getParameters()) {
 	    clone.addParameter(f.deepCopy());
 	}

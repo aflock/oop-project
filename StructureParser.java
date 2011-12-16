@@ -233,6 +233,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         current.define(name2, "constructor");
         if (!name2.equals(name)) {
             curMub.mangleName(name2);
+            //this does not actually mangle the name it just sets it within a mubble
+            //(mubble.methodName<-name2)
         }
 
 

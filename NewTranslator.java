@@ -107,6 +107,28 @@ public class NewTranslator extends xtc.util.Tool{
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
 
+        //Pass methods down the inheritance tree
+		Bubble obj = new Bubble();
+		for(Bubble b: bubbleList){
+			if(b.getName().equals("Object"))
+				obj = b;
+		}
+		for(Bubble child : obj.getBubbles()){
+			if(!child.getName().equals("String"))
+				child.mangleBetweenClasses();
+		}
+
+		/*
+        for(Bubble b: bubbleList){
+            if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                //System.out.println("Inheriting Methods: " + b.getName());
+                b.mangleBetweenClasses();
+            }
+        }
+		*/
+
+		//now mangle between classes?
+
         //Not sure if we need this:
         ArrayList<String> parsed = new ArrayList<String>();
         ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
@@ -151,21 +173,15 @@ public class NewTranslator extends xtc.util.Tool{
             System.out.println("=======================================================");
         }
 
-        //Pass methods down the inheritance tree
-        for(Bubble b: bubbleList){
-            if(!(b.getName().equals("String") || b.getName().equals("Object"))){
-                //System.out.println("Inheriting Methods: " + b.getName());
-                b.inheritMethods();
-            }
-        }
+		/*
         for(Bubble b: bubbleList){
             if(!(b.getName().equals("String") || b.getName().equals("Object"))){
                 //System.out.println("Inheriting Methods: " + b.getName());
                 if(b.getName().equals("testStaticMethods"))
                     b.inheritMethods();
             }
-
         }
+		*/
 
         if(false) //printing out bubble and methods/method parent
         {

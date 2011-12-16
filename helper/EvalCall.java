@@ -355,11 +355,15 @@ public class EvalCall extends Visitor{
     */
 
     public String visitIntegerLiteral(GNode n) {
-        return "integer";
+        return "int32_t";
     }
 
     public String visitCharacterLiteral(GNode n) {
         return "char";
+    }
+
+    public String visitFloatingPointLiteral(GNode n) {
+        return "float";
     }
 
     /*

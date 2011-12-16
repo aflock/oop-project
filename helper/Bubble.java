@@ -308,24 +308,60 @@ public class Bubble{
         return "typedef _" + this.name + "* " + this.name + ";\n";
     }
 
+    public void mangleBetweenClasses(){
+        //will start with root Object bubble and do this recursively
+        /* first inherit method if not noame == Object
+         * then check if name conflict occurs between mubbles (real name not group name)
+         *          for each mubble with name conflict:
+         *              if mubble is inherited or over written
+         *                  ignore
+         *              else
+         *                  mangle the name (until not recognized? how do we know when mangling is done?)
+         *                                  (mangle until the method is not defined within the class anymore)
+         *              for each child in bubble children
+         *                  child.mangleBetweenClasses()
+         */
+
+        this.inheritMethods();
+        //check if any names are duplicates
+        //keeping track of names so we know which to mangle
+        ArrayList<String> noConflictNames = new ArrayList<String>();
+        for(Mubble m : mubbles){
+            char flag = m.getFlag();
+            if(flag == 'i' || flag == 'w')//add to list
+                noConflictNames.add(m.getName());
+        }
+        //now check for conflict
+        for(Mubble m : mubbles){
+            char flag = m.getFlag();
+            if(!(flag == 'i' || flag == 'w')){
+                if(noConflictNames.contains(m.getName())){//need to mangle
+                    String name = m.getName();
+                    while(noConflictNames.contains(name))
+                        name = "_" +name;
+                    m.mangleName(name);//set name of mubble
+                }
+                noConflictNames.add(m.getName());
+            }
+        }
+
+        for(Bubble b: this.getBubbles()){
+            b.mangleBetweenClasses();
+        }
+    }
+
+
     public void inheritMethods(){
         //takes parents methods for vtable.
 
         ArrayList<Mubble> newMethodsList = new ArrayList<Mubble>();
         for(Mubble m : parentBubble.getMubbles())
         {
-            //FIX FOR DEEP COPPIES
             newMethodsList.add(m.copy());
         }
 
-
-        for(Mubble m : newMethodsList)
-        {
-            //System.out.println(parentBubble.getMubbles().contains(m));
-        }
         for(int i = 0; i < newMethodsList.size(); i++){
             Mubble m = newMethodsList.get(i);
-            //todo: xtc.oop.helper.Bubble.inheritMethods(Bubble.java:231) <<< wtf? -AF
             if(m.isMain() || m.isStatic() || m.isConstructor() || (m.getVisibility() != null && m.getVisibility().equals("private")))
                 newMethodsList.remove(i--);
         }
