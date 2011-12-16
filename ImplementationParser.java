@@ -723,7 +723,7 @@ NOTE: Should be called after implementation parser is complete
 
     Bubble curBub;
     SymbolTable symbolTable;
-    SymbolTable staticTypeTable;
+    SymbolTable dynamicTypeTable;
     public void visitClassDeclaration(GNode n){
 
         String className = n.getString(1);
@@ -734,11 +734,11 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         symbolTable = curBub.getTable();
-        staticTypeTable = curBub.getStaticTypeTable();
+        dynamicTypeTable = curBub.getDynamicTypeTable();
 
         visit(n);
         symbolTable = null;
-        staticTypeTable = null;
+        dynamicTypeTable = null;
 
         //at this point all the mubbles of bubble have been filled
         for(Bubble b : bubbleList){
@@ -752,15 +752,15 @@ NOTE: Should be called after implementation parser is complete
         Node parent0 = (Node)n.getProperty("parent0");
         if (parent0.hasName("ConstructorDeclaration")) {
             symbolTable.enter(parent0.getString(2));
-            staticTypeTable.enter(parent0.getString(2));
+            dynamicTypeTable.enter(parent0.getString(2));
         }
         else if (parent0.hasName("MethodDeclaration")) {
             symbolTable.enter(parent0.getString(3));
-            staticTypeTable.enter(parent0.getString(3));
+            dynamicTypeTable.enter(parent0.getString(3));
         }
         visit(n);
         symbolTable.exit();
-        staticTypeTable.exit();
+        dynamicTypeTable.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -974,10 +974,10 @@ NOTE: Should be called after implementation parser is complete
             methodString += "for(";
         }
         symbolTable.enter("for");
-        staticTypeTable.enter("for");
+        dynamicTypeTable.enter("for");
         visit(n);
         symbolTable.exit();
-        staticTypeTable.exit();
+        dynamicTypeTable.exit();
         if (onMeth) {
             methodString += "}\n";
         }
@@ -1058,37 +1058,37 @@ NOTE: Should be called after implementation parser is complete
         boolean hasEntered = false;
         if (parent0.hasName("WhileStatement")) {
             symbolTable.enter("while");
-            staticTypeTable.enter("while");
+            dynamicTypeTable.enter("while");
             hasEntered = true;
         }
         if (parent0.hasName("DoWhileStatement")) {
             symbolTable.enter("dowhile");
-            staticTypeTable.enter("dowhile");
+            dynamicTypeTable.enter("dowhile");
             hasEntered = true;
         }
         if (parent0.hasName("ConditionalStatement")) {
             symbolTable.enter("if-else");
-            staticTypeTable.enter("if-else");
+            dynamicTypeTable.enter("if-else");
             hasEntered = true;
         }
         if (parent0.hasName("Block")) {
             symbolTable.enter("block");
-            staticTypeTable.enter("block");
+            dynamicTypeTable.enter("block");
             hasEntered = true;
         }
         if (parent0.hasName("SwitchStatement")) {
             symbolTable.enter("switch");
-            staticTypeTable.enter("switch");
+            dynamicTypeTable.enter("switch");
             hasEntered = true;
         }
         if (parent0.hasName("TryCatchFinallyStatement")) {
             symbolTable.enter("try-finally");
-            staticTypeTable.enter("try-finally");
+            dynamicTypeTable.enter("try-finally");
             hasEntered = true;
         }
         if (parent0.hasName("CatchClause")) {
             symbolTable.enter("catch");
-            staticTypeTable.enter("catch");
+            dynamicTypeTable.enter("catch");
             hasEntered = true;
         }
 
@@ -1112,7 +1112,7 @@ NOTE: Should be called after implementation parser is complete
         }
         if (hasEntered)
             symbolTable.exit();
-            staticTypeTable.exit();
+            dynamicTypeTable.exit();
     }
 
     public void visitPostfixExpression(GNode n) {

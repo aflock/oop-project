@@ -17,7 +17,7 @@ public class Bubble{
     SymbolTable varTable;
     SymbolTable funcTable;
     SymbolTable table;
-    SymbolTable staticTypeTable;
+    SymbolTable dynamicTypeTable;
 
 
     /* DO WE NEED THIS?:
@@ -38,7 +38,7 @@ public class Bubble{
         this.mubbles         = new ArrayList<Mubble>();
         this.varTable        = new SymbolTable();
         this.funcTable       = new SymbolTable();
-        this.staticTypeTable = new SymbolTable();
+        this.dynamicTypeTable = new SymbolTable();
         }
 
     public Bubble(){
@@ -48,7 +48,7 @@ public class Bubble{
         this.varTable        = new SymbolTable();
         this.funcTable       = new SymbolTable();
         this.table           = new SymbolTable();
-        this.staticTypeTable = new SymbolTable();
+        this.dynamicTypeTable = new SymbolTable();
     }
 
 
@@ -177,8 +177,8 @@ public class Bubble{
         return this.funcTable;
     }
 
-    public SymbolTable getStaticTypeTable() {
-        return this.staticTypeTable;
+    public SymbolTable getDynamicTypeTable() {
+        return this.dynamicTypeTable;
     }
 
     public SymbolTable getTable() {

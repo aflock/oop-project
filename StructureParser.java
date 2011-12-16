@@ -48,7 +48,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     //public varTable SymbolTable;
     //public funcTable SymbolTable;
     public SymbolTable table;
-    public SymbolTable staticTypeTable;
+    public SymbolTable dynamicTypeTable;
 
     public Field curField;
 
@@ -135,7 +135,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curBub = new Bubble(className);
         }
         table = curBub.getTable();
-        staticTypeTable = curBub.getStaticTypeTable();
+        dynamicTypeTable = curBub.getDynamicTypeTable();
         curBub.setParentPubble(curPub); //curBub's package is curPub
 
         //find Object bubble and set curBub's parent to object (it will get overwritten if it needs to)
@@ -150,7 +150,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         visit(n);
         table = null;
-        staticTypeTable = null;
+        dynamicTypeTable = null;
 
         //add in the delete method (note it needs code as well)
         Mubble n1 = new Mubble("__delete");
@@ -224,7 +224,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curMub = freshMubble;
 
         SymbolTable.Scope current = table.current();
-        SymbolTable.Scope staticCurrent = staticTypeTable.current();
+        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         String name2 = name;
         while (current.isDefined(name2)) {
             name2 = "_" + name;
@@ -268,7 +268,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
         curMub = freshMubble;
         SymbolTable.Scope current = table.current();
-        SymbolTable.Scope staticCurrent = staticTypeTable.current();
+        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         String name2 = name;
         while (current.isDefined(name2)) {
             name2 = "_" + name2;
@@ -331,7 +331,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitDeclarators(GNode n) {
         SymbolTable.Scope current = table.current();
-        SymbolTable.Scope staticCurrent = staticTypeTable.current();
+        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         // assuming Declarators' parent is always FieldDeclaration
         Node parent0 = (Node)n.getProperty("parent0");
         String type = parent0.getNode(1).getNode(0).getString(0);
@@ -399,15 +399,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent0 = (Node)n.getProperty("parent0");
         if (parent0.hasName("ConstructorDeclaration")) {
             table.enter(parent0.getString(2));
-            staticTypeTable.enter(parent0.getString(2));
+            dynamicTypeTable.enter(parent0.getString(2));
         }
         else if (parent0.hasName("MethodDeclaration")) {
             table.enter(parent0.getString(3));
-            staticTypeTable.enter(parent0.getString(3));
+            dynamicTypeTable.enter(parent0.getString(3));
         }
         visit(n);
         table.exit();
-        staticTypeTable.exit();
+        dynamicTypeTable.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -600,12 +600,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //varTable.enter("for");
         //funcTable.enter("for");
         table.enter("for");
-        staticTypeTable.enter("for");
+        dynamicTypeTable.enter("for");
         visit(n);
         //varTable.exit();
         //funcTable.exit();
         table.exit();
-        staticTypeTable.exit();
+        dynamicTypeTable.exit();
     }
 
     public void visitWhileStatement(GNode n) {
@@ -627,45 +627,45 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             //varTable.enter("while");
             //funcTable.enter("while");
             table.enter("while");
-            staticTypeTable.enter("while");
+            dynamicTypeTable.enter("while");
             hasEntered = true;
         }
         if (parent0.hasName("DoWhileStatement")) {
             //varTable.enter("dowhile");
             //funcTable.enter("dowhile");
             table.enter("dowhile");
-            staticTypeTable.enter("dowhile");
+            dynamicTypeTable.enter("dowhile");
             hasEntered = true;
         }
         if (parent0.hasName("ConditionalStatement")) {
             //varTable.enter("if-else");
             //funcTable.enter("if-else");
             table.enter("if-else");
-            staticTypeTable.enter("if-else");
+            dynamicTypeTable.enter("if-else");
             hasEntered = true;
         }
         if (parent0.hasName("Block")) {
             //varTable.enter("block");
             //funcTable.enter("block");
             table.enter("block");
-            staticTypeTable.enter("block");
+            dynamicTypeTable.enter("block");
             hasEntered = true;
         }
         if (parent0.hasName("SwitchStatement")) {
             //varTable.enter("switch");
             //funcTable.enter("switch");
             table.enter("switch");
-            staticTypeTable.enter("switch");
+            dynamicTypeTable.enter("switch");
             hasEntered = true;
         }
         if (parent0.hasName("TryCatchFinallyStatement")) {
             table.enter("try-finally");
-            staticTypeTable.enter("try-finally");
+            dynamicTypeTable.enter("try-finally");
             hasEntered = true;
         }
         if (parent0.hasName("CatchClause")) {
             table.enter("catch");
-            staticTypeTable.enter("catch");
+            dynamicTypeTable.enter("catch");
             hasEntered = true;
         }
         visit(n);
@@ -674,7 +674,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         if(hasEntered)
             table.exit();
-            staticTypeTable.exit();
+            dynamicTypeTable.exit();
     }
 
     public void visitBasicForControl(GNode n)
