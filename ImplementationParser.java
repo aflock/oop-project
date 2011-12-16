@@ -399,18 +399,18 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 param.add(temp.getString(0));
             }
         }
-	System.out.println("---------------------------------------------------------------1");
-	for (int i = 0; i < param.size(); i++) {
-	    System.out.println("|||||||||||||||||||||| " + param.get(i) + " |||||||||||||||||||||||||");
-	}
-	System.out.println("---------------------------------------------------------------1");
+	//System.out.println("---------------------------------------------------------------1");
+	//for (int i = 0; i < param.size(); i++) {
+	//    System.out.println("|||||||||||||||||||||| " + param.get(i) + " |||||||||||||||||||||||||");
+	//}
+	//System.out.println("---------------------------------------------------------------1");
         curMub = curBub.findMethod(bubbleList, methodname, param);
 	ArrayList<String> temp = curMub.getParameterTypes();
-	System.out.println("---------------------------------------------------------------2");
-	for (int i = 0; i < temp.size(); i++) {
-	    System.out.println("|||||||||||||||||||||| " + temp.get(i) + " |||||||||||||||||||||||||");
-	}
-	System.out.println("---------------------------------------------------------------2");
+	//System.out.println("---------------------------------------------------------------2");
+	//for (int i = 0; i < temp.size(); i++) {
+	//    System.out.println("|||||||||||||||||||||| " + temp.get(i) + " |||||||||||||||||||||||||");
+	//}
+	//System.out.println("---------------------------------------------------------------2");
 	//System.out.println("----------------------------WHAT IS GOING ON? " + curMub.getName()); 
 
 	/*
@@ -595,8 +595,27 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
                 //resolve mangled methods (overloading)
-                Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);
+		
+		/*
+		System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+		System.out.print(mName + ": ");
+		for (String p : pList) {
+		    System.out.println(p);
+		}
+		ArrayList<Mubble> mubs = curBub.getMubbles();
+		for (Mubble m : mubs) {
+		    System.out.print(m.getName() + ": ");
+		    ArrayList<String> param = m.getParameterTypes();
+		    for (String p : param) {
+			System.out.print(p + " ");
+		    }
+		    System.out.println();
+		}
+		System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
+		*/
+                Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);		
                 String trueName = trueMub.getName();
+		System.out.println(trueName);
                 //TODO VV check this/ finish this shit
                 /*
                   System.out.println("Bout to call isStatic with mName ||" + mName + "|| and theName >> " + theName );
@@ -645,10 +664,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                     else{ //the static method is part of THIS class
                         System.out.println("_" + curBub.getName() + "::" + n.getString(2));
-                        methodString += "_" + curBub.getName() + "::" + n.getString(2);
+                        //methodString += "_" + curBub.getName() + "::" + n.getString(2);
+			methodString += "_" + curBub.getName() + "::" + trueName;
                     }
                     methodString += "(";
                     dispatch(n.getNode(3));
+		    methodString += "WHAT THE";
                     methodString += ")";
                 }
                 /*
