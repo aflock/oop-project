@@ -17,6 +17,8 @@ public class Bubble{
     SymbolTable varTable;
     SymbolTable funcTable;
     SymbolTable table;
+    SymbolTable staticTypeTable;
+
 
     /* DO WE NEED THIS?:
        String visibility; //The visibility for this class
@@ -30,22 +32,23 @@ public class Bubble{
         //TODO: Make this constructor, what are the params?
         //What's the context it's called from?
 
-        this.name       = name;
-        this.bubbles    = new ArrayList<Bubble>();
-        this.dataFields = new ArrayList<Field>();
-        this.mubbles    = new ArrayList<Mubble>();
-        this.varTable   = new SymbolTable();
-        this.funcTable  = new SymbolTable();
-        this.table      = new SymbolTable();
-    }
+        this.name            = name;
+        this.bubbles         = new ArrayList<Bubble>();
+        this.dataFields      = new ArrayList<Field>();
+        this.mubbles         = new ArrayList<Mubble>();
+        this.varTable        = new SymbolTable();
+        this.funcTable       = new SymbolTable();
+        this.staticTypeTable = new SymbolTable();
+        }
 
     public Bubble(){
-        this.bubbles    = new ArrayList<Bubble>();
-        this.dataFields = new ArrayList<Field>();
-        this.mubbles    = new ArrayList<Mubble>();
-        this.varTable   = new SymbolTable();
-        this.funcTable  = new SymbolTable();
-        this.table      = new SymbolTable();
+        this.bubbles         = new ArrayList<Bubble>();
+        this.dataFields      = new ArrayList<Field>();
+        this.mubbles         = new ArrayList<Mubble>();
+        this.varTable        = new SymbolTable();
+        this.funcTable       = new SymbolTable();
+        this.table           = new SymbolTable();
+        this.staticTypeTable = new SymbolTable();
     }
 
 
@@ -172,6 +175,10 @@ public class Bubble{
 
     public SymbolTable getFuncTable() {
         return this.funcTable;
+    }
+
+    public SymbolTable getStaticTypeTable() {
+        return this.staticTypeTable;
     }
 
     public SymbolTable getTable() {

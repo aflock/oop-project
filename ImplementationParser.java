@@ -524,7 +524,7 @@ NOTE: Should be called after implementation parser is complete
                     if(n.getNode(0) != null){
                         methodString += "_";
                         //need to know which static class we are talking about
-                        String cname = (String)symbolTable.lookup(theName);
+                        String cname = (String)symbolTable.lookup(theName);//TODO AFLOCK
                         if (cname == null){//theName must be a reference to a class
                             cname = theName;
                         }
@@ -723,6 +723,7 @@ NOTE: Should be called after implementation parser is complete
 
     Bubble curBub;
     SymbolTable symbolTable;
+    SymbolTable staticTypeTable;
     public void visitClassDeclaration(GNode n){
 
         String className = n.getString(1);
@@ -733,9 +734,11 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         symbolTable = curBub.getTable();
+        staticTypeTable = curBub.getStaticTypeTable();
 
         visit(n);
         symbolTable = null;
+        staticTypeTable = null;
 
         //at this point all the mubbles of bubble have been filled
         for(Bubble b : bubbleList){
@@ -749,12 +752,15 @@ NOTE: Should be called after implementation parser is complete
         Node parent0 = (Node)n.getProperty("parent0");
         if (parent0.hasName("ConstructorDeclaration")) {
             symbolTable.enter(parent0.getString(2));
+            staticTypeTable.enter(parent0.getString(2));
         }
         else if (parent0.hasName("MethodDeclaration")) {
             symbolTable.enter(parent0.getString(3));
+            staticTypeTable.enter(parent0.getString(3));
         }
         visit(n);
         symbolTable.exit();
+        staticTypeTable.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -968,8 +974,10 @@ NOTE: Should be called after implementation parser is complete
             methodString += "for(";
         }
         symbolTable.enter("for");
+        staticTypeTable.enter("for");
         visit(n);
         symbolTable.exit();
+        staticTypeTable.exit();
         if (onMeth) {
             methodString += "}\n";
         }
@@ -1050,30 +1058,37 @@ NOTE: Should be called after implementation parser is complete
         boolean hasEntered = false;
         if (parent0.hasName("WhileStatement")) {
             symbolTable.enter("while");
+            staticTypeTable.enter("while");
             hasEntered = true;
         }
         if (parent0.hasName("DoWhileStatement")) {
             symbolTable.enter("dowhile");
+            staticTypeTable.enter("dowhile");
             hasEntered = true;
         }
         if (parent0.hasName("ConditionalStatement")) {
             symbolTable.enter("if-else");
+            staticTypeTable.enter("if-else");
             hasEntered = true;
         }
         if (parent0.hasName("Block")) {
             symbolTable.enter("block");
+            staticTypeTable.enter("block");
             hasEntered = true;
         }
         if (parent0.hasName("SwitchStatement")) {
             symbolTable.enter("switch");
+            staticTypeTable.enter("switch");
             hasEntered = true;
         }
         if (parent0.hasName("TryCatchFinallyStatement")) {
             symbolTable.enter("try-finally");
+            staticTypeTable.enter("try-finally");
             hasEntered = true;
         }
         if (parent0.hasName("CatchClause")) {
             symbolTable.enter("catch");
+            staticTypeTable.enter("catch");
             hasEntered = true;
         }
 
@@ -1097,6 +1112,7 @@ NOTE: Should be called after implementation parser is complete
         }
         if (hasEntered)
             symbolTable.exit();
+            staticTypeTable.exit();
     }
 
     public void visitPostfixExpression(GNode n) {
@@ -1249,7 +1265,7 @@ NOTE: Should be called after implementation parser is complete
                 //System.out.println("got here 4");
                 key = callex.getNode(0).getString(0);
                 //System.out.println("key is ::" + key);
-                type = (String)symbolTable.lookup(key);
+                type = (String)symbolTable.lookup(key);//TODO AFLOCK
                 //System.out.println(type);
                 //if type is null here it is a static method, and the Class is what is important
                 //--AF
