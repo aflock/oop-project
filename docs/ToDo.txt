@@ -22,6 +22,7 @@ To Do:
 3. Implement Smart Pointers for Array
 4. Implement specialization for Arrays of booleans, or any other primitive datatypes except ints and strings
 5. ARRAYS OF ARRAYS >.<
+6. empty classes break the translator
 
 Strings:
 1. If java: String temp = "bla";
