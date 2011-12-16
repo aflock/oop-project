@@ -173,8 +173,12 @@ public class Mubble{
         if(staticMethod) {
             s.append("static ");
             s.append(returnType).append(" ").append(methodName).append("(");
-            for (String para : paraType) {
-                s.append(", ").append(para);
+
+            for (int i = 0; i< paraType.size(); i++) {
+				if(i == 0 && isStatic())
+					s.append(paraType.get(i));
+				else
+					s.append(", ").append(paraType.get(i));
             }
             s.append(");");
 

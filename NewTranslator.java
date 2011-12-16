@@ -110,13 +110,24 @@ public class NewTranslator extends xtc.util.Tool{
         //Pass methods down the inheritance tree
 		Bubble obj = new Bubble();
 		for(Bubble b: bubbleList){
+			System.out.println("b dot get name " + b.getName());
 			if(b.getName().equals("Object"))
 				obj = b;
 		}
-		for(Bubble child : obj.getBubbles()){
-			if(!child.getName().equals("String"))
-				child.mangleBetweenClasses();
+		System.out.println("object    " + obj.getName());
+		System.out.println("Childrennnnnnn");
+
+		for(Bubble child : bubbleList){
+			System.out.println("V_V_V_V_V_V_V_V__V__V_V_");
+			System.out.println(child.getName());
+			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
+				if(child.getParentBubble().getName().equals("Object")){
+					System.out.println("Calling the method V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V");
+					child.mangleBetweenClasses();
+				}
+			}
 		}
+
 
 		/*
         for(Bubble b: bubbleList){
@@ -196,7 +207,7 @@ public class NewTranslator extends xtc.util.Tool{
                             for(Field f: m.getParameters()){
                                 System.out.println("\t\t" + f.getType() + " " + f.getName());
                             }
-                            
+
                         }
                         System.out.println("\tisPrivate: " + m.isPrivate());
                         System.out.println("\tClass: " + m.getClassName() + "\n");
@@ -204,7 +215,7 @@ public class NewTranslator extends xtc.util.Tool{
                 }
             }
         }
-        
+
 
         //Print structure <- use for testing dependencies, inheritance
         if(false)

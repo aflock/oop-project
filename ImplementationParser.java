@@ -410,7 +410,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 	    System.out.println("|||||||||||||||||||||| " + temp.get(i) + " |||||||||||||||||||||||||");
 	}
 	System.out.println("---------------------------------------------------------------2");
-	//System.out.println("----------------------------WHAT IS GOING ON? " + curMub.getName()); 
+	//System.out.println("----------------------------WHAT IS GOING ON? " + curMub.getName());
 
 	/*
         for(Mubble m : mubbleList){
@@ -536,8 +536,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             mName = n.getString(2);
             String tmp = "";
 
-
-
             dispatchBitch(n);
             //Dealing with System.out.print*
             if((n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")) &&//{{{
@@ -590,22 +588,22 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
                 Node argNode = n.getNode(3); //eVal Call should be dispatched on the Args Node
                 //System.out.println("Calling e.dispatch on: " + argNode.getName());
+
+                System.out.println("you get here right??");
                 String[] params = ((String)(e.dispatch(argNode))).trim().split(" "); //RETURNING VOID
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
                 //resolve mangled methods (overloading)
                 Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);
+                System.out.println("but you dont get here");
                 String trueName = trueMub.getName();
                 //TODO VV check this/ finish this shit
-                /*
-                  System.out.println("Bout to call isStatic with mName ||" + mName + "|| and theName >> " + theName );
-                  if(mName.equals("charAt") && theName.equals("testMethodChaining")){
-                  System.out.println(n);
-                  System.out.println(n.getNode(0).getName());
-                  }
-                */
                 isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
-                if(!isStaticMethod){
+
+                boolean isPrivate = trueMub.isPrivate();
+
+
+                if(!isStaticMethod && !isPrivate){
                     dispatch(n.getNode(0));
                     //need to fix casting for first arg
                     if(n.getNode(0) != null) {
@@ -613,13 +611,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         methodString += "(";
                         //should cast self to expected type
                         //not doing now because castify is not a method,
-                        //too complicated right now TODO >???
+                        //too complicated right now
                         dispatch(n.getNode(0));//adding self
                         //methodString += ", "; //error
                     }
                     else {
-                        methodString += n.getString(2) + "(";
+                        methodString += n.getString(2) + "(" + curBub.getName();
                     }
+                    if(n.getNode(3).size() != 0)
+                        methodString += ",";
                     dispatch(n.getNode(3));
                     methodString += ")";
 
@@ -628,7 +628,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     if(n.getNode(0) != null){ //if a class is explicitly defined
                         methodString += "_";
                         //need to know which static class we are talking about
-                        String cname = (String)symbolTable.lookup(theName);//TODO AFLOCK
+                        String cname = (String)symbolTable.lookup(theName);
                         if (cname == null){//theName must be a reference to a class
                             cname = theName;
                         }
@@ -647,6 +647,17 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         methodString += "_" + curBub.getName() + "::" + n.getString(2);
                     }
                     methodString += "(";
+                    if(isPrivate){
+                        //private methods need an implicit this even though they get called as if they were static
+                        if(n.getNode(0) != null)
+                            dispatch(n.getNode(0));
+                        else
+                            methodString += curBub.getName();
+
+                        if(n.getNode(3).size() != 0){
+                            methodString += ",";
+                        }
+                    }
                     dispatch(n.getNode(3));
                     methodString += ")";
                 }
@@ -657,7 +668,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                   methodString += ")";
                 */
 
-                /* METHOD CHAINING FIX LATER
+                /* METHOD CHAINING FIX LATER//{{{
                    Node firstChild = n.getNode(0);
                    String tempString = "";
                    if (firstChild == null) { // static
@@ -698,7 +709,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                    else {
                    methodString += tempString +";\n";
                    }
-                */
+                *///}}}
             }
         }
         else {
@@ -998,12 +1009,26 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
 
             String s = inNameSpace(n.getString(0));
-            if (s != null && !inArray) {
+            if (s != null && !inArray && !inNewClassExpression ) {
                 //using absolute namespace
                 //System.out.println("4");
-                //check to see if Bubble is found by inNameSpace
+                //check to see if Bubble is found by inNameSpace\
                 methodString += "::"+s.trim().replaceAll("\\s+", "::")
                     +"::";
+            }
+            else if (inNewClassExpression)
+            {
+                methodString += s.trim().replaceAll("\\s+", "::")
+                    +"::";
+                //if it is part of java.lang, need two underscores here
+                if(s.contains("java lang"))
+                {
+                    System.out.println("********");
+                     methodString+= "__";
+                }
+                else
+                    System.out.println("=======\n"+s+"======\n");
+
             }
             if(!inArray)
                 methodString += n.getString(0);
@@ -1050,13 +1075,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             dispatch(n.getNode(0));
             dispatch(n.getNode(1));
 
-            if(n.getNode(2).getString(0).equals("Object") ||
+            if(!(n.getNode(2).getString(0).equals("Object") ||
                n.getNode(2).getString(0).equals("String") ||
-               n.getNode(2).getString(0).equals("Class")) {
+               n.getNode(2).getString(0).equals("Class"))) {
                 methodString += "_";
             }
 
-            methodString += "_";
+            //methodString += "_";
             dispatch(n.getNode(2));
             methodString += "(";
             dispatch(n.getNode(3));
@@ -1435,25 +1460,15 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 }
                 else {
                     if(!inPrintStatement && !inNewClassExpression)
-                        methodString += ", ";
+                        methodString += " ";
                     dispatch(n.getNode(0));
                 }
 
             }
 
             for(int i = 1; i < n.size(); i++) {
-                //DONT KNOW WHY WE NEED THIS
-                //if(!par[i].trim().equals("")) {
-                //    methodString += ", (("+(par.length > i ? par[i] : "")
-                //        +") ";
-                //    dispatch(n.getNode(i));
-                //   methodString += ")";
-                //}
-                //else{
                 methodString += ", ";
-
                 dispatch(n.getNode(i));
-                //}
             }
 
 

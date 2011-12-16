@@ -93,18 +93,18 @@ public class Bubble{
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
         Mubble mub = null;
         int matchNum = 100000000;
-        //System.out.println("findMethod being called SON");
-        //System.out.println("Method name is :: " + methodName);
+        System.out.println("findMethod being called SON");
+        System.out.println("Method name is :: " + methodName);
         System.out.println("Bubble :: " + getName());
         for (Mubble m : mubbles) {
-            System.out.println("\tMethod:: " + m.getName());
+            //System.out.println("\tMethod:: " + m.getName());
             if (m.belongToGroup(methodName)) { //if there is a match in method names
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes(); //todo: fix, param types is size 0 for objects??
                 ArrayList<Field> fields = m.getParameters();
-                System.out.println("fields.size(): " + fields.size());
+                //System.out.println("fields.size(): " + fields.size());
                 for(Field f : fields)
-                    System.out.println("\t" + f.getType());
+                    //System.out.println("\t" + f.getType());
                 /*//System.out.println("Belongs to Group = True");
                   System.out.println("p.size(): " + p.size());
                   System.out.println("para.size(): " + para.size());
@@ -280,10 +280,10 @@ public class Bubble{
          */
         // byte -> char -> short -> int -> long
         // float -> double
-        System.out.println("A: " + a);
-        System.out.println("B: " + b);
+        //System.out.println("A: " + a);
+        //System.out.println("B: " + b);
 
-	System.out.println(isPrim(a) + " " + isPrim(b));
+	//System.out.println(isPrim(a) + " " + isPrim(b));
 
         if (a.equals(b))
             return 0;
@@ -299,15 +299,18 @@ public class Bubble{
         //walk a's inheritance
         int count = 0;
         while (!(aBub.getName().equals(b))) {
-            if (aBub.getName().equals("Object"))
+            if (aBub.getName().equals("Object") || aBub.getName().equals("String"))
                 break;
             aBub = aBub.getParentBubble();
+
             count++;
         }
-        if (!aBub.getName().equals("Object"))
+        if (!aBub.getName().equals("Object")){
             return 10000;
-        else
+        }
+        else{
             return count;
+        }
     }
 
     public static int distPrim(String a, String b) {
@@ -616,6 +619,7 @@ public class Bubble{
          *                  child.mangleBetweenClasses()
          */
 
+        System.out.println(this.getName() + " is inheriting and mangling (properly?) :)");
         this.inheritMethods();
         //check if any names are duplicates
         //keeping track of names so we know which to mangle
