@@ -58,6 +58,7 @@ public class EvalCall extends Visitor{
     Bubble curBub;
     ArrayList<Bubble> bubbleList;
     SymbolTable table;
+	SymbolTable dynamicTypeTable;
 
     public EvalCall(Bubble curBub, ArrayList<Bubble> bubbleList, SymbolTable table){
         this.curBub = curBub;
@@ -94,12 +95,18 @@ public class EvalCall extends Visitor{
         return "Problem";
     }
 
+	public String visitStringLiteral(GNode n){
+		return "String";
+	}
+
     public String visitPostfixExpression(GNode n){
         return visit(n.getNode(0));
     }
+
     public String visitNewClassExpression(GNode n){
         return n.getNode(2).getString(0) ;
     }
+
     public String visitNewArrayExpression(GNode n){
         String toRet = "";
         toRet += n.getNode(0).getString(0);
@@ -193,8 +200,8 @@ public class EvalCall extends Visitor{
 		if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
 			key = visit(n.getNode(0));
 		}
-        table = curBub.getTable();
-        String type = (String)table.lookup(key);
+        SymbolTable atable = curBub.getDynamicTypeTable();
+        String type = (String)atable.lookup(key);
         if(type == null || type.equals("constructor"))
             type = key;
         Bubble papa = new Bubble();
@@ -309,7 +316,9 @@ public class EvalCall extends Visitor{
 
     public String visitPrimaryIdentifier(GNode n){
         //need to look up your type in the table
-        return (String)(table.lookup(n.getString(0)));
+		SymbolTable ptable = curBub.getTable();
+
+        return (String)(ptable.lookup(n.getString(0)));
     }
     // shouldnt need these VV
     /*

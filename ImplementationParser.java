@@ -50,7 +50,6 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     String methodString = "";
     String cName = "";
 
-    //HashMap<String, String> table;
     public NewTranslator t; //used for the parse method
 
     public ImplementationParser(NewTranslator t, ArrayList<Pubble> pubbleList, ArrayList<Mubble> mubbleList, ArrayList<Bubble> bubbleList, ArrayList<Mubble> langList, ArrayList<String> parsed)
@@ -500,7 +499,7 @@ NOTE: Should be called after implementation parser is complete
                     System.out.println(n.getNode(0).getName());
                 }
                 */
-                isStaticMethod = isStatic(symbolTable, theName, mName, pList);
+                isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
                 if(!isStaticMethod){
                     dispatch(n.getNode(0));
                     //need to fix casting for first arg
@@ -1110,9 +1109,10 @@ NOTE: Should be called after implementation parser is complete
         else {
             visit(n);
         }
-        if (hasEntered)
+        if (hasEntered){
             symbolTable.exit();
             dynamicTypeTable.exit();
+        }
     }
 
     public void visitPostfixExpression(GNode n) {
@@ -1265,7 +1265,7 @@ NOTE: Should be called after implementation parser is complete
                 //System.out.println("got here 4");
                 key = callex.getNode(0).getString(0);
                 //System.out.println("key is ::" + key);
-                type = (String)symbolTable.lookup(key);//TODO AFLOCK
+                type = (String)symbolTable.lookup(key);
                 //System.out.println(type);
                 //if type is null here it is a static method, and the Class is what is important
                 //--AF

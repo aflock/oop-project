@@ -15,6 +15,7 @@ public class testDynamicStaticTypeDifferent{
     {
         Object a = "Ahhhh";
         m(a);
+        int gg = 'v';
         A example  = new B();
         B example2 = new B();
         A example3 = example2;
@@ -33,6 +34,14 @@ public class testDynamicStaticTypeDifferent{
     }
 }
 
+class B extends A{
+    public void dynMeth(){
+        System.out.println("Dynamix b");
+    }
+    public static void method(){
+        System.out.println("B method");
+    }
+}
 class A{
     public void dynMeth(B a){
         System.out.println(" argument bb");
@@ -45,14 +54,6 @@ class A{
     }
     public static void method(){
          System.out.println("A method");
-    }
-}
-class B extends A{
-    public void dynMeth(){
-        System.out.println("Dynamix b");
-    }
-    public static void method(){
-        System.out.println("B method");
     }
 }
 /* How do we solve this problem?

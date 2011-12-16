@@ -33,6 +33,7 @@ import xtc.oop.helper.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
+import xtc.oop.helper.EvalCall;
 
 public class StructureParser extends xtc.tree.Visitor //aka Decl
 {
@@ -135,6 +136,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curBub = new Bubble(className);
         }
         table = curBub.getTable();
+        System.out.println("curbubs table : " + table);
         dynamicTypeTable = curBub.getDynamicTypeTable();
         curBub.setParentPubble(curPub); //curBub's package is curPub
 
@@ -224,7 +226,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curMub = freshMubble;
 
         SymbolTable.Scope current = table.current();
-        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         String name2 = name;
         while (current.isDefined(name2)) {
             name2 = "_" + name;
@@ -268,7 +269,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
         curMub = freshMubble;
         SymbolTable.Scope current = table.current();
-        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         String name2 = name;
         while (current.isDefined(name2)) {
             name2 = "_" + name2;
@@ -331,10 +331,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitDeclarators(GNode n) {
         SymbolTable.Scope current = table.current();
-        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         // assuming Declarators' parent is always FieldDeclaration
         Node parent0 = (Node)n.getProperty("parent0");
+        //static type
         String type = parent0.getNode(1).getNode(0).getString(0);
+
+        //setting static type in table
         for (Object o : n) {
             Node ch = (Node)o; // does not check already defined name
             current.define(ch.getString(0), type);
@@ -345,6 +347,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitDeclarator(GNode n) {
         //TODO fact check with an AST (see testAssignmt..a.java)
+        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
+        //add to the dynamic type table
+        String name = n.getString(0);
+        String type = "";
+
+        EvalCall e = new EvalCall(curBub, bubbleList, table);
+        type = (String)e.dispatch(n.getNode(2));
+
+        dynamicCurrent.define(name, type);
         visit(n);
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
@@ -597,13 +608,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitForStatement(GNode n)
     {
-        //varTable.enter("for");
-        //funcTable.enter("for");
         table.enter("for");
         dynamicTypeTable.enter("for");
+
         visit(n);
-        //varTable.exit();
-        //funcTable.exit();
+
         table.exit();
         dynamicTypeTable.exit();
     }
@@ -624,8 +633,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent0 = (Node)n.getProperty("parent0");
         boolean hasEntered = false;
         if (parent0.hasName("WhileStatement")) {
-            //varTable.enter("while");
-            //funcTable.enter("while");
             table.enter("while");
             dynamicTypeTable.enter("while");
             hasEntered = true;
@@ -672,9 +679,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //varTable.exit();
         //funcTable.exit();
 
-        if(hasEntered)
+        if(hasEntered){
             table.exit();
             dynamicTypeTable.exit();
+        }
     }
 
     public void visitBasicForControl(GNode n)

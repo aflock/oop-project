@@ -38,6 +38,7 @@ public class Bubble{
         this.mubbles         = new ArrayList<Mubble>();
         this.varTable        = new SymbolTable();
         this.funcTable       = new SymbolTable();
+        this.table           = new SymbolTable();
         this.dynamicTypeTable = new SymbolTable();
         }
 

@@ -203,7 +203,7 @@ public class NewTranslator extends xtc.util.Tool{
 
 
         //Printing Contents of Everything
-        if(true)
+        if(false)
             for(Pubble p : pubbleList)
             {
                 System.out.println("Package: " + p.getName());
