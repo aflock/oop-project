@@ -4,13 +4,13 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 8.
+DAYS TILL DUE: bout 4.
 
 QUESTIONS FOR GRIMM:
 1. Can we just replace "final" with "const"? (currently doing this in Bubble getStruct() around line 230)
     -ignore? Assuming input is correct
 2. Where does static datafields go in the translated .cc file? Not in the consructor. Are they in the struct of the class?
-    
+
 3. Why did you specialize the array constructor for an array of ints but not array of strings or objects?
     -for loop with gcc statement expression({ })
     -recursion will fix it if we make one for Array< Array <__> >
@@ -40,14 +40,12 @@ Strings:
 _V_V_V_V_V_ Current pressing issues _^_^_^_^_^_^_
 - data fields for each Bubble (including its parents data fields) need to be added to table at the beginning of Impl parser(as we enter a bubble I believe). the parent's data field names need to be prefixed by a $ if and only if they are overwritten by the child bubble TODO need to talk about how to fix it
 
--
+- deal with static types  vs dynamic tpes -->> need to house both in symbolTable?
 - fucking static blocks --->>> check line 360 in structure parser (done?)
 - Need to deal with static blocks in class declarations.
 - Casting
-x how to use xtc.util.symbol table to our advantage?
 ~ method overloading
 - memset?
-x ? think its done.. how to check?memory management (smart pointers)? to support, we need to change . . .  typedefs! AND each instance of a reference be made to a smart pointer. not that hard.
 - chaining -> use temp variables (method chaining, assignment chaining)
 - deal with arrays in parameters
 - arrays of arrays templates
