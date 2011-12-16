@@ -91,26 +91,38 @@ public class Bubble{
         int matchNum = 100000000;
         //System.out.println("findMethod being called SON");
         //System.out.println("Method name is :: " + methodName);
-        //System.out.println("my name is :: " + getName());
+        System.out.println("Bubble :: " + getName());
         for (Mubble m : mubbles) {
-            //System.out.println("VIVIVIVIVIVIVIVIVIVI");
-            //System.out.println(m.getGroup());
-            if (m.belongToGroup(methodName)) {
+            System.out.println("\tMethod:: " + m.getName()); 
+            if (m.belongToGroup(methodName)) { //if there is a match in method names
                 int min = 0;
-                ArrayList<String> p = m.getParameterTypes();
-                if (p.size() == para.size()) {
+                ArrayList<String> p = m.getParameterTypes(); //todo: fix, param types is size 0 for objects??
+                ArrayList<Field> fields = m.getParameters();
+                System.out.println("fields.size(): " + fields.size());
+                for(Field f : fields)
+                    System.out.println("\t" + f.getType());
+                /*//System.out.println("Belongs to Group = True");
+                System.out.println("p.size(): " + p.size());
+                System.out.println("para.size(): " + para.size());
+                for(String s : para)
+                    System.out.println("\t" + s);*/
+                if (p.size() == para.size()) { //checking to see if there in an applicable method, strictly based on the amount of params
+                    //System.out.println("Parameters size matches!");
                     boolean match = false;
                     for (int i = 0; i < p.size(); i++) {
-                        if(p.get(i).equals(para.get(i)))
+                    //System.out.println("p.get(i): " + p.get(i));
+                    //System.out.println("para.get(i): " + para.get(i));
+                        if(p.get(i).equals(para.get(i))) //if there is an exact match for a method
                             match = true;
                         else
                             match = false;
-                        if (!match) { // needs fixing
+                        if (!match) { //there isnt an exact method match, let's resolve this overloading
+                        // needs fixing
                             min += rank(bubbles, p.get(i), para.get(i));
                             /*
                                primitive types, objects
                                e.g. methods  function calls
-                               m(long)       m(int) -> 1
+                               m(int)       m(long) -> 1
                                m(long)       m(Long) -> 2??
                                m(long)       m(Shape) -> INF
                                m(A)          m(B) -> 1
@@ -126,7 +138,7 @@ public class Bubble{
                     //System.out.println("setting mub");
                     mub = m;
                 }
-            } else { continue;}
+            } else { continue;} //belongstogroup == false
 
         } //for end
         return mub; //do i want to return string?
@@ -256,8 +268,8 @@ public class Bubble{
          */
         // byte -> char -> short -> int -> long
         // float -> double
-
-
+        System.out.println("A: " + a);
+        System.out.println("B: " + b);
 
         if (a.equals(b))
             return 0;

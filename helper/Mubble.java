@@ -80,6 +80,7 @@ public class Mubble{
     }
 
     public boolean belongToGroup(String g) {
+        //System.out.println("Calling belongs to group: " + g + "==" + group + "?");
         return group.equals(g);
     }
 

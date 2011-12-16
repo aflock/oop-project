@@ -174,13 +174,16 @@ public class EvalCall extends Visitor{
     }
     public String visitCallExpression(GNode n){
         //evaluate arguments and find correct method based on them
+
         String arguments  =  visit(n.getNode(3));
         String methodName = n.getString(2);
         //catch System.out.*
+
         if(n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
             if(n.getNode(0).getNode(0) != null && n.getNode(0).getNode(0).getString(0).equals("System"))
                 return "";
         }
+
         String[] splitArgs = arguments.trim().split(" ");
         ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(splitArgs));
         //now find method based on name and parameters
@@ -191,9 +194,10 @@ public class EvalCall extends Visitor{
         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
             key = n.getNode(0).getString(0);
         }
-		if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
+		else if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
 			key = visit(n.getNode(0));
 		}
+
         table = curBub.getTable();
         String type = (String)table.lookup(key);
         if(type == null || type.equals("constructor"))
@@ -214,7 +218,6 @@ public class EvalCall extends Visitor{
     }
 
     public String visitArguments(GNode n){
-
         //System.out.println("enter args");
         //System.out.println(n.size());
         if(n.size() == 0){
@@ -225,7 +228,8 @@ public class EvalCall extends Visitor{
             //System.out.println("not size 0");
             String toRet = "";
             for(Object c : n){
-                toRet += visit((Node)c) ;
+                //System.out.println("\t" + i++);   
+                toRet += visit((Node)c) + " ";
             }
             return toRet;
         }

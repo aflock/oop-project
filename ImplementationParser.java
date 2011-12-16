@@ -61,6 +61,28 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         this.langList   = langList;
         this.parsed     = parsed;
         this.t = t;
+        
+        if(false) //printing out bubble and methods/method parent
+        {
+            System.out.println("*****IMPL PARSER***********");
+            for(Bubble b : bubbleList){
+                if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                    System.out.println("Bubble " + b.getName());
+                    for(Mubble m : b.getMubbles()){
+                        System.out.println("\tMubble: " + m.getName());
+                        if(true) //print out info about mubble's fields
+                        {
+                            for(Field f: m.getParameters()){
+                                System.out.println("\t\t" + f.getType() + " " + f.getName());
+                            }
+                            
+                        }
+                        System.out.println("\tisPrivate: " + m.isPrivate());
+                        System.out.println("\tClass: " + m.getClassName() + "\n");
+                    }
+                }
+            }
+        }
     }
 
 
@@ -486,12 +508,18 @@ NOTE: Should be called after implementation parser is complete
                     //System.out.println("last else fall through");
                     theName = curBub.getName();
                 }
+                
+                
 
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
-                String[] params = ((String)(e.dispatch(n))).trim().split(" ");
+                Node argNode = n.getNode(3); //eVal Call should be dispatched on the Args Node
+                //System.out.println("Calling e.dispatch on: " + argNode.getName());
+                String[] params = ((String)(e.dispatch(argNode))).trim().split(" "); //RETURNING VOID
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
-
+                //resolve mangled methods (overloading)
+                Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);
+                String trueName = trueMub.getName();
                 //TODO VV check this/ finish this shit
                 /*
                 System.out.println("Bout to call isStatic with mName ||" + mName + "|| and theName >> " + theName );
@@ -505,7 +533,7 @@ NOTE: Should be called after implementation parser is complete
                     dispatch(n.getNode(0));
                     //need to fix casting for first arg
                     if(n.getNode(0) != null) {
-                        methodString += "->__vptr->"+n.getString(2);
+                        methodString += "->__vptr->"+trueName;
                         methodString += "(";
                         //should cast self to expected type
                         //not doing now because castify is not a method,
@@ -536,7 +564,7 @@ NOTE: Should be called after implementation parser is complete
                                 papa = b;
                         }
                         System.out.println(papa.getName() + "::" + n.getString(2));
-                        methodString += papa.getName() + "::" + n.getString(2);
+                        methodString += papa.getName() + "::" + trueName;
                     }
                     else{ //the static method is part of THIS class
                         System.out.println("_" + curBub.getName() + "::" + n.getString(2));
@@ -890,7 +918,7 @@ NOTE: Should be called after implementation parser is complete
             String s = inNameSpace(n.getString(0));
             if (s != null && !inArray) {
                 //using absolute namespace
-                System.out.println("4");
+                //System.out.println("4");
                 //check to see if Bubble is found by inNameSpace
                 methodString += "::"+s.trim().replaceAll("\\s+", "::")
                     +"::";

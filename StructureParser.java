@@ -268,9 +268,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         while (current.isDefined(name2)) {
             name2 = "_" + name2;
         }
+        //System.out.println(curBub.getName() + ": adding " + name2 + " to symbol table as method");
         current.define(name2, "method");
+        
         if (!name2.equals(name)) {
-            curMub.mangleName(name2);
+            //System.out.println("mangling name: " + name);
+            curMub.mangleName(name2); //actually only sets name to name2
         }
 
         visit(n);
@@ -330,8 +333,11 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent0 = (Node)n.getProperty("parent0");
         String type = parent0.getNode(1).getNode(0).getString(0);
         for (Object o : n) {
-            Node ch = (Node)o; // does not check already defined name
-            current.define(ch.getString(0), type);
+            if(o != null)
+            {
+                Node ch = (Node)o; // does not check already defined name
+                current.define(ch.getString(0), type);
+            }
         }
 
         visit(n);
@@ -411,8 +417,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         curField.setName(name);
 
         visit(n);
-        Node parent0 = (Node)n.getProperty("parent0");
-        Node parent1 = (Node)n.getProperty("parent1");
+        //Node parent0 = (Node)n.getProperty("parent0");
+        //Node parent1 = (Node)n.getProperty("parent1");
 
         /*
         if(parent1.hasName("ConstructorDeclaration")){
