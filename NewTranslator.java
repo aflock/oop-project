@@ -191,12 +191,20 @@ public class NewTranslator extends xtc.util.Tool{
                     System.out.println("Bubble " + b.getName());
                     for(Mubble m : b.getMubbles()){
                         System.out.println("\tMubble: " + m.getName());
-                        System.out.println("\tParent: " + m.getClassName() + "\n");
+                        if(true) //print out info about mubble's fields
+                        {
+                            for(Field f: m.getParameters()){
+                                System.out.println("\t\t" + f.getType() + " " + f.getName());
+                            }
+                            
+                        }
+                        System.out.println("\tisPrivate: " + m.isPrivate());
+                        System.out.println("\tClass: " + m.getClassName() + "\n");
                     }
                 }
             }
         }
-
+        
 
         //Print structure <- use for testing dependencies, inheritance
         if(false)

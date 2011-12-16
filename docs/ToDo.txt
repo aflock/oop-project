@@ -11,11 +11,12 @@ QUESTIONS FOR GRIMM:
     -ignore? Assuming input is correct
 2. Where does static datafields go in the translated .cc file? Not in the consructor. Are they in the struct of the class?
 
+
 3. Why did you specialize the array constructor for an array of ints but not array of strings or objects?
     -for loop with gcc statement expression({ })
     -recursion will fix it if we make one for Array< Array <__> >
 4. Overloading and Method chaining, vtable, private/static methods,  ARE #1 priority
-5. Don't put private or static methods in the vtable.
+5. Static datafields are messed up
 
 To Do:
 2. Not sure assignments work in dataFields

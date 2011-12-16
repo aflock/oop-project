@@ -40,6 +40,7 @@ public class Mubble{
         constructor = false;
         main = false;
         staticMethod = false;
+        visibility = "public"; //default
         group = this.methodName = methodName;
         if(methodName.equals("main")){
             main = true;
@@ -79,6 +80,7 @@ public class Mubble{
     }
 
     public boolean belongToGroup(String g) {
+        //System.out.println("Calling belongs to group: " + g + "==" + group + "?");
         return group.equals(g);
     }
 

@@ -22,7 +22,7 @@ public class Bubble{
 
     /* DO WE NEED THIS?:
        String visibility; //The visibility for this class
-       */
+    */
 
     ////////////////////
     /* CONSTRUCTOR(S) */
@@ -95,32 +95,46 @@ public class Bubble{
         int matchNum = 100000000;
         //System.out.println("findMethod being called SON");
         //System.out.println("Method name is :: " + methodName);
-        //System.out.println("my name is :: " + getName());
+        System.out.println("Bubble :: " + getName());
         for (Mubble m : mubbles) {
-            //System.out.println("VIVIVIVIVIVIVIVIVIVI");
-            //System.out.println(m.getGroup());
-            if (m.belongToGroup(methodName)) {
+            System.out.println("\tMethod:: " + m.getName());
+            if (m.belongToGroup(methodName)) { //if there is a match in method names
                 int min = 0;
-                ArrayList<String> p = m.getParameterTypes();
-                if (p.size() == para.size()) {
+                ArrayList<String> p = m.getParameterTypes(); //todo: fix, param types is size 0 for objects??
+                ArrayList<Field> fields = m.getParameters();
+                System.out.println("fields.size(): " + fields.size());
+                for(Field f : fields)
+                    System.out.println("\t" + f.getType());
+                /*//System.out.println("Belongs to Group = True");
+                  System.out.println("p.size(): " + p.size());
+                  System.out.println("para.size(): " + para.size());
+                  for(String s : para)
+                  System.out.println("\t" + s);*/
+                if (p.size() == para.size()) { //checking to see if there in an applicable method, strictly based on the amount of params
+                    //System.out.println("Parameters size matches!");
                     boolean match = false;
                     for (int i = 0; i < p.size(); i++) {
-                        if(p.get(i).equals(para.get(i)))
+                        //System.out.println("p.get(i): " + p.get(i));
+                        //System.out.println("para.get(i): " + para.get(i));
+                        if(p.get(i).equals(para.get(i))) {//if there is an exact match for a method
                             match = true;
+			    return m;
+			}
                         else
                             match = false;
-                        if (!match) { // needs fixing
+                        if (!match) { //there isnt an exact method match, let's resolve this overloading
+                            // needs fixing
                             min += rank(bubbles, p.get(i), para.get(i));
                             /*
-                               primitive types, objects
-                               e.g. methods  function calls
-                               m(long)       m(int) -> 1
-                               m(long)       m(Long) -> 2??
-                               m(long)       m(Shape) -> INF
-                               m(A)          m(B) -> 1
-                               m(A)          m(C) -> 2
-                               m(A)          m(AAAA) -> INF
-                               */
+                              primitive types, objects
+                              e.g. methods  function calls
+                              m(int)       m(long) -> 1
+                              m(long)       m(Long) -> 2??
+                              m(long)       m(Shape) -> INF
+                              m(A)          m(B) -> 1
+                              m(A)          m(C) -> 2
+                              m(A)          m(AAAA) -> INF
+                            */
                         }
                     }
 
@@ -130,7 +144,7 @@ public class Bubble{
                     //System.out.println("setting mub");
                     mub = m;
                 }
-            } else { continue;}
+            } else { continue;} //belongstogroup == false
 
         } //for end
         return mub; //do i want to return string?
@@ -242,12 +256,14 @@ public class Bubble{
     /* MISC. METHODS */
     ///////////////////
 
+    /*
     public boolean isPrim(String a){
         if(a.equals("int32_t") || a.equals("int64_t")
-                ||a.equals("int16_t") ||a.equals("byte") ||a.equals("boolean"))
+           ||a.equals("int16_t") ||a.equals("byte") ||a.equals("boolean"))
             return true;
         return false;
     }
+    */
     public int rank(ArrayList<Bubble> bubbles, String a, String b){
         //a is the actual argument, b is the formal argument
         //a moves. b stays
@@ -256,19 +272,29 @@ public class Bubble{
          * int32_t
          * long (int64_t)
          * short(int16_t)
-         * char(int8_t)
+         * char
          * double
          * float
          * boolean
-         * byte
+         * byte (int8_t)
          */
         // byte -> char -> short -> int -> long
         // float -> double
+        System.out.println("A: " + a);
+        System.out.println("B: " + b);
 
-
+	System.out.println(isPrim(a) + " " + isPrim(b));
 
         if (a.equals(b))
             return 0;
+
+        if (isPrim(a) && isPrim(b)) {
+            return distPrim(a, b);
+        }
+        else if ((isPrim(a) && !isPrim(b)) || (!isPrim(a) && isPrim(b))) {
+            return 100000;
+        }
+
         Bubble aBub = findBubble(bubbles, a);
         //walk a's inheritance
         int count = 0;
@@ -282,6 +308,274 @@ public class Bubble{
             return 10000;
         else
             return count;
+    }
+
+    public static int distPrim(String a, String b) {
+        if (a.equals("byte")) {
+            if (a.equals("byte")) {
+		return 0;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 1;
+            }
+            else if (a.equals("int32_t")) {
+		return 2;
+            }
+            else if (a.equals("int64_t")) {
+		return 3;
+            }
+            else if (a.equals("float")) {
+		return 4;
+            }
+            else if (a.equals("double")) {
+		return 5;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("char")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 0;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 1;
+            }
+            else if (a.equals("int32_t")) {
+		return 2;
+            }
+            else if (a.equals("int64_t")) {
+		return 3;
+            }
+            else if (a.equals("float")) {
+		return 4;
+            }
+            else if (a.equals("double")) {
+		return 5;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("bool")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 0;
+            }
+            else if (a.equals("int16_t")) {
+		return 10000;
+            }
+            else if (a.equals("int32_t")) {
+		return 10000;
+            }
+            else if (a.equals("int64_t")) {
+		return 10000;
+            }
+            else if (a.equals("float")) {
+		return 10000;
+            }
+            else if (a.equals("double")) {
+		return 10000;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("int16_t")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 0;
+            }
+            else if (a.equals("int32_t")) {
+		return 1;
+            }
+            else if (a.equals("int64_t")) {
+		return 2;
+            }
+            else if (a.equals("float")) {
+		return 3;
+            }
+            else if (a.equals("double")) {
+		return 4;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("int32_t")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 10000;
+            }
+            else if (a.equals("int32_t")) {
+		return 0;
+            }
+            else if (a.equals("int64_t")) {
+		return 1;
+            }
+            else if (a.equals("float")) {
+		return 2;
+            }
+            else if (a.equals("double")) {
+		return 3;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("int64_t")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 10000;
+            }
+            else if (a.equals("int32_t")) {
+		return 10000;
+            }
+            else if (a.equals("int64_t")) {
+		return 1;
+            }
+            else if (a.equals("float")) {
+		return 2;
+            }
+            else if (a.equals("double")) {
+		return 3;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("float")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 10000;
+            }
+            else if (a.equals("int32_t")) {
+		return 10000;
+            }
+            else if (a.equals("int64_t")) {
+		return 10000;
+
+            }
+            else if (a.equals("float")) {
+		return 1;
+            }
+            else if (a.equals("double")) {
+		return 0;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else if (a.equals("double")) {
+	    if (a.equals("byte")) {
+		return 10000;
+            }
+            else if (a.equals("char")) {
+		return 10000;
+            }
+            else if (a.equals("bool")) {
+		return 10000;
+            }
+            else if (a.equals("int16_t")) {
+		return 10000;
+            }
+            else if (a.equals("int32_t")) {
+		return 10000;
+            }
+            else if (a.equals("int64_t")) {
+		return 10000;
+            }
+            else if (a.equals("float")) {
+		return 10000;
+            }
+            else if (a.equals("double")) {
+		return 0;
+            }
+            else {
+                System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+                return -1;
+            }
+        }
+        else {
+            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            return -1;
+        }
+    }
+
+    public static boolean isPrim(String a) {
+        if (a.equals("byte"))
+            return true;
+        if (a.equals("char"))
+            return true;
+        if (a.equals("bool"))
+            return true;
+        if (a.equals("int16_t"))
+            return true;
+        if (a.equals("int32_t"))
+            return true;
+        if (a.equals("int64_t"))
+            return true;
+        if (a.equals("float"))
+            return true;
+        if (a.equals("double"))
+            return true;
+        return false;
     }
 
     //todo: Should we search through parent and children bubbles??
@@ -390,9 +684,9 @@ public class Bubble{
         this.mubbles = newMethodsList;
 
         for(Mubble m : mubbles)
-        {
-            //System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
-        }
+            {
+                //System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
+            }
     }
 
     public boolean paramMatch(Mubble one, Mubble two){
@@ -423,14 +717,15 @@ public class Bubble{
         for(Field f : dataFields) {
             //DO I NEED MORE THAN TYPE AND NAME??? NO!
             for(String mod : f.getModifiers())
-            {
-                if(mod.equals("public") || mod.equals("private")){
-                }   //ignore, were not worried about visibility in .h
-                else if(mod.equals("final"))
-                    ret += "const "; //IS THIS CORRECT? This just replaces final with const"
-                else //its another modifier that is c++ compatible, so just print
-                    ret += mod + " ";
-            }
+                {
+                    if(mod.equals("public") || mod.equals("private")){
+                    }   //ignore, were not worried about visibility in .h
+                    else if(mod.equals("final")){
+                    }//ignore, good java code shouldnt need this
+                    //ret += "const "; //IS THIS CORRECT? This just replaces final with const"
+                    else //its another modifier that is c++ compatible, so just print
+                        ret += mod + " ";
+                }
 
             if(f.isArray) //fix to work with multidimension arrays
                 ret += "__rt::Array<" + f.type + ">* " + f.name + ";\n";
@@ -448,26 +743,26 @@ public class Bubble{
             }
         }
         if(!encounteredConstructor) //if there was no constructor in the java file, create default one
-        {
-            ret += "_" + name + "(); \n\n";
-        }
+            {
+                ret += "_" + name + "(); \n\n";
+            }
         else
-        {
-            for(Mubble constructor : mubbles) {
-                if(constructor.isConstructor()){
-                    ret += "_"+constructor.getName()+"(";
-                    boolean isFirst = true;
-                    for(Field f : constructor.getParameters()){
-                        if(!isFirst)
-                            ret+= ", ";
-                        if(isFirst)
-                            isFirst = false;
-                        ret += f.type + " " + f.name;
+            {
+                for(Mubble constructor : mubbles) {
+                    if(constructor.isConstructor()){
+                        ret += "_"+constructor.getName()+"(";
+                        boolean isFirst = true;
+                        for(Field f : constructor.getParameters()){
+                            if(!isFirst)
+                                ret+= ", ";
+                            if(isFirst)
+                                isFirst = false;
+                            ret += f.type + " " + f.name;
+                        }
+                        ret += ");\n";
                     }
-                    ret += ");\n";
                 }
             }
-        }
         //static void __delete(__Object*);
         ret += "\n//The destructor\n";
         ret += "static void __delete(_" + this.name + "*);\n";
@@ -478,7 +773,7 @@ public class Bubble{
             "static _"+this.name+"_VT __vtable;\n";
         for(Mubble m : mubbles) {
             //HARDCODING STATIC, MAY NEED TO CHANGE
-            if(!m.isConstructor() && m.getFlag() != 'i' && !m.isDelete() && m.isPrivate()) //if its a constructor, inherited method, or delete, don't print it
+            if(!m.isConstructor() && m.getFlag() != 'i' && !m.isDelete()) //if its a constructor, inherited method, or delete, don't print it
                 ret += m.forward() + "\n";
         }
         //unindent
@@ -494,14 +789,15 @@ public class Bubble{
         ret += "Class __isa;\n";
         //ret +=  "void (*__delete)(_" + this.name + "*);\n";
         for(Mubble m : mubbles) {
-            if(!m.isConstructor()) //if its a constructor
+            //if its a constructor, main, static, or private, it doesnt belong in the vtable
+            if(!m.isConstructor() && !m.isMain() && !m.isStatic() && !m.isPrivate())
                 ret += m.vTable1()+"\n";
         }
         //Make VT constructor in-line, hardcoding class
         ret+="\n_"+this.name+"_VT()\n: __isa(_"+this.name+"::__class())";
         //ret += "__delete(&_" + this.name + "::__delete)";
         for(Mubble m : mubbles) {
-            if(!m.isConstructor() && !m.isMain() && !m.isStatic())
+            if(!m.isConstructor() && !m.isMain() && !m.isStatic() && !m.isPrivate())
                 ret += ",\n"+m.vTable2();
         }
         ret+=" {\n";
@@ -525,9 +821,9 @@ public class Bubble{
                 encounteredConstructor = true;
         }
         if(!encounteredConstructor) //if there was no constructor in the java file, create default one
-        {
-            ret += "_" + name + "::_" + name + "(): __vptr(&__vtable){} \n\n";
-        }
+            {
+                ret += "_" + name + "::_" + name + "(): __vptr(&__vtable){} \n\n";
+            }
         for(Mubble m: mubbles){
             //if the method is not inherited
             if(m.getFlag() != 'i')
@@ -538,4 +834,4 @@ public class Bubble{
         return ret;
         //return "todo: getC method in Bubble";
     }
-    }//}}}
+}//}}}

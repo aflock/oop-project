@@ -1,4 +1,4 @@
-public class testStaticMethods{
+public class testSimpleStatic{
     public static int getNum(){
         return (4 + 4) * 12;
     }
@@ -22,7 +22,7 @@ public class testStaticMethods{
         System.out.println(getNum());
         System.out.println(getAge());
         System.out.println(getCount());
-
+        
     }
 }
 
