@@ -125,7 +125,7 @@ public class Mubble{
                     s.append(", ").append(paraType.get(i) + " " + paraName.get(i));
                 }
                 else {
-                    s.append(paraType.get(i)+ paraName.get(i));
+                    s.append(paraType.get(i)+  " " + paraName.get(i));
                 }
             }
             s.append(")");

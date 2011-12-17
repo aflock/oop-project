@@ -626,12 +626,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 if(a == null || a.equals("constructor"))
                     a = theName;
-                else{
+
                     for(Bubble b : bubbleList){
                         if(b.getName().equals(a))
                             trueBubble = b;
                     }
-                }
+
 
 
                 //resolve mangled methods (overloading)
