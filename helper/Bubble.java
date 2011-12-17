@@ -654,7 +654,7 @@ public static boolean isPrim(String a) {
 
 //todo: Should we search through parent and children bubbles??
 public static Bubble findBubble(ArrayList<Bubble> bubbles, String name){
-    System.out.println("trying to find bubble with name :: " + name);
+    //System.out.println("trying to find bubble with name :: " + name);
     for(Bubble b : bubbles){
         if (b.getName().equals(name))
             return b;
@@ -689,15 +689,15 @@ public void mangleBetweenClasses(){
      *                  child.mangleBetweenClasses()
      */
 
-    System.out.println(this.getName() + " is inheriting and mangling (properly?) :)");
+    //System.out.println(this.getName() + " is inheriting and mangling (properly?) :)");
     this.inheritMethods();
     //check if any names are duplicates
     //keeping track of names so we know which to mangle
     ArrayList<String> noConflictNames = new ArrayList<String>();
-    System.out.println("All mubbles for " + this.getName());
+    //System.out.println("All mubbles for " + this.getName());
     for(Mubble m : mubbles){
         char flag = m.getFlag();
-        System.out.println(m.getName() + " || " + flag);
+        //System.out.println(m.getName() + " || " + flag);
         if(flag == 'i' || flag == 'w')//add to list
             noConflictNames.add(m.getName());
     }
@@ -715,9 +715,9 @@ public void mangleBetweenClasses(){
         }
     }
 
-    System.out.println("After mangling ::::::::::");
+    //System.out.println("After mangling ::::::::::");
     for(Mubble m : mubbles){
-        System.out.println(m.getName());
+        //System.out.println(m.getName());
     }
     for(Bubble b: this.getBubbles()){
         b.mangleBetweenClasses();
