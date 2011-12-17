@@ -147,7 +147,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curBub = new Bubble(className);
         }
         table = curBub.getTable();
-        System.out.println("curbubs table : " + table);
+        //System.out.println("curbubs table : " + table);
         dynamicTypeTable = curBub.getDynamicTypeTable();
         curBub.setParentPubble(curPub); //curBub's package is curPub
 
@@ -741,6 +741,31 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         visit(n);
     }
 
+    public void visitExpression(GNode n)
+    {
+        //checking if this is an assignment
+        if(n.getString(1) != null && n.getString(1).equals("=")){
+            //need to get the dynamic type of the assignment
+            SymbolTable.Scope current = dynamicTypeTable.current();
+            EvalCall e = new EvalCall(curBub, bubbleList, table);
+
+            String typeName = (String)e.dispatch(n.getNode(2));
+            String variableName = null;
+
+            if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier"))
+                variableName = n.getNode(0).getString(0);
+            if(n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression"))
+                variableName = n.getNode(0).getString(1);
+
+
+            if(typeName != null && variableName != null)
+                current.define(variableName, typeName);
+            else
+                System.out.println("error assigning dynamic type in visitExpression StructureParser");
+
+        }
+        visit(n);
+    }
     public void visitExpressionList(GNode n)
     {
         visit(n);

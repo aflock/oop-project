@@ -32,7 +32,7 @@ import xtc.util.SymbolTable;
  x cast expression
  x class lit
  x conditional
- x expresison;
+ x expviresison;
  x equality expr
  x expression list?
  x instance of expression

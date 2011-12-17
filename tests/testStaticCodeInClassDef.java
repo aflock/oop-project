@@ -10,7 +10,7 @@ public class testStaticCodeInClassDef{
 
 class IDoShit{
     String name;
-    String favoriteBackStreetBoy = "Nick.AJ.Howie.Brian.Kevin".split("\\.")[0].toLowerCase();
+    String favoriteBackStreetBoy = "Nick.AJ.Howie.Brian.Kevin".charAt(0);
     static int count = "thisissomerandoshit".length();
 
     public IDoShit(String name){

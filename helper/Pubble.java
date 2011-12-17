@@ -82,7 +82,7 @@ public class Pubble{
         for(Bubble b : bubbles){
             for(Mubble m : b.getMubbles()) {
                 if(m.isMain()) {
-                    ret += "int main(void) {\n";
+                    ret += "int main(int argc, const char* argv[]) {\n";
                     ret += m.getCode();
                     ret += "return 0;\n";
                     ret += "}\n\n";
