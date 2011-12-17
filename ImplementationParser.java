@@ -580,10 +580,12 @@ NOTE: Should be called after implementation parser is complete
                 else if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
                     theName = n.getNode(0).getString(0);
                 }else{
-                    //System.out.println("last else fall through");
+                    System.out.println("last else fall through");
                     theName = curBub.getName();
+                    System.out.println("theName is " + theName);
                 }
 
+                //theName should
 
 
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
@@ -609,12 +611,33 @@ NOTE: Should be called after implementation parser is complete
 
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
+                isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
+
+                Bubble trueBubble = new Bubble();
+                String a = null;
+                if(isStaticMethod){
+                   a = (String)symbolTable.lookup(theName);
+
+                }else{
+                   a = (String)dynamicTypeTable.lookup(theName);
+                }
+
+                if(a == null || a.equals("constructor"))
+                    a = theName;
+                else{
+                    for(Bubble b : bubbleList){
+                        if(b.getName().equals(a))
+                            trueBubble = b;
+                    }
+                }
+
+
                 //resolve mangled methods (overloading)
-                Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);
+                Mubble trueMub = trueBubble.findMethod(bubbleList, mName, pList);
+                System.out.println(trueMub);
                 String trueName = trueMub.getName();
                 System.out.println(trueName);
                 //TODO VV check this/ finish this shit
-                isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
 
                 boolean isPrivate = trueMub.isPrivate();
 
@@ -1027,6 +1050,7 @@ NOTE: Should be called after implementation parser is complete
             }
 
             String s = inNameSpace(n.getString(0));
+            System.out.println(s);
             if (s != null && !inArray && !inNewClassExpression ) {
                 //using absolute namespace
                 //System.out.println("4");
@@ -1034,8 +1058,9 @@ NOTE: Should be called after implementation parser is complete
                 methodString += "::"+s.trim().replaceAll("\\s+", "::")
                     +"::";
             }
-            else if (inNewClassExpression)
+            else if (s != null && inNewClassExpression)
             {
+        System.out.println(s);
                 methodString += s.trim().replaceAll("\\s+", "::")
                     +"::";
                 //if it is part of java.lang, need two underscores here

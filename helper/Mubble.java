@@ -122,10 +122,10 @@ public class Mubble{
                 append("::").append(methodName).append("(");
             for (int i = 0; i < paraType.size(); i++) {
                 if (i != 0) {
-                    s.append(", ").append(paraType.get(i));
+                    s.append(", ").append(paraType.get(i) + " " + paraName.get(i));
                 }
                 else {
-                    s.append(paraType.get(i));
+                    s.append(paraType.get(i)+ paraName.get(i));
                 }
             }
             s.append(")");
@@ -142,9 +142,18 @@ public class Mubble{
                 if(this.isDelete())
                     s.append("*");
                 s.append(" __this");
+				/*
                 for (String para : paraType) {
-                    s.append(", ").append(para);
-                }
+                    s.append(", ").append(para).append();
+				}
+				*/
+
+				for (int i = 0; i < paraType.size(); i++) {
+					s.append(", ").append(paraType.get(i) + " " + paraName.get(i));
+				}
+
+
+
                 s.append(")");
             }
             else //it IS a constructor

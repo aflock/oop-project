@@ -103,17 +103,23 @@ public class Bubble{
         Mubble mub = null;
         int best = 1000000;
 
+        //System.out.println("mubblesList size is :: " + mubbles.size());
         for (Mubble m : mubbles) {
+            //System.out.println("Mubble name is || "+ m.getName());
+            //System.out.println("group name is || "+ m.getGroup());
+            //System.out.println("_____");
             if (m.belongToGroup(methodName)) {
+                //System.out.println(methodName + "::"+  m.getName());
+                //System.out.println(m.getFlag());
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
-                System.out.println("p.size(): " + p.size());
-                System.out.println("para.size(): " + para.size());
+                //System.out.println("p.size(): " + p.size());
+                //System.out.println("para.size(): " + para.size());
                 if (para.size() == p.size()) {
                     for (int i = 0; i < p.size(); i++) {
-                        System.out.println("V_V_V_V_V_V_V_VV_V_V_V_V_V_VV_V_V_V_V_V_V_V");
-                        System.out.println(methodName);
-                        System.out.println("calling rank on " + para.get(i) + "||| and " + p.get(i));
+                        //System.out.println("V_V_V_V_V_V_V_VV_V_V_V_V_V_VV_V_V_V_V_V_V_V");
+                        //System.out.println(methodName);
+                        //System.out.println("calling rank on " + para.get(i) + "||| and " + p.get(i));
                         min += rank(bubbles, para.get(i), p.get(i));
                         //System.out.println(i + " " + para.get(i) + ":" + p.get(i) + " " + min);
                     }
@@ -688,8 +694,10 @@ public void mangleBetweenClasses(){
     //check if any names are duplicates
     //keeping track of names so we know which to mangle
     ArrayList<String> noConflictNames = new ArrayList<String>();
+    System.out.println("All mubbles for " + this.getName());
     for(Mubble m : mubbles){
         char flag = m.getFlag();
+        System.out.println(m.getName() + " || " + flag);
         if(flag == 'i' || flag == 'w')//add to list
             noConflictNames.add(m.getName());
     }
@@ -707,6 +715,10 @@ public void mangleBetweenClasses(){
         }
     }
 
+    System.out.println("After mangling ::::::::::");
+    for(Mubble m : mubbles){
+        System.out.println(m.getName());
+    }
     for(Bubble b: this.getBubbles()){
         b.mangleBetweenClasses();
     }
