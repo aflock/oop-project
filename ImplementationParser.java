@@ -133,7 +133,7 @@ NOTE: Should be called after implementation parser is complete
         {
             if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());
             for(Field f : b.getDataFields()) //for each of it's dataFields
-            {
+            { 
                 if(f.hasAssignment()) //if there is an assignment
                 {
                     if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);

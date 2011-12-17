@@ -32,7 +32,7 @@ import xtc.util.SymbolTable;
  x cast expression
  x class lit
  x conditional
- x expresison;
+ x expviresison;
  x equality expr
  x expression list?
  x instance of expression
@@ -90,7 +90,7 @@ public class EvalCall extends Visitor{
         }
 
         if(n.getNode(0).hasName("ThisExpression"))
-            return (String)(table.lookup(n.getString(1)));
+            return (String)(table.lookup(n.getNode(0).getString(0)));
         System.out.println("please inspect something is wrong in EvalCall visit Selection Expression");
         return "Problem";
     }
@@ -386,15 +386,10 @@ public class EvalCall extends Visitor{
 
         visit(n);
     }
-	*/
 
     public String visitQualifiedIdentifier(GNode n){
-		if(n.getString(0) != null)
-			return n.getString(0);
-		else
-			return "PROBLEM IN VISIT QUALIFIED ID EVALCALL";
+        visit(n);
     }
-	/*
 
     public String visitImportDeclaration(GNode n){
         visit(n);

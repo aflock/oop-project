@@ -1,5 +1,6 @@
-package xtc.oop.helper; //UPDATE PACKAGE
+package xtc.oop.helper;
 import java.util.ArrayList;
+import xtc.oop.StructureParser; //to use cppify
 import xtc.tree.GNode;
 
 public class Field{
@@ -95,15 +96,16 @@ public class Field{
 
     public void setType(String type){
         //TRANSLATE TYPES HERE, do we need to do this for booleans?
-        if(type.equals("int"))
-            type = "int32_t";
-        else if(type.equals("boolean"))
-            type = "bool";
-
-        this.type = type;
+        this.type = StructureParser.cppify(type);
     }
     public String getType(){
         return this.type;
+    }
+    public void setDymanicType(String type){
+        this.dynamicType = StructureParser.cppify(type);
+    }
+    public String getDynamicType(){
+        return this.dynamicType;
     }
 
     public void setIsArray(boolean isArray){
