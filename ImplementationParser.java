@@ -135,42 +135,42 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 for(Field f : b.getDataFields()) //for each of it's dataFields
                     {
                         if(f.hasAssignment()) //if there is an assignment
+                        {
+                            if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);
+                            if(debugDFAssignments) System.out.println("\t Visiting: " + f.getAssignmentNode());
+                            curMub = new Mubble("Temp Mubble");
+                            onMeth = true; //so that nodes are run correctly
+                            if(f.isArray)
+                                inArray = true;
+                            methodString = "";
+                            visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
+                            if(debugDFAssignments) System.out.println("\tCode: ");
+                            if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());
+                            onMeth = false; //resetting
+                            inArray = false; //resetting
+                            if(debugDFAssignments) System.out.println("\tCode: ");
+                            if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + methodString);
+
+                            if(f.isStatic())
+                                {System.out.println(f.name + " is static");} //todo: where to I put static dataMethods??
+                            else //put them in the top of the constructor
                             {
-                                if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);
-                                if(debugDFAssignments) System.out.println("\t Visiting: " + f.getAssignmentNode());
-                                curMub = new Mubble("Temp Mubble");
-                                onMeth = true; //so that nodes are run correctly
-                                if(f.isArray)
-                                    inArray = true;
-                                methodString = "";
-                                visit(f.getAssignmentNode()); //should add all assignment code to curMub's code
-                                if(debugDFAssignments) System.out.println("\tCode: ");
-                                if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + curMub.getCode());
-                                onMeth = false; //resetting
-                                inArray = false; //resetting
-                                if(debugDFAssignments) System.out.println("\tCode: ");
-                                if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + methodString);
-
-                                if(f.isStatic())
-                                    {System.out.println(f.name + " is static");} //todo: where to I put static dataMethods??
-                                else //put them in the top of the constructor
-                                    {
-                                        if(methodString.endsWith("\n"))
-                                            add2Constructor += f.name + " = " + methodString;
-                                        else
-                                            add2Constructor += f.name + " = " + methodString + ";\n";
-                                    }
-
+                                if(methodString.endsWith("\n"))
+                                    add2Constructor += f.name + " = " + methodString;
+                                else
+                                    add2Constructor += f.name + " = " + methodString + ";\n";
                             }
+
+                        }
                     }
                 for(Mubble m : b.getMubbles())
-                    {
-                        if(m.isConstructor())
-                            {
-                                m.prependCode(add2Constructor + "\n\n");
-                                break; //found constructor
-                            }
-                    }
+                {
+                    if(m.isConstructor())
+                        {
+                            m.prependCode(add2Constructor + "\n\n");
+                            break; //found constructor
+                        }
+                }
             }
         resolvingShit = false;
     }
