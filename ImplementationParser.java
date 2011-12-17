@@ -566,11 +566,13 @@ NOTE: Should be called after implementation parser is complete
                 //TODO deal with SelectionExpression or New Class Expression
                 boolean isStaticMethod = true;
                 String theName = "";
-
+		System.out.println(n);
+		//what is this V
                 if (n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
                     EvalCall j = new EvalCall(curBub, bubbleList, symbolTable);
+		    System.out.println(j);
                     theName = (String)(j.dispatch(n.getNode(0)));
-                    //System.out.println("evaled chained method and the type of return is || " + theName);
+                    System.out.println("evaled chained method and the type of return is || " + theName);
                 }
                 else if (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
                     //Non trivial examine later re: chained linking also could be Call expression
