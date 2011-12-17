@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.regex.*;
+import java.util.Stack;
 
 import xtc.oop.helper.Bubble;   //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
@@ -529,6 +530,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     String returns = "";
 
+    
     public void visitCallExpression(GNode n) {
         //System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
@@ -613,7 +615,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 		}
 		System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
 		*/
-                Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);		
+                Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);
+		stack.push(trueMub);
                 String trueName = trueMub.getName();
 		System.out.println(trueName);
                 //TODO VV check this/ finish this shit
@@ -641,6 +644,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         methodString += n.getString(2) + "(";
                     }
                     dispatch(n.getNode(3));
+		    stack.pop();
                     methodString += ")";
 
                 }
@@ -668,8 +672,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 			methodString += "_" + curBub.getName() + "::" + trueName;
                     }
                     methodString += "(";
-                    dispatch(n.getNode(3));
-		    methodString += "WHAT THE";
+		    dispatch(n.getNode(3));
+		    stack.pop();
                     methodString += ")";
                 }
                 /*
@@ -844,9 +848,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             //methodString += "onMeth:" + onMeth + " inArray:" + inArray + " inNewArrayExpress:" + inNewArrayExpress;
             visit(n);
     }
-
+    
+    Stack<Mubble> stack;
     public void visitClassBody(GNode n){
+	stack = new Stack<Mubble>
         visit(n);
+	stack = null;
     }
 
     Bubble curBub;
@@ -1380,7 +1387,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 type = (String)symbolTable.lookup(key);
                 //System.out.println(type);
                 //if type is null here it is a static method, and the Class is what is important
-                //--AF
+		//--AF
                 if(type == null || type.equals("constructor"))
                     type = key;
                 //System.out.println(key + " " + type);
@@ -1406,6 +1413,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     mSign = m.forward();
                 }
             }
+	    System.out.println(mSign);
             Matcher m = Pattern.compile("(?<=,\\s)\\S*(?=\\s*)").matcher(mSign);
             String p = "";
 
@@ -1414,6 +1422,9 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
 
             String [] par = p.trim().split("\\s");
+	    for (int i = 0; i < par.length; i++) {
+		System.out.println(par[i]);
+	    }
             /* WHY DO WE NEED THIS
                for( String g : par)
                System.out.println(g);
@@ -1423,6 +1434,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
             //CASTING
             if (n.size() > 0) {
+		
                 s = inNameSpace(par[0]);
                 if(!par[0].trim().equals("")) {
                     methodString += "((";
@@ -1435,6 +1447,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                     //System.out.println(par[0]);
                     methodString += par[0]+") ";
+		    methodString += "dick";
                     dispatch(n.getNode(0));
                     methodString += ")";
                 }
