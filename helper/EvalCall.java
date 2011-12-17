@@ -90,7 +90,7 @@ public class EvalCall extends Visitor{
         }
 
         if(n.getNode(0).hasName("ThisExpression"))
-            return (String)(table.lookup(n.getNode(0).getString(0)));
+            return (String)(table.lookup(n.getString(1)));
         System.out.println("please inspect something is wrong in EvalCall visit Selection Expression");
         return "Problem";
     }

@@ -746,12 +746,20 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //checking if this is an assignment
         if(n.getString(1) != null && n.getString(1).equals("=")){
             //need to get the dynamic type of the assignment
-            EvalCall e = new EvalCall(curBub, bubbleList, table);
-            String typeName = (String)e.dispatch(n.getNode(2));
             SymbolTable.Scope current = dynamicTypeTable.current();
+            EvalCall e = new EvalCall(curBub, bubbleList, table);
 
-            if(typeName != null)
-                current.define(n.getNode(0).getString(0), typeName);
+            String typeName = (String)e.dispatch(n.getNode(2));
+            String variableName = null;
+
+            if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier"))
+                variableName = n.getNode(0).getString(0);
+            if(n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression"))
+                variableName = n.getNode(0).getString(1);
+
+
+            if(typeName != null && variableName != null)
+                current.define(variableName, typeName);
             else
                 System.out.println("error assigning dynamic type in visitExpression StructureParser");
 
