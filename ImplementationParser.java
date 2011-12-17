@@ -589,6 +589,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 //theName should
 
+		System.out.println("before eval");
 
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
                 Node argNode = n.getNode(3); //eVal Call should be dispatched on the Args Node
@@ -611,9 +612,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                 }
 
+		System.out.println("after some crap");
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
+		System.out.println("isstatic");
                 isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
+		System.out.println("are you there?");
 
                 Bubble trueBubble = new Bubble();
                 String a = null;
@@ -621,21 +625,23 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                    a = (String)symbolTable.lookup(theName);
 
                 }else{
-                   a = (String)dynamicTypeTable.lookup(theName);
+		    //a = (String)dynamicTypeTable.lookup(theName);
+		    a = (String)symbolTable.lookup(theName);
                 }
 
                 if(a == null || a.equals("constructor"))
                     a = theName;
 
-                    for(Bubble b : bubbleList){
-                        if(b.getName().equals(a))
-                            trueBubble = b;
-                    }
-
-
-
-                //resolve mangled methods (overloading)
+		for(Bubble b : bubbleList){
+		    if(b.getName().equals(a))
+			trueBubble = b;
+		}
+		    
+		System.out.println("how about this crap?");   
+		//System.out.println(trueBubble.getName());
+                //resolve mangled methods (overloading)		
                 Mubble trueMub = trueBubble.findMethod(bubbleList, mName, pList);
+		//System.out.println("00000000000000000000");
                 System.out.println(trueMub);
                 stack.push(trueMub);
 
@@ -645,6 +651,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
                 boolean isPrivate = trueMub.isPrivate();
 
+		System.out.println("hello there");
 
                 if(!isStaticMethod && !isPrivate){
                     dispatch(n.getNode(0));
@@ -714,8 +721,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                   if(!resolvingShit)
                   methodString += ")";
                 */
-
-                /* METHOD CHAINING FIX LATER//{{{
+		/*
+                // METHOD CHAINING FIX LATER//{{{
                    Node firstChild = n.getNode(0);
                    String tempString = "";
                    if (firstChild == null) { // static
@@ -756,7 +763,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                    else {
                    methodString += tempString +";\n";
                    }
-                *///}}}
+		*/
+                //}}}
             }
         }
         else {
@@ -1786,28 +1794,41 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
     ///////HELPER METHODS////////
 
+    // THIS IS ALL FUCKED UP. PAPA IS NOT SET.
     public boolean isStatic(SymbolTable a, String vcName, String methName, ArrayList<String> params){
         //queries whether a given method with a variable is a static method
         //TODO need to pass parameters
 
-        //System.out.println("Is static being called with vari/class name || " + vcName + "|| and methName || " + methName);
+        System.out.println("Is static being called with vari/class name || " + vcName + "|| and methName || " + methName);
         String cname = (String)a.lookup(vcName);
+	System.out.println(cname);
+	System.out.println(vcName);
         if (cname == null || cname.equals("constructor")){//must reference a class
             cname = vcName;
         }
 
         Bubble papa = new Bubble();
         for(Bubble b : bubbleList){
-            if(b.getName().equals(cname))
+	    System.out.println(b.getName());
+            if(b.getName().equals(cname)) {
+		
                 papa = b;
+	    }
         }
-
+	
+	ArrayList<Mubble> mubs = papa.getMubbles();
+	System.out.println(mubs.size());
+	for (Mubble mmmmm : mubs) 
+	    System.out.println(mmmmm.getName());
+      
+	
         //Mubble mama = new Mubble();
-        //System.out.println("bout to call find method for || " + methName + " || with bubble name :: " + papa.getName());
+        System.out.println("bout to call find method for || " + methName + " || with bubble name :: " + papa.getName());
         Mubble mama = papa.findMethod(bubbleList, methName, params);
         if(mama == null)
             System.out.println("Problem finding mubble with bub.findMethod");
-        return mama.isStatic();
+        //return mama.isStatic();
+	return false;
     }
 
     public boolean checkAncestor(Node n, String name){
