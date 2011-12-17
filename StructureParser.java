@@ -33,6 +33,7 @@ import xtc.oop.helper.Bubble;    //NEED TO UPDATE TO OUR NEW DATA STRUCTURES
 import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
+import xtc.oop.helper.EvalCall;
 
 public class StructureParser extends xtc.tree.Visitor //aka Decl
 {
@@ -48,6 +49,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     //public varTable SymbolTable;
     //public funcTable SymbolTable;
     public SymbolTable table;
+    public SymbolTable dynamicTypeTable;
 
     public Field curField;
 
@@ -64,15 +66,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public static String cppify(String a) {
-	if (a.equals("int")) 
+	if (a.equals("int"))
 	    return "int32_t";
-	if (a.equals("long")) 
+	if (a.equals("long"))
 	    return "int64_t";
-	if (a.equals("short")) 
+	if (a.equals("short"))
 	    return "int16_t";
-	if (a.equals("boolean")) 
+	if (a.equals("boolean"))
 	    return "bool";
-	return a; // byte??	
+	return a; // byte??
     }
 
     public static String findFile(String query) {//{{{
@@ -145,6 +147,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             curBub = new Bubble(className);
         }
         table = curBub.getTable();
+        System.out.println("curbubs table : " + table);
+        dynamicTypeTable = curBub.getDynamicTypeTable();
         curBub.setParentPubble(curPub); //curBub's package is curPub
 
         //find Object bubble and set curBub's parent to object (it will get overwritten if it needs to)
@@ -159,6 +163,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         visit(n);
         table = null;
+        dynamicTypeTable = null;
 
         //add in the delete method (note it needs code as well)
         Mubble n1 = new Mubble("__delete");
@@ -239,6 +244,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         current.define(name2, "constructor");
         if (!name2.equals(name)) {
             curMub.mangleName(name2);
+            //this does not actually mangle the name it just sets it within a mubble
+            //(mubble.methodName<-name2)
         }
 
 
@@ -281,7 +288,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
         //System.out.println(curBub.getName() + ": adding " + name2 + " to symbol table as method");
         current.define(name2, "method");
-        
+
         if (!name2.equals(name)) {
             //System.out.println("mangling name: " + name);
             curMub.mangleName(name2); //actually only sets name to name2
@@ -356,6 +363,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitDeclarator(GNode n) {
         //TODO fact check with an AST (see testAssignmt..a.java)
+        SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
+        //add to the dynamic type table
+        String name = n.getString(0);
+        String type = "";
+
+        EvalCall e = new EvalCall(curBub, bubbleList, table);
+        type = (String)e.dispatch(n.getNode(2));
+
+        dynamicCurrent.define(name, type);
         visit(n);
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
@@ -410,12 +426,15 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent0 = (Node)n.getProperty("parent0");
         if (parent0.hasName("ConstructorDeclaration")) {
             table.enter(parent0.getString(2));
+            dynamicTypeTable.enter(parent0.getString(2));
         }
         else if (parent0.hasName("MethodDeclaration")) {
             table.enter(parent0.getString(3));
+            dynamicTypeTable.enter(parent0.getString(3));
         }
         visit(n);
         table.exit();
+        dynamicTypeTable.exit();
     }
 
     public void visitFormalParameter(GNode n) {
@@ -605,13 +624,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
     public void visitForStatement(GNode n)
     {
-        //varTable.enter("for");
-        //funcTable.enter("for");
         table.enter("for");
+        dynamicTypeTable.enter("for");
+
         visit(n);
-        //varTable.exit();
-        //funcTable.exit();
+
         table.exit();
+        dynamicTypeTable.exit();
     }
 
     public void visitWhileStatement(GNode n) {
@@ -630,49 +649,56 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         Node parent0 = (Node)n.getProperty("parent0");
         boolean hasEntered = false;
         if (parent0.hasName("WhileStatement")) {
-            //varTable.enter("while");
-            //funcTable.enter("while");
             table.enter("while");
+            dynamicTypeTable.enter("while");
             hasEntered = true;
         }
         if (parent0.hasName("DoWhileStatement")) {
             //varTable.enter("dowhile");
             //funcTable.enter("dowhile");
             table.enter("dowhile");
+            dynamicTypeTable.enter("dowhile");
             hasEntered = true;
         }
         if (parent0.hasName("ConditionalStatement")) {
             //varTable.enter("if-else");
             //funcTable.enter("if-else");
             table.enter("if-else");
+            dynamicTypeTable.enter("if-else");
             hasEntered = true;
         }
         if (parent0.hasName("Block")) {
             //varTable.enter("block");
             //funcTable.enter("block");
             table.enter("block");
+            dynamicTypeTable.enter("block");
             hasEntered = true;
         }
         if (parent0.hasName("SwitchStatement")) {
             //varTable.enter("switch");
             //funcTable.enter("switch");
             table.enter("switch");
+            dynamicTypeTable.enter("switch");
             hasEntered = true;
         }
         if (parent0.hasName("TryCatchFinallyStatement")) {
             table.enter("try-finally");
+            dynamicTypeTable.enter("try-finally");
             hasEntered = true;
         }
         if (parent0.hasName("CatchClause")) {
             table.enter("catch");
+            dynamicTypeTable.enter("catch");
             hasEntered = true;
         }
         visit(n);
         //varTable.exit();
         //funcTable.exit();
 
-        if(hasEntered)
+        if(hasEntered){
             table.exit();
+            dynamicTypeTable.exit();
+        }
     }
 
     public void visitBasicForControl(GNode n)

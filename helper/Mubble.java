@@ -54,7 +54,7 @@ public class Mubble{
         this.methodName = m.getName();
 
     }
-    
+
     public boolean isPrivate(){
         if(this.visibility.equals("private"))
             return true;
@@ -173,8 +173,12 @@ public class Mubble{
         if(staticMethod) {
             s.append("static ");
             s.append(returnType).append(" ").append(methodName).append("(");
-            for (String para : paraType) {
-                s.append(", ").append(para);
+
+            for (int i = 0; i< paraType.size(); i++) {
+				if(i == 0 && isStatic())
+					s.append(paraType.get(i));
+				else
+					s.append(", ").append(paraType.get(i));
             }
             s.append(");");
 
@@ -448,9 +452,9 @@ public class Mubble{
 	//group set by constructor
 	clone.setReturnType(this.getReturnType());
 	clone.setVisibility(this.getVisibility());
-	
+
 	//String originallyFrom?????????
-	
+
 	for(Field f : this.getParameters()) {
 	    clone.addParameter(f.deepCopy());
 	}

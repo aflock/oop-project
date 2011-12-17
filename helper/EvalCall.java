@@ -58,6 +58,7 @@ public class EvalCall extends Visitor{
     Bubble curBub;
     ArrayList<Bubble> bubbleList;
     SymbolTable table;
+	SymbolTable dynamicTypeTable;
 
     public EvalCall(Bubble curBub, ArrayList<Bubble> bubbleList, SymbolTable table){
         this.curBub = curBub;
@@ -94,12 +95,18 @@ public class EvalCall extends Visitor{
         return "Problem";
     }
 
+	public String visitStringLiteral(GNode n){
+		return "String";
+	}
+
     public String visitPostfixExpression(GNode n){
         return visit(n.getNode(0));
     }
+
     public String visitNewClassExpression(GNode n){
         return n.getNode(2).getString(0) ;
     }
+
     public String visitNewArrayExpression(GNode n){
         String toRet = "";
         toRet += n.getNode(0).getString(0);
@@ -187,9 +194,8 @@ public class EvalCall extends Visitor{
         String[] splitArgs = arguments.trim().split(" ");
         ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(splitArgs));
         //now find method based on name and parameters
-        //curBub does not work here- it is not ensured that curBub is the class that the method belongs to -AF
 
-        String key = curBub.getName(); //hmm is this the right default option? what about selectionexpression? -AF
+        String key = curBub.getName();
         //will method chaining screw this up as well?> AF
         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
             key = n.getNode(0).getString(0);
@@ -197,9 +203,8 @@ public class EvalCall extends Visitor{
 		else if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
 			key = visit(n.getNode(0));
 		}
-
-        table = curBub.getTable();
-        String type = (String)table.lookup(key);
+        SymbolTable atable = curBub.getDynamicTypeTable();
+        String type = (String)atable.lookup(key);
         if(type == null || type.equals("constructor"))
             type = key;
         Bubble papa = new Bubble();
@@ -228,7 +233,7 @@ public class EvalCall extends Visitor{
             //System.out.println("not size 0");
             String toRet = "";
             for(Object c : n){
-                //System.out.println("\t" + i++);   
+                //System.out.println("\t" + i++);
                 toRet += visit((Node)c) + " ";
             }
             return toRet;
@@ -314,7 +319,9 @@ public class EvalCall extends Visitor{
 
     public String visitPrimaryIdentifier(GNode n){
         //need to look up your type in the table
-        return (String)(table.lookup(n.getString(0)));
+		SymbolTable ptable = curBub.getTable();
+
+        return (String)(ptable.lookup(n.getString(0)));
     }
     // shouldnt need these VV
     /*
@@ -351,11 +358,15 @@ public class EvalCall extends Visitor{
     */
 
     public String visitIntegerLiteral(GNode n) {
-        return "integer";
+        return "int32_t";
     }
 
     public String visitCharacterLiteral(GNode n) {
         return "char";
+    }
+
+    public String visitFloatingPointLiteral(GNode n) {
+        return "float";
     }
 
     /*

@@ -107,6 +107,39 @@ public class NewTranslator extends xtc.util.Tool{
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
 
+        //Pass methods down the inheritance tree
+		Bubble obj = new Bubble();
+		for(Bubble b: bubbleList){
+			System.out.println("b dot get name " + b.getName());
+			if(b.getName().equals("Object"))
+				obj = b;
+		}
+		System.out.println("object    " + obj.getName());
+		System.out.println("Childrennnnnnn");
+
+		for(Bubble child : bubbleList){
+			System.out.println("V_V_V_V_V_V_V_V__V__V_V_");
+			System.out.println(child.getName());
+			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
+				if(child.getParentBubble().getName().equals("Object")){
+					System.out.println("Calling the method V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V");
+					child.mangleBetweenClasses();
+				}
+			}
+		}
+
+
+		/*
+        for(Bubble b: bubbleList){
+            if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                //System.out.println("Inheriting Methods: " + b.getName());
+                b.mangleBetweenClasses();
+            }
+        }
+		*/
+
+		//now mangle between classes?
+
         //Not sure if we need this:
         ArrayList<String> parsed = new ArrayList<String>();
         ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
@@ -151,21 +184,15 @@ public class NewTranslator extends xtc.util.Tool{
             System.out.println("=======================================================");
         }
 
-        //Pass methods down the inheritance tree
-        for(Bubble b: bubbleList){
-            if(!(b.getName().equals("String") || b.getName().equals("Object"))){
-                //System.out.println("Inheriting Methods: " + b.getName());
-                b.inheritMethods();
-            }
-        }
+		/*
         for(Bubble b: bubbleList){
             if(!(b.getName().equals("String") || b.getName().equals("Object"))){
                 //System.out.println("Inheriting Methods: " + b.getName());
                 if(b.getName().equals("testStaticMethods"))
                     b.inheritMethods();
             }
-
         }
+		*/
 
         if(false) //printing out bubble and methods/method parent
         {
@@ -180,7 +207,7 @@ public class NewTranslator extends xtc.util.Tool{
                             for(Field f: m.getParameters()){
                                 System.out.println("\t\t" + f.getType() + " " + f.getName());
                             }
-                            
+
                         }
                         System.out.println("\tisPrivate: " + m.isPrivate());
                         System.out.println("\tClass: " + m.getClassName() + "\n");
@@ -188,7 +215,7 @@ public class NewTranslator extends xtc.util.Tool{
                 }
             }
         }
-        
+
 
         //Print structure <- use for testing dependencies, inheritance
         if(false)
