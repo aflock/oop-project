@@ -398,19 +398,20 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 param.add(temp.getString(0));
             }
         }
-	System.out.println("---------------------------------------------------------------1");
-	for (int i = 0; i < param.size(); i++) {
-	    System.out.println("|||||||||||||||||||||| " + param.get(i) + " |||||||||||||||||||||||||");
-	}
-	System.out.println("---------------------------------------------------------------1");
+	//System.out.println("---------------------------------------------------------------1");
+	//for (int i = 0; i < param.size(); i++) {
+	//    System.out.println("|||||||||||||||||||||| " + param.get(i) + " |||||||||||||||||||||||||");
+	//}
+	//System.out.println("---------------------------------------------------------------1");
         curMub = curBub.findMethod(bubbleList, methodname, param);
 	ArrayList<String> temp = curMub.getParameterTypes();
-	System.out.println("---------------------------------------------------------------2");
-	for (int i = 0; i < temp.size(); i++) {
-	    System.out.println("|||||||||||||||||||||| " + temp.get(i) + " |||||||||||||||||||||||||");
-	}
-	System.out.println("---------------------------------------------------------------2");
+	//System.out.println("---------------------------------------------------------------2");
+	//for (int i = 0; i < temp.size(); i++) {
+	//    System.out.println("|||||||||||||||||||||| " + temp.get(i) + " |||||||||||||||||||||||||");
+	//}
+	//System.out.println("---------------------------------------------------------------2");
 	//System.out.println("----------------------------WHAT IS GOING ON? " + curMub.getName());
+
 
 	/*
         for(Mubble m : mubbleList){
@@ -595,8 +596,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(params));
                 //resolve mangled methods (overloading)
                 Mubble trueMub = curBub.findMethod(bubbleList, mName, pList);
-                System.out.println("but you dont get here");
                 String trueName = trueMub.getName();
+		System.out.println(trueName);
                 //TODO VV check this/ finish this shit
                 isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
 
@@ -644,7 +645,8 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
                     else{ //the static method is part of THIS class
                         System.out.println("_" + curBub.getName() + "::" + n.getString(2));
-                        methodString += "_" + curBub.getName() + "::" + n.getString(2);
+                        //methodString += "_" + curBub.getName() + "::" + n.getString(2);
+			methodString += "_" + curBub.getName() + "::" + trueName;
                     }
                     methodString += "(";
                     if(isPrivate){
@@ -659,6 +661,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         }
                     }
                     dispatch(n.getNode(3));
+		    methodString += "WHAT THE";
                     methodString += ")";
                 }
                 /*

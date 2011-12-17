@@ -65,6 +65,17 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //this.parsed = parsed;
     }
 
+    public static String cppify(String a) {
+	if (a.equals("int"))
+	    return "int32_t";
+	if (a.equals("long"))
+	    return "int64_t";
+	if (a.equals("short"))
+	    return "int16_t";
+	if (a.equals("boolean"))
+	    return "bool";
+	return a; // byte??
+    }
 
     public static String findFile(String query) {//{{{
 
@@ -277,7 +288,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
         //System.out.println(curBub.getName() + ": adding " + name2 + " to symbol table as method");
         current.define(name2, "method");
-        
+
         if (!name2.equals(name)) {
             //System.out.println("mangling name: " + name);
             curMub.mangleName(name2); //actually only sets name to name2
@@ -338,10 +349,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         SymbolTable.Scope current = table.current();
         // assuming Declarators' parent is always FieldDeclaration
         Node parent0 = (Node)n.getProperty("parent0");
-        //static type
-        String type = parent0.getNode(1).getNode(0).getString(0);
-
-        //setting static type in table
+        String type = cppify(parent0.getNode(1).getNode(0).getString(0));
         for (Object o : n) {
             if(o != null)
             {

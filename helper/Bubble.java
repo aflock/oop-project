@@ -90,6 +90,39 @@ public class Bubble{
         this.name = name;
     }
 
+    /*
+     * C has a method m(A)
+     *
+     * C c;
+     * B b;
+     * c.m(b)
+     *
+     */
+
+    public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
+	Mubble mub = null;
+	int best = 1000000;
+	
+	for (Mubble m : mubbles) {
+	    if (m.belongToGroup(methodName)) {
+		int min = 0;
+		ArrayList<String> p = m.getParameterTypes();
+		if (para.size() == p.size()) {
+		    for (int i = 0; i < p.size(); i++) {
+			min += rank(bubbles, para.get(i), p.get(i));
+			//System.out.println(i + " " + para.get(i) + ":" + p.get(i) + " " + min);
+		    }
+		    if (min < best) {
+			best = min;
+			mub = m;
+		    }
+		}		
+	    }
+	}
+	return mub;
+    }
+
+    /*
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
         Mubble mub = null;
         int matchNum = 100000000;
@@ -104,12 +137,17 @@ public class Bubble{
                 ArrayList<Field> fields = m.getParameters();
                 //System.out.println("fields.size(): " + fields.size());
                 for(Field f : fields)
+<<<<<<< HEAD
                     //System.out.println("\t" + f.getType());
                 /*//System.out.println("Belongs to Group = True");
+=======
+                    System.out.println("\t" + f.getType());
+                //System.out.println("Belongs to Group = True");
+>>>>>>> b5415f3fa513ea8f3bd490a7d38987b6f94975ca
                   System.out.println("p.size(): " + p.size());
                   System.out.println("para.size(): " + para.size());
                   for(String s : para)
-                  System.out.println("\t" + s);*/
+                  System.out.println("\t" + s);
                 if (p.size() == para.size()) { //checking to see if there in an applicable method, strictly based on the amount of params
                     //System.out.println("Parameters size matches!");
                     boolean match = false;
@@ -125,7 +163,7 @@ public class Bubble{
                         if (!match) { //there isnt an exact method match, let's resolve this overloading
                             // needs fixing
                             min += rank(bubbles, p.get(i), para.get(i));
-                            /*
+                            
                               primitive types, objects
                               e.g. methods  function calls
                               m(int)       m(long) -> 1
@@ -134,7 +172,7 @@ public class Bubble{
                               m(A)          m(B) -> 1
                               m(A)          m(C) -> 2
                               m(A)          m(AAAA) -> INF
-                            */
+                            
                         }
                     }
 
@@ -149,7 +187,7 @@ public class Bubble{
         } //for end
         return mub; //do i want to return string?
     } //method end
-
+    */
     //Set the parent Bubble of this Bubble
     public void setParentBubble(Bubble b) {
         this.parentBubble = b;
@@ -264,6 +302,36 @@ public class Bubble{
         return false;
     }
     */
+
+    public static int rank(ArrayList<Bubble> bubbles, String a, String b) {
+	// a is a passed argument
+	// b is a parameter defined in a method
+	
+	if (isPrim(a) && isPrim(b)) { // a and b are primitive types
+	    //System.out.println("bbbbbbbbbbbbbbbbbbbbbbb");
+	    //System.out.println(a + ":" + b);
+	    //System.out.println(distPrim(a,b));
+	    //System.out.println("bbbbbbbbbbbbbbbbbbbbbbb");
+	    return distPrim(a,b);
+	}
+	else if (isPrim(a) || isPrim(b)) { // one of a and b is a primitive type
+	    // not working yet	    
+	    return 10000;
+	}
+	else { // both of a and b are objects
+	    Bubble descedent = findBubble(bubbles, a);
+	    int count = 0;
+	    while (!descedent.getName().equals(b)) {
+		if (descedent.getName().equals("Object")) {
+		    return 100000;
+		}
+		descedent = descedent.getParentBubble();
+		count++;
+	    }
+	    return count;
+	}
+    }
+    /*
     public int rank(ArrayList<Bubble> bubbles, String a, String b){
         //a is the actual argument, b is the formal argument
         //a moves. b stays
@@ -277,7 +345,7 @@ public class Bubble{
          * float
          * boolean
          * byte (int8_t)
-         */
+         *
         // byte -> char -> short -> int -> long
         // float -> double
         //System.out.println("A: " + a);
@@ -312,31 +380,32 @@ public class Bubble{
             return count;
         }
     }
+    */
 
     public static int distPrim(String a, String b) {
         if (a.equals("byte")) {
-            if (a.equals("byte")) {
+            if (b.equals("byte")) {
 		return 0;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 1;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 2;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 3;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 4;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 5;
             }
             else {
@@ -345,28 +414,28 @@ public class Bubble{
             }
         }
         else if (a.equals("char")) {
-	    if (a.equals("byte")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 0;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 1;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 2;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 3;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 4;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 5;
             }
             else {
@@ -374,29 +443,29 @@ public class Bubble{
                 return -1;
             }
         }
-        else if (a.equals("bool")) {
-	    if (a.equals("byte")) {
+        else if (a.equals("bool") || a.equals("boolean")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 0;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 10000;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 10000;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 10000;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 10000;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 10000;
             }
             else {
@@ -404,29 +473,29 @@ public class Bubble{
                 return -1;
             }
         }
-        else if (a.equals("int16_t")) {
-	    if (a.equals("byte")) {
+        else if (a.equals("int16_t") || a.equals("short")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 0;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 1;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 2;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 3;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 4;
             }
             else {
@@ -434,29 +503,29 @@ public class Bubble{
                 return -1;
             }
         }
-        else if (a.equals("int32_t")) {
-	    if (a.equals("byte")) {
+        else if (a.equals("int32_t") || a.equals("int")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 10000;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 0;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 1;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 2;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 3;
             }
             else {
@@ -464,29 +533,29 @@ public class Bubble{
                 return -1;
             }
         }
-        else if (a.equals("int64_t")) {
-	    if (a.equals("byte")) {
+        else if (a.equals("int64_t") || a.equals("long")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 10000;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 10000;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 1;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 2;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 3;
             }
             else {
@@ -495,29 +564,28 @@ public class Bubble{
             }
         }
         else if (a.equals("float")) {
-	    if (a.equals("byte")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 10000;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 10000;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 10000;
-
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 1;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 0;
             }
             else {
@@ -526,28 +594,28 @@ public class Bubble{
             }
         }
         else if (a.equals("double")) {
-	    if (a.equals("byte")) {
+	    if (b.equals("byte")) {
 		return 10000;
             }
-            else if (a.equals("char")) {
+            else if (b.equals("char")) {
 		return 10000;
             }
-            else if (a.equals("bool")) {
+            else if (b.equals("bool") || b.equals("boolean")) {
 		return 10000;
             }
-            else if (a.equals("int16_t")) {
+            else if (b.equals("int16_t") || b.equals("short")) {
 		return 10000;
             }
-            else if (a.equals("int32_t")) {
+            else if (b.equals("int32_t") || b.equals("int")) {
 		return 10000;
             }
-            else if (a.equals("int64_t")) {
+            else if (b.equals("int64_t") || b.equals("long")) {
 		return 10000;
             }
-            else if (a.equals("float")) {
+            else if (b.equals("float")) {
 		return 10000;
             }
-            else if (a.equals("double")) {
+            else if (b.equals("double")) {
 		return 0;
             }
             else {
@@ -566,13 +634,13 @@ public class Bubble{
             return true;
         if (a.equals("char"))
             return true;
-        if (a.equals("bool"))
+        if (a.equals("bool") || a.equals("boolean"))
             return true;
-        if (a.equals("int16_t"))
+        if (a.equals("int16_t") || a.equals("short"))
             return true;
-        if (a.equals("int32_t"))
+        if (a.equals("int32_t") || a.equals("int"))
             return true;
-        if (a.equals("int64_t"))
+        if (a.equals("int64_t") || a.equals("long"))
             return true;
         if (a.equals("float"))
             return true;
@@ -582,9 +650,14 @@ public class Bubble{
     }
 
     //todo: Should we search through parent and children bubbles??
+<<<<<<< HEAD
     public Bubble findBubble(ArrayList<Bubble> bubbles, String name){
 
         System.out.println("trying to find bubble with name :: " + name);
+=======
+    public static Bubble findBubble(ArrayList<Bubble> bubbles, String name){
+        //System.out.println("trying to find bubble with name :: " + name);
+>>>>>>> b5415f3fa513ea8f3bd490a7d38987b6f94975ca
         for(Bubble b : bubbles){
             if (b.getName().equals(name))
                 return b;
