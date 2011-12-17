@@ -63,7 +63,18 @@ public class Mubble{
     }
 
     public void addCode(String code){
-        this.code += code;
+	if(!isMain() || !this.code.equals("")) { //if string already has something
+	    this.code += code;
+	}
+	else {
+	    String p = paraName.get(0);
+	    this.code = "/*\n"+
+		"__rt::Ptr<__rt::Array<String> > "+p+" = new __rt::Array<String>(argc-1);\n"+
+		"for(int i = 1; i < argc; i++){\n"+
+		"(*"+p+")[i-1] = argv[i];\n"+
+		"}\n*/\n";
+	    this.code += code;
+	}
     }
 
     //adds code to the beginning of this mubbles code

@@ -186,37 +186,28 @@ public class EvalCall extends Visitor{
         String methodName = n.getString(2);
         //catch System.out.*
 
-		System.out.println("fuck1");
         if(n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
             if(n.getNode(0).getNode(0) != null && n.getNode(0).getNode(0).getString(0).equals("System"))
                 return "";
         }
-		System.out.println("fuck2");
 
         String[] splitArgs = arguments.trim().split(" ");
-		System.out.println("fuck3");
         ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(splitArgs));
-		System.out.println("fuck4");
         //now find method based on name and parameters
 
         String key = curBub.getName();
-		System.out.println("fuck5");
         //will method chaining screw this up as well?> AF
         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
-		System.out.println("fuck8");
             key = n.getNode(0).getString(0);
         }
 		else if(n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
-		System.out.println("fuck9");
 			key = visit(n.getNode(0));
 		}
         SymbolTable atable = curBub.getDynamicTypeTable();
-		System.out.println("fuck10");
         String type = (String)atable.lookup(key);
         if(type == null || type.equals("constructor"))
             type = key;
         Bubble papa = new Bubble();
-		System.out.println("fuck11");
         //System.out.println("looking for a bubble with type ::" + type);
 
         for(Bubble b: bubbleList){
@@ -224,11 +215,8 @@ public class EvalCall extends Visitor{
                 papa = b;
         }
 
-		System.out.println("fuck12");
         //System.out.println("bout to call find method for || " + methodName + " || with bubble name :: " + papa.getName());
         Mubble theMub = papa.findMethod(bubbleList, methodName, paramsList);
-		System.out.println("fuck13");
-		System.out.println(theMub);
 		//System.out.println("do you come here ever");
         //System.out.println(theMub);
         return theMub.getReturnType();
