@@ -532,7 +532,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
 
     public void visitCallExpression(GNode n) {
-        System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
+        //System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
         if (onMeth) {
@@ -582,12 +582,13 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                 else if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
                     theName = n.getNode(0).getString(0);
                 }else{
-                    System.out.println("last else fall through");
+                    //System.out.println("last else fall through");
                     theName = curBub.getName();
-                    System.out.println("theName is " + theName);
+                    //System.out.println("theName is " + theName);
                 }
 
-                //theName should
+                //theName should hold the class name of whatever owning class is calling the method,
+                //or the variable name
 
 
                 EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
@@ -613,10 +614,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
 
                 ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
-                isStaticMethod = isStatic(dynamicTypeTable, theName, mName, pList);
+                isStaticMethod = isStatic(symbolTable, theName, mName, pList);
 
                 Bubble trueBubble = new Bubble();
-                String a = null;
+                String a = null; //should eventually hold the type of the variable
                 if(isStaticMethod){
                    a = (String)symbolTable.lookup(theName);
 
@@ -633,14 +634,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                     }
 
 
-
                 //resolve mangled methods (overloading)
                 Mubble trueMub = trueBubble.findMethod(bubbleList, mName, pList);
-                System.out.println(trueMub);
                 stack.push(trueMub);
 
                 String trueName = trueMub.getName();
-                System.out.println(trueName);
                 //TODO VV check this/ finish this shit
 
                 boolean isPrivate = trueMub.isPrivate();
@@ -676,18 +674,16 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
                         if (cname == null){//theName must be a reference to a class
                             cname = theName;
                         }
-                        System.out.println();
-                        System.out.println("");
                         Bubble papa = new Bubble();
                         for(Bubble b : bubbleList){
                             if(b.getName().equals(cname))
                                 papa = b;
                         }
-                        System.out.println(papa.getName() + "::" + n.getString(2));
+                        //System.out.println(papa.getName() + "::" + n.getString(2));
                         methodString += papa.getName() + "::" + trueName;
                     }
                     else{ //the static method is part of THIS class
-                        System.out.println("_" + curBub.getName() + "::" + n.getString(2));
+                        //System.out.println("_" + curBub.getName() + "::" + n.getString(2));
                         //methodString += "_" + curBub.getName() + "::" + n.getString(2);
                         methodString += "_" + curBub.getName() + "::" + trueName;
                     }
@@ -980,12 +976,12 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 
         if (s.contains("vptr->println"))
             {
-                System.out.println("s1");
+                //System.out.println("s1");
                 //get everything to be printed
                 String toPrint = getStringBetween(s, "println(System->out,", ");");
-                System.out.println("s2");
+                //System.out.println("s2");
                 toPrint = toPrint.replace("+", "<<");
-                System.out.println("s3");
+                //System.out.println("s3");
                 return "std::cout << " + toPrint + " << std::endl;";
             }
         else
@@ -1059,7 +1055,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
             }
 
             String s = inNameSpace(n.getString(0));
-            System.out.println(s);
+            //System.out.println(s);
             if (s != null && !inArray && !inNewClassExpression ) {
                 //using absolute namespace
                 //System.out.println("4");
