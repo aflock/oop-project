@@ -386,10 +386,15 @@ public class EvalCall extends Visitor{
 
         visit(n);
     }
+	*/
 
     public String visitQualifiedIdentifier(GNode n){
-        visit(n);
+		if(n.getString(0) != null)
+			return n.getString(0);
+		else
+			return "PROBLEM IN VISIT QUALIFIED ID EVALCALL";
     }
+	/*
 
     public String visitImportDeclaration(GNode n){
         visit(n);
