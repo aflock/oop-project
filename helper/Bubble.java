@@ -675,6 +675,60 @@ public String getTypeDef() {
     return "typedef _" + this.name + "* " + this.name + ";\n";
 }
 
+
+public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
+
+    /* inherit data fields then resolve them */
+    if(this.getParentBubble() != null && !this.getParentBubble().getName().equals("Object")){
+
+        //inherit fields
+        ArrayList<Field> inheritedFields = new ArrayList<Field>();
+        for(Field f : this.getParentBubble().getDataFields()) {
+            Field copy = f.deepCopy();
+            if(f.getName().charAt(0) == '$')
+                f.setName('$' + f.getName())
+            inheritedFields.add(f);
+        }
+
+        //check for "overwritten" fields and mangle the names of inherited fields
+        for(Field f :this.getDataFields()){
+            for(Field g : inheritedFields){
+                if(f.getName().equals(g.getName()))
+                    //add a "$" to the old field
+                    System.out.println("over writing " + g.getName() + " with a $");
+                g.setName( "$" + g.getName());
+            }
+        }
+    }
+
+    EvalCall e = new EvalCall(this, bubbleList, this.symbolTable);
+    SymbolTable.Scope dynCurrent = dynamicTypeTable.current();
+    SymbolTable.Scope current = symbolTable.current();
+
+    //then resolve fields that are not inherited
+    for(Field f :this.getDataFields()){
+        if(f.hasAssignment()){
+            String type = (String)e.dispatch(f.getAssignmentNode());
+            f.setDynamicType(type);
+            //add this entry to the dynamic type table
+            dynCurrent.define(f.getName(), type);
+        }
+    }
+
+    //add my inherited fields to both static and dynamic tables
+    for(Field f: inheritedFields){
+        current.define(f.getName(), f.getType());
+        dynCurrent.define(f.getName(), f.getDynamicType());
+        //finally add inherited fields to my field list
+        this.addField(f);
+    }
+
+    //now call the process on all my children so it bubbles (pun!) down
+    for(Bubble b: children)
+        b.inheritAndResolveDataFields(bubbleList);
+}
+
+
 public void mangleBetweenClasses(){
     //will start with root Object bubble and do this recursively
     /* first inherit method if not noame == Object
