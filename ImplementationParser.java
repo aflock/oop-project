@@ -124,10 +124,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 NOTE: Should be called after implementation parser is complete
 */
     boolean debugDFAssignments = true;
-    boolean resolvingShit = false;
+    boolean resolvingDataFieldAssignments = false;
     public void resolveDatafieldAssignments()
     {
-        resolvingShit = true;
+        resolvingDataFieldAssignments = true;
         String add2Constructor = "";
         for(Bubble b : bubbleList) //for every class
         {
@@ -173,7 +173,7 @@ NOTE: Should be called after implementation parser is complete
                 }
             }
         }
-        resolvingShit = false;
+        resolvingDataFieldAssignments = false;
     }
 
     public void visit(Node n)//{{{
@@ -338,7 +338,7 @@ NOTE: Should be called after implementation parser is complete
         //ConcreteDimensions.IntegerLiteral.("1")
         String size = n.getNode(1).getNode(0).getString(0);
 
-        if(resolvingShit) //if we are resolving dataFields, add it straight to the methodString -Calvin
+        if(resolvingDataFieldAssignments) //if we are resolving dataFields, add it straight to the methodString -Calvin
             methodString += "new __rt::Array<" + arrType + ">(" + size + ")";
         else //add it to arrayString, which will be added to methodString at the end of visitFieldDeclaration()
             arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
@@ -711,7 +711,7 @@ NOTE: Should be called after implementation parser is complete
                 /*
                    dispatch(n.getNode(3));
 
-                   if(!resolvingShit)
+                   if(!resolvingDataFieldAssignments)
                    methodString += ")";
                    */
                 /*
@@ -1309,10 +1309,29 @@ NOTE: Should be called after implementation parser is complete
             if(!parent0.hasName("SubscriptExpression"))
                 if(!(n.getString(0).equals("System") && parent0.getString(1).equals("out"))){
                     String variableName = n.getString(0);
-                    if(curBub.hasField(variableName)) //its a dataField
-                        methodString += "__this->" + variableName;
-                    else //its a variable name
-                        methodString += variableName;
+                    if(resolvingConstructors) //if I am parsing my parent's constructor node
+                    {
+                        if(curBub.hasField(variableName)) //its a dataField
+                        {   
+                            //does this data field confict with one of my dataFields??
+                            if(curBub.hasField("$"+variableName)){ //yes, so refer to my parents
+                                //this is used not __this, because we are in a constructor and want to use the
+                                //object being constructed
+                                methodString += "this->$" + variableName;
+                            }
+                            else //no name conflict with /inherited datafields
+                                methodString += "this->" + variableName;
+                        }                            
+                        else //its a local variable
+                            methodString += variableName;                  
+                    }
+                    else
+                    {
+                        if(curBub.hasField(variableName)) //its a dataField
+                            methodString += "__this->" + variableName;
+                        else //its a local variable
+                            methodString += variableName;
+                    }
                 }
             //key = n.getString(0);
         }
@@ -1569,7 +1588,7 @@ NOTE: Should be called after implementation parser is complete
 
 
 
-        //if(!inPrintStatement && !resolvingShit)
+        //if(!inPrintStatement && !resolvingDataFieldAssignments)
         //methodString += ")";
 
 
