@@ -128,6 +128,7 @@ public class Mubble{
         return 0;
     }
     
+    //gets constructor node
     public GNode getConstructorNode(){
         return this.constructorNode;
     }
