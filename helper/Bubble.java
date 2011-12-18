@@ -132,6 +132,29 @@ public class Bubble{
         }
         return mub;
     }
+    
+    //finds the appropriate constructor for this mubble based off the parametres
+    public Mubble findConstructor(ArrayList<String> para){
+        Mubble mub = null;
+        int best = 1000000;
+
+        for (Mubble m : mubbles) {
+            if (m.isConstructor()) {
+                int min = 0;
+                ArrayList<String> p = m.getParameterTypes();
+                if (para.size() == p.size()) {
+                    for (int i = 0; i < p.size(); i++) {
+                        min += rank(bubbles, para.get(i), p.get(i));
+                    }
+                    if (min < best) {
+                        best = min;
+                        mub = m;
+                    }
+                }
+            }
+        }
+        return mub;
+    }
 
     /*
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {

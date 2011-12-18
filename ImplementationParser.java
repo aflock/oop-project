@@ -125,7 +125,10 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 NOTE: Should be called after implementation parser is complete
 */
     boolean debugDFAssignments = true;
+<<<<<<< HEAD
     boolean resolvingConstructors = false;
+=======
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
     boolean resolvingDataFieldAssignments = false;
     public void resolveDatafieldAssignments()
     {
@@ -175,6 +178,7 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         resolvingDataFieldAssignments = false;
+<<<<<<< HEAD
     }//}}}
 
     public void resolveConstructors(){
@@ -202,6 +206,8 @@ NOTE: Should be called after implementation parser is complete
         resolvingConstructors = false;
         onMeth = false;
         methodString = "";
+=======
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
     }
 
 
@@ -595,7 +601,11 @@ NOTE: Should be called after implementation parser is complete
         System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
         if (onMeth) {
             mName = n.getString(2);
             String tmp = "";
@@ -707,7 +717,11 @@ NOTE: Should be called after implementation parser is complete
 
                 boolean isPrivate = trueMub.isPrivate();
 
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
 		System.out.println("::::::::::::::ARUGMENTS:::::::::::");
                 if(!isStaticMethod && !isPrivate){
                     dispatch(n.getNode(0));
@@ -1377,7 +1391,11 @@ NOTE: Should be called after implementation parser is complete
                     if(resolvingConstructors) //if I am parsing my parent's constructor node
                     {
                         if(curBub.hasField(variableName)) //its a dataField
+<<<<<<< HEAD
                         {
+=======
+                        {   
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
                             //does this data field confict with one of my dataFields??
                             if(curBub.hasField("$"+variableName)){ //yes, so refer to my parents
                                 //this is used not __this, because we are in a constructor and want to use the
@@ -1386,9 +1404,15 @@ NOTE: Should be called after implementation parser is complete
                             }
                             else //no name conflict with /inherited datafields
                                 methodString += "this->" + variableName;
+<<<<<<< HEAD
                         }
                         else //its a local variable
                             methodString += variableName;
+=======
+                        }                            
+                        else //its a local variable
+                            methodString += variableName;                  
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
                     }
                     else
                     {
