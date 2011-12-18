@@ -248,7 +248,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         /* Lets Print a .H!!! */
 
-        if(false){
+        if(true){
             System.out.println("==========================================================");
             System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
@@ -274,7 +274,7 @@ public class NewTranslator extends xtc.util.Tool{
         }
 
         /* Output to File */
-        if(true){
+        if(false){
             Pubble root = new Pubble();
             for(Pubble p : pubbleList){
                 if(p.getName().equals("Default Package"))
@@ -545,6 +545,7 @@ public class NewTranslator extends xtc.util.Tool{
         n7.setReturnType("char");
         n7.addParameter(new Field("dummy", "int32_t"));
         n7.setFlag('n');
+	n7.setParameters();
         bubbleList.add(string);
     }
 }
