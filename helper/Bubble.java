@@ -196,6 +196,14 @@ public void setParentBubble(Bubble b) {
     this.parentBubble = b;
 }
 
+public boolean hasField(String fieldName){
+	for(Field f : dataFields){
+        if(f.getName().equals(fieldName))
+            return true;
+    }
+    return false;
+}
+
 //Set the parent Pubble of this Bubble
 public void setParentPubble(Pubble p) {
     this.parentPubble = p;
@@ -675,6 +683,60 @@ public String getTypeDef() {
     return "typedef _" + this.name + "* " + this.name + ";\n";
 }
 
+
+public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
+
+    /* inherit data fields then resolve them */
+    ArrayList<Field> inheritedFields = new ArrayList<Field>();
+    if(this.getParentBubble() != null && !this.getParentBubble().getName().equals("Object")){
+
+        //inherit fields
+        for(Field f : this.getParentBubble().getDataFields()) {
+            Field copy = f.deepCopy();
+            if(!(copy.getName().charAt(0) == '$'))
+                inheritedFields.add(copy);
+        }
+
+        //check for "overwritten" fields and mangle the names of inherited fields
+        for(Field f :this.getDataFields()){
+            for(Field g : inheritedFields){
+                if(f.getName().equals(g.getName())){
+                    //add a "$" to the old field
+                    System.out.println("over writing " + g.getName() + " with a $");
+                    g.setName( "$" + g.getName());
+                }
+            }
+        }
+    }
+
+    EvalCall e = new EvalCall(this, bubbleList, this.table);
+    SymbolTable.Scope dynCurrent = dynamicTypeTable.current();
+    SymbolTable.Scope current = table.current();
+
+    //then resolve fields that are not inherited
+    for(Field f :this.getDataFields()){
+        if(f.hasAssignment()){
+            String type = (String)e.dispatch(f.getAssignmentNode());
+            f.setDynamicType(type);
+            //add this entry to the dynamic type table
+            dynCurrent.define(f.getName(), type);
+        }
+    }
+
+    //add my inherited fields to both static and dynamic tables
+    for(Field f: inheritedFields){
+        current.define(f.getName(), f.getType());
+        dynCurrent.define(f.getName(), f.getDynamicType());
+        //finally add inherited fields to my field list
+        this.addField(f);
+    }
+
+    //now call the process on all my children so it bubbles (pun!) down
+    for(Bubble b: bubbles)
+        b.inheritAndResolveDataFields(bubbleList);
+}
+
+
 public void mangleBetweenClasses(){
     //will start with root Object bubble and do this recursively
     /* first inherit method if not noame == Object
@@ -813,18 +875,23 @@ public String getStruct() {
             ret += f.type + " " + f.name + ";\n";
 
     }
-    ret+="\n//Constructors\n";
+    ret+="\n//constructors\n";
     //loop through methods once to see if there are any constructors
     //if not create a default one
-    boolean encounteredConstructor = false;
+    boolean encounteredconstructor = false;
     for(Mubble m: mubbles){
         if(m.isConstructor()){
-            encounteredConstructor = true;
+            encounteredconstructor = true;
         }
     }
-    if(!encounteredConstructor) //if there was no constructor in the java file, create default one
+    if(!encounteredconstructor) //if there was no constructor in the java file, create default one
     {
-        ret += "_" + name + "(); \n\n";
+        Mubble construct = new Mubble(name);
+        construct.setBubble(this);
+        construct.setConstructor(true);
+        this.addMubble(construct);
+
+        //ret += "_" + name + "(); \n\n";
     }
     else
     {

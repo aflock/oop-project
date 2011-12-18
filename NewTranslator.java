@@ -124,21 +124,13 @@ public class NewTranslator extends xtc.util.Tool{
 				if(child.getParentBubble().getName().equals("Object")){
 					//System.out.println("Calling the method V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V");
 					child.mangleBetweenClasses();
+					child.inheritAndResolveDataFields(bubbleList);
 				}
 			}
 		}
 
 
-		/*
-        for(Bubble b: bubbleList){
-            if(!(b.getName().equals("String") || b.getName().equals("Object"))){
-                //System.out.println("Inheriting Methods: " + b.getName());
-                b.mangleBetweenClasses();
-            }
-        }
-		*/
 
-		//now mangle between classes?
 
         //Not sure if we need this:
         ArrayList<String> parsed = new ArrayList<String>();
@@ -256,7 +248,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         /* Lets Print a .H!!! */
 
-        if(true){
+        if(false){
             System.out.println("==========================================================");
             System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
