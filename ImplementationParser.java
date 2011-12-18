@@ -125,8 +125,9 @@ NOTE: Should be called after implementation parser is complete
 */
     boolean debugDFAssignments = true;
     boolean resolvingShit = false;
+    boolean resolvingConstructors = false;
     public void resolveDatafieldAssignments()
-    {
+    {//{{{
         resolvingShit = true;
         String add2Constructor = "";
         for(Bubble b : bubbleList) //for every class
@@ -174,7 +175,35 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         resolvingShit = false;
+    }//}}}
+
+    public void resolveConstructors(){
+       resolvingConstructors = true;
+       onMeth = true;
+
+		for(Bubble child : bubbleList){
+			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
+                curBub = child;
+                for(Mubble m : child.getMubbles()){
+                    if(!(child.getParentBubble().getName().equals("Object")) && m.superConstructorCalled()){
+                        ArrayList<String> params = m.getSuperParams(); //this passes types so we know which constructor to look for
+                        //SymbolTable staticType = child.getTable();
+                        //SymbolTable.Scope current = staticType.current();
+                        //ArrayList<String> types = new ArrayList<String>();
+
+                        GNode constNode = child.getParentBubble().getConstructorNode(params);
+                        methodString = "";
+                        this.visit(constNode);
+                        m.prependCode(methodString);
+                    }
+                }
+            }
+        }
+        resolvingConstructors = false;
+        onMeth = false;
+        methodString = "";
     }
+
 
     public void visit(Node n)//{{{
     {
@@ -481,6 +510,36 @@ NOTE: Should be called after implementation parser is complete
                 constructorCount++;
                 curMub = m;
             }
+
+            /*is super called?*/
+
+            if(n.getNode(5) != null && n.getNode(5).hasName("Block"))
+                if(n.getNode(5).getNode(0).getNode(0) != null)
+                    if(n.getNode(5).getNode(0).getNode(0).getString(0) != null)
+                        if(n.getNode(5).getNode(0).getNode(0).getString(0).equals("super")){
+                            curMub.setSuperConstructorCalled = true;
+                            //get parameter types
+                            EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
+                            String[] params = ((String)(e.dispatch(n.getNode(5).getNode(0).getNode(0).getNode(3)))).trim().split(" "); //RETURNING VOID
+                            //remove empty strings
+                            int scount = 0;
+                            for(String s : params){
+                                if(s.equals(""))
+                                    scount++;
+                            }
+                            String[] nparams = new String[params.length - scount];
+                            int ind = 0;
+                            for(int i = 0; i< params.length; i ++){
+                                if(!(params[i].equals(""))){
+                                    nparams[ind] = params[i];
+                                    ind++;
+                                }
+                            }
+                            ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
+                            curMub.setSuperParams(plist);
+                        }
+
+
             //System.out.println("Constructor Count is: "+ constructorCount);
             //System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
         }
