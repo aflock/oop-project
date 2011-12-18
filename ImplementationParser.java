@@ -499,11 +499,14 @@ NOTE: Should be called after implementation parser is complete
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
+        System.out.println("fuck1");
         //Parent 1 Should be class decl
         String classname = parent1.getString(1);
         String methodname = n.getString(2);
+        System.out.println("fuck2");
 
         int constructorCount = 0;
+        System.out.println("fuck3");
         for(Mubble m : mubbleList){
             if(m.getClassName().trim().equals(classname.trim()) && m.isConstructor())
             {
@@ -511,12 +514,26 @@ NOTE: Should be called after implementation parser is complete
                 curMub = m;
             }
 
+        System.out.println("fuck1.4");
             /*is super called?*/
 
-            if(n.getNode(5) != null && n.getNode(5).hasName("Block"))
-                if(n.getNode(5).getNode(0).getNode(0) != null)
-                    if(n.getNode(5).getNode(0).getNode(0).getString(0) != null)
-                        if(n.getNode(5).getNode(0).getNode(0).getString(0).equals("super")){
+            if(n.getNode(5) != null && n.getNode(5).hasName("Block")){
+                System.out.println("hello");
+
+
+                System.out.println(n.getNode(5));
+                if(n.getNode(5).getNode(0) !=null)
+                    System.out.println("fuck3.5");
+                System.out.println("get here though");
+                if(n.getNode(5).getNode(0) != null && n.getNode(5).getNode(0).hasName("ExpressionStatement")){
+        System.out.println("fuck2.6");
+                    Node expr = n.getNode(5).getNode(0);
+        System.out.println("fuck3.7");
+
+                    if(expr.getNode(0) != null && expr.getNode(0).hasName("CallExpression"))
+                        if(expr.getNode(0).getString(2) != null &&expr.getNode(0).getString(2).equals("super"))
+                        {
+                            System.out.println("fuck4");
                             curMub.setSuperConstructorCalled(true);
                             //get parameter types
                             EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
@@ -538,7 +555,9 @@ NOTE: Should be called after implementation parser is complete
                             ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
                             curMub.setSuperParams(pList);
                         }
+                }
 
+            }
 
             //System.out.println("Constructor Count is: "+ constructorCount);
             //System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
