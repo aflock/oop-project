@@ -33,6 +33,7 @@ import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
 import xtc.oop.helper.EvalCall;
+import xtc.oop.helper.MethodChaining;
 
 import xtc.util.SymbolTable;
 
@@ -532,9 +533,10 @@ NOTE: Should be called after implementation parser is complete
 
 
     public void visitCallExpression(GNode n) {
-        //System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
+        System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
+	
         if (onMeth) {
             mName = n.getString(2);
             String tmp = "";
@@ -561,7 +563,7 @@ NOTE: Should be called after implementation parser is complete
                 }
               }//}}}
             else{
-
+		/*
                 //want to know if this method is static
                 //TODO deal with SelectionExpression or New Class Expression
                 boolean isStaticMethod = true;
@@ -639,14 +641,15 @@ NOTE: Should be called after implementation parser is complete
 
                 //resolve mangled methods (overloading)
                 Mubble trueMub = trueBubble.findMethod(bubbleList, mName, pList);
-                stack.push(trueMub);
+                //stack.push(trueMub);
 
                 String trueName = trueMub.getName();
                 //TODO VV check this/ finish this shit
 
                 boolean isPrivate = trueMub.isPrivate();
 
-
+		
+		System.out.println("::::::::::::::ARUGMENTS:::::::::::");
                 if(!isStaticMethod && !isPrivate){
                     dispatch(n.getNode(0));
                     //need to fix casting for first arg
@@ -665,7 +668,7 @@ NOTE: Should be called after implementation parser is complete
                     if(n.getNode(3).size() != 0)
                         methodString += ",";
                     dispatch(n.getNode(3));
-                    stack.pop();
+                    //stack.pop();
                     methodString += ")";
 
                 }
@@ -704,9 +707,13 @@ NOTE: Should be called after implementation parser is complete
                         }
                     }
                     dispatch(n.getNode(3));
-                    stack.pop();
+                    //stack.pop();
                     methodString += ")";
                 }
+		*/
+		String plz = (String)(new MethodChaining(curBub, bubbleList).dispatch(n));
+		System.out.println(plz);
+		methodString += plz;
                 /*
                    dispatch(n.getNode(3));
 
@@ -881,11 +888,11 @@ NOTE: Should be called after implementation parser is complete
             visit(n);
     }
 
-    Stack<Mubble> stack;
+    //Stack<Mubble> stack;
     public void visitClassBody(GNode n){
-        stack = new Stack<Mubble>();
+        //stack = new Stack<Mubble>();
         visit(n);
-        stack = null;
+        //stack = null;
     }
 
     Bubble curBub;
