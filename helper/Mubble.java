@@ -107,6 +107,17 @@ public class Mubble{
            */
         return 0;
     }
+<<<<<<< HEAD
+=======
+    
+    //gets constructor node
+    public GNode getConstructorNode(){
+        return this.constructorNode;
+    }
+    public void setConstructorNode(GNode g){
+        this.constructorNode = g;
+    }
+>>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
 
     public String getCode() {
         return this.code;

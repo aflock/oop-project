@@ -1,0 +1,26 @@
+
+
+impl parser edit:
+    visit Primary id: if it is a data field, if there is a $version, use that version
+
+    visitCall expression: if it is a method, (might need to use parent::method),
+                            find out by seeing if my version of the method has a "w" flag
+                                if it does, use myparent::method, and pass this???yes
+
+
+
+super{
+
+    name = foo()
+
+    foo(){
+        bar()
+    }
+    bar(){}
+}
+extend{
+
+
+foo(){}
+bar(){}
+}

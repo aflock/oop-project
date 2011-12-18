@@ -87,7 +87,6 @@ public class Field{
         return copy;
     }
 
-
     public void setName(String name){
         this.name = name;
     }

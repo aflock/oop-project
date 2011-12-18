@@ -33,6 +33,7 @@ import xtc.oop.helper.Mubble;
 import xtc.oop.helper.Pubble;
 import xtc.oop.helper.Field;
 import xtc.oop.helper.EvalCall;
+import xtc.oop.helper.MethodChaining;
 
 import xtc.util.SymbolTable;
 
@@ -124,11 +125,11 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 NOTE: Should be called after implementation parser is complete
 */
     boolean debugDFAssignments = true;
-    boolean resolvingShit = false;
     boolean resolvingConstructors = false;
+    boolean resolvingDataFieldAssignments = false;
     public void resolveDatafieldAssignments()
-    {//{{{
-        resolvingShit = true;
+    {
+        resolvingDataFieldAssignments = true;
         String add2Constructor = "";
         for(Bubble b : bubbleList) //for every class
         {
@@ -168,13 +169,12 @@ NOTE: Should be called after implementation parser is complete
             {
                 if(m.isConstructor())
                 {
-                    System.out.println("Constructor Found! Adding to " + b.getName());
+                    if(debugDFAssignments)System.out.println("Constructor Found! Adding to " + b.getName());
                     m.prependCode(add2Constructor + "\n\n");
-                    break; //found constructor
                 }
             }
         }
-        resolvingShit = false;
+        resolvingDataFieldAssignments = false;
     }//}}}
 
     public void resolveConstructors(){
@@ -367,7 +367,7 @@ NOTE: Should be called after implementation parser is complete
         //ConcreteDimensions.IntegerLiteral.("1")
         String size = n.getNode(1).getNode(0).getString(0);
 
-        if(resolvingShit) //if we are resolving dataFields, add it straight to the methodString -Calvin
+        if(resolvingDataFieldAssignments) //if we are resolving dataFields, add it straight to the methodString -Calvin
             methodString += "new __rt::Array<" + arrType + ">(" + size + ")";
         else //add it to arrayString, which will be added to methodString at the end of visitFieldDeclaration()
             arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
@@ -592,9 +592,10 @@ NOTE: Should be called after implementation parser is complete
 
 
     public void visitCallExpression(GNode n) {
-        //System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
+        System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
+
         if (onMeth) {
             mName = n.getString(2);
             String tmp = "";
@@ -621,7 +622,7 @@ NOTE: Should be called after implementation parser is complete
                 }
               }//}}}
             else{
-
+		/*
                 //want to know if this method is static
                 //TODO deal with SelectionExpression or New Class Expression
                 boolean isStaticMethod = true;
@@ -699,7 +700,7 @@ NOTE: Should be called after implementation parser is complete
 
                 //resolve mangled methods (overloading)
                 Mubble trueMub = trueBubble.findMethod(bubbleList, mName, pList);
-                stack.push(trueMub);
+                //stack.push(trueMub);
 
                 String trueName = trueMub.getName();
                 //TODO VV check this/ finish this shit
@@ -707,6 +708,7 @@ NOTE: Should be called after implementation parser is complete
                 boolean isPrivate = trueMub.isPrivate();
 
 
+		System.out.println("::::::::::::::ARUGMENTS:::::::::::");
                 if(!isStaticMethod && !isPrivate){
                     dispatch(n.getNode(0));
                     //need to fix casting for first arg
@@ -725,7 +727,7 @@ NOTE: Should be called after implementation parser is complete
                     if(n.getNode(3).size() != 0)
                         methodString += ",";
                     dispatch(n.getNode(3));
-                    stack.pop();
+                    //stack.pop();
                     methodString += ")";
 
                 }
@@ -764,13 +766,17 @@ NOTE: Should be called after implementation parser is complete
                         }
                     }
                     dispatch(n.getNode(3));
-                    stack.pop();
+                    //stack.pop();
                     methodString += ")";
                 }
+		*/
+		String plz = (String)(new MethodChaining(curBub, bubbleList).dispatch(n));
+		System.out.println(plz);
+		methodString += plz;
                 /*
                    dispatch(n.getNode(3));
 
-                   if(!resolvingShit)
+                   if(!resolvingDataFieldAssignments)
                    methodString += ")";
                    */
                 /*
@@ -941,11 +947,11 @@ NOTE: Should be called after implementation parser is complete
             visit(n);
     }
 
-    Stack<Mubble> stack;
+    //Stack<Mubble> stack;
     public void visitClassBody(GNode n){
-        stack = new Stack<Mubble>();
+        //stack = new Stack<Mubble>();
         visit(n);
-        stack = null;
+        //stack = null;
     }
 
     Bubble curBub;
@@ -1368,10 +1374,29 @@ NOTE: Should be called after implementation parser is complete
             if(!parent0.hasName("SubscriptExpression"))
                 if(!(n.getString(0).equals("System") && parent0.getString(1).equals("out"))){
                     String variableName = n.getString(0);
-                    if(curBub.hasField(variableName)) //its a dataField
-                        methodString += "__this->" + variableName;
-                    else //its a variable name
-                        methodString += variableName;
+                    if(resolvingConstructors) //if I am parsing my parent's constructor node
+                    {
+                        if(curBub.hasField(variableName)) //its a dataField
+                        {
+                            //does this data field confict with one of my dataFields??
+                            if(curBub.hasField("$"+variableName)){ //yes, so refer to my parents
+                                //this is used not __this, because we are in a constructor and want to use the
+                                //object being constructed
+                                methodString += "this->$" + variableName;
+                            }
+                            else //no name conflict with /inherited datafields
+                                methodString += "this->" + variableName;
+                        }
+                        else //its a local variable
+                            methodString += variableName;
+                    }
+                    else
+                    {
+                        if(curBub.hasField(variableName)) //its a dataField
+                            methodString += "__this->" + variableName;
+                        else //its a local variable
+                            methodString += variableName;
+                    }
                 }
             //key = n.getString(0);
         }
@@ -1628,7 +1653,7 @@ NOTE: Should be called after implementation parser is complete
 
 
 
-        //if(!inPrintStatement && !resolvingShit)
+        //if(!inPrintStatement && !resolvingDataFieldAssignments)
         //methodString += ")";
 
 

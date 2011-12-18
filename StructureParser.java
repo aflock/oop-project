@@ -230,11 +230,13 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitConstructorDeclaration(GNode n){
+
         String name = n.getString(2);
         Mubble freshMubble = new Mubble(name);
         freshMubble.setConstructor(true);
 
         curMub = freshMubble;
+        curMub.setConstructorNode(n);
 
         SymbolTable.Scope current = table.current();
         String name2 = name;

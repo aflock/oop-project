@@ -1,0 +1,8 @@
+===========Test Method Chain==============
+Test 1: Chaining this
+	Test1() Called
+	Test2() Called
+	Test3() Called
+Test 2: Chaining String/CharAt
+	Name: Calvin
+	CharAt(0): C

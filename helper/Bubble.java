@@ -886,12 +886,14 @@ public String getStruct() {
     }
     if(!encounteredconstructor) //if there was no constructor in the java file, create default one
     {
+        /*
         Mubble construct = new Mubble(name);
         construct.setBubble(this);
         construct.setConstructor(true);
         this.addMubble(construct);
+        */
 
-        //ret += "_" + name + "(); \n\n";
+        ret += "_" + name + "(); \n\n";
     }
     else
     {

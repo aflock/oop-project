@@ -139,6 +139,14 @@ public class NewTranslator extends xtc.util.Tool{
 
         //find assignments for datafields here
         i.resolveDatafieldAssignments();
+
+		for(Bubble child : bubbleList){
+			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
+				if(child.getParentBubble().getName().equals("Object")){
+					child.resolveConstructor();
+				}
+			}
+		}
     }
 
     public static void main (String [] args)
