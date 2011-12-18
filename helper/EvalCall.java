@@ -351,11 +351,11 @@ public class EvalCall extends Visitor{
     public String visitDeclarators(GNode n) {
         visit(n);
     }
-
+*/
     public String visitDeclarator(GNode n) {
-        visit(n);
+        return visit(n.getNode(2));
     }
-    */
+
 
     public String visitIntegerLiteral(GNode n) {
         return "int32_t";

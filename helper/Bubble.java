@@ -196,6 +196,14 @@ public void setParentBubble(Bubble b) {
     this.parentBubble = b;
 }
 
+public boolean hasField(String fieldName){
+	for(Field f : dataFields){
+        if(f.getName().equals(fieldName))
+            return true;
+    }
+    return false;
+}
+
 //Set the parent Pubble of this Bubble
 public void setParentPubble(Pubble p) {
     this.parentPubble = p;
@@ -679,31 +687,31 @@ public String getTypeDef() {
 public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
 
     /* inherit data fields then resolve them */
+    ArrayList<Field> inheritedFields = new ArrayList<Field>();
     if(this.getParentBubble() != null && !this.getParentBubble().getName().equals("Object")){
 
         //inherit fields
-        ArrayList<Field> inheritedFields = new ArrayList<Field>();
         for(Field f : this.getParentBubble().getDataFields()) {
             Field copy = f.deepCopy();
-            if(f.getName().charAt(0) == '$')
-                f.setName('$' + f.getName())
-            inheritedFields.add(f);
+            if(!(copy.getName().charAt(0) == '$'))
+                inheritedFields.add(copy);
         }
 
         //check for "overwritten" fields and mangle the names of inherited fields
         for(Field f :this.getDataFields()){
             for(Field g : inheritedFields){
-                if(f.getName().equals(g.getName()))
+                if(f.getName().equals(g.getName())){
                     //add a "$" to the old field
                     System.out.println("over writing " + g.getName() + " with a $");
-                g.setName( "$" + g.getName());
+                    g.setName( "$" + g.getName());
+                }
             }
         }
     }
 
-    EvalCall e = new EvalCall(this, bubbleList, this.symbolTable);
+    EvalCall e = new EvalCall(this, bubbleList, this.table);
     SymbolTable.Scope dynCurrent = dynamicTypeTable.current();
-    SymbolTable.Scope current = symbolTable.current();
+    SymbolTable.Scope current = table.current();
 
     //then resolve fields that are not inherited
     for(Field f :this.getDataFields()){
@@ -724,7 +732,7 @@ public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
     }
 
     //now call the process on all my children so it bubbles (pun!) down
-    for(Bubble b: children)
+    for(Bubble b: bubbles)
         b.inheritAndResolveDataFields(bubbleList);
 }
 
@@ -867,18 +875,23 @@ public String getStruct() {
             ret += f.type + " " + f.name + ";\n";
 
     }
-    ret+="\n//Constructors\n";
+    ret+="\n//constructors\n";
     //loop through methods once to see if there are any constructors
     //if not create a default one
-    boolean encounteredConstructor = false;
+    boolean encounteredconstructor = false;
     for(Mubble m: mubbles){
         if(m.isConstructor()){
-            encounteredConstructor = true;
+            encounteredconstructor = true;
         }
     }
-    if(!encounteredConstructor) //if there was no constructor in the java file, create default one
+    if(!encounteredconstructor) //if there was no constructor in the java file, create default one
     {
-        ret += "_" + name + "(); \n\n";
+        Mubble construct = new Mubble(name);
+        construct.setBubble(this);
+        construct.setConstructor(true);
+        this.addMubble(construct);
+
+        //ret += "_" + name + "(); \n\n";
     }
     else
     {

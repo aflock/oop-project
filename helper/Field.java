@@ -87,6 +87,7 @@ public class Field{
         return copy;
     }
 
+
     public void setName(String name){
         this.name = name;
     }
@@ -101,7 +102,7 @@ public class Field{
     public String getType(){
         return this.type;
     }
-    public void setDymanicType(String type){
+    public void setDynamicType(String type){
         this.dynamicType = StructureParser.cppify(type);
     }
     public String getDynamicType(){

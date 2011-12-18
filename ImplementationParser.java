@@ -123,7 +123,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
        side of a dataField assignment to the first line of the appropriate constructor for that node
 NOTE: Should be called after implementation parser is complete
 */
-    boolean debugDFAssignments = false;
+    boolean debugDFAssignments = true;
     boolean resolvingShit = false;
     public void resolveDatafieldAssignments()
     {
@@ -133,7 +133,7 @@ NOTE: Should be called after implementation parser is complete
         {
             if(debugDFAssignments) System.out.println("Resolving DataField Assignments For: " + b.getName());
             for(Field f : b.getDataFields()) //for each of it's dataFields
-            { 
+            {
                 if(f.hasAssignment()) //if there is an assignment
                 {
                     if(debugDFAssignments) System.out.println("\t Resolving Code for  " + f.name);
@@ -167,6 +167,7 @@ NOTE: Should be called after implementation parser is complete
             {
                 if(m.isConstructor())
                 {
+                    System.out.println("Constructor Found! Adding to " + b.getName());
                     m.prependCode(add2Constructor + "\n\n");
                     break; //found constructor
                 }
@@ -1306,8 +1307,13 @@ NOTE: Should be called after implementation parser is complete
         Node parent0 = (Node)n.getProperty("parent0");
         if (onMeth) {
             if(!parent0.hasName("SubscriptExpression"))
-                if(!(n.getString(0).equals("System") && parent0.getString(1).equals("out")))
-                    methodString += n.getString(0);
+                if(!(n.getString(0).equals("System") && parent0.getString(1).equals("out"))){
+                    String variableName = n.getString(0);
+                    if(curBub.hasField(variableName)) //its a dataField
+                        methodString += "__this->" + variableName;
+                    else //its a variable name
+                        methodString += variableName;
+                }
             //key = n.getString(0);
         }
         visit(n);
@@ -1580,6 +1586,7 @@ NOTE: Should be called after implementation parser is complete
 
     public void visitSelectionExpression(GNode n) {
         if (onMeth) {
+
             visit(n);
             //EDIT think this is fixed
             if (n.get(1) != null) {
@@ -1589,9 +1596,17 @@ NOTE: Should be called after implementation parser is complete
                 //if first child exists && first child is PrimaryIdentifier && its first string is system
                 //&& second child is not null and is out
                 if(  n.get(0)==null || n.getString(1)==null  || n.getNode(0).get(0) == null ||
-                        !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out")))
-
-                    methodString += (checkAncestor(n,"ConstructorDeclaration") ? "" : "->") + n.getString(1);
+                        !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out"))){
+                    //check for super
+                    if(n.getNode(0) != null && n.getNode(0).hasName("SuperExpression")){
+                        String variableName = n.getString(1);
+                        //check if there was an inherited field with this same name
+                        if(curBub.hasField("$"+variableName))
+                            methodString += "__this->$" + variableName;
+                        else //no name conflict with /inherited datafields
+                            methodString += "__this->" + variableName;
+                    }else
+                        methodString += (checkAncestor(n,"ConstructorDeclaration") ? "" : "->") + n.getString(1);}
             }
         }
         else {
