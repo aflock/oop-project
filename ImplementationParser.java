@@ -167,9 +167,8 @@ NOTE: Should be called after implementation parser is complete
             {
                 if(m.isConstructor())
                 {
-                    System.out.println("Constructor Found! Adding to " + b.getName());
+                    if(debugDFAssignments)System.out.println("Constructor Found! Adding to " + b.getName());
                     m.prependCode(add2Constructor + "\n\n");
-                    break; //found constructor
                 }
             }
         }

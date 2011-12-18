@@ -1,5 +1,6 @@
 package xtc.oop.helper;
 import java.util.ArrayList;
+import xtc.tree.GNode;
 
 //import helper.Pubble;
 //import helper.Bubble;
@@ -11,8 +12,12 @@ public class Mubble{
     private final char NEW = 'n';
     private final char OVERLOADED = 'l';
     private final char OVERWRITTEN = 'w';
+    
+    GNode constructorNode = null;
 
     boolean constructor;
+    boolean superConstructorCalled; //whether the super constructor was in the constructor
+    ArrayList<String> superParams; //parameter types of super constructor
     boolean main;
     boolean staticMethod;
     char flag;
@@ -37,7 +42,9 @@ public class Mubble{
         paraType = new ArrayList<String>();
         paraName = new ArrayList<String>();
         paraMod = new ArrayList<String>();
+        superParams = new ArrayList<String>();
         constructor = false;
+        superConstructorCalled = false;
         main = false;
         staticMethod = false;
         visibility = "public"; //default
@@ -52,7 +59,7 @@ public class Mubble{
     public Mubble(Mubble m){
         this.code = m.getCode();
         this.methodName = m.getName();
-
+        superConstructorCalled = false;
     }
 
     public boolean isPrivate(){
@@ -61,20 +68,27 @@ public class Mubble{
         else
             return false;
     }
+    
+    public ArrayList<String> getSuperParams(){
+        return this.superParams;
+    }
+    public void setSuperParams(ArrayList<String> params){
+        this.superParams = params;
+    }
 
     public void addCode(String code){
-	if(!isMain() || !this.code.equals("")) { //if string already has something
-	    this.code += code;
-	}
-	else {
-	    String p = paraName.get(0);
-	    this.code = "/*\n"+
-		"__rt::Ptr<__rt::Array<String> > "+p+" = new __rt::Array<String>(argc-1);\n"+
-		"for(int i = 1; i < argc; i++){\n"+
-		"(*"+p+")[i-1] = argv[i];\n"+
-		"}\n*/\n";
-	    this.code += code;
-	}
+	    if(!isMain() || !this.code.equals("")) { //if string already has something
+	        this.code += code;
+	    }
+	    else {
+	        String p = paraName.get(0);
+	        this.code = "/*\n"+
+		    "__rt::Ptr<__rt::Array<String> > "+p+" = new __rt::Array<String>(argc-1);\n"+
+		    "for(int i = 1; i < argc; i++){\n"+
+		    "(*"+p+")[i-1] = argv[i];\n"+
+		    "}\n*/\n";
+	        this.code += code;
+	    }
     }
 
     //adds code to the beginning of this mubbles code
@@ -82,6 +96,12 @@ public class Mubble{
         this.code = ncode + this.code;
     }
 
+    public void setSuperConstructorCalled(boolean bla){
+        this.superConstructorCalled = bla;
+    }
+    public boolean getSuperConstructorCalled(){
+        return this.superConstructorCalled;
+    }
     public void addParameter(Field parameter){
         parameters.add(parameter);
     }
@@ -106,6 +126,13 @@ public class Mubble{
            }
            */
         return 0;
+    }
+    
+    public GNode getConstructorNode(){
+        return this.constructorNode;
+    }
+    public void setConstructorNode(GNode g){
+        this.constructorNode = g;
     }
 
     public String getCode() {
