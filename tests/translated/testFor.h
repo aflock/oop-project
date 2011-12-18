@@ -15,7 +15,7 @@ struct _testFor {
 //Data fields
 _testFor_VT* __vptr;
 
-//Constructors
+//constructors
 _testFor(); 
 
 
@@ -32,9 +32,17 @@ static _testFor_VT __vtable;
 struct _testFor_VT {
 Class __isa;
 void (*__delete)(_testFor*);
+int32_t (*hashCode)(testFor);
+bool (*equals)(testFor, Object);
+Class (*getClass)(testFor);
+String (*toString)(testFor);
 
 _testFor_VT()
 : __isa(_testFor::__class()),
-__delete(&_testFor::__delete) {
+__delete(&_testFor::__delete),
+hashCode((int32_t(*)(testFor))&java::lang::__Object::hashCode),
+equals((bool(*)(testFor,Object))&java::lang::__Object::equals),
+getClass((Class(*)(testFor))&java::lang::__Object::getClass),
+toString((String(*)(testFor))&java::lang::__Object::toString) {
 }
 };

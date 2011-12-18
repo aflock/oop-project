@@ -139,14 +139,8 @@ public class NewTranslator extends xtc.util.Tool{
 
         //find assignments for datafields here
         i.resolveDatafieldAssignments();
+		i.resolveConstructors();
 
-		for(Bubble child : bubbleList){
-			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
-				if(child.getParentBubble().getName().equals("Object")){
-					child.resolveConstructor();
-				}
-			}
-		}
     }
 
     public static void main (String [] args)
@@ -256,7 +250,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         /* Lets Print a .H!!! */
 
-        if(true){
+        if(false){
             System.out.println("==========================================================");
             System.out.println("=====================  " + fileNames.get(0) + ".h  =====================");
             Pubble root = new Pubble();
@@ -282,7 +276,7 @@ public class NewTranslator extends xtc.util.Tool{
         }
 
         /* Output to File */
-        if(false){
+        if(true){
             Pubble root = new Pubble();
             for(Pubble p : pubbleList){
                 if(p.getName().equals("Default Package"))

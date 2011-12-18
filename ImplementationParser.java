@@ -125,10 +125,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
 NOTE: Should be called after implementation parser is complete
 */
     boolean debugDFAssignments = true;
-<<<<<<< HEAD
     boolean resolvingConstructors = false;
-=======
->>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
     boolean resolvingDataFieldAssignments = false;
     public void resolveDatafieldAssignments()
     {
@@ -178,7 +175,6 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         resolvingDataFieldAssignments = false;
-<<<<<<< HEAD
     }//}}}
 
     public void resolveConstructors(){
@@ -189,13 +185,13 @@ NOTE: Should be called after implementation parser is complete
 			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
                 curBub = child;
                 for(Mubble m : child.getMubbles()){
-                    if(!(child.getParentBubble().getName().equals("Object")) && m.superConstructorCalled()){
+                    if(!(child.getParentBubble().getName().equals("Object")) && m.getSuperConstructorCalled()){
                         ArrayList<String> params = m.getSuperParams(); //this passes types so we know which constructor to look for
                         //SymbolTable staticType = child.getTable();
                         //SymbolTable.Scope current = staticType.current();
                         //ArrayList<String> types = new ArrayList<String>();
 
-                        GNode constNode = child.getParentBubble().getConstructorNode(params);
+                        GNode constNode = child.getParentBubble().findConstructor(params).getConstructorNode();
                         methodString = "";
                         this.visit(constNode);
                         m.prependCode(methodString);
@@ -206,8 +202,6 @@ NOTE: Should be called after implementation parser is complete
         resolvingConstructors = false;
         onMeth = false;
         methodString = "";
-=======
->>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
     }
 
 
@@ -523,7 +517,7 @@ NOTE: Should be called after implementation parser is complete
                 if(n.getNode(5).getNode(0).getNode(0) != null)
                     if(n.getNode(5).getNode(0).getNode(0).getString(0) != null)
                         if(n.getNode(5).getNode(0).getNode(0).getString(0).equals("super")){
-                            curMub.setSuperConstructorCalled = true;
+                            curMub.setSuperConstructorCalled(true);
                             //get parameter types
                             EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
                             String[] params = ((String)(e.dispatch(n.getNode(5).getNode(0).getNode(0).getNode(3)))).trim().split(" "); //RETURNING VOID
@@ -542,7 +536,7 @@ NOTE: Should be called after implementation parser is complete
                                 }
                             }
                             ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
-                            curMub.setSuperParams(plist);
+                            curMub.setSuperParams(pList);
                         }
 
 
@@ -601,11 +595,6 @@ NOTE: Should be called after implementation parser is complete
         System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
-<<<<<<< HEAD
-
-=======
-	
->>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
         if (onMeth) {
             mName = n.getString(2);
             String tmp = "";
@@ -717,11 +706,6 @@ NOTE: Should be called after implementation parser is complete
 
                 boolean isPrivate = trueMub.isPrivate();
 
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
 		System.out.println("::::::::::::::ARUGMENTS:::::::::::");
                 if(!isStaticMethod && !isPrivate){
                     dispatch(n.getNode(0));
@@ -1390,12 +1374,7 @@ NOTE: Should be called after implementation parser is complete
                     String variableName = n.getString(0);
                     if(resolvingConstructors) //if I am parsing my parent's constructor node
                     {
-                        if(curBub.hasField(variableName)) //its a dataField
-<<<<<<< HEAD
-                        {
-=======
-                        {   
->>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
+                        if(curBub.hasField(variableName)){ //its a dataField
                             //does this data field confict with one of my dataFields??
                             if(curBub.hasField("$"+variableName)){ //yes, so refer to my parents
                                 //this is used not __this, because we are in a constructor and want to use the
@@ -1404,15 +1383,9 @@ NOTE: Should be called after implementation parser is complete
                             }
                             else //no name conflict with /inherited datafields
                                 methodString += "this->" + variableName;
-<<<<<<< HEAD
                         }
                         else //its a local variable
                             methodString += variableName;
-=======
-                        }                            
-                        else //its a local variable
-                            methodString += variableName;                  
->>>>>>> 625eee1781487e2a459a0b92e3f60dd6ed4be9e5
                     }
                     else
                     {
