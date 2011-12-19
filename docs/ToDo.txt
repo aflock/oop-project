@@ -4,7 +4,16 @@ Language
 Switching
 Device
 
-DAYS TILL DUE: bout 3.
+DAYS TILL DUE: bout 1.
+
+
+V_V_V_V  PROBLEMS TO FIX V_V_V_V_V
+
+- in the constructor you cant reference __this
+
+
+
+
 
 UNKNOWN:
 1. Where does static datafields go in the translated .cc file? Not in the consructor. Are they in the struct of the class?

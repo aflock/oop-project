@@ -339,7 +339,10 @@ public class MethodChaining extends Visitor{
     }
 
     public String visitCastExpression(GNode n){
-     	return "";
+        String type = n.getNode(0).getNode(0).getString(0);
+        String code = "(" + n.getNode(0).getNode(0).getString(0) + ")";
+        stack.push(new Tuple(type, code));
+     	return code;
     }
 
     public String visitBitwiseAndExpression(GNode n){
@@ -358,11 +361,63 @@ public class MethodChaining extends Visitor{
 	return "";
     }
 
+     public static String cppify(String a) {
+	if (a.equals("int"))
+	    return "int32_t";
+	if (a.equals("long"))
+	    return "int64_t";
+	if (a.equals("short"))
+	    return "int16_t";
+	if (a.equals("boolean"))
+	    return "bool";
+	return a; // byte??
+    }
+
     public String visitBasicCastExpression(GNode n){
-	return "";
+        String type = cppify((String)dispatch(n.getNode(0)));
+        Tuple child = stack.pop();
+        child.code = "(" + type + ")";
+        stack.push(child);
+	    return child.code;
     }
 
     public String visitAdditiveExpression(GNode n){
+        Node parent0 = (Node)n.getProperty("parent0");
+        String type = "";
+        if (parent0.hasName("CallExpression")) {
+            // this would not likely happen
+        }
+        else if (parent0.hasName("Arguments")){
+            dispatch(n.getNode(0));
+            dispatch(n.getNode(2));
+            //String type = null;
+            Tuple second = stack.pop();
+            Tuple first = stack.pop();
+            if (n.getString(0).equals("+")) {
+                if (first.type.equals("String") || second.type.equals("String")) {
+                    type = "String";
+                }
+                else if (first.type.equals(second.type)) {
+                    type = first.type;
+                }
+                else {
+                    System.out.println("needs fixing: Additive expression: +");
+                }
+                stack.push(new Tuple(type, first.code + "+" + second.code));
+                return first.code + "+" + second.code;
+            }
+            else {
+                if (first.type.equals(second.type)) {
+                    type = first.type;
+                }
+                else {
+                    System.out.println("need fixing: Addtive expression: -");
+                }
+                stack.push(new Tuple(type, first.code + "-" + second.code));
+                return first.code + "-" + second.code;
+            }
+
+        }
 	return "";
 
     }
