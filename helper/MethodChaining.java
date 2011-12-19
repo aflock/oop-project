@@ -100,12 +100,22 @@ public class MethodChaining extends Visitor{
             code = (String)dispatch(n.getNode(0));
 
         }
+	String var = stack.peek().type;
+	boolean staticc = false;
         stack.push(new Tuple(n.getString(2), "")); // n.getString(2);
-        //System.out.println("PEEK");
-        //System.out.println(stack.peek());
-        //System.out.println("PEEK");
+	
+	if (var.equals("constructor")) {
+	    staticc = true;
+	}
+
         String code2 = (String)dispatch(n.getNode(3)); // code from arguments
-        code = code + (n.get(0) == null ? "" : "->") + code2;
+	if (staticc) {
+	    String pac = curBub.getPackageName().trim().replace(" ", "::");
+	    code = pac + "::_" + code + "::" + code2;
+	}
+	else {
+	    code = code + (n.get(0) == null ? "" : "->") + code2;
+	}
 
         if (n.get(0) != null && n.getNode(0).hasName("CallExpression")) {
             code += "; })";
@@ -429,8 +439,8 @@ public class MethodChaining extends Visitor{
 	String type = "";
 	if (parent0.hasName("CallExpression")) {
 	    type = (String)dynamicTypeTable.lookup(n.getString(0));
-        if(type == null)
-            type = (String)table.lookup(n.getString(0));
+	    if(type == null)
+		type = (String)table.lookup(n.getString(0));
 	}
 	else if (parent0.hasName("Arguments")) {
 	    type = (String)table.lookup(n.getString(0));
