@@ -194,7 +194,10 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         if(dataField)
         {
             dataField = false;
-            curBub.addField(curField);
+            if(!curBub.hasField(curField));
+                curBub.addField(curField);
+        
+            //System.out.println("ADDING FIELD: " + curField.name);
         }
 
         if(false) System.out.println("curField.name: " + curField.name);

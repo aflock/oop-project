@@ -106,6 +106,8 @@ public class NewTranslator extends xtc.util.Tool{
 
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
+        
+        
 
         //Pass methods down the inheritance tree
 		Bubble obj = new Bubble();
@@ -141,6 +143,7 @@ public class NewTranslator extends xtc.util.Tool{
         i.resolveDatafieldAssignments();
 		i.resolveConstructors();
 
+
     }
 
     public static void main (String [] args)
@@ -155,6 +158,7 @@ public class NewTranslator extends xtc.util.Tool{
         t.init();
         t.prepare();
         for(int i = 0; i< args.length; i++){
+            //System.out.println("***********&&&&&&&&&&&&&&&&*********");
             try{ //TODO put in flag to not system exit also maybe change to run
                 t.process(args[i]);
                 fileNames.add(parseFileName(args[i]));
@@ -229,7 +233,9 @@ public class NewTranslator extends xtc.util.Tool{
                     System.out.println("\t- " + b.getName());
                 }
             }
-
+        
+        //remove duplicates here
+        //bubbleList = removeDuplicates(bubbleList);
 
         //Printing Contents of Everything
         if(false)
@@ -239,11 +245,20 @@ public class NewTranslator extends xtc.util.Tool{
                 for(Bubble b : p.getBubbles())
                 {
                     System.out.println("\tClass: " + b.getName());
-                    for(Mubble m : b.getMubbles())
-                    {
-                        System.out.println("\t\tMethod: " + m.getName());
-                        System.out.println("\t\tflag: " + m.getFlag());
-                        System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+                    if(false){ //print out methods
+                        for(Mubble m : b.getMubbles())
+                        {
+                            System.out.println("\t\tMethod: " + m.getName());
+                            System.out.println("\t\tflag: " + m.getFlag());
+                            System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
+                        }
+                    }
+                    if(true){//print out Fields
+                        for(Field f : b.getDataFields())
+                        {
+                            System.out.println("\t\tField: " + f.name);
+                        }
+                    
                     }
                 }
             }
@@ -274,6 +289,9 @@ public class NewTranslator extends xtc.util.Tool{
                         System.out.println("CODE: " + m.getCode());
             }
         }
+        
+        
+        
 
         /* Output to File */
         if(true){
@@ -314,6 +332,10 @@ public class NewTranslator extends xtc.util.Tool{
 
 
     //************************HELPER METHODS***********************//
+    
+    
+    
+        
     public void constructPackageTree()
         //constructs package tree from pubblelist
     {

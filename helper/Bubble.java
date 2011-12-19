@@ -13,6 +13,7 @@ public class Bubble{
     Pubble parentPubble; //This class' package (reference)
     boolean isBuilt = false; //determine whether a bubble has been completely filled in (excluding code)
     boolean isFilled = false; //determine whether all the code portions of this bubble's mubbles has been filled in
+    ArrayList<String> staticData; //
 
     SymbolTable varTable;
     SymbolTable funcTable;
@@ -40,6 +41,7 @@ public class Bubble{
         this.funcTable       = new SymbolTable();
         this.table           = new SymbolTable();
         this.dynamicTypeTable = new SymbolTable();
+        this.staticData = new ArrayList<String>();
     }
 
     public Bubble(){
@@ -50,6 +52,7 @@ public class Bubble{
         this.funcTable       = new SymbolTable();
         this.table           = new SymbolTable();
         this.dynamicTypeTable = new SymbolTable();
+        this.staticData = new ArrayList<String>();
     }
 
 
@@ -99,25 +102,38 @@ public class Bubble{
      *
      */
 
+    public String getStaticData(){
+        String ret = "";
+        for(String s : this.staticData){
+            ret += s;
+        }
+        
+        return ret;
+    }
+    
+    public void addStaticData(String s){
+    
+        this.staticData.add(s);
+    }
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
 
         Mubble mub = null;
         int best = 1000000;
-        System.out.println("Calling find method : " + methodName + " :: ");
+        //System.out.println("Calling find method : " + methodName + " :: ");
 
         //System.out.println("mubblesList size is :: " + mubbles.size());
         for (Mubble m : mubbles) {
-            System.out.println("Mubble name is || "+ m.getName());
-            System.out.println("group name is || "+ m.getGroup());
-            System.out.println("_____");
+            //System.out.println("Mubble name is || "+ m.getName());
+            //System.out.println("group name is || "+ m.getGroup());
+            //System.out.println("_____");
             if (m.belongToGroup(methodName)) {
-                System.out.println(methodName + "::"+  m.getName());
+                //System.out.println(methodName + "::"+  m.getName());
                 //System.out.println(m.getFlag());
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
 
-                System.out.println("p.size(): " + p.size());
-                System.out.println("para.size(): " + para.size());
+                //System.out.println("p.size(): " + p.size());
+                //System.out.println("para.size(): " + para.size());
                 if (para.size() == p.size()) {
                     for (int i = 0; i < p.size(); i++) {
                         //System.out.println("V_V_V_V_V_V_V_VV_V_V_V_V_V_VV_V_V_V_V_V_V_V");
@@ -283,6 +299,15 @@ public boolean isFilled(){
     return isFilled;
 }
 
+public boolean hasField(Field nField){
+    for(Field f : getDataFields()){
+        if(f.getName().equals(nField.getName()))
+            return true;
+        else
+            {}//System.out.println(f.getName() + " != " + nField.getName());
+    }
+    return false;
+}
 //Returns ArrayList of child Bubbles
 public ArrayList<Bubble> getBubbles() {
     return this.bubbles;
@@ -995,6 +1020,9 @@ public String getCC() {
         if(m.isConstructor())
             encounteredConstructor = true;
     }
+    //=========BEFORE I PRINT CONSTRUCTORS, PUT IN STATIC DATAFIELDS=============//
+    ret += this.getStaticData();
+    
     if(!encounteredConstructor) //if there was no constructor in the java file, create default one
     {
         ret += "_" + name + "::_" + name + "(): __vptr(&__vtable){} \n\n";

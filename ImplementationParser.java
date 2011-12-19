@@ -124,7 +124,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
        side of a dataField assignment to the first line of the appropriate constructor for that node
 NOTE: Should be called after implementation parser is complete
 */
-    boolean debugDFAssignments = true;
+    boolean debugDFAssignments = false;
     boolean resolvingConstructors = false;
     boolean resolvingDataFieldAssignments = false;
     public void resolveDatafieldAssignments()
@@ -154,7 +154,13 @@ NOTE: Should be called after implementation parser is complete
                     if(debugDFAssignments) System.out.println("\t\t" + f.name + " = " + methodString);
 
                     if(f.isStatic())
-                    {System.out.println(f.name + " is static");} //todo: where to I put static dataMethods??
+                    {
+                        //such a hack job -_-
+                        if(methodString.endsWith("\n"))
+                            b.addStaticData(f.type + " _" + b.getName() + "::" + f.name + " = " + methodString);
+                        else
+                            b.addStaticData(f.type + " _" + b.getName() + "::" + f.name + " = " + methodString + ";\n");
+                    } //todo: where to I put static dataMethods??
                     else //put them in the top of the constructor
                     {
                         if(methodString.endsWith("\n"))
@@ -610,7 +616,7 @@ NOTE: Should be called after implementation parser is complete
 
 
     public void visitCallExpression(GNode n) {
-        System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
+        //System.out.println("V_V_V_V_V_V_V_CALL EXPR V_V_V_V_V_V_V_V_V_V_V_");
         //visit(n);
         boolean hasVisited = false;
         if (onMeth) {
@@ -1150,7 +1156,7 @@ NOTE: Should be called after implementation parser is complete
                 //if it is part of java.lang, need two underscores here
                 if(s.contains("java lang"))
                 {
-                    System.out.println("********");
+                    //System.out.println("********");
                     methodString+= "__";
                 }
                 else
@@ -1186,9 +1192,10 @@ NOTE: Should be called after implementation parser is complete
 
             if(!path.equals("")){
                 //System.out.println(path);
-                try{
+               /* try{
                     t.process(path);
                 } catch (Exception e) {System.out.println("error: " + e);}
+                */
             }
         }
     }
