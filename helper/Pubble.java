@@ -61,8 +61,11 @@ public class Pubble{
         String ret = "";
 
 
-        if(!(name.equals("Default Package")))
-            ret += "namespace " + name + " {\n";
+        if(!(name.equals("Default Package"))){
+            String[] truncated = name.trim().split(" ");
+            String tname = truncated[truncated.length-1];
+            ret += "namespace " + tname + " {\n";
+        }
 
 
         for(Bubble b: bubbles){
@@ -79,31 +82,49 @@ public class Pubble{
 
         //now put the main, but only once
 
-        for(Bubble b : bubbles){
-            for(Mubble m : b.getMubbles()) {
-                if(m.isMain()) {
-                    ret += "int main(int argc, const char* argv[]) {\n";
-                    ret += m.getCode();
-                    ret += "return 0;\n";
-                    ret += "}\n\n";
-                }
-            }
-        }
 
         //hard code this
-        if(!(name.equals("Default Package")))
-            ret += "namespace " + name + " {\n";
+        if(!(name.equals("Default Package"))){
+            String[] truncated = name.trim().split(" ");
+            String tname = truncated[truncated.length-1];
+            ret += "namespace " + tname + " {\n";
+        }
 
         for(Bubble b : bubbles){
             ret += "_" + b.getName() + "_VT _" + b.getName() + "::__vtable;\n\n";
 
-            ret += "Class " + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName() + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
+            ret += "Class " + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName().trim().replace(" ", "::") + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
         }
 
         if(!(name.equals("Default Package")))
             ret += "}\n\n";
+
+        if(name.equals("Default Package")){
+            ret+=getMain();
+        }
+
         return ret;
     }
+     public String getMain(){
+        //get the main
+        String ret = "";
+         for(Bubble b : bubbles){
+             for(Mubble m : b.getMubbles()) {
+                 if(m.isMain()) {
+                     System.out.println("found main!~!");
+                     ret += "int main(int argc, const char* argv[]) {\n";
+                     ret += m.getCode();
+                     ret += "return 0;\n";
+                     ret += "}\n\n";
+                     return ret;
+                 }
+             }
+         }
+         for(Pubble p : children){
+            ret+= p.getMain();
+         }
+         return ret;
+     }
 
     public String typeDef(){
         //returns absolute typedefs for all package's children's bubbles, recursively
@@ -113,14 +134,15 @@ public class Pubble{
             //e.g. java::lang::Object
             String pkgpath = "";
             if(!(name.equals("Default Package")))
-                pkgpath = "::" + name.trim().replace(" ", "::") + "::";                /*
+                pkgpath = "::" + name.trim().replace(" ", "::") + "::";
+            /*
 
-                                                                                          while(x != null && !(x.getName().equals("Default Package"))) {
-                                                                                          String[] splitName = p.getName().trim().split(" ");
-                                                                                          pkgpath = splitName[splitName.length -1] + "::" + pkgpath;
-                                                                                          x = x.getParent();
-                                                                                          }
-                                                                                          */
+               while(x != null && !(x.getName().equals("Default Package"))) {
+               String[] splitName = p.getName().trim().split(" ");
+               pkgpath = splitName[splitName.length -1] + "::" + pkgpath;
+               x = x.getParent();
+               }
+               */
             ret += "typedef " + "__rt::Ptr< " + pkgpath + "_" + b.getName() + "> " + b.getName() + ";\n";
         }
         for(Pubble p: children){
@@ -160,8 +182,11 @@ public class Pubble{
     public String getForwardDecl()
     {
         String ret = "";
-        if(!(name.equals("Default Package")))
-            ret += "namespace " + name + " {\n";
+        if(!(name.equals("Default Package"))){
+            String[] truncated = name.trim().split(" ");
+            String tname = truncated[truncated.length-1];
+            ret += "namespace " + tname + " {\n";
+        }
         for(Bubble b : bubbles){
             ret += b.getFDeclStruct();
         }
@@ -186,8 +211,11 @@ public class Pubble{
     public String getVTables()
     {
         String ret = "";
-        if(!(name.equals("Default Package")))
-            ret += "namespace " + name + " {\n";
+        if(!(name.equals("Default Package"))){
+            String[] truncated = name.trim().split(" ");
+            String tname = truncated[truncated.length-1];
+            ret += "namespace " + tname + " {\n";
+        }
         for(Bubble b : bubbles){
             ret += b.getStruct();
             ret += b.getStructVT();
