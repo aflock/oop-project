@@ -192,7 +192,26 @@ public class EvalCall extends Visitor{
         }
 
         String[] splitArgs = arguments.trim().split(" ");
-        ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(splitArgs));
+        //sterilize spaces and empty lines
+
+                //remove empty strings
+                int scount = 0;
+                for(String s : splitArgs){
+                    if(s.equals(""))
+                        scount++;
+                }
+                String[] nparams = new String[splitArgs.length - scount];
+                int ind = 0;
+                for(int i = 0; i< splitArgs.length; i ++){
+                    if(!(splitArgs[i].equals(""))){
+                        nparams[ind] = splitArgs[i];
+                        ind++;
+                    }
+                }
+
+
+        ArrayList<String> paramsList =new ArrayList<String> (Arrays.asList(nparams));
+
         //now find method based on name and parameters
 
         String key = curBub.getName();
@@ -204,18 +223,25 @@ public class EvalCall extends Visitor{
 			key = visit(n.getNode(0));
 		}
         SymbolTable atable = curBub.getDynamicTypeTable();
+        SymbolTable btable = curBub.getTable();
         String type = (String)atable.lookup(key);
+        if(type == null)
+            type = (String)btable.lookup(key);
         if(type == null || type.equals("constructor"))
             type = key;
         Bubble papa = new Bubble();
         //System.out.println("looking for a bubble with type ::" + type);
 
+        //System.out.println(type + " is the type");
         for(Bubble b: bubbleList){
+            //System.out.println(b.getName());
             if (b.getName().equals(type))
                 papa = b;
         }
 
         //System.out.println("bout to call find method for || " + methodName + " || with bubble name :: " + papa.getName());
+        //System.out.println(papa.getName());
+
         Mubble theMub = papa.findMethod(bubbleList, methodName, paramsList);
 		//System.out.println("do you come here ever");
         //System.out.println(theMub);
@@ -354,6 +380,11 @@ public class EvalCall extends Visitor{
 */
     public String visitDeclarator(GNode n) {
         return visit(n.getNode(2));
+    }
+
+
+    public String visitNullLiteral(GNode n) {
+        return "__rt::null()";
     }
 
 

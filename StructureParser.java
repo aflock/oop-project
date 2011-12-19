@@ -161,6 +161,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
 
         curBub.setParentBubble(ob);
 
+        bubbleList.add(curBub);
         visit(n);
         table = null;
         dynamicTypeTable = null;
@@ -174,7 +175,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
         curBub.setIsBuilt(true);
 
-        bubbleList.add(curBub);
         curPub.addBubble(curBub);
     }
 
@@ -364,16 +364,21 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
     public void visitDeclarator(GNode n) {
-        //TODO fact check with an AST (see testAssignmt..a.java)
         SymbolTable.Scope dynamicCurrent = dynamicTypeTable.current();
         //add to the dynamic type table
         String name = n.getString(0);
         String type = "";
 
+        //System.out.println("bout to call eval call");
+        //System.out.println("curbub name " + curBub.getName());
+
+        /*TODO this doesn't work yet
         EvalCall e = new EvalCall(curBub, bubbleList, table);
         type = (String)e.dispatch(n.getNode(2));
 
         dynamicCurrent.define(name, type);
+        */
+
         visit(n);
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)n.getProperty("parent1");
@@ -746,12 +751,16 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     public void visitExpression(GNode n)
     {
         //checking if this is an assignment
+        /* TODO dynamic type can't be resolved in structur parser sorry
         if(n.getString(1) != null && n.getString(1).equals("=")){
             //need to get the dynamic type of the assignment
             SymbolTable.Scope current = dynamicTypeTable.current();
+            System.out.println("gonna call eval call, curBub is " + curBub.getName());
             EvalCall e = new EvalCall(curBub, bubbleList, table);
 
+            System.out.println(n.getNode(2).getName());
             String typeName = (String)e.dispatch(n.getNode(2));
+            System.out.println("do you ever get here?");
             String variableName = null;
 
             if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier"))
@@ -766,6 +775,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 System.out.println("error assigning dynamic type in visitExpression StructureParser");
 
         }
+        */
         visit(n);
     }
     public void visitExpressionList(GNode n)

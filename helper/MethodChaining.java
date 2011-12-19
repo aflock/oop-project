@@ -63,7 +63,7 @@ public class MethodChaining extends Visitor{
     SymbolTable table;
     SymbolTable dynamicTypeTable;
     Stack<Tuple> stack;
-    
+
 
     public MethodChaining(Bubble curBub, ArrayList<Bubble> bubbleList){
         this.curBub = curBub;
@@ -74,145 +74,181 @@ public class MethodChaining extends Visitor{
     }
 
     public String visitCallExpression(GNode n){
-	System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-	String code = "";
-	if(n.getProperty("parent0") != null && ((Node)n.getProperty("parent0")).hasName("CallExpression")) {
-	 
-	}
-	
-	if (n.get(0) == null) {
-	    stack.push(new Tuple("null", "")); //something null
-	}	
-	else {
-	    
-	    for (int i = 0; i < n.size(); i++) {
-		System.out.println(i);
-		Object temp = n.get(i);
-		if (temp != null) {
-		    if (temp instanceof Node) {
-			((Node)temp).setProperty("parent0", n);
-		    }
-		}
-	    }
-	    
-	    code = (String)dispatch(n.getNode(0));
-	    
-	}	
-	stack.push(new Tuple(n.getString(2), "")); // n.getString(2);	
-	String code2 = (String)dispatch(n.getNode(3)); // code from arguments	
-	code = code + (n.get(0) == null ? "" : "->") + code2;	
+        System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+        String code = "";
+        if(n.getProperty("parent0") != null && ((Node)n.getProperty("parent0")).hasName("CallExpression")) {
 
-	if (n.get(0) != null && n.getNode(0).hasName("CallExpression")) {
-	    code += "; })";
-	}
-	if (stack.empty()) {
-	    return code;
-	}
-	else {	    
-	    if(((Node)n.getProperty("parent0")).hasName("CallExpression")) {
-		String ty = stack.pop().type;
-		code = "({ " + ty + " tmp = " + code+"; tmp";
-		System.out.println("CODE::::::::::" + code);
-		stack.push(new Tuple(ty,"tmp"));
-	    }
-	    else{
-		stack.push(new Tuple(stack.pop().type, code));
-	    }
-	    return code;
-	}
+        }
+
+        if (n.get(0) == null) {
+            System.out.println("suck1");
+            stack.push(new Tuple("null", "")); //something null
+        }
+        else {
+
+            System.out.println("suck2");
+            for (int i = 0; i < n.size(); i++) {
+                System.out.println(i);
+                Object temp = n.get(i);
+                if (temp != null) {
+                    if (temp instanceof Node) {
+                        ((Node)temp).setProperty("parent0", n);
+                    }
+                }
+            }
+
+            code = (String)dispatch(n.getNode(0));
+
+        }
+        stack.push(new Tuple(n.getString(2), "")); // n.getString(2);
+        System.out.println("PEEK");
+        System.out.println(stack.peek());
+        System.out.println("PEEK");
+        String code2 = (String)dispatch(n.getNode(3)); // code from arguments
+        code = code + (n.get(0) == null ? "" : "->") + code2;
+
+        if (n.get(0) != null && n.getNode(0).hasName("CallExpression")) {
+            code += "; })";
+        }
+        if (stack.empty()) {
+            return code;
+        }
+        else {
+            if(((Node)n.getProperty("parent0")).hasName("CallExpression")) {
+                String ty = stack.pop().type;
+                code = "({ " + ty + " tmp = " + code+"; tmp";
+                System.out.println("CODE::::::::::" + code);
+                stack.push(new Tuple(ty,"tmp"));
+            }
+            else{
+                stack.push(new Tuple(stack.pop().type, code));
+            }
+            return code;
+        }
     }
 
-    
+
 
     public String visitArguments(GNode n){
-	for (int i = 0; i < n.size(); i++) {
-	    Node temp = n.getNode(i);
-	    if (temp != null) {
-		temp.setProperty("parent0", n);
-	    }
-	}
-	String code = "";
-	if (n.size() > 0) {
-	    code += (String)dispatch(n.getNode(0));
-	}
+        for (int i = 0; i < n.size(); i++) {
+            System.out.println("");
+            Node temp = n.getNode(i);
+            if (temp != null) {
+                temp.setProperty("parent0", n);
+            }
+        }
+        String code = "";
+        if (n.size() > 0) {
+            code += (String)dispatch(n.getNode(0));
+        }
 
-	for (int i = 1; i < n.size(); i++) {
-	    code += ", " +  (String)dispatch(n.getNode(i));
-	}	
-	int size = n.size();
-	ArrayList<String> list = new ArrayList<String>();
-	for (int i = 0; i < size; i++) {
-	    list.add(0, stack.pop().type);
-	}
+        for (int i = 1; i < n.size(); i++) {
+            code += ", " +  (String)dispatch(n.getNode(i));
+        }
+        int size = n.size();
+        ArrayList<String> list = new ArrayList<String>();
+        System.out.println("arg peeking");
+        System.out.println(stack.peek());
+        System.out.println("arg peeking");
+        for (int i = 0; i < size; i++) {
+            list.add(0, stack.pop().type);
 
-	String m = stack.pop().type;
+        }
+        System.out.println("arg peeking");
+        System.out.println(stack.peek());
+        System.out.println("arg peeking");
 
-	
-	Tuple t = stack.pop();
-	String type = t.type;
-	String var = t.code;
-	Bubble bub = null;
+        System.out.println("fuck1");
+        String m = stack.pop().type;
+
+        System.out.println("fuck2");
+
+        Tuple t = stack.pop();
+        System.out.println("fuck2.5");
+        String type = t.type;
+        System.out.println("fuck3.5");
+        String var = t.code;
+        System.out.println("fuck4.5");
+        Bubble bub = null;
+        System.out.println("var is " + var);
+        System.out.println("type is " + type);
+
+        if(type.equals("constructor"))
+            type = var;
+
+        System.out.println("fuck3");
+
+        System.out.println(type);
+
+        if (!(type == null)) {
+        System.out.println("fuck5");
+            bub = Bubble.findBubble(bubbleList, type);
+        }
+        else {
+        System.out.println("fuck6");
+            bub = curBub;
+        }
+
+        System.out.println("fuck4");
+        System.out.println("?????????");
+
+        System.out.println("need to find a method with m ::" + m + " :: list = " + list + ":::" + bub.getName());
+        Mubble theMub = bub.findMethod(bubbleList, m, list);
+
+        System.out.println("fuck7");
+        System.out.println(theMub);
+        stack.push(new Tuple(theMub.getReturnType(), ""));
+        System.out.println("fcuk7.5");
+        System.out.println(theMub);
+        if (theMub.isStatic()) {
+        System.out.println("fuck8");
+            String aa = "";
+            Node parent0 = (Node)n.getProperty("parent0");
+            if (parent0.get(0) == null) {
+                aa += "_" + theMub.getClassName() + "::";
+            }
+            return aa + theMub.getName() + "(" + code + ")";
+        }
+        if (theMub.isPrivate()) {
+            if (type == null) {
+                if (n.size() > 0) {
+        System.out.println("fuck9");
+                    return theMub.getName() + "(__this, " + code + ")";
+                }
+                else {
+                    return theMub.getName() + "(__this" + code + ")";
+                }
+            }
+            else {
+                if (n.size() > 0) {
+                    return theMub.getName() + "(" + var + ", " + code + ")";
+                }
+                else {
+                    return theMub.getName() + "(" + var + "" + code + ")";
+                }
+            }
+        }
+        else {
+            if (type == null) {
+                if (n.size() > 0) {
+                    return "__vptr->"+theMub.getName() + "(__this, " + code + ")";
+                }
+                else {
+                    return "__vptr->"+theMub.getName() + "(__this" + code + ")";
+                }
+            }
+            else {
+                if (n.size() > 0) {
+                    return "__vptr->"+theMub.getName() + "(" + var + ", " + code + ")";
+                }
+                else {
+                    return "__vptr->"+theMub.getName() + "(" + var + "" + code + ")";
+                }
+            }
+        }
 
 
-	    
-	if (!type.equals("null")) {
-	    bub = Bubble.findBubble(bubbleList, type);
-	}
-	else {
-	    bub = curBub;
-	}
-	
-	System.out.println("?????????");
-	Mubble theMub = bub.findMethod(bubbleList, m, list);
-
-	stack.push(new Tuple(theMub.getReturnType(), ""));	
-	if (theMub.isStatic()) {	    
-	    String aa = "";
-	    Node parent0 = (Node)n.getProperty("parent0");
-	    if (parent0.get(0) == null) {
-		aa += "_" + theMub.getClassName() + "::";
-	    }
-	    return aa + theMub.getName() + "(" + code + ")";
-	}
-	if (theMub.isPrivate()) {
-	    if (type.equals("null")) {
-		if (n.size() > 0) {
-		    return theMub.getName() + "(__this, " + code + ")";
-		}
-		else {
-		    return theMub.getName() + "(__this" + code + ")";
-		}
-	    }
-	    else {
-		if (n.size() > 0) {
-		    return theMub.getName() + "(" + var + ", " + code + ")";
-		}
-		else {
-		    return theMub.getName() + "(" + var + "" + code + ")";
-		}
-	    }
-	}
-	else {	    
-	    if (type.equals("null")) {
-		if (n.size() > 0) {
-		    return "__vptr->"+theMub.getName() + "(__this, " + code + ")";
-		}
-		else {
-		    return "__vptr->"+theMub.getName() + "(__this" + code + ")";
-		}
-	    }
-	    else {
-		if (n.size() > 0) {
-		    return "__vptr->"+theMub.getName() + "(" + var + ", " + code + ")";
-		}
-		else {
-		    return "__vptr->"+theMub.getName() + "(" + var + "" + code + ")";
-		}
-	    }
-	}
-	
-	
-	//return theMub.getName() + "(" + code + ")";	    
+        //return theMub.getName() + "(" + code + ")";
     }
 
     public String visitUnaryExpression(GNode n){
@@ -264,7 +300,7 @@ public class MethodChaining extends Visitor{
     }
     public String visitLogicalOrExpression(GNode n){
 	return "";
-	
+
     }
     public String visitLogicalAndExpression(GNode n){
 	return "";
@@ -324,7 +360,7 @@ public class MethodChaining extends Visitor{
 
     public String visitBasicCastExpression(GNode n){
 	return "";
-    } 
+    }
 
     public String visitAdditiveExpression(GNode n){
 	return "";
@@ -338,6 +374,8 @@ public class MethodChaining extends Visitor{
 	String type = "";
 	if (parent0.hasName("CallExpression")) {
 	    type = (String)dynamicTypeTable.lookup(n.getString(0));
+        if(type == null)
+            type = (String)table.lookup(n.getString(0));
 	}
 	else if (parent0.hasName("Arguments")) {
 	    type = (String)table.lookup(n.getString(0));
@@ -366,10 +404,10 @@ public class MethodChaining extends Visitor{
     public String visitQualifiedIdentifier(GNode n){
     	return "";
     }
-    
+
     public String visit(Node o)
     {
-	return (String)(dispatch((Node)o));    
+	return (String)(dispatch((Node)o));
     }
 
     // shouldnt need these VV
@@ -425,7 +463,7 @@ public class MethodChaining extends Visitor{
         visit(n);
     }
 	*/
-    
+
 	/*
 
     public String visitImportDeclaration(GNode n){

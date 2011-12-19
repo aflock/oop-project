@@ -482,24 +482,29 @@ public class NewTranslator extends xtc.util.Tool{
         object.addMubble(m1);
         m1.setReturnType("void");
         m1.setFlag('n');
+        m1.setParameters();
 
         Mubble m2 = new Mubble("hashCode");
         object.addMubble(m2);
         m2.setReturnType("int32_t");
         m2.setFlag('n');
+        m2.setParameters();
         Mubble m3 = new Mubble("equals");
         object.addMubble(m3);
         m3.addParameter(new Field("dummy", "Object"));
         m3.setReturnType("bool");
         m3.setFlag('n');
+        m3.setParameters();
         Mubble m4 = new Mubble("getClass");
         object.addMubble(m4);
         m4.setReturnType("Class");
         m4.setFlag('n');
+        m4.setParameters();
         Mubble m5 = new Mubble("toString");
         object.addMubble(m5);
         m5.setReturnType("String");
         m5.setFlag('n');
+        m5.setParameters();
         bubbleList.add(object);
 
 
@@ -521,33 +526,39 @@ public class NewTranslator extends xtc.util.Tool{
         string.addMubble(n1);
         n1.setReturnType("void");
         n1.setFlag('w');
+        n1.setParameters();
         Mubble n2 = new Mubble("hashCode");
         string.addMubble(n2);
         n2.setReturnType("int32_t");
         n2.setFlag('w');
+        n2.setParameters();
         Mubble n3 = new Mubble("equals");
         string.addMubble(n3);
         n3.setReturnType("bool");
         n3.addParameter(new Field("dummy", "Object"));
         n3.setFlag('w');
+        n3.setParameters();
         Mubble n4 = new Mubble("getClass");
         string.addMubble(n4);
         n4.setReturnType("Class");
         n4.setFlag('i');
+        n4.setParameters();
         Mubble n5 = new Mubble("toString");
         string.addMubble(n5);
         n5.setReturnType("String");
         n5.setFlag('w');
+        n5.setParameters();
         Mubble n6 = new Mubble("length");
         string.addMubble(n6);
         n6.setReturnType("int32_t");
         n6.setFlag('n');
+        n6.setParameters();
         Mubble n7 = new Mubble("charAt");
         string.addMubble(n7);
         n7.setReturnType("char");
         n7.addParameter(new Field("dummy", "int32_t"));
         n7.setFlag('n');
-	n7.setParameters();
+        n7.setParameters();
         bubbleList.add(string);
     }
 }

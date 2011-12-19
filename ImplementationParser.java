@@ -517,10 +517,8 @@ NOTE: Should be called after implementation parser is complete
         System.out.println("fuck1.4");
             /*is super called?*/
 
-            if(n.getNode(5) != null && n.getNode(5).hasName("Block")){
-                System.out.println("hello");
-
-
+        /*
+            if(n.getNode(5) != null && n.getNode(5).hasName("Block")){//{{{
                 System.out.println(n.getNode(5));
                 if(n.getNode(5).getNode(0) !=null)
                     System.out.println("fuck3.5");
@@ -557,7 +555,8 @@ NOTE: Should be called after implementation parser is complete
                         }
                 }
 
-            }
+            }//}}}
+        */
 
             //System.out.println("Constructor Count is: "+ constructorCount);
             //System.out.println("_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_");
