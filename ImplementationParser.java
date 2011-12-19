@@ -325,6 +325,10 @@ NOTE: Should be called after implementation parser is complete
                     arrType = "int32_t";
                 if(arrType.equals("boolean"))
                     arrType = "bool";
+		if(arrType.equals("short"))
+                    arrType = "int16_t";
+		if(arrType.equals("long"))
+                    arrType = "int64_t";
 
                 String arrName = n.getNode(2).getNode(0).getString(0);
                 methodString += "__rt::Array<" + arrType + ">* " + arrName + arrayString;
@@ -368,6 +372,10 @@ NOTE: Should be called after implementation parser is complete
             arrType = "int32_t";
         if(arrType.equals("boolean"))
             arrType = "bool";
+	if(arrType.equals("short"))
+            arrType = "int16_t";
+        if(arrType.equals("long"))
+            arrType = "int64_t";
 
         //todo: FIX FOR 2 dimensional arrays...iterate through children of concrete dimensions
         //ConcreteDimensions.IntegerLiteral.("1")
@@ -1451,6 +1459,16 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         if (onMeth && !inArray & !inNewArrayExpress) { //a little sloppy of a fix
+	    String pri = n.getString(0);
+	    if (pri.equals("boolean")) 
+		pri = "bool";
+	    if (pri.equals("int")) 
+		pri = "int32_t";
+	    if (pri.equals("long")) 
+		pri = "int64_t";
+	    if (pri.equals("short")) 
+		pri = "int16_t";
+	    
             methodString += n.getString(0);
         }
 
