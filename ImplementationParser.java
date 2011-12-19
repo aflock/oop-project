@@ -632,17 +632,24 @@ NOTE: Should be called after implementation parser is complete
                     (n.getString(2).equals("print") ||n.getString(2).equals("println"))
               ){
                 if(debugCallExpression) System.out.println("Call Expression n.getNode(3): " + n.getNode(3) );
-                methodString += "std::cout << ({";
-                inPrintStatement = true;
-                visit(n);
-                inPrintStatement = false;
-                hasVisited = true;
-
-                methodString += ";})";//will this "go wrong" when dealing with method chaining?
-                //solution = abide by "inPrintStatement" rules for last ';'
-                if(n.getString(2).equals("println")){
-                    methodString += " << std::endl";
-                }
+		if (n.getNode(3).size() > 0) {
+		    methodString += "std::cout << ({";
+		}
+		else {
+		    methodString += "std::cout";
+		}
+		inPrintStatement = true;
+		visit(n);
+		inPrintStatement = false;
+		hasVisited = true;
+		if (n.getNode(3).size() > 0) {
+		    methodString += ";})";//will this "go wrong" when dealing with method chaining?
+		}
+		
+		//solution = abide by "inPrintStatement" rules for last ';'
+		if(n.getString(2).equals("println")){
+		    methodString += " << std::endl";
+		}
               }//}}}
             else{
 		/*
