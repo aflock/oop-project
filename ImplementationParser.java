@@ -505,14 +505,14 @@ NOTE: Should be called after implementation parser is complete
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
 
-        System.out.println("fuck1");
+        //System.out.println("fuck1");
         //Parent 1 Should be class decl
         String classname = parent1.getString(1);
         String methodname = n.getString(2);
-        System.out.println("fuck2");
+        //System.out.println("fuck2");
 
         int constructorCount = 0;
-        System.out.println("fuck3");
+        //System.out.println("fuck3");
         for(Mubble m : mubbleList){
             if(m.getClassName().trim().equals(classname.trim()) && m.isConstructor())
             {
@@ -520,7 +520,7 @@ NOTE: Should be called after implementation parser is complete
                 curMub = m;
             }
 
-        System.out.println("fuck1.4");
+        //System.out.println("fuck1.4");
             /*is super called?*/
 
         /*
@@ -1422,7 +1422,22 @@ NOTE: Should be called after implementation parser is complete
                     else
                     {
                         if(curBub.hasField(variableName)) //its a dataField
-                            methodString += "__this->" + variableName;
+                        {
+                            Field f = curBub.getField(variableName);
+                            if(f.isStatic())
+                            {
+                                String packName = curBub.getPackageName().trim().replace(" ", "::");
+                                methodString += packName + "::_" + curBub.getName() + "::" + variableName;
+                            }
+                            else
+                            {
+                                if(curMub.isConstructor())
+                                    methodString += variableName;
+                                else
+                                    methodString += "__this->" + variableName;
+                            }
+                        
+                        }
                         else //its a local variable
                             methodString += variableName;
                     }

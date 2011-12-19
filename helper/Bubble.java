@@ -101,6 +101,15 @@ public class Bubble{
      * c.m(b)
      *
      */
+     
+    public Field getField(String fieldName){
+        for(Field f : dataFields)
+        {
+            if(f.getName().equals(fieldName))
+                return f;
+        }
+        return null;
+    }
 
     public String getStaticData(){
         String ret = "";

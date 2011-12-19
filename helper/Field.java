@@ -56,6 +56,16 @@ public class Field{
     To be used in inheritMethods() in Bubble
     Creates deep clones of every data member of old Field.
     */
+    
+    public boolean isStatic(){
+        for(String s : modifiers)
+        {
+            if(s.equals("static"))
+                return true;
+        }
+        return false;
+    }
+    
     public Field deepCopy()
     {
 
@@ -163,13 +173,4 @@ public class Field{
         return this.arrayDims;
     }
 
-    public boolean isStatic()
-    {
-        for(String s : modifiers)
-        {
-            if(s.equals("static"))
-                return true;
-        }
-        return false;
-    }
 }
