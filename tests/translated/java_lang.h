@@ -259,6 +259,13 @@ namespace java {
 
     };
 
+  // The completey incomplete data layout for java.lang.Short.
+    struct __Short {
+
+      // The class instance representing the primitive type int.
+      static Class TYPE();
+
+    };
     // ======================================================================
 
     // For simplicity, we use C++ inheritance for exceptions and throw

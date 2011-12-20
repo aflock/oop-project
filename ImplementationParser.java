@@ -389,6 +389,15 @@ public void visitNewArrayExpression(GNode n)
         arrayString = " = new __rt::Array<" + arrType + ">(" + size + ")";
 
 
+    //need to add to static Type table
+    /*
+    String variableName = n.getProperty("parent0").getString(0);
+    SymbolTable staticType = curBub.getTable();
+    SymbolTable.Scope current = staticType.current();
+    current.define()
+    */
+
+
     visit(n);
     inNewArrayExpress = false;
 
@@ -1780,6 +1789,7 @@ public void visitSelectionExpression(GNode n) {
             //&& second child is not null and is out
             if(  n.get(0)==null || n.getString(1)==null  || n.getNode(0).get(0) == null ||
                     !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out"))){
+                System.out.println("fuck1");
                 //check for super
                 if(n.getNode(0) != null && n.getNode(0).hasName("SuperExpression")){
                     String variableName = n.getString(1);
@@ -1806,16 +1816,20 @@ public void visitSelectionExpression(GNode n) {
                                 type = id;
                                 isClassName = true;
                             }
-                            Bubble theFuckingBub = null;
-                            for(Bubble b : bubbleList) {
-                                if(b.getName().equals(type))
-                                    theFuckingBub = b;
-                            }
-                            String pack = theFuckingBub.getPackageName().trim().replace(" ", "::");
-                            if(isClassName)
-                                methodString += pack + "::_" + id + "::" + n.getString(1);
-                            else
+                            if(type.equals("Array")){
                                 methodString += id + "->" + n.getString(1);
+                            }else{
+                                Bubble theFuckingBub = null;
+                                for(Bubble b : bubbleList) {
+                                    if(b.getName().equals(type))
+                                        theFuckingBub = b;
+                                }
+                                String pack = theFuckingBub.getPackageName().trim().replace(" ", "::");
+                                if(isClassName)
+                                    methodString += pack + "::_" + id + "::" + n.getString(1);
+                                else
+                                    methodString += id + "->" + n.getString(1);
+                            }
                         }
                         else
                             methodString += "->" + n.getString(1);

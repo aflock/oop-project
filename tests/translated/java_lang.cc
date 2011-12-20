@@ -231,13 +231,18 @@ namespace java {
       return k;
     }
 
+    Class __Short::TYPE() {
+      static Class k =
+        new __Class(__rt::literal("short"), __rt::null(), __rt::null(), true);
+      return k;
+    }
  //========================= Operator Oveloading ======================================//
   std::ostream& operator<<(std::ostream& out, Object o) {
       out << o->__vptr->toString(o);
       return out;
   }
-  
-     
+
+
   String operator+(Object left, Object right){
 
         std::string tempStr = left->__vptr->toString(left)->data;
@@ -362,6 +367,23 @@ namespace __rt {
     return k;
   }
 
+  // Template specialization for arrays of shorts.
+  template<>
+  Array<int16_t>::Array(const int32_t length)
+  : __vptr(&__vtable), length(length), __data(new int16_t[length]) {
+    std::memset(__data, 0, length * sizeof(int16_t));
+  }
+
+  template<>
+  java::lang::Class Array<int16_t>::__class() {
+    static java::lang::Class k =
+      new java::lang::__Class(literal("[S"),
+              java::lang::__Object::__class(),
+              java::lang::__Short::TYPE());
+    return k;
+  }
+
+
   // Template specialization for arrays of objects.
   template<>
   java::lang::Class Array<java::lang::Object>::__class() {
@@ -371,9 +393,9 @@ namespace __rt {
                               java::lang::__Object::__class());
     return k;
   }
-  
-  
-  
+
+
+
   //Template for specialization of arrays of arrays
   //todo: FIX, this doesn't work at all
   template<>
@@ -382,10 +404,10 @@ namespace __rt {
       new java::lang::__Class(literal("[FIX TO CALL T->getClass()"),
                               java::lang::__Object::__class(),
                               java::lang::__Object::__class());
-                              
-      return k;                        
+
+      return k;
   }
-  
+
 
   // Template specialization for arrays of strings.
   template<>

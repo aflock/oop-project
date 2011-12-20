@@ -355,7 +355,17 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         SymbolTable.Scope current = table.current();
         // assuming Declarators' parent is always FieldDeclaration
         Node parent0 = (Node)n.getProperty("parent0");
-        String type = cppify(parent0.getNode(1).getNode(0).getString(0));
+        String type = "";
+        boolean arrayz = false;
+        if(n.getNode(0) != null && n.getNode(0).getNode(2) != null && n.getNode(0).getNode(2).hasName("NewArrayExpression") )
+            arrayz = true;
+        if(!(arrayz)){
+            type = cppify(parent0.getNode(1).getNode(0).getString(0));
+        }
+        else{
+            type = "Array";
+        }
+
         for (Object o : n) {
             if(o != null)
             {
@@ -363,6 +373,8 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
                 current.define(ch.getString(0), type);
             }
         }
+
+
 
         visit(n);
     }
