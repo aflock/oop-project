@@ -93,9 +93,7 @@ public class Pubble{
         for(Bubble b : bubbles){
             ret += "_" + b.getName() + "_VT _" + b.getName() + "::__vtable;\n\n";
 	    String bpack = b.getPackageName().trim();
-	    System.out.println("W" + bpack);
-	    System.out.println("T" + b.getParentBubble());
-	    System.out.println("F" + b.getParentBubble().getName());
+
 	    String parName = b.getParentBubble().getName();
 	    String ppack = "java lang";
 	    if(!(parName.equals("Object") || parName.equals("String") || parName.equals("Class"))) {
@@ -122,7 +120,7 @@ public class Pubble{
          for(Bubble b : bubbles){
              for(Mubble m : b.getMubbles()) {
                  if(m.isMain()) {
-                     System.out.println("found main!~!");
+
                      ret += "int main(int argc, const char* argv[]) {\n";
                      ret += m.getCode();
                      ret += "return 0;\n";
