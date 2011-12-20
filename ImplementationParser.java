@@ -125,7 +125,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
        side of a dataField assignment to the first line of the appropriate constructor for that node
 NOTE: Should be called after implementation parser is complete
 */
-    boolean debugDFAssignments = true;
+    boolean debugDFAssignments = false;
     boolean resolvingConstructors = false;
     boolean resolvingDataFieldAssignments = false;
     public void resolveDatafieldAssignments()
@@ -810,7 +810,7 @@ public void visitCallExpression(GNode n) {
             }
             *///}}}
             String plz = (String)(new MethodChaining(curBub, bubbleList).dispatch(n));
-            System.out.println(plz);
+            //System.out.println(plz);
             methodString += plz;
             /*
                dispatch(n.getNode(3));
@@ -1461,7 +1461,7 @@ public void visitPrimaryIdentifier(GNode n) {
                 else
                 {
                     if(curBub.hasField(variableName)){
-                        System.out.println("Curbub :: " + curBub.getName() + " :: fieldName :: " + variableName);
+                        //System.out.println("Curbub :: " + curBub.getName() + " :: fieldName :: " + variableName);
                         Field f = curBub.getField(variableName);
                         if(f.isStatic()){
                             String packName = curBub.getPackageName().trim().replace(" ", "::") ;
@@ -1772,7 +1772,6 @@ else {
 public void visitSelectionExpression(GNode n) {
     if (onMeth) {
 
-        //visit(n);
         if (n.get(1) != null) {
             //System.out.println("n.get(0).getString(0) :: "+((Node)n.get(0)).getString(0) );
             //System.out.println("n.getString(1) :: " + n.getString(1));
@@ -1797,15 +1796,26 @@ public void visitSelectionExpression(GNode n) {
                     {
                         if(n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
 
+                            SymbolTable staticType = curBub.getTable();
+                            SymbolTable.Scope current = staticType.current();
                             String id = n.getNode(0).getString(0);
                             //look up id
+                            String type = (String)current.lookup(id);
+                            boolean isClassName = false;
+                            if(type == null  || type.equals("constructor")){
+                                type = id;
+                                isClassName = true;
+                            }
                             Bubble theFuckingBub = null;
                             for(Bubble b : bubbleList) {
-                                if(b.getName().equals(id))
+                                if(b.getName().equals(type))
                                     theFuckingBub = b;
                             }
                             String pack = theFuckingBub.getPackageName().trim().replace(" ", "::");
-                            methodString += pack + "::_" + id + "::" + n.getString(1);
+                            if(isClassName)
+                                methodString += pack + "::_" + id + "::" + n.getString(1);
+                            else
+                                methodString += id + "->" + n.getString(1);
                         }
                         else
                             methodString += "->" + n.getString(1);

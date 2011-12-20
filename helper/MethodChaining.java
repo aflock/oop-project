@@ -88,7 +88,7 @@ public class MethodChaining extends Visitor{
 
             //System.out.println("suck2");
             for (int i = 0; i < n.size(); i++) {
-                System.out.println(i);
+                //System.out.println(i);
                 Object temp = n.get(i);
                 if (temp != null) {
                     if (temp instanceof Node) {
@@ -103,7 +103,7 @@ public class MethodChaining extends Visitor{
 	String var = stack.peek().type;
 	boolean staticc = false;
         stack.push(new Tuple(n.getString(2), "")); // n.getString(2);
-	
+
 	if (var.equals("constructor")) {
 	    staticc = true;
 	}
@@ -188,7 +188,7 @@ public class MethodChaining extends Visitor{
 
         //System.out.println("fuck3");
 
-        System.out.println(type);
+        //System.out.println(type);
 
         if (!(type == null)) {
         //System.out.println("fuck5");
