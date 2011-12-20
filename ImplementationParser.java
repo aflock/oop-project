@@ -100,6 +100,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
     }//}}}
 
     public static String findFile(String cp, String query) {//{{{
+        //System.out.println("Find file being called from ImP with query: " + query);
         String sep = System.getProperty("file.separator");
         File f = new File(cp);
         File [] files = f.listFiles();
@@ -325,6 +326,10 @@ NOTE: Should be called after implementation parser is complete
                     arrType = "int32_t";
                 if(arrType.equals("boolean"))
                     arrType = "bool";
+		if(arrType.equals("short"))
+                    arrType = "int16_t";
+		if(arrType.equals("long"))
+                    arrType = "int64_t";
 
                 String arrName = n.getNode(2).getNode(0).getString(0);
                 methodString += "__rt::Array<" + arrType + ">* " + arrName + arrayString;
@@ -368,6 +373,10 @@ NOTE: Should be called after implementation parser is complete
             arrType = "int32_t";
         if(arrType.equals("boolean"))
             arrType = "bool";
+	if(arrType.equals("short"))
+            arrType = "int16_t";
+        if(arrType.equals("long"))
+            arrType = "int64_t";
 
         //todo: FIX FOR 2 dimensional arrays...iterate through children of concrete dimensions
         //ConcreteDimensions.IntegerLiteral.("1")
@@ -645,14 +654,14 @@ NOTE: Should be called after implementation parser is complete
 		if (n.getNode(3).size() > 0) {
 		    methodString += ";})";//will this "go wrong" when dealing with method chaining?
 		}
-		
+
 		//solution = abide by "inPrintStatement" rules for last ';'
 		if(n.getString(2).equals("println")){
 		    methodString += " << std::endl";
 		}
               }//}}}
             else{
-		/*
+		/*//{{{
                 //want to know if this method is static
                 //TODO deal with SelectionExpression or New Class Expression
                 boolean isStaticMethod = true;
@@ -798,7 +807,7 @@ NOTE: Should be called after implementation parser is complete
                     //stack.pop();
                     methodString += ")";
                 }
-		*/
+		*///}}}
 		String plz = (String)(new MethodChaining(curBub, bubbleList).dispatch(n));
 		System.out.println(plz);
 		methodString += plz;
@@ -998,16 +1007,17 @@ NOTE: Should be called after implementation parser is complete
         symbolTable = curBub.getTable();
         dynamicTypeTable = curBub.getDynamicTypeTable();
 
-        visit(n);
-        symbolTable = null;
-        dynamicTypeTable = null;
-
-        //at this point all the mubbles of bubble have been filled
         for(Bubble b : bubbleList){
             if(b.getName().equals(className)) {
                 b.setIsFilled(true);
             }
         }
+
+        visit(n);
+        symbolTable = null;
+        dynamicTypeTable = null;
+
+        //at this point all the mubbles of bubble have been filled
     }
 
     public void visitFormalParameters(GNode n){
@@ -1196,6 +1206,8 @@ NOTE: Should be called after implementation parser is complete
 
             System.out.println("IMPL is about to call findFile on: " + path.substring(1));
             path = findFile(path);
+            System.out.println(path);
+
 
             if(!path.equals("")){
                 //System.out.println(path);
@@ -1203,6 +1215,12 @@ NOTE: Should be called after implementation parser is complete
                     //t.process(path);
                 } catch (Exception e) {System.out.println("error: " + e);}
                 
+                System.out.println(path);
+                System.out.println("yeah srsly bout to call");
+                try{
+                    t.process(path);
+                } catch (Exception e) {System.out.println("error: " + e);}
+
             }
         }
     }
@@ -1466,6 +1484,16 @@ NOTE: Should be called after implementation parser is complete
             }
         }
         if (onMeth && !inArray & !inNewArrayExpress) { //a little sloppy of a fix
+	    String pri = n.getString(0);
+	    if (pri.equals("boolean"))
+		pri = "bool";
+	    if (pri.equals("int"))
+		pri = "int32_t";
+	    if (pri.equals("long"))
+		pri = "int64_t";
+	    if (pri.equals("short"))
+		pri = "int16_t";
+
             methodString += n.getString(0);
         }
 

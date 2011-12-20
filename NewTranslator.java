@@ -64,7 +64,6 @@ public class NewTranslator extends xtc.util.Tool{
     {
         JavaFiveParser parser = new JavaFiveParser(in, file.toString(), (int)file.length());
         Result result = parser.pCompilationUnit(0);
-
         return (Node)parser.value(result);
     }
 
@@ -81,6 +80,7 @@ public class NewTranslator extends xtc.util.Tool{
     }//}}}
 
     public static String findFile(String cp, String query) {//{{{
+        System.out.println("Find file being called from NT with query: " + query);
         String sep = System.getProperty("file.separator");
         File f = new File(cp);
         File [] files = f.listFiles();
@@ -106,8 +106,6 @@ public class NewTranslator extends xtc.util.Tool{
 
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
-        System.out.println("NewTranslator.process()");
-        
 
         //Pass methods down the inheritance tree
 		Bubble obj = new Bubble();
@@ -233,7 +231,7 @@ public class NewTranslator extends xtc.util.Tool{
                     System.out.println("\t- " + b.getName());
                 }
             }
-        
+
         //remove duplicates here
         //bubbleList = removeDuplicates(bubbleList);
 
@@ -258,7 +256,7 @@ public class NewTranslator extends xtc.util.Tool{
                         {
                             System.out.println("\t\tField: " + f.name);
                         }
-                    
+
                     }
                 }
             }
@@ -289,9 +287,9 @@ public class NewTranslator extends xtc.util.Tool{
                         System.out.println("CODE: " + m.getCode());
             }
         }
-        
-        
-        
+
+
+
 
         /* Output to File */
         if(true){
@@ -332,10 +330,10 @@ public class NewTranslator extends xtc.util.Tool{
 
 
     //************************HELPER METHODS***********************//
-    
-    
-    
-        
+
+
+
+
     public void constructPackageTree()
         //constructs package tree from pubblelist
     {
