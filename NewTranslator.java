@@ -102,6 +102,7 @@ public class NewTranslator extends xtc.util.Tool{
     }//}}}
 
 
+    public static ImplementationParser i;
     public void process(Node node){
 
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
@@ -126,7 +127,7 @@ public class NewTranslator extends xtc.util.Tool{
 				if(child.getParentBubble().getName().equals("Object")){
 					//System.out.println("Calling the method V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V");
 					child.mangleBetweenClasses();
-					child.inheritAndResolveDataFields(bubbleList);
+					//child.inheritAndResolveDataFields(bubbleList);
 				}
 			}
 		}
@@ -136,12 +137,12 @@ public class NewTranslator extends xtc.util.Tool{
 
         //Not sure if we need this:
         ArrayList<String> parsed = new ArrayList<String>();
-        ImplementationParser i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
+        i = new ImplementationParser(this, pubbleList, mubbleList, bubbleList, langList, parsed);
         i.dispatch(node);
 
         //find assignments for datafields here
-        i.resolveDatafieldAssignments();
-		i.resolveConstructors();
+        //i.resolveDatafieldAssignments();
+		//i.resolveConstructors();
 
 
     }
@@ -167,6 +168,9 @@ public class NewTranslator extends xtc.util.Tool{
 
         //At this point, pubbleList contains all the packages but they aren't linked together
         t.constructPackageTree();
+
+        i.resolveDatafieldAssignments();
+        i.resolveConstructors();
 
         if(false) //printing out bubble and methods/method parent
         {

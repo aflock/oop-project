@@ -101,7 +101,7 @@ public class Bubble{
      * c.m(b)
      *
      */
-     
+
     public Field getField(String fieldName){
         for(Field f : dataFields)
         {
@@ -753,7 +753,7 @@ public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
         //inherit fields
         for(Field f : this.getParentBubble().getDataFields()) {
             Field copy = f.deepCopy();
-            if(!(copy.getName().charAt(0) == '$'))
+            if(!(copy.getName().charAt(0) == '$' || f.isStatic()) )
                 inheritedFields.add(copy);
         }
 
