@@ -203,6 +203,13 @@ public class MethodChaining extends Visitor{
         //System.out.println("?????????");
 
         //System.out.println("need to find a method with m ::" + m + " :: list = " + list + ":::" + bub.getName());
+
+	if(m.equals("m6") && bub.getName().equals("Rest")) {
+	    for(Mubble mo : bub.getMubbles()) {
+		System.out.println(mo.getName());
+	    }
+	}
+
         Mubble theMub = bub.findMethod(bubbleList, m, list);
 
         //System.out.println("fuck7");
@@ -350,7 +357,7 @@ public class MethodChaining extends Visitor{
 
     public String visitCastExpression(GNode n){
         String type = n.getNode(0).getNode(0).getString(0);
-        String code = "(" + type + ")" + n.getNode(1).getString(0);
+        String code = "((" + type + ")" + n.getNode(1).getString(0)+")";
         stack.push(new Tuple(type, code));
      	return code;
     }

@@ -489,8 +489,9 @@ public class Mubble{
     }
 
     public Mubble copy() {
-	Mubble clone = new Mubble(this.getName());
+	Mubble clone = new Mubble(this.getGroup());
 	clone.setConstructor(this.isConstructor());
+	clone.mangleName(this.getName());
 	clone.setMain(this.isMain());
 	clone.setStatic(this.isStatic());
 	clone.setBubble(this.getBubble());
