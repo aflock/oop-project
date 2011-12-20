@@ -92,8 +92,19 @@ public class Pubble{
 
         for(Bubble b : bubbles){
             ret += "_" + b.getName() + "_VT _" + b.getName() + "::__vtable;\n\n";
+	    String bpack = b.getPackageName().trim();
+	    System.out.println("W" + bpack);
+	    System.out.println("T" + b.getParentBubble());
+	    System.out.println("F" + b.getParentBubble().getName());
+	    String parName = b.getParentBubble().getName();
+	    String ppack = "java lang";
+	    if(!(parName.equals("Object") || parName.equals("String") || parName.equals("Class"))) {
+		ppack = b.getParentBubble().getPackageName().trim();
+	    }
+	    String p = b.getParentBubble().getName();
 
-            ret += "Class " + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName().trim().replace(" ", "::") + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + (b.getPackageName().trim().equals("") ? "" : (b.getPackageName().trim().replace(" ", ".") + "."))+b.getName() + "\"), java::lang::__Object::__class());\nreturn k;\n}\n\n";
+
+            ret += "Class " + (b.getPackageName().equals("Default Package") ? "": (b.getPackageName().trim().replace(" ", "::") + "::"))+ "_" + b.getName() + "::__class() { \n static Class k = new java::lang::__Class(__rt::literal(\"" + (bpack.equals("") ? "" : (bpack.replace(" ", ".") + "."))+b.getName() + "\"), "+(ppack.equals("") ? "" :ppack.replace(" ", "::")+"::")+((p.equals("Object") || p.equals("String") || p.equals("Class")) ? "_" : "")+"_" +p+"::__class());\nreturn k;\n}\n\n";
         }
 
         if(!(name.equals("Default Package")))

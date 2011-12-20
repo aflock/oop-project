@@ -1978,14 +1978,30 @@ public void visitBasicCastExpression(GNode n) {
 public void visitInstanceOfExpression(GNode n) {
     if (onMeth) {
         dispatchBitch(n);
-        dispatch(n.getNode(0));
-        methodString += "->__vptr->isInstance("+n.getNode(0).getString(0)+", ";
+        //dispatch(n.getNode(0));
+	String t = n.getNode(1).getNode(0).getString(0);
+	if(!(t.equals("Object") || t.equals("String") || t.equals("Class"))) {
+	    methodString += "({Class grimm = "+findBubble(t).getPackageName().trim().replace(" ", "::")+"::_";
+	}
+	else {
+	    methodString += "({Class grimm = java::lang::__";
+	}
         dispatch(n.getNode(1));
-        methodString += ")";
+	methodString += "::__class();\ngrimm->__vptr->isInstance(grimm, "+n.getNode(0).getString(0)+");})";
     }
     else {
         visit(n);
     }
+}
+
+public Bubble findBubble(String bubName) {
+    for(Bubble b : bubbleList) {
+	if(b.getName().equals(bubName)) {
+		return b;
+	}
+    }
+    
+    return null;
 }
 
 public void visitLogicalNegationExpression(GNode n) {

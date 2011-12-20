@@ -393,7 +393,7 @@ public static int rank(ArrayList<Bubble> bubbles, String a, String b) {
         Bubble descedent = findBubble(bubbles, a);
         int count = 0;
         while (!descedent.getName().equals(b)) {
-            if (descedent.getName().equals("Object") || descedent.getName().equals("String")) {
+            if (descedent.getName().equals("Object")) {
                 return 100000;
             }
             descedent = descedent.getParentBubble();
