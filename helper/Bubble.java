@@ -128,29 +128,21 @@ public class Bubble{
 
         Mubble mub = null;
         int best = 1000000;
-        //System.out.println("Calling find method : " + methodName + " :: ");
 
-        //System.out.println("mubblesList size is :: " + mubbles.size());
         for (Mubble m : mubbles) {
-            //System.out.println("Mubble name is || "+ m.getName());
-            //System.out.println("group name is || "+ m.getGroup());
-            //System.out.println("_____");
+
             if (m.belongToGroup(methodName)) {
-                //System.out.println(methodName + "::"+  m.getName());
-                //System.out.println(m.getFlag());
+
                 int min = 0;
                 ArrayList<String> p = m.getParameterTypes();
 
-                //System.out.println("p.size(): " + p.size());
-                //System.out.println("para.size(): " + para.size());
                 if (para.size() == p.size()) {
                     for (int i = 0; i < p.size(); i++) {
-                        //System.out.println("V_V_V_V_V_V_V_VV_V_V_V_V_V_VV_V_V_V_V_V_V_V");
-                        //System.out.println(methodName);
-                        //System.out.println("calling rank on " + para.get(i) + "||| and " + p.get(i));
+
                         min += rank(bubbles, para.get(i), p.get(i));
-                        //System.out.println(i + " " + para.get(i) + ":" + p.get(i) + " " + min);
+
                     }
+		    
                     if (min < best) {
                         best = min;
                         mub = m;
