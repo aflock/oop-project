@@ -107,12 +107,12 @@ public class Bubble{
         for(String s : this.staticData){
             ret += s;
         }
-        
+
         return ret;
     }
-    
+
     public void addStaticData(String s){
-    
+
         this.staticData.add(s);
     }
     public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
@@ -752,8 +752,8 @@ public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
         for(Field f :this.getDataFields()){
             for(Field g : inheritedFields){
                 if(f.getName().equals(g.getName())){
-                    //add a "$" to the old field
-                    System.out.println("over writing " + g.getName() + " with a $");
+                    ///add a "$" to the old field
+                    //System.out.println("over writing " + g.getName() + " with a $");
                     g.setName( "$" + g.getName());
                 }
             }
@@ -1022,7 +1022,7 @@ public String getCC() {
     }
     //=========BEFORE I PRINT CONSTRUCTORS, PUT IN STATIC DATAFIELDS=============//
     ret += this.getStaticData();
-    
+
     if(!encounteredConstructor) //if there was no constructor in the java file, create default one
     {
         ret += "_" + name + "::_" + name + "(): __vptr(&__vtable){} \n\n";

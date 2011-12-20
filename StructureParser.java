@@ -160,8 +160,12 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
 
         curBub.setParentBubble(ob);
+        curBub.setIsBuilt(true);
+
+        curPub.addBubble(curBub);
 
         bubbleList.add(curBub);
+
         visit(n);
         table = null;
         dynamicTypeTable = null;
@@ -173,9 +177,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         n1.addCode("delete __this;");
         curBub.addMubble(n1);
         //curBub should be complete here, all it's dataFields, methods, children bubbles, package..etc
-        curBub.setIsBuilt(true);
-
-        curPub.addBubble(curBub);
     }
 
 
@@ -196,7 +197,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             dataField = false;
             if(!curBub.hasField(curField));
                 curBub.addField(curField);
-        
+
             //System.out.println("ADDING FIELD: " + curField.name);
         }
 
@@ -522,6 +523,7 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         for(Bubble b : bubbleList){
             if (!(b.isBuilt())){
                 try{ // r u serious, java?
+                    System.out.println("Structure bout to call find file on ::"  + b.getName());
                     String fileName = findFile(b.getName());
                     File f = new File(fileName);
                     FileInputStream fi = new FileInputStream(f);
