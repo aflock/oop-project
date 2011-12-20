@@ -1142,6 +1142,7 @@ public String inNameSpace(String obj) {
 public void visitQualifiedIdentifier(GNode n){
 
     if (onMeth) {
+        System.out.println("PPPPPPPPPP " + n.getString(0));
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
         if(parent1.hasName("FieldDeclaration")) {
@@ -1158,27 +1159,50 @@ public void visitQualifiedIdentifier(GNode n){
             }
         }
 
-        String s = inNameSpace(n.getString(0));
+        //String s = inNameSpace(n.getString(0));
+
+
+        Bubble classBub = null;
+        for(Bubble b : bubbleList){
+            if(b.getName().equals(n.getString(0)))
+                classBub = b;
+        }
+
+        //System.out.println("S is  VV");
         //System.out.println(s);
-        if (s != null && !inArray && !inNewClassExpression ) {
+        //System.out.println(s);
+        if (!inArray && !inNewClassExpression ) {
             //using absolute namespace
             //System.out.println("4");
             //check to see if Bubble is found by inNameSpace\
             //methodString += "::"+s.trim().replaceAll("\\s+", "::")
                 //+"::";
         }
-        else if (s != null && inNewClassExpression)
+        else if (inNewClassExpression)
         {
-            methodString += s.trim().replaceAll("\\s+", "::")
+            System.out.println("DKSMASH " + n.getString(0));
+            for(Bubble b : bubbleList){
+                if(b.getName().equals(n.getString(0)))
+                    classBub = b;
+            }
+            System.out.println(classBub.getName() + "sadface");
+            String packageName = "";
+
+            if((classBub.getName().equals("Object") ||classBub.getName().equals("String") ||classBub.getName().equals("Class") )){
+                packageName = "java lang";
+            }else{
+                packageName = classBub.getPackageName();
+            }
+            methodString += packageName.trim().replaceAll("\\s+", "::")
                 +"::";
             //if it is part of java.lang, need two underscores here
-            if(s.contains("java lang"))
+            if(packageName.contains("java lang"))
             {
                 //System.out.println("********");
                 methodString+= "__";
             }
             else
-                System.out.println("=======\n"+s+"======\n");
+                System.out.println("=======\n"+packageName+"======\n");
 
         }
         if(!inArray)
@@ -1213,9 +1237,10 @@ public void visitQualifiedIdentifier(GNode n){
         if(!path.equals("")){
             System.out.println(path);
             System.out.println("yeah srsly bout to call");
-            try{
+            /*try{
                 t.process(path);
             } catch (Exception e) {System.out.println("error: " + e);}
+            */
 
         }
     }
