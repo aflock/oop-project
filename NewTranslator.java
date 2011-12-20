@@ -495,7 +495,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         object.setIsFilled(true);
         object.setIsBuilt(true);
-        //Creating Object's Vtable
+	//Creating Object's Vtable
         //      Each of these will get a mubble, which is added to the Bubble
         /*object.add2Vtable("Class __isa;");
           delete
@@ -509,7 +509,7 @@ public class NewTranslator extends xtc.util.Tool{
         m1.setReturnType("void");
         m1.setFlag('n');
         m1.setParameters();
-
+	
         Mubble m2 = new Mubble("hashCode");
         object.addMubble(m2);
         m2.setReturnType("int32_t");
