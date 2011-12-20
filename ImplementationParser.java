@@ -988,8 +988,6 @@ public void visitQualifiedIdentifier(GNode n){
                 //System.out.println("********");
                 methodString+= "_";
             }
-            else
-                System.out.println("=======\n"+packageName+"======\n");
 
         }
         if(!inArray)
