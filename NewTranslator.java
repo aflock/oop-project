@@ -107,6 +107,8 @@ public class NewTranslator extends xtc.util.Tool{
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
 
+
+
         //Pass methods down the inheritance tree
 		Bubble obj = new Bubble();
 		for(Bubble b: bubbleList){
@@ -582,4 +584,5 @@ public class NewTranslator extends xtc.util.Tool{
         bubbleList.add(string);
     }
 }
+
 

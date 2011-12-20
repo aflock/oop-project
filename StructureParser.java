@@ -144,7 +144,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
             }
         }
         if (!found){
-            System.out.println(curPub.getName() + ": Cannot find " + className);
             curBub = new Bubble(className);
         }
         table = curBub.getTable();
@@ -803,3 +802,4 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
     }
 
 }
+

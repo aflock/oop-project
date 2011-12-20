@@ -1210,11 +1210,6 @@ NOTE: Should be called after implementation parser is complete
 
 
             if(!path.equals("")){
-                //System.out.println(path);
-               try{
-                    //t.process(path);
-                } catch (Exception e) {System.out.println("error: " + e);}
-                
                 System.out.println(path);
                 System.out.println("yeah srsly bout to call");
                 try{
@@ -1440,22 +1435,7 @@ NOTE: Should be called after implementation parser is complete
                     else
                     {
                         if(curBub.hasField(variableName)) //its a dataField
-                        {
-                            Field f = curBub.getField(variableName);
-                            if(f.isStatic())
-                            {
-                                String packName = curBub.getPackageName().trim().replace(" ", "::");
-                                methodString += packName + "::_" + curBub.getName() + "::" + variableName;
-                            }
-                            else
-                            {
-                                if(curMub.isConstructor())
-                                    methodString += variableName;
-                                else
-                                    methodString += "__this->" + variableName;
-                            }
-                        
-                        }
+                            methodString += "__this->" + variableName;
                         else //its a local variable
                             methodString += variableName;
                     }
@@ -2022,3 +2002,4 @@ NOTE: Should be called after implementation parser is complete
         }
     }
 }
+
