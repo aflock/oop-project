@@ -127,7 +127,7 @@ public class NewTranslator extends xtc.util.Tool{
 				if(child.getParentBubble().getName().equals("Object")){
 					//System.out.println("Calling the method V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V");
 					child.mangleBetweenClasses();
-					//child.inheritAndResolveDataFields(bubbleList);
+					child.inheritAndResolveDataFields(bubbleList);
 				}
 			}
 		}
