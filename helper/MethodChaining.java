@@ -80,12 +80,12 @@ public class MethodChaining extends Visitor{
         }
 
         if (n.get(0) == null) {
-            System.out.println("suck1");
+            
             stack.push(new Tuple("null", "")); //something null
         }
         else {
 
-            System.out.println("suck2");
+            
             for (int i = 0; i < n.size(); i++) {
                 Object temp = n.get(i);
                 if (temp != null) {
@@ -117,7 +117,7 @@ public class MethodChaining extends Visitor{
         if (n.get(0) != null && n.getNode(0).hasName("CallExpression")) {
             code += "; })";
         }
-	System.out.println("!!!!!!!!");
+	
         if (stack.empty()) {
             return code;
         }
@@ -138,7 +138,7 @@ public class MethodChaining extends Visitor{
 
     public String visitArguments(GNode n){
         for (int i = 0; i < n.size(); i++) {
-            //System.out.println("");
+            
             Node temp = n.getNode(i);
             if (temp != null) {
                 temp.setProperty("parent0", n);
@@ -154,68 +154,41 @@ public class MethodChaining extends Visitor{
         }
         int size = n.size();
         ArrayList<String> list = new ArrayList<String>();
-        //System.out.println("arg peeking");
-        //System.out.println(stack.peek());
-        //System.out.println("arg peeking");
+        
         for (int i = 0; i < size; i++) {
             list.add(0, stack.pop().type);
 
         }
-        //System.out.println("arg peeking");
-        //System.out.println(stack.peek());
-        //System.out.println("arg peeking");
-
-        //System.out.println("fuck1");
+        
         String m = stack.pop().type;
-
-        //System.out.println("fuck2");
-
+        
         Tuple t = stack.pop();
-        //System.out.println("fuck2.5");
+
         String type = t.type;
-        //System.out.println("fuck3.5");
+
         String var = t.code;
-        //System.out.println("fuck4.5");
+
         Bubble bub = null;
-        //System.out.println("var is " + var);
-        //System.out.println("type is " + type);
+
 
         if(type.equals("constructor"))
             type = var;
 
-        //System.out.println("fuck3");
-
-        //System.out.println(type);
 
         if (!(type == null)) {
-        //System.out.println("fuck5");
             bub = Bubble.findBubble(bubbleList, type);
         }
         else {
-        //System.out.println("fuck6");
             bub = curBub;
         }
 
-        //System.out.println("fuck4");
-        //System.out.println("?????????");
-
-        //System.out.println("need to find a method with m ::" + m + " :: list = " + list + ":::" + bub.getName());
-
-	//if(m.equals("m6") && bub.getName().equals("Rest")) {
-	//    for(Mubble mo : bub.getMubbles()) {
-	//		System.out.println(mo.getName());
-		//    }
-		//}
 
         Mubble theMub = bub.findMethod(bubbleList, m, list);
 
-        //System.out.println("fuck7");
-        //System.out.println(theMub);
         stack.push(new Tuple(theMub.getReturnType(), ""));
-        //System.out.println("fcuk7.5");
-        //System.out.println(theMub);
+
         if (theMub.isStatic()) {
-        //System.out.println("fuck8");
+
             String aa = "";
             Node parent0 = (Node)n.getProperty("parent0");
             if (parent0.get(0) == null) {
@@ -226,7 +199,7 @@ public class MethodChaining extends Visitor{
         if (theMub.isPrivate()) {
             if (type == null) {
                 if (n.size() > 0) {
-        //System.out.println("fuck9");
+
                     return theMub.getName() + "(__this, " + code + ")";
                 }
                 else {
@@ -425,7 +398,7 @@ public class MethodChaining extends Visitor{
 		    }		    
 		    
                 }
-		System.out.println(type);
+
                 stack.push(new Tuple(type, first.code + "+" + second.code));
                 return first.code + "+" + second.code;
             }
@@ -434,7 +407,7 @@ public class MethodChaining extends Visitor{
                     type = first.type;
                 }
                 else {
-                    //System.out.println("need fixing: Addtive expression: -");
+
                 }
                 stack.push(new Tuple(type, first.code + "-" + second.code));
                 return first.code + "-" + second.code;
@@ -448,7 +421,7 @@ public class MethodChaining extends Visitor{
     public String visitPrimaryIdentifier(GNode n){
 	// push the type onto the stack
 	// return variable name
-	System.out.println(n.getString(0));
+
 	Node parent0 = (Node)n.getProperty("parent0");
 	String type = "";
 	if (parent0.hasName("CallExpression")) {

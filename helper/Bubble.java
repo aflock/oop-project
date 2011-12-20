@@ -176,64 +176,6 @@ public class Bubble{
         return mub;
     }
 
-    /*
-    public Mubble findMethod(ArrayList<Bubble> bubbles, String methodName, ArrayList<String> para) {
-        Mubble mub = null;
-        int matchNum = 100000000;
-        System.out.println("findMethod being called SON");
-        System.out.println("Method name is :: " + methodName);
-        System.out.println("Bubble :: " + getName());
-        for (Mubble m : mubbles) {
-            //System.out.println("\tMethod:: " + m.getName());
-            if (m.belongToGroup(methodName)) { //if there is a match in method names
-                int min = 0;
-                ArrayList<String> p = m.getParameterTypes(); //todo: fix, param types is size 0 for objects??
-                ArrayList<Field> fields = m.getParameters();
-                //System.out.println("fields.size(): " + fields.size());
-                System.out.println("p.size(): " + p.size());
-                System.out.println("para.size(): " + para.size());
-                for(String s : para)
-                    System.out.println("\t" + s);
-                if (p.size() == para.size()) { //checking to see if there in an applicable method, strictly based on the amount of params
-                    //System.out.println("Parameters size matches!");
-                    boolean match = false;
-                    for (int i = 0; i < p.size(); i++) {
-                        //System.out.println("p.get(i): " + p.get(i));
-                        //System.out.println("para.get(i): " + para.get(i));
-                        if(p.get(i).equals(para.get(i))) {//if there is an exact match for a method
-                            match = true;
-                            return m;
-                        }
-                        else
-                            match = false;
-                        if (!match) { //there isnt an exact method match, let's resolve this overloading
-                            // needs fixing
-                            min += rank(bubbles, p.get(i), para.get(i));
-
-                            primitive types, objects
-                                e.g. methods  function calls
-                                m(int)       m(long) -> 1
-                                m(long)       m(Long) -> 2??
-                                m(long)       m(Shape) -> INF
-    m(A)          m(B) -> 1
-    m(A)          m(C) -> 2
-    m(A)          m(AAAA) -> INF
-
-}
-}
-
-
-}
-if (min < matchNum) {
-//System.out.println("setting mub");
-mub = m;
-}
-} else { continue;} //belongstogroup == false
-
-       } //for end
-       return mub; //do i want to return string?
-       } //method end
-       */
 //Set the parent Bubble of this Bubble
 public void setParentBubble(Bubble b) {
     this.parentBubble = b;
@@ -305,7 +247,7 @@ public boolean hasField(Field nField){
         if(f.getName().equals(nField.getName()))
             return true;
         else
-            {}//System.out.println(f.getName() + " != " + nField.getName());
+            {}
     }
     return false;
 }
@@ -371,10 +313,7 @@ public static int rank(ArrayList<Bubble> bubbles, String a, String b) {
     // b is a parameter defined in a method
 
     if (isPrim(a) && isPrim(b)) { // a and b are primitive types
-        //System.out.println("bbbbbbbbbbbbbbbbbbbbbbb");
-        //System.out.println(a + ":" + b);
-        //System.out.println(distPrim(a,b));
-        //System.out.println("bbbbbbbbbbbbbbbbbbbbbbb");
+
         return distPrim(a,b);
     }
     else if (isPrim(a) || isPrim(b)) { // one of a and b is a primitive type
@@ -394,56 +333,6 @@ public static int rank(ArrayList<Bubble> bubbles, String a, String b) {
         return count;
     }
 }
-/*
-   public int rank(ArrayList<Bubble> bubbles, String a, String b){
-//a is the actual argument, b is the formal argument
-//a moves. b stays
-//TODO deal with primitive types
-/* add to bubbles ? nah- deal with here- don't want to special case everything
- * int32_t
- * long (int64_t)
- * short(int16_t)
- * char
- * double
- * float
- * boolean
- * byte (int8_t)
- *
-// byte -> char -> short -> int -> long
-// float -> double
-//System.out.println("A: " + a);
-//System.out.println("B: " + b);
-
-//System.out.println(isPrim(a) + " " + isPrim(b));
-
-if (a.equals(b))
-return 0;
-
-if (isPrim(a) && isPrim(b)) {
-return distPrim(a, b);
-}
-else if ((isPrim(a) && !isPrim(b)) || (!isPrim(a) && isPrim(b))) {
-return 100000;
-}
-
-Bubble aBub = findBubble(bubbles, a);
-//walk a's inheritance
-int count = 0;
-while (!(aBub.getName().equals(b))) {
-if (aBub.getName().equals("Object") || aBub.getName().equals("String"))
-break;
-aBub = aBub.getParentBubble();
-
-count++;
-}
-if (!aBub.getName().equals("Object")){
-return 10000;
-}
-else{
-return count;
-}
-   }
-   */
 
 public static int distPrim(String a, String b) {
     if (a.equals("byte")) {
@@ -472,7 +361,7 @@ public static int distPrim(String a, String b) {
             return 5;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -502,7 +391,7 @@ public static int distPrim(String a, String b) {
             return 5;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -532,7 +421,7 @@ public static int distPrim(String a, String b) {
             return 10000;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -562,7 +451,7 @@ public static int distPrim(String a, String b) {
             return 4;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -592,7 +481,7 @@ public static int distPrim(String a, String b) {
             return 3;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -622,7 +511,7 @@ public static int distPrim(String a, String b) {
             return 3;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -652,7 +541,7 @@ public static int distPrim(String a, String b) {
             return 0;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
@@ -682,12 +571,12 @@ public static int distPrim(String a, String b) {
             return 0;
         }
         else {
-            System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+            
             return -1;
         }
     }
     else {
-        System.out.println("SHIT IS BROKEN: distPrim Bubble.java");
+        
         return -1;
     }
 }
@@ -714,12 +603,12 @@ public static boolean isPrim(String a) {
 
 //todo: Should we search through parent and children bubbles??
 public static Bubble findBubble(ArrayList<Bubble> bubbles, String name){
-    //System.out.println("trying to find bubble with name :: " + name);
+    
     for(Bubble b : bubbles){
         if (b.getName().equals(name))
             return b;
     }
-    System.out.println("HOLY SHIT SOMETHINGS WRONG NO BUBBLE FOUND");
+    
     return new Bubble(); //should never happen
 }
 
@@ -754,7 +643,7 @@ public void inheritAndResolveDataFields(ArrayList<Bubble> bubbleList){
             for(Field g : inheritedFields){
                 if(f.getName().equals(g.getName())){
                     ///add a "$" to the old field
-                    //System.out.println("over writing " + g.getName() + " with a $");
+                    
                     g.setName( "$" + g.getName());
                 }
             }
@@ -803,15 +692,15 @@ public void mangleBetweenClasses(){
      *                  child.mangleBetweenClasses()
      */
 
-    //System.out.println(this.getName() + " is inheriting and mangling (properly?) :)");
+    
     this.inheritMethods();
     //check if any names are duplicates
     //keeping track of names so we know which to mangle
     ArrayList<String> noConflictNames = new ArrayList<String>();
-    //System.out.println("All mubbles for " + this.getName());
+    
     for(Mubble m : mubbles){
         char flag = m.getFlag();
-        //System.out.println(m.getName() + " || " + flag);
+        
         if(flag == 'i' || flag == 'w')//add to list
             noConflictNames.add(m.getName());
     }
@@ -829,10 +718,8 @@ public void mangleBetweenClasses(){
         }
     }
 
-    //System.out.println("After mangling ::::::::::");
-    for(Mubble m : mubbles){
-        //System.out.println(m.getName());
-    }
+    
+
     for(Bubble b: this.getBubbles()){
         b.mangleBetweenClasses();
     }
@@ -877,10 +764,7 @@ public void inheritMethods(){
     }
     this.mubbles = newMethodsList;
 
-    for(Mubble m : mubbles)
-    {
-        //System.out.println(m.getName() + "'s parent bubble is " + m.getClassName());
-    }
+
 }
 
 public boolean paramMatch(Mubble one, Mubble two){
