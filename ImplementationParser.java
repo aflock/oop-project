@@ -543,44 +543,6 @@ public void visitConstructorDeclaration(GNode n)
         /*is super called?*/
 
         /*
-           if(n.getNode(5) != null && n.getNode(5).hasName("Block")){//{{{
-           System.out.println(n.getNode(5));
-           if(n.getNode(5).getNode(0) !=null)
-           System.out.println("fuck3.5");
-           System.out.println("get here though");
-           if(n.getNode(5).getNode(0) != null && n.getNode(5).getNode(0).hasName("ExpressionStatement")){
-           System.out.println("fuck2.6");
-           Node expr = n.getNode(5).getNode(0);
-           System.out.println("fuck3.7");
-
-           if(expr.getNode(0) != null && expr.getNode(0).hasName("CallExpression"))
-           if(expr.getNode(0).getString(2) != null &&expr.getNode(0).getString(2).equals("super"))
-           {
-           System.out.println("fuck4");
-           curMub.setSuperConstructorCalled(true);
-        //get parameter types
-        EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
-        String[] params = ((String)(e.dispatch(n.getNode(5).getNode(0).getNode(0).getNode(3)))).trim().split(" "); //RETURNING VOID
-        //remove empty strings
-        int scount = 0;
-        for(String s : params){
-        if(s.equals(""))
-        scount++;
-        }
-        String[] nparams = new String[params.length - scount];
-        int ind = 0;
-        for(int i = 0; i< params.length; i ++){
-        if(!(params[i].equals(""))){
-        nparams[ind] = params[i];
-        ind++;
-        }
-        }
-        ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
-        curMub.setSuperParams(pList);
-           }
-           }
-
-           }//}}}
            */
 
         //System.out.println("Constructor Count is: "+ constructorCount);
@@ -593,40 +555,6 @@ public void visitConstructorDeclaration(GNode n)
 String mName;
 boolean debugEvaluateExpression = false;
 
-//LOL this is not needed at all VV
-/*
-   public String evaluateExpressionForPrint(Node n){//{{{
-
-//TODO adding numbers
-//TODO newClassExpression
-String ret = "";
-if(n.getName().endsWith("Literal")){
-ret += n.getString(0);
-}else if(n.hasName("AdditiveExpression")){
-ret += evaluateExpressionForPrint(n.getNode(0));
-ret += " << ";
-ret += evaluateExpressionForPrint(n.getNode(2));
-//TODO - if the additive expression is not supposed to be
-//handled like this ^^
-}else if(n.hasName("Arguments")){
-ret += evaluateExpressionForPrint(n.getNode(0));
-}else if(n.hasName("NewClassExpression")){
-//wtf
-//probably need to create the class before any of this cout business...right?
-}else if(n.hasName("PrimaryIdentifier")){
-ret += n.getString(0);
-}else if(n.hasName("PostfixExpression")){
-Node primaryIdentifier = (Node)n.get(0);
-if(debugEvaluateExpression) System.out.println(primaryIdentifier.getString(0) + n.getString(1));
-ret += primaryIdentifier.getString(0) + n.getString(1); //PostfixExpression(PrimaryIdentifier("i"), "++" )
-}
-else{
-System.out.println("errror: :(" + n.getName());
-}
-//eval
-return ret;
-   }//}}}
-   */
 
 boolean debugCallExpression = false;
 boolean inPrintStatement = false;
@@ -671,153 +599,6 @@ public void visitCallExpression(GNode n) {
             }
           }//}}}
         else{
-            /*//{{{
-            //want to know if this method is static
-            //TODO deal with SelectionExpression or New Class Expression
-            boolean isStaticMethod = true;
-            String theName = "";
-            System.out.println(n);
-            //what is this V
-            if (n.getNode(0) != null && n.getNode(0).hasName("CallExpression")){
-            EvalCall j = new EvalCall(curBub, bubbleList, symbolTable);
-            System.out.println(j);
-            theName = (String)(j.dispatch(n.getNode(0)));
-            System.out.println("evaled chained method and the type of return is || " + theName);
-            }
-            else if (n.getNode(0) != null && n.getNode(0).hasName("SelectionExpression")){
-            //Non trivial examine later re: chained linking also could be Call expression
-            theName = n.getNode(0).getString(0);
-            }
-            else if (n.getNode(0) != null && n.getNode(0).hasName("NewClassExpression")){
-            theName = n.getNode(0).getNode(2).getString(0);
-            }
-            else if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
-            theName = n.getNode(0).getString(0);
-            }else{
-            //System.out.println("last else fall through");
-            theName = curBub.getName();
-            //System.out.println("theName is " + theName);
-            }
-
-            //theName should hold the class name of whatever owning class is calling the method,
-            //or the variable name
-
-
-            EvalCall e = new EvalCall(curBub, bubbleList, symbolTable);
-            Node argNode = n.getNode(3); //eVal Call should be dispatched on the Args Node
-            //System.out.println("Calling e.dispatch on: " + argNode.getName());
-
-            String[] params = ((String)(e.dispatch(argNode))).trim().split(" "); //RETURNING VOID
-
-            //remove empty strings
-            int scount = 0;
-            for(String s : params){
-            if(s.equals(""))
-            scount++;
-            }
-            String[] nparams = new String[params.length - scount];
-            int ind = 0;
-            for(int i = 0; i< params.length; i ++){
-            if(!(params[i].equals(""))){
-            nparams[ind] = params[i];
-            ind++;
-            }
-            }
-
-
-            ArrayList<String> pList = new ArrayList<String>(Arrays.asList(nparams));
-            isStaticMethod = isStatic(symbolTable, theName, mName, pList);
-
-            Bubble trueBubble = new Bubble();
-            String a = null; //should eventually hold the type of the variable
-            if(isStaticMethod){
-            a = (String)symbolTable.lookup(theName);
-
-            }else{
-            //a = (String)dynamicTypeTable.lookup(theName);
-            a = (String)symbolTable.lookup(theName);
-            }
-
-            if(a == null || a.equals("constructor"))
-            a = theName;
-
-            for(Bubble b : bubbleList){
-            if(b.getName().equals(a))
-                trueBubble = b;
-            }
-
-
-            //resolve mangled methods (overloading)
-            Mubble trueMub = trueBubble.findMethod(bubbleList, mName, pList);
-            //stack.push(trueMub);
-
-            String trueName = trueMub.getName();
-            //TODO VV check this/ finish this shit
-
-            boolean isPrivate = trueMub.isPrivate();
-
-            System.out.println("::::::::::::::ARUGMENTS:::::::::::");
-            if(!isStaticMethod && !isPrivate){
-                dispatch(n.getNode(0));
-                //need to fix casting for first arg
-                if(n.getNode(0) != null) {
-                    methodString += "->__vptr->"+trueName;
-                    methodString += "(";
-                    //should cast self to expected type
-                    //not doing now because castify is not a method,
-                    //too complicated right now
-                    dispatch(n.getNode(0));//adding self
-                    //methodString += ", "; //error
-                }
-                else {
-                    methodString += n.getString(2) + "(" + curBub.getName();
-                }
-                if(n.getNode(3).size() != 0)
-                    methodString += ",";
-                dispatch(n.getNode(3));
-                //stack.pop();
-                methodString += ")";
-
-            }
-            else {//is static
-                if(n.getNode(0) != null){ //if a class is explicitly defined
-                    methodString += "_";
-                    //need to know which static class we are talking about
-                    String cname = (String)symbolTable.lookup(theName);
-                    if (cname == null){//theName must be a reference to a class
-                        cname = theName;
-                    }
-                    Bubble papa = new Bubble();
-                    for(Bubble b : bubbleList){
-                        if(b.getName().equals(cname))
-                            papa = b;
-                    }
-                    //System.out.println(papa.getName() + "::" + n.getString(2));
-                    methodString += papa.getName() + "::" + trueName;
-                }
-                else{ //the static method is part of THIS class
-                    //System.out.println("_" + curBub.getName() + "::" + n.getString(2));
-                    //methodString += "_" + curBub.getName() + "::" + n.getString(2);
-                    methodString += "_" + curBub.getName() + "::" + trueName;
-                }
-                methodString += "(";
-
-                if(isPrivate){
-                    //private methods need an implicit this even though they get called as if they were static
-                    if(n.getNode(0) != null)
-                        dispatch(n.getNode(0));
-                    else
-                        methodString += curBub.getName();
-
-                    if(n.getNode(3).size() != 0){
-                        methodString += ",";
-                    }
-                }
-                dispatch(n.getNode(3));
-                //stack.pop();
-                methodString += ")";
-            }
-            *///}}}
             String plz = (String)(new MethodChaining(curBub, bubbleList).dispatch(n));
             //System.out.println(plz);
             methodString += plz;
@@ -1151,7 +932,6 @@ public String inNameSpace(String obj) {
 public void visitQualifiedIdentifier(GNode n){
 
     if (onMeth) {
-        System.out.println("PPPPPPPPPP " + n.getString(0));
         Node parent0 = (Node)n.getProperty("parent0");
         Node parent1 = (Node)parent0.getProperty("parent0");
         if(parent1.hasName("FieldDeclaration")) {
@@ -1189,12 +969,10 @@ public void visitQualifiedIdentifier(GNode n){
         }
         else if (inNewClassExpression)
         {
-            System.out.println("DKSMASH " + n.getString(0));
             for(Bubble b : bubbleList){
                 if(b.getName().equals(n.getString(0)))
                     classBub = b;
             }
-            System.out.println(classBub.getName() + "sadface");
             String packageName = "";
 
             if((classBub.getName().equals("Object") ||classBub.getName().equals("String") ||classBub.getName().equals("Class") )){
@@ -1238,14 +1016,10 @@ public void visitQualifiedIdentifier(GNode n){
             path+="."+n.getString(i);
         }
 
-        System.out.println("IMPL is about to call findFile on: " + path.substring(1));
         path = findFile(path);
-        System.out.println(path);
 
 
         if(!path.equals("")){
-            System.out.println(path);
-            System.out.println("yeah srsly bout to call");
             /*try{
                 t.process(path);
             } catch (Exception e) {System.out.println("error: " + e);}
@@ -1522,13 +1296,13 @@ public void visitPrimitiveType(GNode n) {
         }
         //make a check for the other way to declare an array
         if(parent1.getNode(2) != null && parent1.getNode(2).hasName("Declarators")){
-            System.out.println("in it");
+            //System.out.println("in it");
             if(parent1.getNode(2).getNode(0) != null && parent1.getNode(2).getNode(0).hasName("Declarator")){
-                System.out.println("to win it");
+                //System.out.println("to win it");
                 Node declara = parent1.getNode(2).getNode(0);
-                System.out.println("freelz");
+                //System.out.println("freelz");
                 if(declara.getNode(1) != null && declara.getNode(1).hasName("Dimensions")){
-                    System.out.println("Hey buuudddyy");
+                    //System.out.println("Hey buuudddyy");
                     inArray = true;
                 }
             }
@@ -1802,7 +1576,6 @@ public void visitSelectionExpression(GNode n) {
             //&& second child is not null and is out
             if(  n.get(0)==null || n.getString(1)==null  || n.getNode(0).get(0) == null ||
                     !(((Node)n.get(0)).getString(0).equals("System") && n.getString(1).equals("out"))){
-                System.out.println("fuck1");
                 //check for super
                 if(n.getNode(0) != null && n.getNode(0).hasName("SuperExpression")){
                     String variableName = n.getString(1);

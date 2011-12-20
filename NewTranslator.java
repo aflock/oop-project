@@ -80,7 +80,6 @@ public class NewTranslator extends xtc.util.Tool{
     }//}}}
 
     public static String findFile(String cp, String query) {//{{{
-        System.out.println("Find file being called from NT with query: " + query);
         String sep = System.getProperty("file.separator");
         File f = new File(cp);
         File [] files = f.listFiles();
@@ -509,7 +508,7 @@ public class NewTranslator extends xtc.util.Tool{
         m1.setReturnType("void");
         m1.setFlag('n');
         m1.setParameters();
-	
+
         Mubble m2 = new Mubble("hashCode");
         object.addMubble(m2);
         m2.setReturnType("int32_t");
@@ -660,6 +659,42 @@ public class NewTranslator extends xtc.util.Tool{
         o11.setParameters();
         bubbleList.add(clas);
 
+
+
+        Bubble arrays = new Bubble("Array");
+
+        arrays.setIsFilled(true);
+        arrays.setIsBuilt(true);
+
+
+	arrays.setParentBubble(object);
+        Mubble p1 = new Mubble("__delete");
+        arrays.addMubble(p1);
+        p1.setReturnType("void");
+        p1.setFlag('w');
+        p1.setParameters();
+        Mubble p2 = new Mubble("hashCode");
+        arrays.addMubble(p2);
+        p2.setReturnType("int32_t");
+        p2.setFlag('i');
+        p2.setParameters();
+        Mubble p3 = new Mubble("equals");
+        arrays.addMubble(p3);
+        p3.setReturnType("bool");
+        p3.addParameter(new Field("dummy", "Object"));
+        p3.setFlag('i');
+        p3.setParameters();
+        Mubble p4 = new Mubble("getClass");
+        arrays.addMubble(p4);
+        p4.setReturnType("Class");
+        p4.setFlag('i');
+        p4.setParameters();
+        Mubble p5 = new Mubble("toString");
+        arrays.addMubble(p5);
+        p5.setReturnType("String");
+        p5.setFlag('i');
+        p5.setParameters();
+        bubbleList.add(arrays);
     }
 }
 

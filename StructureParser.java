@@ -473,13 +473,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         //Node parent0 = (Node)n.getProperty("parent0");
         //Node parent1 = (Node)n.getProperty("parent1");
 
-        /*
-        if(parent1.hasName("ConstructorDeclaration")){
-            System.out.println("V_V_V_V_V_V_V_V_V_V_");
-            System.out.println(curField.name + " :: " + curField.type);
-            System.out.println("V_V_V_V_V_V_V_V_V_V_");
-        }
-        */
 
         curMub.addParameter(curField);
     }
@@ -503,24 +496,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         }
         visit(n);
 
-        /*//{{{
-          if(curPub.getName()==null){
-          System.out.println("God dammit who's adding this bullshit null pubble");
-          System.out.println("V_V_V_ inspect null package _V_V_V_V");
-          for(Bubble b : curPub.getBubbles())
-          {
-          System.out.println("\tClass: " + b.getName());
-          for(Mubble m : b.getMubbles())
-          {
-          System.out.println("\t\tMethod: " + m.getName());
-          System.out.println("\t\t{\n \t\t" + m.getCode() + "\n\t\t}");
-
-          }
-          }
-
-          curPub.setName("Default Package");
-          }
-          *///}}}
 
         //now add the pubble if it's not already in the list
         boolean inList = false;
@@ -535,7 +510,6 @@ public class StructureParser extends xtc.tree.Visitor //aka Decl
         for(Bubble b : bubbleList){
             if (!(b.isBuilt())){
                 try{ // r u serious, java?
-                    System.out.println("Structure bout to call find file on ::"  + b.getName());
                     String fileName = findFile(b.getName());
                     File f = new File(fileName);
                     FileInputStream fi = new FileInputStream(f);
