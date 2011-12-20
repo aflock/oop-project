@@ -74,21 +74,19 @@ public class MethodChaining extends Visitor{
     }
 
     public String visitCallExpression(GNode n){
-        //System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         String code = "";
         if(n.getProperty("parent0") != null && ((Node)n.getProperty("parent0")).hasName("CallExpression")) {
 
         }
 
         if (n.get(0) == null) {
-            //System.out.println("suck1");
+            System.out.println("suck1");
             stack.push(new Tuple("null", "")); //something null
         }
         else {
 
-            //System.out.println("suck2");
+            System.out.println("suck2");
             for (int i = 0; i < n.size(); i++) {
-                //System.out.println(i);
                 Object temp = n.get(i);
                 if (temp != null) {
                     if (temp instanceof Node) {
@@ -103,11 +101,10 @@ public class MethodChaining extends Visitor{
 	String var = stack.peek().type;
 	boolean staticc = false;
         stack.push(new Tuple(n.getString(2), "")); // n.getString(2);
-
 	if (var.equals("constructor")) {
 	    staticc = true;
 	}
-
+	
         String code2 = (String)dispatch(n.getNode(3)); // code from arguments
 	if (staticc) {
 	    String pac = curBub.getPackageName().trim().replace(" ", "::");
@@ -120,6 +117,7 @@ public class MethodChaining extends Visitor{
         if (n.get(0) != null && n.getNode(0).hasName("CallExpression")) {
             code += "; })";
         }
+	System.out.println("!!!!!!!!");
         if (stack.empty()) {
             return code;
         }
@@ -127,7 +125,6 @@ public class MethodChaining extends Visitor{
             if(((Node)n.getProperty("parent0")).hasName("CallExpression")) {
                 String ty = stack.pop().type;
                 code = "({ " + ty + " tmp = " + code+"; tmp";
-                //System.out.println("CODE::::::::::" + code);
                 stack.push(new Tuple(ty,"tmp"));
             }
             else{
@@ -451,6 +448,7 @@ public class MethodChaining extends Visitor{
     public String visitPrimaryIdentifier(GNode n){
 	// push the type onto the stack
 	// return variable name
+	System.out.println(n.getString(0));
 	Node parent0 = (Node)n.getProperty("parent0");
 	String type = "";
 	if (parent0.hasName("CallExpression")) {
@@ -467,6 +465,9 @@ public class MethodChaining extends Visitor{
 	else {
 	}
 
+	if (type == null) {
+	    type = "constructor";
+	}
 	stack.push(new Tuple(type, n.getString(0)));
 	return n.getString(0);
     }
