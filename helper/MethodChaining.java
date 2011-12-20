@@ -350,7 +350,7 @@ public class MethodChaining extends Visitor{
 
     public String visitCastExpression(GNode n){
         String type = n.getNode(0).getNode(0).getString(0);
-        String code = "(" + n.getNode(0).getNode(0).getString(0) + ")";
+        String code = "(" + type + ")" + n.getNode(1).getString(0);
         stack.push(new Tuple(type, code));
      	return code;
     }
