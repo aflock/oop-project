@@ -204,11 +204,11 @@ public class MethodChaining extends Visitor{
 
         //System.out.println("need to find a method with m ::" + m + " :: list = " + list + ":::" + bub.getName());
 
-	if(m.equals("m6") && bub.getName().equals("Rest")) {
-	    for(Mubble mo : bub.getMubbles()) {
-		System.out.println(mo.getName());
-	    }
-	}
+	//if(m.equals("m6") && bub.getName().equals("Rest")) {
+	//    for(Mubble mo : bub.getMubbles()) {
+	//		System.out.println(mo.getName());
+		//    }
+		//}
 
         Mubble theMub = bub.findMethod(bubbleList, m, list);
 
@@ -404,22 +404,31 @@ public class MethodChaining extends Visitor{
         if (parent0.hasName("CallExpression")) {
             // this would not likely happen
         }
-        else if (parent0.hasName("Arguments")){
+        else if (parent0.hasName("Arguments")){	    
             dispatch(n.getNode(0));
-            dispatch(n.getNode(2));
-            //String type = null;
+            dispatch(n.getNode(2));            
             Tuple second = stack.pop();
-            Tuple first = stack.pop();
-            if (n.getString(0).equals("+")) {
+            Tuple first = stack.pop();	    
+            if (n.getString(1).equals("+")) {
                 if (first.type.equals("String") || second.type.equals("String")) {
                     type = "String";
                 }
-                else if (first.type.equals(second.type)) {
+                else if (first.type.equals(second.type)) {		    
                     type = first.type;
-                }
+		    if (type.equals("int16_t")) {
+			type = "int32_t";
+		    }
+		}
                 else {
-                    //System.out.println("needs fixing: Additive expression: +");
+                    if (first.type.equals("int64_t") || second.type.equals("int64_t")) {
+			type = "int64_t";
+		    }
+		    else if (first.type.equals("int32_t") || second.type.equals("int32_t")) {
+			type = "int32_t";
+		    }		    
+		    
                 }
+		System.out.println(type);
                 stack.push(new Tuple(type, first.code + "+" + second.code));
                 return first.code + "+" + second.code;
             }
@@ -452,15 +461,28 @@ public class MethodChaining extends Visitor{
 	else if (parent0.hasName("Arguments")) {
 	    type = (String)table.lookup(n.getString(0));
 	}
-	else {
-	    //System.out.println("wrong");
+	else if (parent0.hasName("AdditiveExpression")) {
+	    type = (String)table.lookup(n.getString(0));
 	}
+	else {
+	}
+
 	stack.push(new Tuple(type, n.getString(0)));
 	return n.getString(0);
     }
 
     public String visitIntegerLiteral(GNode n) {
-	stack.push(new Tuple("int32_t", n.getString(0)));
+	String type = "";
+	if (n.getString(0).toLowerCase().endsWith("l")) {
+	    type = "int64_t";
+	}
+	else if (n.getString(0).toLowerCase().endsWith("s")) {
+	    type = "int16_t";
+	}
+	else {
+	    type = "int32_t";
+	}
+	stack.push(new Tuple(type, n.getString(0)));
 	return n.getString(0);
     }
 
@@ -470,7 +492,13 @@ public class MethodChaining extends Visitor{
     }
 
     public String visitFloatingPointLiteral(GNode n) {
-	return "";
+	String type = "";
+	if (n.getString(0).toLowerCase().endsWith("d")) {
+	    type = "double";
+	}
+	type = "float";
+	stack.push(new Tuple(type, n.getString(0)));
+	return n.getString(0);
     }
 
     public String visitQualifiedIdentifier(GNode n){
