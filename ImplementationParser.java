@@ -1194,12 +1194,12 @@ public void visitQualifiedIdentifier(GNode n){
                 packageName = classBub.getPackageName();
             }
             methodString += packageName.trim().replaceAll("\\s+", "::")
-                +"::";
+                +"::_";
             //if it is part of java.lang, need two underscores here
             if(packageName.contains("java lang"))
             {
                 //System.out.println("********");
-                methodString+= "__";
+                methodString+= "_";
             }
             else
                 System.out.println("=======\n"+packageName+"======\n");
@@ -1258,7 +1258,7 @@ public void visitNewClassExpression(GNode n) {
         if(!(n.getNode(2).getString(0).equals("Object") ||
                     n.getNode(2).getString(0).equals("String") ||
                     n.getNode(2).getString(0).equals("Class"))) {
-            methodString += "_";
+          //  methodString += "_";
                     }
 
         //methodString += "_";
