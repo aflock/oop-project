@@ -1520,6 +1520,19 @@ public void visitPrimitiveType(GNode n) {
                 //System.out.println("inArray = true in visitPrimitiveType");
             }
         }
+        //make a check for the other way to declare an array
+        if(parent1.getNode(2) != null && parent1.getNode(2).hasName("Declarators")){
+            System.out.println("in it");
+            if(parent1.getNode(2).getNode(0) != null && parent1.getNode(2).getNode(0).hasName("Declarator")){
+                System.out.println("to win it");
+                Node declara = parent1.getNode(2).getNode(0);
+                System.out.println("freelz");
+                if(declara.getNode(1) != null && declara.getNode(1).hasName("Dimensions")){
+                    System.out.println("Hey buuudddyy");
+                    inArray = true;
+                }
+            }
+        }
     }
     if (onMeth && !inArray & !inNewArrayExpress) { //a little sloppy of a fix
         String pri = n.getString(0);
@@ -2000,7 +2013,7 @@ public Bubble findBubble(String bubName) {
 		return b;
 	}
     }
-    
+
     return null;
 }
 
