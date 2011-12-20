@@ -67,7 +67,7 @@ public class ImplementationParser extends xtc.tree.Visitor //aka IMPL
         {
             System.out.println("*****IMPL PARSER***********");
             for(Bubble b : bubbleList){
-                if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                if(!(b.getName().equals("String") || b.getName().equals("Object") || b.getName().equals("Class"))){
                     System.out.println("Bubble " + b.getName());
                     for(Mubble m : b.getMubbles()){
                         System.out.println("\tMubble: " + m.getName());
@@ -190,7 +190,7 @@ public void resolveConstructors(){
     onMeth = true;
 
     for(Bubble child : bubbleList){
-        if(!(child.getName().equals("String") || child.getName().equals("Object"))){
+        if(!(child.getName().equals("String") || child.getName().equals("Object") || child.getName().equals("Class"))){
             curBub = child;
             for(Mubble m : child.getMubbles()){
                 if(!(child.getParentBubble().getName().equals("Object")) && m.getSuperConstructorCalled()){

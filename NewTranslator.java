@@ -123,7 +123,7 @@ public class NewTranslator extends xtc.util.Tool{
 		for(Bubble child : bubbleList){
 			//System.out.println("V_V_V_V_V_V_V_V__V__V_V_");
 			//System.out.println(child.getName());
-			if(!(child.getName().equals("String") || child.getName().equals("Object"))){
+		    if(!(child.getName().equals("String") || child.getName().equals("Object") || child.getName().equals("Class"))){
 				if(child.getParentBubble().getName().equals("Object")){
 					//System.out.println("Calling the method V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V_V");
 					child.mangleBetweenClasses();
@@ -175,7 +175,7 @@ public class NewTranslator extends xtc.util.Tool{
         if(false) //printing out bubble and methods/method parent
         {
             for(Bubble b : bubbleList){
-                if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                if(!(b.getName().equals("String") || b.getName().equals("Object") || b.getName().equals("Class"))){
                     System.out.println("Bubble " + b.getName());
                     for(Mubble m : b.getMubbles()){
                         System.out.println("\tMubble: " + m.getName());
@@ -200,7 +200,7 @@ public class NewTranslator extends xtc.util.Tool{
         {
             System.out.println("=======================================================");
             for(Bubble b : bubbleList){
-                if(!(b.getName().equals("String") || b.getName().equals("Object"))){
+                if(!(b.getName().equals("String") || b.getName().equals("Object") || b.getName().equals("Class"))){
                     System.out.println("Bubble " + b.getName());
                     for(Mubble m : b.getMubbles()){
                         System.out.println("\tMubble: " + m.getName());
@@ -586,6 +586,76 @@ public class NewTranslator extends xtc.util.Tool{
         n7.setFlag('n');
         n7.setParameters();
         bubbleList.add(string);
+
+	Bubble clas = new Bubble("Class");
+        clas.setIsFilled(true);
+        clas.setIsBuilt(true);
+
+        clas.addField(new Field("name","String"));
+        clas.addField(new Field("parent","Class"));
+        clas.addField(new Field("component","Class"));
+        clas.addField(new Field("primitive","bool"));
+
+        Mubble o1 = new Mubble("__delete");
+        clas.addMubble(o1);
+        o1.setReturnType("void");
+        o1.setFlag('w');
+        o1.setParameters();
+        Mubble o2 = new Mubble("hashCode");
+        clas.addMubble(o2);
+        o2.setReturnType("int32_t");
+        o2.setFlag('w');
+        o2.setParameters();
+        Mubble o3 = new Mubble("equals");
+        clas.addMubble(o3);
+        o3.setReturnType("bool");
+        o3.addParameter(new Field("dummy", "Object"));
+        o3.setFlag('w');
+        o3.setParameters();
+        Mubble o4 = new Mubble("getClass");
+        clas.addMubble(o4);
+        o4.setReturnType("Class");
+        o4.setFlag('i');
+        o4.setParameters();
+        Mubble o5 = new Mubble("toString");
+        clas.addMubble(o5);
+        o5.setReturnType("String");
+        o5.setFlag('w');
+        o5.setParameters();
+
+        Mubble o6 = new Mubble("getName");
+        clas.addMubble(o6);
+        o6.setReturnType("String");
+        o6.setFlag('n');
+        o6.setParameters();
+        Mubble o7 = new Mubble("getSuperclass");
+        clas.addMubble(o7);
+        o7.setReturnType("Class");
+        o7.setFlag('n');
+        o7.setParameters();
+        Mubble o8 = new Mubble("isPrimitive");
+        clas.addMubble(o8);
+        o8.setReturnType("bool");
+        o8.setFlag('n');
+        o8.setParameters();
+        Mubble o9 = new Mubble("isArray");
+        clas.addMubble(o9);
+        o9.setReturnType("bool");
+        o9.setFlag('n');
+        o9.setParameters();
+        Mubble o10 = new Mubble("getComponentType");
+        clas.addMubble(o10);
+        o10.setReturnType("Class");
+        o10.setFlag('n');
+        o10.setParameters();
+        Mubble o11 = new Mubble("isInstance");
+        clas.addMubble(o11);
+        o11.setReturnType("bool");
+        o11.addParameter(new Field("dummy","Object"));
+        o11.setFlag('n');
+        o11.setParameters();
+        bubbleList.add(clas);
+
     }
 }
 
