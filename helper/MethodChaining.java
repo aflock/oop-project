@@ -100,27 +100,22 @@ public class MethodChaining extends Visitor{
             code = (String)dispatch(n.getNode(0));
 
         }
+	String var = stack.peek().type;
+	boolean staticc = false;
         stack.push(new Tuple(n.getString(2), "")); // n.getString(2);
-        //System.out.println("PEEK");
-        //System.out.println(stack.peek());
-        //System.out.println("PEEK");
+	
+	if (var.equals("constructor")) {
+	    staticc = true;
+	}
+
         String code2 = (String)dispatch(n.getNode(3)); // code from arguments
-        if (n.get(0) == null) {
-            code += code2
-        }
-        else {
-            String pri = (String)n.getString(0);
-            type = (String)dynamicTypeTable.lookup(n.getString(0));
-            if(type == null)    
-                type = (String)table.lookup(n.getString(0));
-            if(type.equals("constructor")) {
-                code += "_" + code2;
-            }
-            else {
-                code += "->" + code2;
-            }
-        }
-        //code = code + (n.get(0) == null ? "" : "->") + code2;
+	if (staticc) {
+	    String pac = curBub.getPackageName().trim().replace(" ", "::");
+	    code = pac + "::_" + code + "::" + code2;
+	}
+	else {
+	    code = code + (n.get(0) == null ? "" : "->") + code2;
+	}
 
         if (n.get(0) != null && n.getNode(0).hasName("CallExpression")) {
             code += "; })";
@@ -187,14 +182,9 @@ public class MethodChaining extends Visitor{
         Bubble bub = null;
         //System.out.println("var is " + var);
         //System.out.println("type is " + type);
-        boolean stat = false;
-        if(type.equals("constructor")) {
-            //System.out.println("static methods1");
+
+        if(type.equals("constructor"))
             type = var;
-            stat = true;
-        }
-        else
-            //System.out.println("FSJFALKFLAJF: " + type);
 
         //System.out.println("fuck3");
 
@@ -220,25 +210,12 @@ public class MethodChaining extends Visitor{
         stack.push(new Tuple(theMub.getReturnType(), ""));
         //System.out.println("fcuk7.5");
         //System.out.println(theMub);
-        if (theMub.isStatic() || stat) {
-            System.out.println("static methods2");
+        if (theMub.isStatic()) {
         //System.out.println("fuck8");
             String aa = "";
             Node parent0 = (Node)n.getProperty("parent0");
-            String pri = parent0.getString(0);
-            String tt = (String)dynamicTypeTable.lookup(n.getString(0));
-            if(tt == null)    
-                tt = (String)table.lookup(n.getString(0));
-            boolean plz = false;
-            if(type.equals("constructor")) {
-                plz = true;
-                System.out.println("static methods3");
-                //code += "_" + code2;
-            }
-            if (parent0.get(0) == null || plz) {
-                //aa += "_" + theMub.getClassName() + "::";
-                //probably needs fixing
-                aa += "::";
+            if (parent0.get(0) == null) {
+                aa += "_" + theMub.getClassName() + "::";
             }
             return aa + theMub.getName() + "(" + code + ")";
         }
@@ -461,14 +438,9 @@ public class MethodChaining extends Visitor{
 	Node parent0 = (Node)n.getProperty("parent0");
 	String type = "";
 	if (parent0.hasName("CallExpression")) {
-	   
 	    type = (String)dynamicTypeTable.lookup(n.getString(0));
-        if(type == null)
-            type = (String)table.lookup(n.getString(0));
-        if (n.getString(0).equals("Test")) {
-        
-	        System.out.println("888888888" + type);
-	    }    
+	    if(type == null)
+		type = (String)table.lookup(n.getString(0));
 	}
 	else if (parent0.hasName("Arguments")) {
 	    type = (String)table.lookup(n.getString(0));
@@ -584,6 +556,7 @@ public class MethodChaining extends Visitor{
     */
 
 }
+
 
 
 

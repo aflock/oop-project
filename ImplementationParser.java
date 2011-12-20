@@ -1199,10 +1199,10 @@ NOTE: Should be called after implementation parser is complete
 
             if(!path.equals("")){
                 //System.out.println(path);
-               /* try{
-                    t.process(path);
+               try{
+                    //t.process(path);
                 } catch (Exception e) {System.out.println("error: " + e);}
-                */
+                
             }
         }
     }

@@ -106,7 +106,7 @@ public class NewTranslator extends xtc.util.Tool{
 
         StructureParser s = new StructureParser(this, pubbleList, mubbleList, bubbleList, langList);
         s.dispatch(node);
-        
+        System.out.println("NewTranslator.process()");
         
 
         //Pass methods down the inheritance tree
